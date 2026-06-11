@@ -32,6 +32,8 @@ js = (ROOT / "app/app.js").read_text(encoding="utf-8")
 
 html_needles = [
     "JB LocalGuard OS",
+    "LocalGuard AI",
+    "AI Agent 모델",
     "org-rail",
     "nav-list",
     "command-input",

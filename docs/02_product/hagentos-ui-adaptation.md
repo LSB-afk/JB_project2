@@ -1,6 +1,6 @@
 # HagentOS UI Adaptation
 
-This update expands JB LocalGuard OS from a simple 3-column MVP into a HagentOS-style finance operations console.
+This update expands JB LocalGuard OS from a simple 3-column MVP into a HagentOS-style finance operations console. The main hero title is the AI Agent model name, `JB LocalGuard OS`; the challenge title is kept as contextual metadata, not the primary product title.
 
 ## Borrowed System Items
 
@@ -40,5 +40,17 @@ The palette follows the attached JB Challenge banner:
 - JB blue: primary actions and active states
 - cyan: live state, evidence highlights, metric accents
 - white: panel surfaces for scanability
+
+## Layout Specification
+
+- organization rail: 72px
+- sidebar: 272px desktop, 248px medium
+- properties panel: 360px desktop
+- page padding: 18px
+- page gap: 16px
+- card and control radius: 8px
+- hero minimum height: 220px
+- command panel: 280px label column plus flexible command input
+- operations grid: flexible board plus 320px live-run panel
 
 The UI avoids the academy domain and presents a finance operating system suitable for the free-topic JB future business AI track.
