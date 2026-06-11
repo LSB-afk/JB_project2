@@ -4,4 +4,7 @@ node_modules/
 dist/
 .env
 .env.*
+.omc/
+.omx/
+.claude/
 
