@@ -2,8 +2,6 @@
 
 JB LocalGuard OS는 JB금융그룹 Fin:AI Challenge 자유주제 출품을 위한 AI Agent 운영 콘솔 MVP입니다.
 
-학원 운영자 문제를 금융 문제로 억지 연결하지 않고, `River-181/KEG-Mangsanggwedo`에서 검증한 운영 방식만 가져왔습니다. 이전한 것은 도메인이 아니라 `Case -> AgentRun -> Approval -> Audit` 구조, 스킬 장착 방식, 승인 중심 자동화, 감사 가능한 실행 로그입니다.
-
 ## 제품 한 줄
 
 지역 금융 고객의 위험 신호를 기사, 정책, 거래 맥락, 상담 기록에서 감지하고, 여러 AI Agent가 검토 가능한 조치 초안을 만들며, 사람 승인과 감사 로그를 통해 금융권 도입 가능성을 확보하는 Agent OS입니다.
