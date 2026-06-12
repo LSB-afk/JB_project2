@@ -3106,5 +3106,20 @@ function render() {
   bindSelectionTargets();
 }
 
+function applyHashRoute() {
+  const view = window.location.hash.replace("#", "");
+  const known = navigation.flatMap((group) => group.items.map((item) => item.id));
+  if (!known.includes(view)) return;
+  activeView = view;
+  activeDetailType = defaultDetailForView(view);
+  selectDefaultCaseForView(view);
+}
+
+window.addEventListener("hashchange", () => {
+  applyHashRoute();
+  render();
+});
+
 bindActions();
+applyHashRoute();
 render();

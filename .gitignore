@@ -8,3 +8,5 @@ dist/
 .omx/
 .claude/
 
+proposal/render/
+proposal/template.pptx
