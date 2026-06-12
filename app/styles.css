@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
+
 :root {
   color-scheme: light;
   --bg: #edf4fb;
@@ -54,8 +56,8 @@ body {
     var(--bg);
   color: var(--ink);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Noto Sans KR", sans-serif;
+    "Pretendard Variable", Pretendard, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 button,
@@ -1599,7 +1601,7 @@ button:disabled {
   --shadow-soft: 0 1px 2px rgba(25, 31, 40, 0.05);
   --rail-width: 72px;
   --sidebar-width: 240px;
-  --properties-width: 320px;
+  --properties-width: 360px;
   --page-gap: 16px;
   --page-pad: 0;
   --radius: 8px;
@@ -1610,7 +1612,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family:
-    "Inter", "Noto Sans KR", ui-sans-serif, system-ui, -apple-system,
+    "Pretendard Variable", Pretendard, ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -2197,34 +2199,249 @@ button {
   padding: 16px 12px;
   background: var(--surface);
   border-left: 1px solid var(--line);
+  overflow-x: hidden;
 }
 
 .properties-header {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   align-items: flex-start;
-  padding: 0 2px 2px;
+  min-width: 0;
+  padding: 0 2px 6px;
 }
 
 .properties-header h2 {
   margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
   color: var(--ink);
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.properties-header > div {
+  min-width: 0;
+}
+
+.properties-header > .status-pill {
+  flex: 0 0 auto;
 }
 
 .context-panel {
-  gap: 12px;
+  gap: 8px;
+  height: calc(100dvh - 34px);
+  min-width: 0;
+  align-content: start;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .context-panel .panel {
-  padding: 12px;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px;
+  overflow: hidden;
   box-shadow: none;
 }
 
 .property-row {
-  grid-template-columns: 90px 1fr;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 7px;
+  padding-bottom: 5px;
+}
+
+.context-panel .panel-head {
+  gap: 8px;
+  margin-bottom: 8px;
+  min-width: 0;
+}
+
+.context-panel .panel-head > div {
+  min-width: 0;
+}
+
+.context-panel .panel h3,
+.context-panel .panel-head h3 {
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 16px;
+  line-height: 1.18;
+}
+
+.context-panel .eyebrow {
+  margin-bottom: 4px;
+  font-size: 10px;
+}
+
+.context-panel .case-properties,
+.context-panel .property-list,
+.context-panel .approval-gates,
+.context-panel .evidence-feed,
+.context-panel .audit-log {
+  gap: 6px;
+  min-width: 0;
+}
+
+.context-panel .property-row span {
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.context-panel .property-row strong {
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.context-panel .tag-row {
+  gap: 4px;
+  min-width: 0;
+}
+
+.context-panel .tag,
+.context-panel .tag-button,
+.context-panel .status-pill,
+.context-panel .source-badge,
+.context-panel .risk-chip {
+  min-height: 20px;
+  max-width: 100%;
+  padding: 2px 7px;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.context-panel .tag-button {
+  max-width: 142px;
+}
+
+.selected-case-panel .panel-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.selected-case-panel {
+  max-height: 360px;
+}
+
+.selected-case-panel .case-properties {
+  max-height: 282px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.selected-case-panel #property-status {
+  max-width: 128px;
+  justify-self: end;
+}
+
+.selected-case-panel .case-properties > .tag-row {
+  max-height: 48px;
+  overflow-y: auto;
+}
+
+.selected-case-panel .case-properties > .tag-row:last-child {
+  max-height: 60px;
+}
+
+.context-panel .context-list {
+  gap: 6px;
+  min-width: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.context-panel > section.panel:nth-of-type(2) {
+  max-height: 206px;
+}
+
+.context-panel > section.panel:nth-of-type(3) {
+  max-height: 132px;
+}
+
+.context-panel > section.panel:nth-of-type(4),
+.context-panel > section.panel:nth-of-type(5) {
+  max-height: 122px;
+}
+
+.context-panel > section.panel:nth-of-type(3) .approval-gates,
+.context-panel > section.panel:nth-of-type(4) .evidence-feed,
+.context-panel > section.panel:nth-of-type(5) .audit-log {
+  max-height: 66px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.context-panel .link-card,
+.context-panel .work-item,
+.context-panel .agent-card,
+.context-panel .skill-card,
+.context-panel .gate-row,
+.context-panel .evidence-card,
+.context-panel .audit-item {
+  min-width: 0;
+  padding: 8px;
+}
+
+.context-panel .item-head,
+.context-panel .run-head {
+  gap: 6px;
+  min-width: 0;
+}
+
+.context-panel .item-head strong,
+.context-panel .run-head strong,
+.context-panel .work-item strong,
+.context-panel .agent-card strong,
+.context-panel .skill-card strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.22;
+}
+
+.context-panel .item-head .status-pill {
+  flex: 0 0 auto;
+  max-width: 116px;
+}
+
+.context-panel .link-card p,
+.context-panel .work-item p,
+.context-panel .agent-card p,
+.context-panel .skill-card p,
+.context-panel .evidence-card p,
+.context-panel .audit-item p,
+.context-panel .gate-row p {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.context-panel .action-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.context-panel .primary-button,
+.context-panel .secondary-button,
+.context-panel .danger-button,
+.context-panel .ghost-button {
+  min-height: 30px;
+  padding: 6px 8px;
+  font-size: 11px;
 }
 
 .run-card,

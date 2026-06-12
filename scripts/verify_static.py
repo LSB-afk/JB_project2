@@ -116,6 +116,9 @@ for needle in doc_needles:
 if "border-radius: 8px" not in css:
     raise SystemExit("CSS should keep cards and controls at 8px radius")
 
+if "Pretendard" not in css:
+    raise SystemExit("CSS should use Pretendard as the primary font")
+
 node_check = subprocess.run(
     ["node", "--check", str(ROOT / "app/app.js")],
     text=True,
