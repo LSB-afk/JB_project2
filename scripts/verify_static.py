@@ -12,6 +12,7 @@ required = [
     ROOT / "04_증빙/README.md",
     ROOT / "05_제출/README.md",
     ROOT / "06_LLM위키/README.md",
+    ROOT / "07_아키텍처/README.md",
     ROOT / "_체계/README.md",
     ROOT / "자산/README.md",
     ROOT / "산출/README.md",
@@ -103,6 +104,11 @@ doc_needles = [
     "HagentOS Process Mirroring",
     "sidebar: 240px desktop",
     "Browser verification on the local server",
+    "Mermaid",
+    "시스템 아키텍처",
+    "데이터 아키텍처",
+    "API 아키텍처",
+    "사용자 흐름",
 ]
 joined_docs = "\n".join(
     path.read_text(encoding="utf-8")

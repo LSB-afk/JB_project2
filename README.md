@@ -35,6 +35,7 @@ python3 scripts/verify_static.py
 - `04_증빙`: PDF, DAKER 페이지, 기사, 공식자료 증빙
 - `05_제출`: 제출 패키지와 심사용 산출물
 - `06_LLM위키`: LLM/Agent 운영 패턴과 다음 작업 프롬프트
+- `07_아키텍처`: Mermaid 기반 시스템/데이터/API/사용자 흐름 다이어그램
 - `_체계`: `Case -> AgentRun -> Approval -> Audit` 운영 체계
 - `자산`: 앱, 스크립트, 원천 자료 인덱스
 - `산출`: 최종 제출/발표 산출물 인덱스

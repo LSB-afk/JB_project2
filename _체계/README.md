@@ -20,4 +20,4 @@ Case -> AgentRun -> Agent -> Skill -> Evidence -> Approval -> Audit
 - [Agent 시스템](../docs/03_agents/agent-system.md)
 - [Skill Registry](../docs/03_agents/skill-registry.md)
 - [기능 명세](../docs/02_product/function-spec.md)
-
+- [아키텍처 다이어그램](../07_아키텍처/README.md)
