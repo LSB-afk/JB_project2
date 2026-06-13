@@ -35,6 +35,13 @@
   --page-pad: 18px;
   --radius: 8px;
   --hero-height: 220px;
+  /* Density spacing tokens: 4 / 8 / 12 / 16 / 20 / 24px. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
 }
 
 html,
@@ -4296,4 +4303,213 @@ body {
   .audit-toolbar {
     grid-template-columns: 1fr;
   }
+}
+
+/* Density normalization pass: spacing, top alignment, and status chip baseline. */
+.page-content {
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+}
+
+.workspace-header,
+.page-header {
+  gap: var(--space-1);
+}
+
+.workspace-header h2,
+.page-header h2 {
+  font-size: 24px;
+  line-height: 1.16;
+}
+
+.workspace-header p:last-child,
+.page-header p:last-child {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.workspace-panel,
+.panel {
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+.panel-head {
+  align-items: center;
+}
+
+.panel-head,
+.item-head,
+.run-head,
+.case-list-heading,
+.agent-team-group-head {
+  align-items: center;
+}
+
+.panel > :last-child,
+.workspace-panel > :last-child,
+.work-item > :last-child,
+.run-card > :last-child,
+.agent-card > :last-child,
+.skill-card > :last-child,
+.evidence-card > :last-child,
+.audit-item > :last-child,
+.gate-row > :last-child {
+  margin-bottom: 0;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.tag,
+.tag-button,
+.source-badge,
+.source-chip,
+.risk-chip,
+.data-state-badge,
+.nav-count,
+.count-pill,
+.panel-toggle-meta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  min-height: 24px;
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.source-chip {
+  padding: 0 10px;
+}
+
+.case-row .status-pill,
+.approval-item .status-pill,
+.run-card .status-pill,
+.agent-card .status-pill,
+.skill-card .risk-chip {
+  align-self: center;
+  justify-self: start;
+}
+
+.board-panel .case-list-board {
+  min-height: 0;
+}
+
+.board-panel .hagent-kanban {
+  min-height: min(480px, calc(100dvh - 240px));
+}
+
+.case-list {
+  gap: var(--space-3);
+}
+
+.case-list-group {
+  gap: var(--space-2);
+}
+
+.case-list-rows {
+  gap: var(--space-1);
+}
+
+.case-row {
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+}
+
+.case-row-main {
+  gap: var(--space-1);
+}
+
+.approval-list {
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.approval-item {
+  gap: var(--space-2);
+  padding: 10px var(--space-3);
+}
+
+.approval-actions {
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.work-item,
+.run-card,
+.agent-card,
+.skill-card,
+.activity-item,
+.evidence-card,
+.audit-item,
+.gate-row {
+  gap: 6px;
+  padding: 10px;
+}
+
+.metric-card {
+  min-height: 96px;
+  padding: var(--space-3);
+}
+
+.metric-card strong {
+  margin-top: var(--space-1);
+}
+
+.command-panel {
+  padding: var(--space-4);
+}
+
+.agent-team-group {
+  gap: 10px;
+  padding: var(--space-3);
+}
+
+.agent-team-grid,
+.gap-grid {
+  gap: var(--space-2);
+}
+
+.agent-team-stats {
+  gap: var(--space-1);
+}
+
+.agent-team-stats span {
+  min-height: 24px;
+  padding: 0 var(--space-2);
+}
+
+.gap-card {
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.context-panel .tag,
+.context-panel .tag-button,
+.context-panel .status-pill,
+.context-panel .source-badge,
+.context-panel .risk-chip {
+  height: 24px;
+  min-height: 24px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1;
 }

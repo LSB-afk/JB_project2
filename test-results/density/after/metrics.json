@@ -1,0 +1,394 @@
+[
+  {
+    "route": "dashboard",
+    "scrollHeight": 3392,
+    "clientHeight": 3392,
+    "childHeightSum": 3304,
+    "layoutSpacingPx": 88,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 6,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "command-panel workspace-panel",
+        "top": 140,
+        "bottom": 262,
+        "height": 122
+      },
+      {
+        "selector": "metric-grid",
+        "top": 274,
+        "bottom": 428,
+        "height": 154
+      },
+      {
+        "selector": "panel workspace-panel decision-panel",
+        "top": 440,
+        "bottom": 655,
+        "height": 215
+      },
+      {
+        "selector": "dashboard-grid",
+        "top": 667,
+        "bottom": 3368,
+        "height": 2701
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "inbox",
+    "scrollHeight": 396,
+    "clientHeight": 396,
+    "childHeightSum": 344,
+    "layoutSpacingPx": 52,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 3,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 140,
+        "bottom": 372,
+        "height": 232
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "cases",
+    "scrollHeight": 720,
+    "clientHeight": 720,
+    "childHeightSum": 668,
+    "layoutSpacingPx": 52,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 5,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel board-panel",
+        "top": 140,
+        "bottom": 696,
+        "height": 556
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "approvals",
+    "scrollHeight": 546,
+    "clientHeight": 546,
+    "childHeightSum": 494,
+    "layoutSpacingPx": 52,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 2,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 140,
+        "bottom": 522,
+        "height": 382
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "runs",
+    "scrollHeight": 574,
+    "clientHeight": 574,
+    "childHeightSum": 523,
+    "layoutSpacingPx": 51,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 7,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "page-two-col",
+        "top": 140,
+        "bottom": 550,
+        "height": 411
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "jeonse",
+    "scrollHeight": 925,
+    "clientHeight": 925,
+    "childHeightSum": 873,
+    "layoutSpacingPx": 52,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 6,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 140,
+        "bottom": 901,
+        "height": 761
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "goals",
+    "scrollHeight": 337,
+    "clientHeight": 337,
+    "childHeightSum": 285,
+    "layoutSpacingPx": 52,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 10,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 140,
+        "bottom": 313,
+        "height": 173
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "agents",
+    "scrollHeight": 1769,
+    "clientHeight": 1769,
+    "childHeightSum": 1706,
+    "layoutSpacingPx": 63,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 17,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel agent-team-panel",
+        "top": 140,
+        "bottom": 1422,
+        "height": 1283
+      },
+      {
+        "selector": "panel workspace-panel agent-gap-panel",
+        "top": 1434,
+        "bottom": 1745,
+        "height": 311
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "orgchart",
+    "scrollHeight": 1432,
+    "clientHeight": 1432,
+    "childHeightSum": 1380,
+    "layoutSpacingPx": 52,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 5,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 140,
+        "bottom": 1408,
+        "height": 1268
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "skills",
+    "scrollHeight": 1514,
+    "clientHeight": 1514,
+    "childHeightSum": 1450,
+    "layoutSpacingPx": 64,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 24,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel approval-matrix-panel",
+        "top": 140,
+        "bottom": 480,
+        "height": 340
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 492,
+        "bottom": 1490,
+        "height": 998
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "routines",
+    "scrollHeight": 612,
+    "clientHeight": 612,
+    "childHeightSum": 560,
+    "layoutSpacingPx": 52,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 10,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 140,
+        "bottom": 588,
+        "height": 448
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "activity",
+    "scrollHeight": 595,
+    "clientHeight": 595,
+    "childHeightSum": 543,
+    "layoutSpacingPx": 52,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 11,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 140,
+        "bottom": 571,
+        "height": 431
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "budget",
+    "scrollHeight": 1268,
+    "clientHeight": 1268,
+    "childHeightSum": 1192,
+    "layoutSpacingPx": 76,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 7,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel cost-panel",
+        "top": 140,
+        "bottom": 446,
+        "height": 306
+      },
+      {
+        "selector": "panel workspace-panel trend-panel",
+        "top": 458,
+        "bottom": 755,
+        "height": 297
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 767,
+        "bottom": 1244,
+        "height": 477
+      }
+    ],
+    "consoleErrors": 0
+  },
+  {
+    "route": "settings",
+    "scrollHeight": 441,
+    "clientHeight": 441,
+    "childHeightSum": 389,
+    "layoutSpacingPx": 52,
+    "excessGapPx": 24,
+    "bottomWastePx": 24,
+    "visibleItems": 4,
+    "childBoxes": [
+      {
+        "selector": "workspace-header",
+        "top": 16,
+        "bottom": 128,
+        "height": 112
+      },
+      {
+        "selector": "panel workspace-panel ",
+        "top": 140,
+        "bottom": 417,
+        "height": 277
+      }
+    ],
+    "consoleErrors": 0
+  }
+]

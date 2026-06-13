@@ -39,6 +39,7 @@ required = [
     ROOT / ".omc/decisions.md",
     ROOT / "산출/final-product-stabilization-report-20260613.md",
     ROOT / "산출/judging-ready-service-report-20260613.md",
+    ROOT / "산출/ui-density-alignment-report-20260613.md",
 ]
 
 missing = [path for path in required if not path.exists()]
@@ -170,6 +171,9 @@ doc_needles = [
     "심사 통과형 실동작 서비스",
     "Fabel 5",
     "schemaVersion",
+    "UI 밀도",
+    "측정 → 수정 → 재측정",
+    "상태 배지 표준화",
 ]
 joined_docs = "\n".join(
     path.read_text(encoding="utf-8")

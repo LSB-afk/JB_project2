@@ -67,6 +67,57 @@ test("core routes render reachable grouped screens", async ({ page }) => {
   }
 });
 
+test("density routes keep top-aligned layout without horizontal overflow", async ({ page }) => {
+  const routes = [
+    "dashboard",
+    "inbox",
+    "cases",
+    "approvals",
+    "runs",
+    "jeonse",
+    "goals",
+    "agents",
+    "orgchart",
+    "skills",
+    "routines",
+    "activity",
+    "budget",
+    "settings",
+  ];
+  const viewports = [
+    { width: 1920, height: 1080 },
+    { width: 1366, height: 768 },
+    { width: 390, height: 844 },
+  ];
+  const errors = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    for (const route of routes) {
+      await page.goto(`/index.html#${route}`);
+      await expect(page.locator("#page-content")).not.toBeEmpty();
+      const layout = await page.evaluate(() => {
+        const pageContent = document.querySelector(".page-content");
+        const body = document.body;
+        const documentElement = document.documentElement;
+        const firstChild = pageContent?.firstElementChild?.getBoundingClientRect();
+        return {
+          horizontalOverflow: Math.max(body.scrollWidth, documentElement.scrollWidth) - window.innerWidth,
+          firstChildTop: firstChild ? Math.round(firstChild.top) : null,
+        };
+      });
+      expect(layout.horizontalOverflow).toBeLessThanOrEqual(1);
+      expect(layout.firstChildTop).not.toBeNull();
+      expect(layout.firstChildTop).toBeLessThanOrEqual(viewport.width <= 390 ? 32 : 40);
+    }
+  }
+
+  expect(errors).toEqual([]);
+});
+
 test("goals page keeps cards compact and top aligned", async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.goto("/index.html#goals");
