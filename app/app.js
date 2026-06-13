@@ -662,6 +662,7 @@ const jeonseFeatures = [
 ];
 
 const appStorageKey = "jb-localguard-os-state-v2";
+const storageSchemaVersion = 3;
 const monthlyCostTrend = [
   ["3월", 218000],
   ["4월", 246000],
@@ -674,6 +675,47 @@ const costByWorkType = [
   ["승인·감사", 0.19],
   ["고객 안내", 0.15],
 ];
+const sourceTagLabels = {
+  public: "공공데이터",
+  simulation: "시뮬레이션",
+  estimate: "추정",
+};
+const approvalLevelMatrix = [
+  { level: "L0", score: "0-39", customerNotice: "내부 기록만", contract: "내부 기록만", fraud: "모니터링", reason: "위험 낮음" },
+  { level: "L1", score: "40-59", customerNotice: "RM 원클릭 승인", contract: "RM 확인", fraud: "보안 확인", reason: "단순 안내 가능" },
+  { level: "L2", score: "60-79", customerNotice: "RM 편집 후 발송", contract: "체크리스트 확인", fraud: "고객 접촉 보류", reason: "고객 영향 있음" },
+  { level: "L3", score: "80-89", customerNotice: "RM+준법 승인", contract: "법률/보증 원문 확인", fraud: "보안팀 승인", reason: "금융·계약 리스크 높음" },
+  { level: "L4", score: "90-100", customerNotice: "외부 발송 차단", contract: "사람 결정 전 차단", fraud: "자동 차단 제안", reason: "치명 리스크" },
+];
+const demoProfiles = {
+  jeonse: {
+    caseId: "seoul-jeonse-villa",
+    view: "jeonse",
+    title: "GP-1 전세 보호",
+    currentStep: 2,
+    steps: ["케이스 등록", "전세가율·권리관계 진단", "위험 점수+근거", "특약 초안", "RM 승인", "감사 기록", "고객 안내 결과"],
+    value: "보증금 손실 위험을 계약 전 확인하고, RM이 안전 계약 안내와 은행 상담을 승인할 수 있습니다.",
+    action: "전세 진단 화면 유지",
+  },
+  phishing: {
+    caseId: "gunsan-manufacturing",
+    view: "inbox",
+    title: "GP-2 보이스피싱 차단",
+    currentStep: 3,
+    steps: ["알림 수신", "케이스 전환", "사기 신호 분석", "L4 자동 차단 제안", "사람 승인/반려", "차단 결과", "감사 기록"],
+    value: "고객 대상 외부 발송을 차단하고 보안팀 검토 근거를 남깁니다.",
+    action: "승인 큐에서 차단 승인",
+  },
+  sme: {
+    caseId: "jeonju-cafe",
+    view: "approvals",
+    title: "GP-3 소상공인 자금압박",
+    currentStep: 3,
+    steps: ["매출 둔화 신호", "위험 분류", "정책금융 체크리스트", "준법 검토", "RM 승인", "안내 발송 이력"],
+    value: "RM이 정책금융 후보와 필요 서류를 빠르게 확인하고 상담 이력으로 남길 수 있습니다.",
+    action: "승인 큐에서 RM 승인",
+  },
+};
 
 let cases = JSON.parse(JSON.stringify(initialCases));
 let selectedCaseId = "jeonju-cafe";
@@ -699,6 +741,8 @@ let toastMessage = "";
 let toastTimer = null;
 let scenarioResults = [];
 let lastSavedAt = null;
+let demoModeState = null;
+let auditIntegrityResult = "";
 let agentRuns = [
   {
     id: "run-001",
@@ -1429,7 +1473,7 @@ function renderWorkbench() {
   };
 
   pageContent.className = `page-content view-${activeView}`;
-  pageContent.innerHTML = (pages[activeView] || pages.dashboard)();
+  pageContent.innerHTML = `${demoCoachMarkup()}${(pages[activeView] || pages.dashboard)()}`;
   bindPageActions();
 }
 
@@ -1490,7 +1534,43 @@ function bindPageActions() {
   }
   const resetDemoButton = document.getElementById("reset-demo-state");
   if (resetDemoButton) resetDemoButton.addEventListener("click", resetDemoState);
+  document.querySelectorAll("[data-demo-action]").forEach((button) => {
+    button.addEventListener("click", () => advanceDemoAction(button.dataset.demoAction));
+  });
   bindDragTargets();
+}
+
+function demoCoachMarkup() {
+  if (!demoModeState) return "";
+  return `
+    <section class="demo-coach workspace-panel" aria-label="데모 코치마크">
+      <div>
+        <p class="eyebrow">데모 코치마크 · ${escapeHtml(demoModeState.title)}</p>
+        <h3>${escapeHtml(demoModeState.value)}</h3>
+      </div>
+      <ol class="demo-steps">
+        ${demoModeState.steps
+          .map((step, index) => `<li class="${index <= demoModeState.currentStep ? "is-done" : ""} ${index === demoModeState.currentStep ? "is-current" : ""}">${escapeHtml(step)}</li>`)
+          .join("")}
+      </ol>
+      <button class="secondary-button" type="button" data-demo-action="${escapeHtml(demoModeState.type)}">
+        <span aria-hidden="true">${iconSvg("target")}</span>
+        ${escapeHtml(demoModeState.action)}
+      </button>
+    </section>
+  `;
+}
+
+function advanceDemoAction(type) {
+  if (type === "jeonse") {
+    activeView = "jeonse";
+  } else {
+    activeView = "approvals";
+    approvalTab = "pending";
+  }
+  activeDetailType = "case";
+  propertiesOpen = true;
+  render();
 }
 
 function heroMarkup() {
@@ -1660,6 +1740,7 @@ function orgChartPage() {
 function skillsPage() {
   return `
     ${pageHeader("스킬", "스킬 저장소", "에이전트에게 장착되는 금융, 리스크, 계약, 준법 스킬 패키지를 확인합니다.")}
+    ${panelMarkup("승인 정책", "점수 × 조치 유형 라우팅", approvalMatrixView(), "approval-matrix-panel")}
     ${panelMarkup("스킬 저장소", "장착 가능 스킬", skillsView())}
   `;
 }
@@ -1893,10 +1974,7 @@ function dashboardCostView() {
         ${costKpi("월말 예상", formatWon(data.expected), `${expectedRate}% 예상`)}
         ${costKpi("절감 가능 위험", formatWon(data.avoidableLoss), `비용 대비 ${data.roi}배 효과`)}
       </div>
-      <p class="insight-copy">
-        현재 예상 비용은 ${formatWon(data.expected)}입니다. 이 중 위험 점검 항목이 ${Math.round(costByWorkType[0][1] * 100)}%를 차지하므로
-        고위험 전세와 승인 대기 케이스부터 처리하는 것이 비용 대비 효과가 가장 큽니다.
-      </p>
+      <p class="insight-copy">${escapeHtml(generateCostInsight(data))}</p>
       <div class="cost-bars" aria-label="항목별 비용 비중">
         ${costByWorkType
           .map(([label, ratio]) => {
@@ -1913,6 +1991,20 @@ function dashboardCostView() {
       </div>
     </div>
   `;
+}
+
+function generateCostInsight(data) {
+  const [topLabel, topRatio] = costByWorkType.slice().sort((a, b) => b[1] - a[1])[0];
+  const topPercent = Math.round(topRatio * 100);
+  const priority = data.jeonseRisk.length
+    ? "고위험 전세"
+    : data.pending.length
+      ? "승인 대기"
+      : data.blocked.length
+        ? "외부 행동 차단"
+        : "근거 미연결";
+  const action = data.roi >= 3 ? "비용 대비 효과가 큰 케이스" : "승인 SLA가 임박한 케이스";
+  return `이번 주 예상 비용 ${formatWon(data.expected)} 중 ${topLabel}이 ${topPercent}%를 차지합니다. ${priority} 케이스부터 ${action} 기준으로 처리하면 예상 절감 가능액 ${formatWon(data.avoidableLoss)}을 우선 방어할 수 있습니다.`;
 }
 
 function costKpi(label, value, detail) {
@@ -2079,6 +2171,31 @@ function approvalsView() {
         )
         .join("")}
     </div>
+  `;
+}
+
+function approvalMatrixView() {
+  return `
+    <div class="matrix-table" role="table" aria-label="승인 레벨 매트릭스">
+      <div class="matrix-row matrix-head" role="row">
+        <span>레벨</span><span>점수</span><span>고객 안내</span><span>계약/전세</span><span>사기 차단</span><span>판단 이유</span>
+      </div>
+      ${approvalLevelMatrix
+        .map(
+          (row) => `
+            <div class="matrix-row" role="row">
+              <strong>${escapeHtml(row.level)}</strong>
+              <span>${escapeHtml(row.score)}</span>
+              <span>${escapeHtml(row.customerNotice)}</span>
+              <span>${escapeHtml(row.contract)}</span>
+              <span>${escapeHtml(row.fraud)}</span>
+              <span>${escapeHtml(row.reason)}</span>
+            </div>
+          `,
+        )
+        .join("")}
+    </div>
+    <p class="insight-copy">판단 카드는 신호별 기여 점수를 합산해 위험 점수를 만들고, 이 표의 점수 구간과 조치 유형으로 승인 레벨을 계산합니다.</p>
   `;
 }
 
@@ -2583,7 +2700,6 @@ function renderProperties() {
     </div>
     ${markup}
   `;
-  bindContextActions();
 }
 
 function propertyPanelTitle() {
@@ -2964,13 +3080,40 @@ function analysisResultMarkup(item) {
     `;
   }
   const result = item.analysisResult;
+  const decision = result.decision || computeRiskDecision(item);
   return `
     <div class="analysis-result">
       <div class="result-summary">
         <span class="source-badge">${escapeHtml(result.source)} · ${escapeHtml(result.createdAt)}</span>
         <strong>${escapeHtml(result.summary)}</strong>
-        <p>${escapeHtml(result.recommendation)}</p>
+        <p><b>권고 조치</b> · ${escapeHtml(result.recommendation)}</p>
+        <p><b>판단 이유</b> · ${escapeHtml(result.reason)}</p>
+        <p><b>반려 시 대안</b> · ${escapeHtml(result.rejectionAlternative)}</p>
+        <div class="source-chip-row">
+          ${decision.signals.map((signal) => sourceChip(signal.sourceTag, signal.source)).join("")}
+        </div>
       </div>
+      <details class="score-breakdown" open>
+        <summary>위험 점수 분해 · ${decision.score}점 · ${decision.level}</summary>
+        <div class="score-signal-list">
+          ${decision.signals
+            .map(
+              (signal) => `
+                <article class="score-signal">
+                  <div class="item-head">
+                    <strong>${escapeHtml(signal.name)}</strong>
+                    <span>${signal.contribution}점</span>
+                  </div>
+                  <p>${escapeHtml(signal.value)} · 가중치 ${Math.round(signal.weight * 100)}%</p>
+                  <div class="progress-track"><i style="width:${Math.min(100, signal.contribution)}%"></i></div>
+                  ${sourceChip(signal.sourceTag, signal.source)}
+                </article>
+              `,
+            )
+            .join("")}
+        </div>
+        <p class="insight-copy">라우팅: ${escapeHtml(decision.route)} · 조치 유형 ${escapeHtml(decision.actionType)} · ${escapeHtml(decision.matrixReason)}</p>
+      </details>
       <div class="result-lists">
         ${detailGroup(
           "생성 산출물",
@@ -2997,6 +3140,11 @@ function analysisResultMarkup(item) {
       </div>
     </div>
   `;
+}
+
+function sourceChip(type, detail) {
+  const label = sourceTagLabels[type] || type;
+  return `<span class="source-chip source-${escapeHtml(type)}">[${escapeHtml(label)}] ${escapeHtml(detail)}</span>`;
 }
 
 function propertyRow(label, value) {
@@ -3142,18 +3290,33 @@ function renderAudit() {
   const item = currentCase();
   const auditLog = document.getElementById("audit-log");
   if (!auditLog) return;
-  auditLog.innerHTML = item.audit
-    .slice()
-    .reverse()
+  const records = auditChainRecords(item);
+  auditLog.innerHTML = `
+    <div class="audit-toolbar">
+      <button id="verify-audit-chain" class="secondary-button" type="button">
+        <span aria-hidden="true">${iconSvg("check-square")}</span>
+        무결성 검증
+      </button>
+      <button id="export-audit-json" class="ghost-button" type="button">
+        <span aria-hidden="true">${iconSvg("database")}</span>
+        JSON 내보내기
+      </button>
+      <span id="audit-integrity-result" class="audit-integrity">${escapeHtml(auditIntegrityResult || "검증 대기")}</span>
+    </div>
+    ${records
+      .slice()
+      .reverse()
     .map(
-      ([time, text]) => `
+      (record) => `
         <article class="audit-item">
-          <span class="audit-time">${escapeHtml(time)}</span>
-          <p>${escapeHtml(localizeLine(text))}</p>
+          <span class="audit-time">#${record.seq} · ${escapeHtml(record.time)}</span>
+          <p>${escapeHtml(record.actor)} · ${escapeHtml(localizeLine(record.action))}</p>
+          <small>prev ${escapeHtml(record.previousHash)} → hash ${escapeHtml(record.hash)} · 근거 ${escapeHtml(record.evidenceId)}</small>
         </article>
       `,
     )
-    .join("");
+    .join("")}
+  `;
 }
 
 function timestamp() {
@@ -3164,12 +3327,70 @@ function timestamp() {
   }).format(new Date());
 }
 
+function simpleHash(value) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0");
+}
+
+function auditChainRecords(item) {
+  let previousHash = "GENESIS";
+  return (item.audit || []).map((entry, index) => {
+    const time = Array.isArray(entry) ? entry[0] : entry.time;
+    const action = Array.isArray(entry) ? entry[1] : entry.action;
+    const actor = Array.isArray(entry) ? inferAuditActor(action) : entry.actor;
+    const evidenceId = Array.isArray(entry) ? item.evidenceIds[index % Math.max(1, item.evidenceIds.length)] || "internal-event" : entry.evidenceId;
+    const payload = JSON.stringify({ seq: index + 1, time, actor, action, target: item.code, evidenceId, previousHash });
+    const hash = simpleHash(payload);
+    const record = { seq: index + 1, time, actor, action, target: item.code, evidenceId, previousHash, hash };
+    previousHash = hash;
+    return record;
+  });
+}
+
+function inferAuditActor(text) {
+  const value = String(text || "");
+  if (/RM|담당자|reviewer|검토 담당자/.test(value)) return "사람";
+  if (/사용자 입력|콘솔|보드|오케스트레이터|LocalGuard/.test(value)) return "오케스트레이터";
+  return "에이전트";
+}
+
+function verifyAuditChain(item) {
+  const records = auditChainRecords(item);
+  const ok = records.every((record, index) => index === 0 || record.previousHash === records[index - 1].hash);
+  auditIntegrityResult = ok ? `정상 · ${records.length}개 레코드 해시 체인 연결` : "오류 · 이전 해시 불일치";
+  return { ok, records };
+}
+
+function exportAuditJson(item) {
+  const payload = {
+    schemaVersion: storageSchemaVersion,
+    exportedAt: new Date().toISOString(),
+    caseCode: item.code,
+    caseTitle: item.customerName,
+    integrity: verifyAuditChain(item),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `${item.code}-audit-ledger.json`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
 function persistState() {
   try {
     lastSavedAt = timestamp();
     window.localStorage.setItem(
       appStorageKey,
       JSON.stringify({
+        schemaVersion: storageSchemaVersion,
         cases,
         agentRuns,
         activity,
@@ -3189,6 +3410,7 @@ function loadPersistedState() {
     const raw = window.localStorage.getItem(appStorageKey);
     if (!raw) return;
     const state = JSON.parse(raw);
+    if (state.schemaVersion && state.schemaVersion > storageSchemaVersion) return;
     if (Array.isArray(state.cases) && state.cases.length) cases = state.cases;
     if (Array.isArray(state.agentRuns)) agentRuns = state.agentRuns;
     if (Array.isArray(state.activity)) activity = state.activity;
@@ -3279,10 +3501,91 @@ function buildDashboardData() {
   };
 }
 
+function scoreSignal(name, value, weight, baseScore, sourceTag, source) {
+  return {
+    name,
+    value,
+    weight,
+    contribution: Math.max(0, Math.round(baseScore * weight)),
+    sourceTag,
+    source,
+  };
+}
+
+function actionTypeForCase(item) {
+  if (item.pains.includes("fraud") || item.pains.includes("callback-risk")) return "fraud";
+  if (item.pains.includes("jeonse-fraud")) return "contract";
+  if (item.pains.includes("policy-match") || item.pains.includes("documentation")) return "customerNotice";
+  return "internal";
+}
+
+function approvalLevelFor(score) {
+  if (score >= 90) return approvalLevelMatrix[4];
+  if (score >= 80) return approvalLevelMatrix[3];
+  if (score >= 60) return approvalLevelMatrix[2];
+  if (score >= 40) return approvalLevelMatrix[1];
+  return approvalLevelMatrix[0];
+}
+
+function computeRiskDecision(item) {
+  const baseScore = Math.max(0, Math.min(100, Number(item.riskScore) || 0));
+  const actionType = actionTypeForCase(item);
+  let signals;
+
+  if (actionType === "contract") {
+    const inputs = item.jeonseInputs || {};
+    signals = [
+      scoreSignal("전세가율", `${inputs.ratio || "추정"}%`, 0.34, baseScore, "estimate", "보증금/주변 매매가 산식"),
+      scoreSignal("권리관계", item.rootCauses.find((cause) => /근저당|신탁|권리/.test(cause)) || "등기 원문 확인 필요", 0.24, baseScore, "public", "HUG·국토교통부 확인 항목"),
+      scoreSignal("임차인 자산노출", `${inputs.exposureRatio || "추정"}%`, 0.18, baseScore, "estimate", "보증금/총자산 산식"),
+      scoreSignal("보증보험 가능성", item.gates.some((gate) => gate[1] === "pending") ? "가입 가능성 확인 전" : "확인 완료", 0.14, baseScore, "public", "HUG 안심전세 기준"),
+      scoreSignal("은행 연계 필요", item.agents.includes("bank-linkage") ? "상담 연결 필요" : "내부 검토", 0.1, baseScore, "simulation", "데모 에이전트 배정"),
+    ];
+  } else if (actionType === "fraud") {
+    signals = [
+      scoreSignal("외부 URL·콜백 위험", item.rootCauses.join(", "), 0.34, baseScore, "public", "금융위원회 보이스피싱 경보"),
+      scoreSignal("고객 접촉 차단 필요", item.gates.some((gate) => gate[1] === "blocked") ? "자동 발송 금지" : "검토 필요", 0.28, baseScore, "simulation", "데모 차단 게이트"),
+      scoreSignal("AI 악용 사기 신호", "음성변조·긴급 송금 요청", 0.22, baseScore, "public", "금융위원회 AI 사기 대응"),
+      scoreSignal("준법 승인 필요", item.agents.includes("compliance") ? "준법 에이전트 배정" : "미배정", 0.16, baseScore, "simulation", "에이전트 배정 상태"),
+    ];
+  } else {
+    signals = [
+      scoreSignal("상환 스트레스", item.exposure, 0.32, baseScore, "simulation", "상담 메모 기반 데모 수치"),
+      scoreSignal("정책금융 매칭 필요", item.pains.includes("policy-match") ? "후보 탐색 필요" : "낮음", 0.22, baseScore, "public", "JB 계열사 지역 금융 접점"),
+      scoreSignal("서류·디지털 장벽", item.rootCauses.join(", "), 0.18, baseScore, "simulation", "데모 분류 결과"),
+      scoreSignal("근거 연결성", `${item.evidenceIds.length}개 출처`, 0.16, baseScore, "public", "연결 근거 피드"),
+      scoreSignal("고객 안내 영향", item.gates.some((gate) => gate[1] === "pending") ? "승인 필요" : "내부 처리", 0.12, baseScore, "estimate", "승인 게이트 산식"),
+    ];
+  }
+
+  const score = signals.reduce((sum, signal) => sum + signal.contribution, 0);
+  const matrix = approvalLevelFor(score);
+  const route = matrix[actionType] || matrix.customerNotice;
+  return {
+    score,
+    level: matrix.level,
+    route,
+    matrixReason: matrix.reason,
+    actionType,
+    signals,
+  };
+}
+
+function estimatedJeonseScore({ ratio, exposureRatio, housingBurden, rightsRisk }) {
+  const raw =
+    ratio * 0.5 +
+    Math.min(100, exposureRatio) * 0.2 +
+    Math.min(100, housingBurden * 2) * 0.12 +
+    (rightsRisk ? 14 : 4) +
+    8;
+  return Math.min(99, Math.max(55, Math.round(raw)));
+}
+
 function createAnalysisResult(item, mode = "agent") {
   const isJeonse = item.pains.includes("jeonse-fraud");
   const blocked = item.status === "Escalated" || item.gates.some((gate) => gate[1] === "blocked");
-  const confidence = Math.min(96, Math.max(68, item.riskScore + (item.evidenceIds.length * 2) - (blocked ? 3 : 0)));
+  const decision = computeRiskDecision(item);
+  const confidence = Math.min(96, Math.max(68, decision.score + (item.evidenceIds.length * 2) - (blocked ? 3 : 0)));
   const checklist = isJeonse
     ? [
         "등기부 원문에서 근저당, 압류, 신탁등기 여부를 확인",
@@ -3298,16 +3601,23 @@ function createAnalysisResult(item, mode = "agent") {
     confidence,
     createdAt: timestamp(),
     source: caseDataSource(item),
+    decision,
     summary: isJeonse
-      ? "전세가율, 권리관계, 보증보험 가능성, 고객 자산노출을 종합해 계약 전 사람 검토가 필요합니다."
+      ? `규칙 기반 점수 ${decision.score}점, ${decision.level} 라우팅으로 계약 전 사람 검토가 필요합니다.`
       : blocked
-        ? "외부 발송은 차단하고 내부 보안·준법 검토만 허용하는 고위험 케이스입니다."
-        : "상담 메모와 근거 피드가 같은 방향을 가리켜 RM 확인 후 고객 안내가 가능한 상태입니다.",
+        ? `규칙 기반 점수 ${decision.score}점, ${decision.level} 라우팅으로 외부 발송 차단이 필요합니다.`
+        : `규칙 기반 점수 ${decision.score}점, ${decision.level} 라우팅으로 RM 확인 후 고객 안내가 가능합니다.`,
     recommendation: isJeonse
       ? "등기부·보증보험 원문 확인 후 안전 계약 체크리스트와 은행 상담 안내를 승인 큐에서 확정하세요."
       : blocked
         ? "고객 접촉 없이 보안팀 보고 메모를 먼저 생성하고 차단 근거를 감사 로그에 남기세요."
         : "정책금융 후보와 필요 서류를 RM이 검토한 뒤 콜백 태스크로 연결하세요.",
+    reason: `${decision.signals[0].name}와 ${decision.signals[1].name} 신호가 총점의 핵심 기여 항목입니다.`,
+    rejectionAlternative: isJeonse
+      ? "승인 반려 시 고객 안내 대신 원문 등기부·보증보험 확인 요청 태스크만 남깁니다."
+      : blocked
+        ? "반려 시에도 고객 발송은 유지 차단하고 보안팀 수동 검토로만 넘깁니다."
+        : "반려 시 고객 콜백 없이 서류 확인 요청과 내부 메모만 남깁니다.",
     deliverables: isJeonse
       ? ["위험 진단 리포트", "계약 전 체크리스트", "특약 문구 초안", "은행 상담 연결 카드"]
       : blocked
@@ -3463,7 +3773,7 @@ function runJeonseDiagnosis(form) {
   const exposureRatio = Math.round((deposit / assets) * 100);
   const housingBurden = Math.round(((deposit * 0.045) / 12 / income) * 100);
   const rightsRisk = rights === "근저당 있음" || rights === "신탁등기 의심";
-  const score = Math.min(99, Math.max(55, ratio + (exposureRatio > 70 ? 8 : 0) + (housingBurden > 25 ? 6 : 0) + (rightsRisk ? 10 : 0)));
+  const score = estimatedJeonseScore({ ratio, exposureRatio, housingBurden, rightsRisk });
 
   item.status = "Approval Pending";
   item.stage = "pending_approval";
@@ -3746,6 +4056,67 @@ function resetDemoState() {
   window.setTimeout(() => window.location.reload(), 300);
 }
 
+function applyDemoModeFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get("demo");
+  if (!type || !demoProfiles[type]) return;
+  const profile = demoProfiles[type];
+
+  cases = JSON.parse(JSON.stringify(initialCases));
+  agentRuns = [];
+  activity = [["09:00", "LocalGuard Orchestrator", "dispatched command", profile.caseId]];
+  scenarioResults = [];
+  lastSavedAt = null;
+  selectedCaseId = profile.caseId;
+  activeView = profile.view;
+  activeDetailType = "case";
+  propertiesOpen = true;
+  collapsedPanelKeys = new Set(["case-agents", "case-evidence"]);
+  demoModeState = { type, ...profile };
+
+  const item = currentCase();
+  if (type === "jeonse") {
+    const inputs = {
+      deposit: 235000000,
+      market: 260000000,
+      assets: 300000000,
+      income: 3600000,
+      rights: "근저당 있음",
+      ratio: 90,
+      exposureRatio: 78,
+      housingBurden: 24,
+    };
+    item.jeonseInputs = inputs;
+    item.riskScore = estimatedJeonseScore({ ...inputs, rightsRisk: true });
+    item.status = "Approval Pending";
+    item.stage = "pending_approval";
+    item.audit = [
+      ["09:00", "데모 GP-1: 전세 보호 케이스를 결정론적 시작 상태로 시드했습니다."],
+      ["09:01", "전세가율·권리관계·자산노출 신호를 규칙 기반 판단 엔진에 입력했습니다."],
+    ];
+  } else if (type === "phishing") {
+    item.status = "Approval Pending";
+    item.stage = "pending_approval";
+    item.riskScore = 96;
+    item.audit = [
+      ["09:00", "데모 GP-2: 보이스피싱 의심 알림을 케이스로 전환했습니다."],
+      ["09:01", "L4 자동 차단 제안을 생성하고 사람 승인 대기 상태로 올렸습니다."],
+    ];
+  } else if (type === "sme") {
+    item.status = "Approval Pending";
+    item.stage = "pending_approval";
+    item.riskScore = 84;
+    item.audit = [
+      ["09:00", "데모 GP-3: 매출 둔화 신호를 소상공인 자금압박 케이스로 시드했습니다."],
+      ["09:01", "정책금융 체크리스트와 준법 검토 결과를 승인 큐에 올렸습니다."],
+    ];
+  }
+  item.resultSaved = false;
+  item.nextTaskCreated = false;
+  item.analysisResult = createAnalysisResult(item, `golden-path-${type}`);
+  item.analysisResult.createdAt = "09:02";
+}
+
 function newCaseDemo() {
   caseSequence += 1;
   const code = `JBG-${caseSequence}`;
@@ -3965,6 +4336,7 @@ function bindContextActions() {
       renderProperties();
       renderEvidence();
       renderAudit();
+      bindContextActions();
       bindSelectionTargets();
     });
   });
@@ -3979,6 +4351,16 @@ function bindContextActions() {
   const followUpButton = document.getElementById("create-follow-up");
   if (saveResultButton) saveResultButton.addEventListener("click", () => saveCaseResult(currentCase()));
   if (followUpButton) followUpButton.addEventListener("click", () => createFollowUpTask(currentCase()));
+  const verifyAuditButton = document.getElementById("verify-audit-chain");
+  const exportAuditButton = document.getElementById("export-audit-json");
+  if (verifyAuditButton) {
+    verifyAuditButton.addEventListener("click", () => {
+      const result = verifyAuditChain(currentCase());
+      const target = document.getElementById("audit-integrity-result");
+      if (target) target.textContent = result.ok ? `정상 · ${result.records.length}개 레코드 해시 체인 연결` : "오류 · 이전 해시 불일치";
+    });
+  }
+  if (exportAuditButton) exportAuditButton.addEventListener("click", () => exportAuditJson(currentCase()));
 
   const backButton = document.getElementById("back-to-case");
   if (backButton) {
@@ -4027,6 +4409,7 @@ function render() {
   renderLiveRuns();
   renderEvidence();
   renderAudit();
+  bindContextActions();
   renderModal();
   renderToast();
   bindSelectionTargets();
@@ -4048,4 +4431,5 @@ window.addEventListener("hashchange", () => {
 
 bindActions();
 applyHashRoute();
+applyDemoModeFromUrl();
 render();

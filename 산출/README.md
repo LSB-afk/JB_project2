@@ -18,6 +18,7 @@
 - [아키텍처 다이어그램](../07_아키텍처/README.md)
 - [HagentOS 기반 JB LocalGuard OS 작업 내역](./work-log-hagentos-localguard-os.md)
 - [UI 레이아웃 밀도 개선 QA 리포트](./layout-density-qa-report-20260613.md)
+- [심사 통과형 실동작 서비스 리포트](./judging-ready-service-report-20260613.md)
 
 ## 발표/심사에서 강조할 산출 포인트
 
@@ -28,6 +29,7 @@
 | 복수 AI Agent 설계 | [Agent 시스템](../docs/03_agents/agent-system.md), [Jeonse Shield Agents](../docs/03_agents/jeonse-shield-agents.md) |
 | 안전한 금융 자동화 | [운영 체계](../_체계/README.md), [아키텍처 다이어그램](../07_아키텍처/README.md) |
 | 근거 기반 판단 | [출처 인덱스](../docs/05_evidence/source-index.md), [증빙 폴더](../04_증빙/README.md) |
+| 골든 패스 실동작 | [심사 통과형 실동작 서비스 리포트](./judging-ready-service-report-20260613.md), [Playwright 캡처](../tests/results/screenshots/) |
 
 ## 데모
 

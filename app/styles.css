@@ -4047,8 +4047,212 @@ body {
   min-height: min(520px, calc(100dvh - 210px));
 }
 
+/* Judging-ready explainability and demo cycle layer. */
+.demo-coach {
+  grid-template-columns: minmax(260px, 0.9fr) minmax(360px, 1.3fr) auto;
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(11, 111, 179, 0.09), transparent 58%),
+    #ffffff;
+}
+
+.demo-coach h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.demo-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-steps li {
+  position: relative;
+  min-width: 0;
+  padding: 8px 9px 8px 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.demo-steps li::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+.demo-steps li.is-done {
+  color: #17446f;
+  border-color: #b8ddf0;
+  background: var(--surface-blue);
+}
+
+.demo-steps li.is-done::before {
+  background: var(--cyan-500);
+}
+
+.demo-steps li.is-current {
+  color: var(--blue-700);
+  box-shadow: inset 0 0 0 1px var(--cyan-500);
+}
+
+.source-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  max-width: 100%;
+  padding: 4px 8px;
+  overflow: hidden;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-public {
+  color: #075985;
+  background: #e0f2fe;
+}
+
+.source-simulation {
+  color: #6d28d9;
+  background: #f0ecff;
+}
+
+.source-estimate {
+  color: #9a5b00;
+  background: #fff4df;
+}
+
+.score-breakdown {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #d7eaf5;
+  border-radius: 8px;
+  background: #f8fcff;
+}
+
+.score-breakdown summary {
+  cursor: pointer;
+  color: var(--blue-700);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.score-signal-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.score-signal {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.score-signal .item-head span {
+  color: var(--blue-700);
+  font-weight: 900;
+}
+
+.matrix-table {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.matrix-row {
+  display: grid;
+  grid-template-columns: 56px 68px repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.matrix-row:first-child {
+  border-top: 0;
+}
+
+.matrix-head {
+  color: var(--ink);
+  background: var(--surface-soft);
+  font-weight: 900;
+}
+
+.matrix-row strong {
+  color: var(--blue-700);
+}
+
+.audit-toolbar {
+  display: grid;
+  grid-template-columns: max-content max-content minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.audit-integrity {
+  min-width: 0;
+  padding: 7px 9px;
+  border-radius: 8px;
+  color: var(--blue-700);
+  background: var(--surface-blue);
+  font-size: 12px;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.audit-item small {
+  color: #738195;
+  font-size: 11px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 1500px) {
   .view-goals .work-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .demo-coach {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-steps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -4060,6 +4264,11 @@ body {
 
   .view-goals .work-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .score-signal-list,
+  .matrix-row {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -4080,6 +4289,11 @@ body {
   }
 
   .view-goals .work-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-steps,
+  .audit-toolbar {
     grid-template-columns: 1fr;
   }
 }

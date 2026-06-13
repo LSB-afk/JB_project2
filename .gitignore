@@ -5,7 +5,9 @@ dist/
 test-results/playwright/
 .env
 .env.*
-.omc/
+.omc/*
+!.omc/
+!.omc/decisions.md
 .omx/
 .claude/
 

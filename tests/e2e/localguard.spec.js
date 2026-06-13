@@ -1,9 +1,13 @@
 const { expect, test } = require("@playwright/test");
+const fs = require("node:fs");
 
-const screenshotDir = "test-results/screenshots";
+const screenshotDirs = ["test-results/screenshots", "tests/results/screenshots"];
 
 async function saveShot(page, name) {
-  await page.screenshot({ path: `${screenshotDir}/${name}`, fullPage: true });
+  for (const dir of screenshotDirs) {
+    fs.mkdirSync(dir, { recursive: true });
+    await page.screenshot({ path: `${dir}/${name}`, fullPage: true });
+  }
 }
 
 test.beforeEach(async ({ page }) => {
@@ -46,9 +50,12 @@ test("core routes render reachable grouped screens", async ({ page }) => {
     "approvals",
     "runs",
     "jeonse",
+    "goals",
     "agents",
     "orgchart",
     "skills",
+    "routines",
+    "activity",
     "budget",
     "settings",
   ];
@@ -154,6 +161,53 @@ test("jeonse diagnosis produces result, save, and follow-up actions", async ({ p
   await page.locator("#create-follow-up").click();
   await expect(page.getByRole("status")).toContainText("은행 상담 연결 요청과 보증보험 확인 태스크를 생성했습니다.");
   await saveShot(page, "scenario-flow-3.png");
+});
+
+test("golden path demo modes expose scored judgement and next action", async ({ page }) => {
+  const demos = [
+    ["jeonse", "GP-1 전세 보호", "전세 진단 화면 유지", "전세가율"],
+    ["phishing", "GP-2 보이스피싱 차단", "승인 큐에서 차단 승인", "외부 URL·콜백 위험"],
+    ["sme", "GP-3 소상공인 자금압박", "승인 큐에서 RM 승인", "상환 스트레스"],
+  ];
+
+  for (const [mode, title, action, signal] of demos) {
+    await page.goto(`/index.html?demo=${mode}`);
+    await expect(page.getByLabel("데모 코치마크")).toContainText(title);
+    await expect(page.getByRole("button", { name: new RegExp(action) })).toBeVisible();
+    await expect(page.locator(".score-breakdown")).toContainText(signal);
+    await expect(page.locator(".source-chip").first()).toBeVisible();
+    await expect(page.locator("#context-panel")).toContainText("반려 시 대안");
+    await saveShot(page, `golden-${mode}-start.png`);
+  }
+});
+
+test("audit ledger verifies hash chain and exports json", async ({ page }) => {
+  await page.goto("/index.html?demo=jeonse");
+  await page.locator("#verify-audit-chain").click();
+  await expect(page.locator("#audit-integrity-result")).toContainText("정상");
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.locator("#export-audit-json").click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toContain("audit-ledger.json");
+  await expect(page.locator("#audit-log")).toContainText("GENESIS");
+  await saveShot(page, "golden-audit-ledger.png");
+});
+
+test("approval matrix and storage schema are visible to reviewers", async ({ page }) => {
+  await page.goto("/index.html?demo=sme");
+  await page.locator("#save-case-result").click();
+  await page.locator('[data-view="skills"]').click();
+
+  await expect(page.getByText("점수 × 조치 유형 라우팅")).toBeVisible();
+  await expect(page.getByRole("table", { name: "승인 레벨 매트릭스" })).toContainText("L4");
+
+  const schemaVersion = await page.evaluate(() => {
+    const payload = window.localStorage.getItem("jb-localguard-os-state-v2");
+    return payload ? JSON.parse(payload).schemaVersion : null;
+  });
+  expect(schemaVersion).toBe(3);
+  await saveShot(page, "golden-approval-matrix.png");
 });
 
 test("saved jeonse diagnosis updates dashboard service cycle", async ({ page }) => {

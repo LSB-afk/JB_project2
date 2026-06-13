@@ -36,7 +36,9 @@ required = [
     ROOT / "app/styles.css",
     ROOT / "app/app.js",
     ROOT / "scripts/README.md",
+    ROOT / ".omc/decisions.md",
     ROOT / "산출/final-product-stabilization-report-20260613.md",
+    ROOT / "산출/judging-ready-service-report-20260613.md",
 ]
 
 missing = [path for path in required if not path.exists()]
@@ -122,6 +124,17 @@ js_needles = [
     "운영 지시를 입력해주세요",
     "renderModal",
     "toast-root",
+    "demoProfiles",
+    "데모 코치마크",
+    "approvalLevelMatrix",
+    "승인 레벨 매트릭스",
+    "computeRiskDecision",
+    "source-chip",
+    "auditChainRecords",
+    "무결성 검증",
+    "JSON 내보내기",
+    "schemaVersion",
+    "generateCostInsight",
     "사용자 입력 데이터",
     "저장된 분석 결과",
     "샘플·실제·오류 상태",
@@ -153,6 +166,10 @@ doc_needles = [
     "데이터 아키텍처",
     "API 아키텍처",
     "사용자 흐름",
+    "골든 패스",
+    "심사 통과형 실동작 서비스",
+    "Fabel 5",
+    "schemaVersion",
 ]
 joined_docs = "\n".join(
     path.read_text(encoding="utf-8")
