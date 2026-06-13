@@ -1641,17 +1641,21 @@ function dashboardPage() {
     <section id="metric-grid" class="metric-grid" aria-label="metrics"></section>
     ${panelMarkup("의사결정 요약", "오늘 우선 처리 기준", dashboardDecisionView(), "decision-panel")}
     <section class="dashboard-grid">
-      ${panelMarkup("실시간 실행", "실시간 실행", '<div id="live-runs" class="live-runs"></div><span id="live-count" class="count-pill ghost-count">0</span>', "live-panel")}
-      ${panelMarkup("서비스 사이클", "완료된 사용자 가치", scenarioCompletionView(), "scenario-panel")}
-      ${panelMarkup("처리 흐름", "처리 흐름 상태", dashboardView(), "process-panel")}
-      ${panelMarkup("데이터 상태", "데이터 출처와 저장 상태", dataStatusView(), "data-panel")}
-      ${panelMarkup("데이터 신뢰도", "샘플·실제·오류 상태", dataReliabilityView(), "data-reliability-panel")}
-      ${panelMarkup("비용과 효과", "운영 비용 해석", dashboardCostView(), "cost-panel")}
-      ${panelMarkup("추세", "월별 비용 추이", dashboardTrendView(), "trend-panel")}
-      ${panelMarkup("지역 비교", "지역별 위험도", dashboardRegionView(), "region-panel")}
-      ${panelMarkup("우선순위", "위험도 순위", dashboardRankingView(), "ranking-panel")}
-      ${panelMarkup("최근 케이스", "최근 케이스", recentCasesView(), "recent-panel")}
-      ${panelMarkup("활동 이력", "최근 처리 이력", activityView(), "activity-panel")}
+      <div class="dashboard-column">
+        ${panelMarkup("실시간 실행", "실시간 실행", '<div id="live-runs" class="live-runs"></div><span id="live-count" class="count-pill ghost-count">0</span>', "live-panel")}
+        ${panelMarkup("처리 흐름", "처리 흐름 상태", dashboardView(), "process-panel")}
+        ${panelMarkup("데이터 신뢰도", "샘플·실제·오류 상태", dataReliabilityView(), "data-reliability-panel")}
+        ${panelMarkup("추세", "월별 비용 추이", dashboardTrendView(), "trend-panel")}
+        ${panelMarkup("우선순위", "위험도 순위", dashboardRankingView(), "ranking-panel")}
+        ${panelMarkup("활동 이력", "최근 처리 이력", activityView(), "activity-panel")}
+      </div>
+      <div class="dashboard-column">
+        ${panelMarkup("서비스 사이클", "완료된 사용자 가치", scenarioCompletionView(), "scenario-panel")}
+        ${panelMarkup("데이터 상태", "데이터 출처와 저장 상태", dataStatusView(), "data-panel")}
+        ${panelMarkup("비용과 효과", "운영 비용 해석", dashboardCostView(), "cost-panel")}
+        ${panelMarkup("지역 비교", "지역별 위험도", dashboardRegionView(), "region-panel")}
+        ${panelMarkup("최근 케이스", "최근 케이스", recentCasesView(), "recent-panel")}
+      </div>
     </section>
   `;
 }

@@ -2092,6 +2092,13 @@ button {
   gap: 16px;
 }
 
+.dashboard-column {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  min-width: 0;
+}
+
 .live-panel {
   min-height: 360px;
 }
@@ -3868,6 +3875,10 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .dashboard-column {
+    gap: 12px;
+  }
+
   .diagnosis-result {
     grid-column: auto;
   }
@@ -3906,6 +3917,7 @@ body {
 
 .page-content > *,
 .dashboard-grid > *,
+.dashboard-column > *,
 .page-two-col > *,
 .workspace-panel,
 .command-panel,
@@ -3947,6 +3959,7 @@ body {
 
 .metric-grid,
 .dashboard-grid,
+.dashboard-column,
 .work-grid,
 .agent-grid,
 .skill-grid,
@@ -3981,6 +3994,10 @@ body {
 }
 
 .dashboard-grid {
+  min-height: 0;
+}
+
+.dashboard-column {
   min-height: 0;
 }
 

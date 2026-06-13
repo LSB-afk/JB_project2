@@ -150,6 +150,43 @@ test("goals page keeps cards compact and top aligned", async ({ page }) => {
   await saveShot(page, "goals-compact.png");
 });
 
+test("dashboard columns pack panels without grid row gaps", async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.goto("/index.html#dashboard");
+
+  await expect(page.getByText("월별 비용 추이")).toBeVisible();
+  await expect(page.getByText("최근 처리 이력")).toBeVisible();
+
+  const columnGaps = await page.locator(".dashboard-column").evaluateAll((columns) =>
+    columns.map((column) => {
+      const children = [...column.children]
+        .map((child) => child.getBoundingClientRect())
+        .filter((rect) => rect.width > 0 && rect.height > 0)
+        .sort((a, b) => a.top - b.top);
+
+      return children.slice(1).map((rect, index) => Math.round(rect.top - children[index].bottom));
+    }),
+  );
+
+  expect(columnGaps.length).toBe(2);
+  for (const gaps of columnGaps) {
+    expect(gaps.length).toBeGreaterThan(0);
+    for (const gap of gaps) {
+      expect(gap).toBeLessThanOrEqual(18);
+    }
+  }
+
+  const leftFlowGap = await page.evaluate(() => {
+    const ranking = document.querySelector(".ranking-panel")?.getBoundingClientRect();
+    const activityPanel = document.querySelector(".activity-panel")?.getBoundingClientRect();
+    return ranking && activityPanel ? Math.round(activityPanel.top - ranking.bottom) : null;
+  });
+  expect(leftFlowGap).not.toBeNull();
+  expect(leftFlowGap).toBeLessThanOrEqual(18);
+
+  await saveShot(page, "dashboard-packed.png");
+});
+
 test("scenario flow runs a selected case and reaches approval state", async ({ page }) => {
   await page.goto("/index.html#cases");
   await page.locator('button.case-row[data-case-id="gwangju-wholesale"]').click();
