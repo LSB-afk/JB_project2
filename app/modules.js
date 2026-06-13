@@ -179,9 +179,16 @@ function customerByCaseId(caseId) {
 function customerTrackingMarkup(caseItem) {
   const c = caseItem && customerByCaseId(caseItem.id);
   if (!c) return "";
-  const maxScore = Math.max(...c.riskTrend.map((p) => p.score), 100);
-  const bars = c.riskTrend.map((p) => `
-    <div class="trend-bar"><i style="height:${Math.round((p.score / maxScore) * 100)}%"></i><span>${escapeHtml(p.date.slice(5))}</span><b>${p.score}</b></div>`).join("");
+  const bars = c.riskTrend.map((p) => {
+    const h = Math.min(100, Math.max(10, Math.round(((p.score - 50) / 50) * 100))); // 50→0%,100→100%, 최소 10%
+    const hot = p.score >= 85;
+    return `
+    <div class="trend-col">
+      <b class="trend-score ${hot ? "is-hot" : ""}">${escapeHtml(String(p.score))}</b>
+      <div class="trend-track"><i class="${hot ? "is-hot" : ""}" style="height:${h}%"></i></div>
+      <span class="trend-date">${escapeHtml(p.date.slice(2))}</span>
+    </div>`;
+  }).join("");
   const notes = c.notes.map((n) => `
     <li><span class="note-date">${escapeHtml(n.date)}</span><span class="note-actor">${escapeHtml(n.actor)}</span><p>${escapeHtml(n.text)}</p></li>`).join("");
   const linkedCases = c.caseIds.map((cid) => {
@@ -195,7 +202,7 @@ function customerTrackingMarkup(caseItem) {
       <div><strong>${escapeHtml(c.maskedName)}</strong><span class="customer-sub">${escapeHtml(c.affiliate)} · ${escapeHtml(c.segment)} · 거래 ${escapeHtml(c.since)}~</span></div>
       <div class="tag-row">${linkedCases}</div>
     </div>
-    <div class="gov-label">리스크 추이</div>
+    <div class="gov-label">리스크 추이 (위험도 점수)</div>
     <div class="trend-chart">${bars}</div>
     <div class="gov-label">관찰·상담 이력</div>
     <ul class="customer-notes">${notes}</ul>
@@ -431,7 +438,7 @@ function skillBodyPanel(skill) {
        <div class="action-row"><button id="skill-save" class="primary-button" type="button">저장</button><button id="skill-edit-toggle" class="ghost-button" type="button">취소</button></div>`
     : `<div class="md-render skill-body">${mdToHtml(body)}</div>
        ${srcChips ? `<div class="gov-label">근거 출처</div><div class="tag-row">${srcChips}</div>` : ""}
-       <div class="action-row"><button id="skill-edit-toggle" class="secondary-button" type="button">편집</button></div>`;
+       <div class="action-row"><button class="primary-button" type="button" data-skill-view="${escapeHtml(skill.slug)}">전체 보기</button><button id="skill-edit-toggle" class="secondary-button" type="button">편집</button></div>`;
   return compactPanel("운영 콘텐츠", "실제 절차·판단 기준·근거", inner, skillEditMode ? "편집 중" : "보기");
 }
 function skillSources(slug) {
@@ -441,7 +448,7 @@ function skillSources(slug) {
 
 /* 신규 UI 상태 (app.js 보다 먼저 선언 → 전역 공유) */
 let selectedPluginId = null;
-let selectedDeliverableId = null;
+let docView = null; // 공용 문서 뷰어 (산출물·스킬 본문 등): {eyebrow,title,body,footL,footR}
 let skillEditMode = false;
 
 /* =========================================================================
@@ -555,26 +562,19 @@ function caseDetailPage(caseItem) {
     </div>`;
 }
 
-/* 산출물 뷰어 (모달) */
-function deliverableViewerMarkup() {
-  if (!selectedDeliverableId) return "";
-  let found = null;
-  Object.keys(deliverableRegistry).forEach((cid) => {
-    (deliverableRegistry[cid] || []).forEach((d) => { if (d.id === selectedDeliverableId) found = d; });
-  });
-  if (!found) return "";
+/* 공용 문서 뷰어 (모달) — 산출물·스킬 본문 등 긴 MD를 크게/스크롤로 표시 */
+function docViewerMarkup() {
+  if (!docView) return "";
+  const d = docView;
   return `
-    <div class="modal-backdrop" data-deliverable-close="1">
-      <div class="modal dlv-modal" role="dialog" aria-modal="true" aria-label="${escapeHtml(found.title)}">
+    <div class="modal-backdrop" data-doc-close="backdrop">
+      <div class="modal-card doc-modal" role="dialog" aria-modal="true" aria-label="${escapeHtml(d.title)}">
         <div class="modal-head">
-          <div><p class="eyebrow">산출물 · ${escapeHtml(found.kind)}</p><h3>${escapeHtml(found.title)}</h3></div>
-          <button class="icon-button" type="button" data-deliverable-close="1" aria-label="닫기">${window.iconSvg ? iconSvg("x") : "×"}</button>
+          <div>${d.eyebrow ? `<p class="eyebrow">${escapeHtml(d.eyebrow)}</p>` : ""}<h2>${escapeHtml(d.title)}</h2></div>
+          <button class="icon-only-button" type="button" data-doc-close="btn" aria-label="닫기">${window.iconSvg ? iconSvg("x") : "×"}</button>
         </div>
-        <div class="modal-body dlv-body md-render">${mdToHtml(found.body)}</div>
-        <div class="modal-foot">
-          <span class="dlv-gov">${escapeHtml(found.govNote || "")}</span>
-          <span class="dlv-meta">${escapeHtml(found.generatedBy)} · ${escapeHtml(found.at)}</span>
-        </div>
+        <div class="doc-body md-render">${mdToHtml(d.body)}</div>
+        ${(d.footL || d.footR) ? `<div class="doc-foot"><span class="dlv-gov">${escapeHtml(d.footL || "")}</span><span class="dlv-meta">${escapeHtml(d.footR || "")}</span></div>` : ""}
       </div>
     </div>`;
 }
@@ -596,16 +596,19 @@ function generateDeliverables(caseId) {
   if (window.render) render();
 }
 
-/* 산출물 뷰어 렌더 (닫기 핸들러 자체 바인딩 → 부분 렌더에서도 동작) */
+function openDoc(doc) { docView = doc; renderDeliverableViewer(); }
+function closeDoc() { docView = null; renderDeliverableViewer(); }
+
+/* 문서 뷰어 렌더 (닫기 핸들러 자체 바인딩 → 부분 렌더에서도 동작) */
 function renderDeliverableViewer() {
   const root = document.getElementById("deliverable-root");
   if (!root) return;
-  root.innerHTML = deliverableViewerMarkup();
-  root.querySelectorAll("[data-deliverable-close]").forEach((el) =>
+  root.innerHTML = docViewerMarkup();
+  root.querySelectorAll("[data-doc-close]").forEach((el) =>
     el.addEventListener("click", (e) => {
-      if (e.currentTarget !== e.target && el.classList.contains("modal-backdrop")) return;
-      selectedDeliverableId = null;
-      renderDeliverableViewer();
+      // backdrop 클릭은 backdrop 자체를 눌렀을 때만 닫기 (모달 본문 클릭은 유지)
+      if (el.dataset.docClose === "backdrop" && e.target !== el) return;
+      closeDoc();
     })
   );
 }
@@ -633,7 +636,19 @@ function bindModuleActions() {
   });
 
   // 산출물 뷰어 (열기만; 닫기는 renderDeliverableViewer 가 자체 바인딩)
-  click("[data-deliverable-id]", (el) => { selectedDeliverableId = el.dataset.deliverableId; renderDeliverableViewer(); });
+  click("[data-deliverable-id]", (el) => {
+    const did = el.dataset.deliverableId;
+    let found = null;
+    Object.keys(deliverableRegistry).forEach((cid) => { (deliverableRegistry[cid] || []).forEach((d) => { if (d.id === did) found = d; }); });
+    if (found) openDoc({ eyebrow: `산출물 · ${found.kind}`, title: found.title, body: found.body, footL: found.govNote, footR: `${found.generatedBy} · ${found.at}` });
+  });
+  // 스킬 본문 전체 보기
+  click("[data-skill-view]", (el) => {
+    const slug = el.dataset.skillView;
+    const body = skillBody(slug);
+    const label = (window.skillLabel ? skillLabel(slug) : slug);
+    if (body) openDoc({ eyebrow: "스킬 운영 콘텐츠", title: label, body });
+  });
 
   // 뷰 점프 / 케이스 상세 진입
   click("[data-view-jump]", (el) => { activeView = el.dataset.viewJump; if (window.render) render(); });

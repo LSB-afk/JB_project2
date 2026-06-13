@@ -4545,8 +4545,10 @@ body {
  * 업그레이드 모듈 스타일 (2026-06-14) — 케이스 상세·플러그인·거버넌스·고객·산출물
  * ========================================================================= */
 
-/* 스크롤 안전장치 */
-.context-panel { overflow-y: auto; }
+/* 스크롤 안전장치 — grid 클리핑 방지: flex 컬럼 + 자연 높이 + 컨테이너 스크롤 */
+.context-panel { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; align-content: initial; }
+.context-panel > section.panel,
+.context-panel .panel { overflow: visible; min-height: 0; flex: 0 0 auto; }
 .page-content { overflow-y: auto; }
 
 /* 마크다운 렌더 */
@@ -4612,8 +4614,10 @@ body {
 .dlv-head strong { font-size: 13px; }
 .dlv-meta { font-size: 11px; color: var(--muted); }
 .dlv-gov { font-size: 11px; color: var(--muted); }
-.dlv-modal { max-width: 720px; width: 92vw; }
-.dlv-body { max-height: 60vh; overflow-y: auto; padding: 4px 2px; }
+.doc-modal { width: min(760px, 100%); max-height: calc(100dvh - 40px); }
+.doc-body { overflow-y: auto; padding: 2px; line-height: 1.6; }
+.doc-body.md-render .md-p, .doc-body.md-render .md-list li { font-size: 14px; }
+.doc-foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 10px; }
 
 /* 거버넌스 패널 */
 .gov-panel .gov-block { margin-top: 10px; }
@@ -4637,11 +4641,14 @@ body {
 /* 고객 추적 */
 .customer-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
 .customer-sub { display: block; font-size: 12px; color: var(--muted); }
-.trend-chart { display: flex; align-items: flex-end; gap: 10px; height: 90px; padding: 8px 0; }
-.trend-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 2px; }
-.trend-bar i { width: 60%; background: linear-gradient(180deg, var(--blue-700), #4aa3e8); border-radius: 4px 4px 0 0; min-height: 4px; }
-.trend-bar span { font-size: 10px; color: var(--muted); }
-.trend-bar b { font-size: 11px; color: var(--ink); }
+.trend-chart { display: flex; align-items: flex-end; gap: 14px; padding: 8px 0 2px; }
+.trend-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.trend-score { font-size: 12px; font-weight: 700; color: var(--blue-700); }
+.trend-score.is-hot { color: #c0322a; }
+.trend-track { width: 70%; max-width: 48px; height: 84px; display: flex; align-items: flex-end; background: #eef2f8; border-radius: 6px; overflow: hidden; }
+.trend-track i { display: block; width: 100%; background: linear-gradient(180deg, #4aa3e8, var(--blue-700)); border-radius: 6px 6px 0 0; min-height: 6px; }
+.trend-track i.is-hot { background: linear-gradient(180deg, #e8736a, #c0322a); }
+.trend-date { font-size: 10px; color: var(--muted); }
 .customer-notes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .customer-notes li { border-left: 2px solid var(--line); padding-left: 10px; }
 .note-date { font-size: 11px; color: var(--muted); margin-right: 6px; }
