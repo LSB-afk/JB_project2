@@ -23,6 +23,7 @@ const navigation = [
     section: "시스템 관리",
     items: [
       { id: "skills", icon: "puzzle", label: "스킬", description: "기능 묶음", countKey: "skills" },
+      { id: "plugins", icon: "database", label: "플러그인", description: "법령·정책·뉴스·DB", countKey: "plugins" },
       { id: "activity", icon: "history", label: "활동 이력", description: "처리 기록", countKey: "activity" },
       { id: "budget", icon: "wallet", label: "비용", description: "예산 사용률", countKey: "budget" },
       { id: "settings", icon: "settings", label: "설정", description: "운영 정책", countKey: "settings" },
@@ -1205,6 +1206,7 @@ function counts() {
     agents: agents.length,
     orgchart: agents.length,
     skills: skillRack.length,
+    plugins: (typeof pluginRegistry !== "undefined" ? pluginRegistry.length : 0),
     routines: routines.filter((item) => item[3] === "enabled").length,
     goals: goals.length,
     activity: activity.length,
@@ -1470,6 +1472,8 @@ function renderWorkbench() {
     activity: activityPage,
     budget: budgetPage,
     settings: settingsPage,
+    plugins: pluginsPage,
+    "case-detail": () => caseDetailPage(currentCase()),
   };
 
   pageContent.className = `page-content view-${activeView}`;
@@ -2903,6 +2907,7 @@ function skillDetailMarkup() {
       statusLabel(skill.risk),
       "selected-case-panel",
     )}
+    ${skillBodyPanel(skill)}
     ${compactPanel(
       "장착 에이전트",
       "이 스킬을 사용하는 에이전트",
@@ -3032,6 +3037,11 @@ function caseContextMarkup() {
   `;
 
   return `
+    <button class="open-detail-button" type="button" data-open-case-detail="${escapeHtml(item.id)}">
+      <span aria-hidden="true">${iconSvg("layout-dashboard")}</span>
+      케이스 상세 페이지 열기
+    </button>
+
     ${collapsiblePanel(
       "case-summary",
       "선택 케이스",
@@ -4230,6 +4240,11 @@ function moveCaseToColumn(caseId, column) {
   activity.unshift([timestamp(), "LocalGuard Orchestrator", "changed status", item.code]);
   selectedCaseId = item.id;
   activeDetailType = "case";
+  // 보드 처리 훅: 승인 대기로 이동 시 산출물 생성 트리거 (04 board-hook)
+  if (column === "pending_approval" && typeof generateDeliverables === "function" && deliverableRegistry[item.id]) {
+    generateDeliverables(item.id);
+    item.audit.push([timestamp(), "보드 훅: 산출물 생성 및 승인 게이트 활성화."]);
+  }
   persistState();
   render();
 }
@@ -4450,6 +4465,8 @@ function render() {
   renderModal();
   renderToast();
   bindSelectionTargets();
+  if (typeof renderDeliverableViewer === "function") renderDeliverableViewer();
+  if (typeof bindModuleActions === "function") bindModuleActions();
 }
 
 function applyHashRoute() {
