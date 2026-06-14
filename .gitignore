@@ -20,3 +20,8 @@ test-results/
 # playwright/test run artifacts
 tests/results/
 **/tests/results/
+
+# 시연영상 산출물 (공개 검색노출 금지 — 대회 공식 채널로만 제출)
+00_제출/시연영상/*.mp4
+00_제출/시연영상/*.webm
+00_제출/시연영상/frames/
