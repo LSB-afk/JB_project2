@@ -4,9 +4,11 @@ import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
 
-const [, , inPath, outPath, scaleArg] = process.argv;
-if (!inPath || !outPath) { console.error("usage: render_mermaid.mjs <in.mmd> <out.png> [scale]"); process.exit(1); }
+const [, , inPath, outPath, scaleArg, lookArg] = process.argv;
+if (!inPath || !outPath) { console.error("usage: render_mermaid.mjs <in.mmd> <out.png> [scale] [look=handDrawn|classic]"); process.exit(1); }
 const scale = Number(scaleArg) || 3;
+const look = lookArg === "classic" ? "classic" : "handDrawn";   // classic = 색상 박스 클린, handDrawn = 손그림풍
+const curve = look === "classic" ? "linear" : "basis";
 const code = fs.readFileSync(inPath, "utf-8");
 
 const html = `<!doctype html><html><head><meta charset="utf-8">
@@ -19,13 +21,13 @@ const html = `<!doctype html><html><head><meta charset="utf-8">
 <script type="module">
   import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
   mermaid.initialize({
-    startOnLoad: false, look: "handDrawn", theme: "base",
+    startOnLoad: false, look: "${look}", theme: "base",
     themeVariables: {
       fontFamily: '"Apple SD Gothic Neo","Noto Sans KR",sans-serif', fontSize: "16px",
       primaryColor: "#eaf1ff", primaryBorderColor: "#3a63c4", primaryTextColor: "#0e1830",
-      lineColor: "#3a63c4", clusterBkg: "#f4f7fe", clusterBorder: "#9fb6e6", tertiaryColor: "#eefaf3",
+      lineColor: "#5a6b8c", clusterBkg: "#f6f8fc", clusterBorder: "#b9c6e0", tertiaryColor: "#eefaf3",
     },
-    flowchart: { curve: "basis", nodeSpacing: 40, rankSpacing: 50, htmlLabels: true },
+    flowchart: { curve: "${curve}", nodeSpacing: 34, rankSpacing: 46, htmlLabels: true },
   });
   const { svg } = await mermaid.render("g", document.querySelector(".mermaid").textContent);
   document.querySelector("#wrap").innerHTML = svg;

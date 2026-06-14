@@ -24,9 +24,9 @@
 
 ## 2. 시스템 구성도 (Architecture)
 
-![전체 시스템 아키텍처](../02_제품/자산/diagrams/system-architecture.png)
+![시스템 구성도 (추상)](../02_제품/자산/diagrams/system-architecture.png)
 
-> 8개 계층: ① 사용자 → ② 운영 콘솔(4-zone) → ③ 케이스 런타임 → ④ 전문 에이전트 메시(14)·스킬(25) → ⑤ **데이터 거버넌스 게이트(차별점)** → ⑥ 모델(온프레/외부) · ⑦ 근거 커넥터(플러그인 6) · ⑧ 기록·통제(Evidence·Approval·Audit). 편집 가능 원본: [`system-architecture.mmd`](../02_제품/자산/diagrams/system-architecture.mmd)
+> **사용자 → 운영 콘솔(4-zone) → 케이스 런타임·오케스트레이터 → 전문 에이전트 14·스킬 25 → 데이터 거버넌스 게이트(★차별점) → 모델**(국내·온프레=원본 PII / 외부 LLM=토큰만). 에이전트는 근거 커넥터(플러그인/MCP 6)를 조회하고, 모든 판단·행동·반출은 **기록·통제**(Evidence·Approval L0–L4·Audit 해시)에 남는다. 전 컴포넌트 전개도는 [부록 E. 상세 시스템 구성도](#e-상세-시스템-구성도-전-컴포넌트) 참조. 편집 원본: [`.mmd`](../02_제품/자산/diagrams/system-architecture.mmd)
 
 - **4-zone UI**: Sidebar(내비) / Topbar(지시·검색) / Workbench(대시보드·케이스·승인·전세·플러그인 등) / Properties(케이스·근거·감사 맥락).
 - **거버넌스 게이트**는 모든 외부 LLM·플러그인 조회의 관문(차별점). 상세: [`04_아키텍처/`](../04_아키텍처/README.md), [`02_제품/element-specs/07-data-governance-pii.md`](../02_제품/element-specs/07-data-governance-pii.md).
@@ -109,6 +109,13 @@ Case(작업 단위)·AgentRun(실행 기록)·Skill(장착 처리능력)·Eviden
 
 ### D. 검증 방법
 `python3 02_제품/scripts/verify_static.py`, `node --check 02_제품/app/app.js`, Playwright E2E 19종, 골든 패스 3종 데모.
+
+### E. 상세 시스템 구성도 (전 컴포넌트)
+§2의 추상 구성도를 전 컴포넌트 수준으로 전개한 도면. 계층별 색 코딩(사용자·UI·서버/런타임·에이전트·스킬·거버넌스·데이터·모델·외부 커넥터)으로, 현재 정적 MVP 범위와 본선 승격 목표(REST API·DB+ORM)를 함께 표기한다.
+
+![상세 시스템 구성도](../02_제품/자산/diagrams/system-architecture-full.png)
+
+> 편집 가능 원본: [`system-architecture-full.mmd`](../02_제품/자산/diagrams/system-architecture-full.png) · 렌더: `node 02_제품/scripts/render_mermaid.mjs <in.mmd> <out.png> 3 classic`
 
 ---
 

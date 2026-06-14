@@ -1,0 +1,111 @@
+flowchart TB
+  subgraph USR["👤 사용자 계층"]
+    direction LR
+    U1["🧑‍💼 RM·기업금융<br/>사후관리"]
+    U2["🛡️ 준법·리스크<br/>담당자"]
+    U3["🏪 소상공인·전세 고객<br/>(수혜자)"]
+  end
+
+  subgraph UI["🖥️ 운영 콘솔 · UI 계층 (Vanilla JS · 정적 MVP)"]
+    direction LR
+    V1["📋 대시보드"]
+    V2["🗂️ 케이스 보드"]
+    V3["✅ 승인 큐"]
+    V4["🏠 전세 보호"]
+    V5["🤖 에이전트 팀"]
+    V6["🧩 스킬"]
+    V7["🔌 플러그인"]
+  end
+
+  subgraph SRV["⚙️ 케이스 런타임 (현재 app.js 상태계약 · 본선 → REST API)"]
+    direction LR
+    R1["🔁 Case Runtime<br/>Case→AgentRun"]
+    R2["🧭 Runtime Adapter<br/>모델 라우팅"]
+    R3["🚦 승인 게이트<br/>L0–L4"]
+  end
+
+  subgraph AG["🧠 멀티에이전트 팀 (14종)"]
+    direction TB
+    ORC["🧩 운영 조율 에이전트<br/>(Orchestrator)"]
+    A1["📡 위험신호<br/>조기감지"]
+    A2["📉 상환위험<br/>분류"]
+    A3["🏦 정책금융<br/>매칭"]
+    A4["🏠 전세 Shield<br/>리드+4"]
+    A5["🚫 이상거래<br/>탐지·차단"]
+    A6["⚖️ 준법 검토"]
+    A7["🧑‍💻 RM 보좌"]
+    ORC --> A1 & A2 & A3 & A4 & A5 & A6 & A7
+  end
+
+  subgraph SK["🧰 스킬 레지스트리 (25종)"]
+    direction LR
+    S1["cashflow-stress"]
+    S2["policy-match"]
+    S3["jeonse-price-ratio"]
+    S4["fraud-shield"]
+    S5["privacy-redaction"]
+    S6["audit-ledger"]
+    S7["…19+ 더"]
+  end
+
+  subgraph GOV["🔐 데이터 거버넌스 게이트  ★최대 차별점 · 모든 외부 호출의 관문"]
+    direction LR
+    G1["①<br/>데이터 등급제"] --> G2["②<br/>토큰화·가명"] --> G3["③<br/>모델 라우팅"] --> G4["④<br/>반출 스캔"]
+  end
+
+  subgraph DB["💾 데이터 계층 (현재 localStorage · 본선 → DB+ORM)"]
+    direction LR
+    D1[("Case<br/>+status+riskScore")]
+    D2[("AgentRun<br/>+evidence+cost")]
+    D3[("Agent / Skill<br/>+systemPrompt")]
+    D4[("Audit Ledger<br/>무결성 해시")]
+  end
+
+  subgraph MD["🤖 모델 계층"]
+    direction LR
+    M1["🏠 국내·온프레 모델<br/>원본 PII 처리"]
+    M2["☁️ 외부 프런티어 LLM<br/>토큰·비식별만"]
+  end
+
+  subgraph EXT["🌐 외부 커넥터 · 플러그인/MCP (6)"]
+    direction LR
+    E1["⚖️ 법령 law.go.kr"]
+    E2["📜 정책·공고"]
+    E3["📰 뉴스"]
+    E4["📊 한국은행 ECOS"]
+    E5["🏛️ 등기"]
+    E6["🏠 HUG·실거래가"]
+  end
+
+  U1 & U2 & U3 ==> UI
+  V1 & V2 & V3 & V4 & V5 & V6 & V7 ==> R1
+  R1 ==> ORC
+  R3 -. "1-click 승인" .-> V3
+  A1 & A2 & A3 & A4 & A5 & A6 & A7 -->|스킬 로드| SK
+  A1 & A2 & A3 & A4 & A5 -->|외부 호출| GOV
+  ORC -->|상태·기록| DB
+  R3 -->|감사| D4
+  GOV -- "원본 PII" --> M1
+  GOV -- "토큰만" --> M2
+  GOV -->|반출 로그| D4
+  A1 & A3 & A4 -. "근거 조회 (MCP)" .-> EXT
+
+  classDef usr fill:#ffe3c2,stroke:#e08a3c,color:#3a2410,font-size:14px;
+  classDef ui fill:#cfe8fb,stroke:#3a7bd6,color:#0e2740,font-size:14px;
+  classDef srv fill:#bff0c6,stroke:#2f9e44,color:#0c2e15,font-size:14px;
+  classDef agent fill:#f1c6f1,stroke:#b13ab1,color:#3a0e3a,font-size:14px;
+  classDef skill fill:#ffc9d6,stroke:#d63a6b,color:#3a0e1c,font-size:13px;
+  classDef gov fill:#ffd9a8,stroke:#e8590c,color:#3a1c00,font-size:14px;
+  classDef data fill:#f5e79a,stroke:#caa800,color:#332a00,font-size:13px;
+  classDef model fill:#dfe3ea,stroke:#7a869a,color:#1c2430,font-size:14px;
+  classDef ext fill:#e6e9ed,stroke:#868e96,color:#212529,font-size:13px;
+
+  class U1,U2,U3 usr;
+  class V1,V2,V3,V4,V5,V6,V7 ui;
+  class R1,R2,R3 srv;
+  class ORC,A1,A2,A3,A4,A5,A6,A7 agent;
+  class S1,S2,S3,S4,S5,S6,S7 skill;
+  class G1,G2,G3,G4 gov;
+  class D1,D2,D3,D4 data;
+  class M1,M2 model;
+  class E1,E2,E3,E4,E5,E6 ext;
