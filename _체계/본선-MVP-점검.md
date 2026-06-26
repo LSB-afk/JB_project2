@@ -34,32 +34,32 @@
 
 ### 1-B. 정적 목업/하드코딩 영역
 
-| 영역 | 내용 |
-|------|------|
-| **에이전트 상태값** | `status: "running"/"idle"` 등 — 실시간 변화 없는 초기값. `startAgentRun` 이후 케이스 연결 에이전트만 간접 반영 |
-| **AgentRun 로그 텍스트** | 2단계 setTimeout 로그는 케이스 유형에 따라 분기하는 고정 문자열, 실 LLM 응답 아님 |
-| **리스크 점수(초기 케이스)** | `riskScore: 88/72/94/67/91` — 전세 진단 외 케이스는 하드코딩 수치 |
-| **비용·토큰 통계** | `monthlyCostTrend`, `tokenUsage` — 모두 하드코딩 시나리오 수치 |
-| **deliverableRegistry** | 전주 카페(JBG-104)에만 실제 산출물 5종 존재, 나머지 케이스는 `createAnalysisResult`의 템플릿 텍스트 |
-| **governanceLog** | 전주 카페 1건에만 구체적 토큰화 Before/After + 라우팅 테이블 존재 |
-| **customers 배열** | 고객 추적 객체 1건(김○○)만 존재 |
-| **플러그인 "테스트 조회"** | 실제 외부 API 호출 없음, 상태 토글만 |
-| **조직도 / 자동화 / 설정** | 정적 렌더, 상태 변화 없음 |
-| **`openCaseDetail`** | `caseDetailPage()` 함수는 구현되어 있고 `data-view-jump="cases"` breadcrumb 있으나, 내비게이션 뷰에서 직접 접근 경로가 약함 (activeView = "case-detail"이 라우터에 없음) |
+| 영역                      | 내용                                                                                                                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **에이전트 상태값**            | `status: "running"/"idle"` 등 — 실시간 변화 없는 초기값. `startAgentRun` 이후 케이스 연결 에이전트만 간접 반영                                                  |
+| **AgentRun 로그 텍스트**     | 2단계 setTimeout 로그는 케이스 유형에 따라 분기하는 고정 문자열, 실 LLM 응답 아님                                                                               |
+| **리스크 점수(초기 케이스)**      | `riskScore: 88/72/94/67/91` — 전세 진단 외 케이스는 하드코딩 수치                                                                                   |
+| **비용·토큰 통계**            | `monthlyCostTrend`, `tokenUsage` — 모두 하드코딩 시나리오 수치                                                                                   |
+| **deliverableRegistry** | 전주 카페(JBG-104)에만 실제 산출물 5종 존재, 나머지 케이스는 `createAnalysisResult`의 템플릿 텍스트                                                              |
+| **governanceLog**       | 전주 카페 1건에만 구체적 토큰화 Before/After + 라우팅 테이블 존재                                                                                         |
+| **customers 배열**        | 고객 추적 객체 1건(김○○)만 존재                                                                                                                 |
+| **플러그인 "테스트 조회"**       | 실제 외부 API 호출 없음, 상태 토글만                                                                                                              |
+| **조직도 / 자동화 / 설정**      | 정적 렌더, 상태 변화 없음                                                                                                                      |
+| **`openCaseDetail`**    | `caseDetailPage()` 함수는 구현되어 있고 `data-view-jump="cases"` breadcrumb 있으나, 내비게이션 뷰에서 직접 접근 경로가 약함 (activeView = "case-detail"이 라우터에 없음) |
 
 ### 1-C. 핵심 함수 동작 판정
 
-| 함수 | 판정 | 근거 |
-|------|------|------|
-| `runAgents` / `startAgentRun` | ✅ 실동작 | Case 상태 전이 + AgentRun 생성 + 2단계 비동기 로그 + analysisResult 생성 + localStorage persist |
-| `approveCase` | ✅ 실동작 | 상태 Approved로 전이, runs 닫음, activity 갱신 |
-| `dispatchCommand` | ✅ 실동작 | 자유 텍스트 → `startAgentRun` 연동, 실행결과 배너 |
-| `openCaseDetail` / `caseDetailPage` | ⚠️ 부분동작 | 함수 자체는 존재·렌더 가능. 단 네비게이션 라우터에 `"case-detail"` 뷰 진입점이 없어 `data-view-jump` 클릭시에만 접근됨 |
-| `computeRiskDecision` | ✅ 실동작 | 유형별 시그널 가중 계산 + approvalLevelMatrix 조회, UI에 분해 카드 렌더 |
-| `auditChainRecords` + `verifyAuditChain` | ✅ 실동작 | FNV-1a 유사 해시 체인, 무결성 검증 + JSON 내보내기 |
-| 거버넌스 패널 (`governancePanelMarkup`) | ✅ 실동작 | PII 토큰화 실행(`tokenizePII`), 4중 방어 패널 렌더 — **단 전주 카페 1케이스만** 상세 데이터 있음 |
-| 전세 진단 폼 (`runJeonseDiagnosis`) | ✅ 실동작 | 수식 계산(전세가율/자산노출/주거비) 전부 실행, riskScore 재계산, 상태 전이 |
-| 새 케이스 등록 (`buildManualCase`) | ✅ 실동작 | 3종 위험유형 분기, 유효성 검사, cases push |
+| 함수                                       | 판정      | 근거                                                                                 |
+| ---------------------------------------- | ------- | ---------------------------------------------------------------------------------- |
+| `runAgents` / `startAgentRun`            | ✅ 실동작   | Case 상태 전이 + AgentRun 생성 + 2단계 비동기 로그 + analysisResult 생성 + localStorage persist   |
+| `approveCase`                            | ✅ 실동작   | 상태 Approved로 전이, runs 닫음, activity 갱신                                              |
+| `dispatchCommand`                        | ✅ 실동작   | 자유 텍스트 → `startAgentRun` 연동, 실행결과 배너                                               |
+| `openCaseDetail` / `caseDetailPage`      | ⚠️ 부분동작 | 함수 자체는 존재·렌더 가능. 단 네비게이션 라우터에 `"case-detail"` 뷰 진입점이 없어 `data-view-jump` 클릭시에만 접근됨 |
+| `computeRiskDecision`                    | ✅ 실동작   | 유형별 시그널 가중 계산 + approvalLevelMatrix 조회, UI에 분해 카드 렌더                               |
+| `auditChainRecords` + `verifyAuditChain` | ✅ 실동작   | FNV-1a 유사 해시 체인, 무결성 검증 + JSON 내보내기                                                |
+| 거버넌스 패널 (`governancePanelMarkup`)        | ✅ 실동작   | PII 토큰화 실행(`tokenizePII`), 4중 방어 패널 렌더 — **단 전주 카페 1케이스만** 상세 데이터 있음               |
+| 전세 진단 폼 (`runJeonseDiagnosis`)           | ✅ 실동작   | 수식 계산(전세가율/자산노출/주거비) 전부 실행, riskScore 재계산, 상태 전이                                   |
+| 새 케이스 등록 (`buildManualCase`)             | ✅ 실동작   | 3종 위험유형 분기, 유효성 검사, cases push                                                     |
 
 ---
 

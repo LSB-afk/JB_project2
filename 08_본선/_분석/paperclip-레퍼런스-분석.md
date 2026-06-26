@@ -1,3 +1,11 @@
+---
+tags:
+  - area/general
+  - status/draft
+date: 2026-06-26
+up: "[[08_본선/_MOC/_system_tools_MOC|system_tools_MOC]]"
+---
+
 > **[대외비]** 6/29 공식 발표 전 비공개. 대회 출처·팀명·서비스명 외부 검색 노출 금지.
 
 # Paperclip 레퍼런스 분석 — JB LocalGuard OS 본선 적용 기준

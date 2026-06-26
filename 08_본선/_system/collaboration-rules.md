@@ -88,7 +88,39 @@ types: feat | fix | docs | refactor | chore | perf | test | ci
 
 ---
 
-## 6. 기록 우선 (Capture-by-default)
+## 6. 맵 파일 자동화 원칙
+
+> **MOC·레지스트리는 손으로 고치지 않는다.** `harness-sync`(또는 개별 스킬)로만 갱신.
+
+### 대상 맵 파일
+
+| 파일 | 갱신 방법 |
+|-----|---------|
+| `_MOC/_01_대회정보_MOC` ~ `_05_제출_MOC`, `_system_tools_MOC` | `canon-moc-sync --apply` |
+| `_MOC/_MOC_HOME` | Claude가 섹션 MOC 링크 추가 시 수동 반영 |
+| `_system/tools/registry-{skills,plugins,mcp,cli,commands}` | `plugin-inventory.mjs` 자동 재생성 |
+| `_system/tools/_tools-index` | 수동 편집 허용 (레지스트리 분기 표만) |
+| `_system/telemetry/_telemetry-log`, `_contribution-stats`, `ai-usage-stats` | `telemetry-aggregator` 자동 갱신 |
+| `_system/agents/_agent-registry` | `telemetry-aggregator` 자동 갱신 |
+
+### 자동(코드) vs 반자동(Claude)
+
+- **자동**: 경로 기반 섹션 라우팅, 위키링크 삽입, frontmatter 필드 보정, 레지스트리 재생성
+- **반자동**: 위키링크 `|설명` 표시 텍스트, MOC 테이블 행 삽입, 루트 허브 `up` 값
+
+### 일괄 실행
+
+```bash
+# 전체 자동 단계 (레지스트리 → 텔레메트리 → MOC → 거버넌스)
+node 08_본선/_system/skills/harness-sync/sync.mjs
+
+# MOC만
+node 08_본선/_system/skills/canon-moc-sync/sync.mjs --apply
+```
+
+---
+
+## 7. 기록 우선 (Capture-by-default)
 
 > "사용자가 몰라도 에이전트는 놓치지 않고 기록한다."
 

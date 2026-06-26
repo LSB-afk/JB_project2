@@ -24,30 +24,36 @@ const SYSTEM_DIR = resolve(__dirname, '..', '..')
 const SKILLS_DIR = resolve(SYSTEM_DIR, 'skills')
 
 // 각 단계별 스크립트 경로
+// 맵 자동화 순서: (a) 레지스트리 재생성 → (b) 텔레메트리 집계 → (c) MOC/frontmatter --apply
 const STEPS = [
   {
     id: 2,
-    name: '텔레메트리 집계',
-    script: resolve(SKILLS_DIR, 'telemetry-aggregator', 'aggregate.mjs'),
-    args: [],
-  },
-  {
-    id: 3,
     name: '플러그인·MCP 레지스트리 재생성',
     script: resolve(SKILLS_DIR, 'harness-sync', 'plugin-inventory.mjs'),
     args: [],
+    // [자동] settings.json → registry-plugins.md / registry-mcp.md 재생성
+  },
+  {
+    id: 3,
+    name: '텔레메트리 집계',
+    script: resolve(SKILLS_DIR, 'telemetry-aggregator', 'aggregate.mjs'),
+    args: [],
+    // [자동] ai-session-intake.csv → _telemetry-log / _contribution-stats / ai-usage-stats 갱신
   },
   {
     id: 4,
-    name: 'MOC/frontmatter 정합성 검증',
+    name: 'MOC/frontmatter 정합성 보정',
     script: resolve(SKILLS_DIR, 'canon-moc-sync', 'sync.mjs'),
-    args: DRY_RUN ? ['--dry-run'] : [],
+    // [자동] --apply: 섹션 MOC 위키링크 추가 + frontmatter 보정
+    // [반자동] 어느 섹션에 넣을지 판단(경로 기반 자동), 설명 문구는 Claude가 작성
+    args: DRY_RUN ? ['--dry-run'] : ['--apply'],
   },
   {
     id: 5,
     name: '거버넌스 스캔 (PII)',
     script: resolve(SKILLS_DIR, 'pii-governance-validator', 'validate.mjs'),
     args: DRY_RUN ? ['--dry-run'] : [],
+    // [자동] 대외비·PII 위반 탐지 (경고만, 블로킹 없음)
   },
 ]
 

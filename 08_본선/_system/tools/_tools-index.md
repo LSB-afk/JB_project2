@@ -28,6 +28,25 @@ aliases:
 
 ---
 
+## 맵 자동화 흐름
+
+> MOC·레지스트리·통계는 손으로 고치지 않는다. `harness-sync` 또는 개별 스킬로만 갱신.
+
+```
+harness-sync/sync.mjs
+  ├─ [2] plugin-inventory.mjs  → registry-plugins.md + registry-mcp.md
+  ├─ [3] telemetry-aggregator  → _telemetry-log / _contribution-stats / ai-usage-stats / _agent-registry
+  ├─ [4] canon-moc-sync --apply
+  │        ├─ 섹션 라우팅: 01_* → _01_대회정보_MOC … 05_* → _05_제출_MOC
+  │        ├─ AUTO-LINKS 마커에 [[경로/파일]] 1행 삽입 (멱등)
+  │        └─ frontmatter tags/date/up 누락 자동 보정
+  └─ [5] pii-governance-validator → 위반 경고 (블로킹 없음)
+```
+
+**Claude 판단(반자동)**: 위키링크 `|설명` 텍스트 · MOC 테이블 행 삽입 · 루트 허브 `up` 값
+
+---
+
 ## Bootstrap
 
 새 팀원 또는 새 기기에서 하네스를 초기화할 때:
