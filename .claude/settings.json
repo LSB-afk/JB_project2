@@ -1,0 +1,36 @@
+{
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "figma@claude-plugins-official": true,
+    "obsidian@obsidian-skills": true,
+    "superpowers@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "codex@openai-codex": true,
+    "code-review@claude-plugins-official": true,
+    "example-skills@anthropic-agent-skills": true,
+    "ponytail@ponytail": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": { "source": "git", "url": "https://github.com/anthropics/claude-plugins-official.git" }
+    },
+    "ui-ux-pro-max-skill": {
+      "source": { "source": "github", "repo": "nextlevelbuilder/ui-ux-pro-max-skill" }
+    },
+    "obsidian-skills": {
+      "source": { "source": "github", "repo": "kepano/obsidian-skills" }
+    },
+    "openai-codex": {
+      "source": { "source": "github", "repo": "openai/codex-plugin-cc" }
+    },
+    "anthropic-agent-skills": {
+      "source": { "source": "git", "url": "https://github.com/anthropics/skills.git" }
+    },
+    "ponytail": {
+      "source": { "source": "git", "url": "https://github.com/DietrichGebert/ponytail.git" }
+    }
+  }
+}

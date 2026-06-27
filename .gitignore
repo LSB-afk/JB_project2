@@ -9,7 +9,9 @@ test-results/
 !.omc/
 !.omc/decisions.md
 .omx/
-.claude/
+# .claude: 공유 settings.json만 추적(팀 plugin 동기화), 나머지(스킬·에이전트·settings.local)는 개인
+.claude/*
+!.claude/settings.json
 
 00_제출/발표자료/render/
 00_제출/발표자료/template.pptx

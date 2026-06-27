@@ -16,6 +16,24 @@ aliases:
 
 ---
 
+## 🔄 프로젝트 동기화 세트 (project scope — 팀 자동 적용)
+
+> **이 repo를 clone하면 아래 12종이 자동 적용됩니다.** SSOT = `.claude/settings.json`(git 추적, `enabledPlugins` + `extraKnownMarketplaces`). 팀원이 일일이 `/plugin install` 안 해도 됨. 적용: clone 후 Claude Code 재시작 → `/reload-plugins`. 인증 필요한 것(figma 등)은 각자 OAuth.
+
+| 분류 | 플러그인 | 마켓플레이스 |
+|------|---------|------------|
+| 디자인(MVP 재설계) | `frontend-design` · `figma` | claude-plugins-official |
+| 디자인 | `ui-ux-pro-max` | `github:nextlevelbuilder/ui-ux-pro-max-skill` |
+| 개발·리뷰·문서 | `superpowers` · `code-simplifier` · `code-review` · `skill-creator` · `context7` | claude-plugins-official |
+| Codex 연동 | `codex` | `github:openai/codex-plugin-cc` |
+| 볼트 운영 | `obsidian` | `github:kepano/obsidian-skills` |
+| 참조·미니멀화 | `example-skills` · `ponytail` | anthropic-agent-skills · ponytail |
+
+> **제외**(개인 전역 ~/.claude 에만 둠, 팀 미동기화): `agent-sdk-dev` · `telegram` · `chrome-devtools-mcp`.
+> ⚠️ 아래 자동생성 표(PLUGIN-REGISTRY)는 **개인 전역 기준**이라 위 프로젝트 세트와 다를 수 있음(`plugin-inventory.mjs`가 ~/.claude 읽음).
+
+---
+
 <!-- PLUGIN-REGISTRY-START -->
 ## 활성 플러그인 (enabledPlugins: true)
 
@@ -56,9 +74,9 @@ aliases:
 
 ---
 
-## 팀원 설치 가이드
+## 팀원 설치 가이드 (fallback — 자동 동기화 안 될 때만)
 
-새 팀원·새 기기에서 플러그인 환경을 복원하는 절차.
+> 기본은 위 **프로젝트 동기화 세트**(clone → 자동). 아래는 자동 적용이 안 되거나 개인 전역에 깔고 싶을 때의 수동 절차.
 
 ### 1단계 — 마켓플레이스 등록
 

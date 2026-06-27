@@ -77,4 +77,13 @@ aliases:
 - 전역 settings에 훅 없음 재확인(하네스 Stop훅 미활성). 외부전송 도구(notebooklm·firecrawl) PII 경고 명시.
 **다음**: ① (사용자) impeccable 수동 설치 `npx impeccable install`→`/impeccable init` ② taste 스킬 MVP 재설계에 활용 ③ 백엔드 phase LightRAG.
 
+### 2026-06-27 15:34 · 디자인/개발 플러그인 project scope 동기화 (S15)
+**한 일**
+- 재설치 없이 **`.claude/settings.json` 직접 편집**: `enabledPlugins` 12종 + `extraKnownMarketplaces` 6종. 마켓 소스는 전역 `~/.claude/plugins/known_marketplaces.json`에서 정확히 복제(특히 `ui-ux-pro-max-skill`=github:nextlevelbuilder/ui-ux-pro-max-skill — 전역 settings엔 없고 캐시에만 있던 것 발견).
+- 동기화 세트: frontend-design·ui-ux-pro-max·figma(디자인) / superpowers·code-simplifier·code-review·skill-creator·context7(개발·리뷰·문서) / codex / obsidian / example-skills·ponytail. **제외**: agent-sdk-dev·telegram·chrome-devtools-mcp.
+- `.gitignore` `!.claude/settings.json` 예외로 추적 가능화(나머지 .claude는 무시 유지). 12종 전부 마켓 해석 ✓ 검증.
+- registry-plugins에 "프로젝트 동기화 세트" 섹션 추가, 수동 가이드는 fallback로 강등.
+**효과**: 팀원은 repo clone → `/reload-plugins`로 동일 플러그인 자동 적용(개별 /plugin install 불필요).
+**다음**: 팀원 검증(clone 후 자동적용 확인) · 인증필요 플러그인(figma 등)은 각자 OAuth.
+
 <!-- 새 세션은 이 줄 아래에 추가 -->
