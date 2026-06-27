@@ -10,27 +10,38 @@
     "skill-creator@claude-plugins-official": true,
     "codex@openai-codex": true,
     "code-review@claude-plugins-official": true,
-    "example-skills@anthropic-agent-skills": true,
-    "ponytail@ponytail": true
+    "example-skills@anthropic-agent-skills": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
-      "source": { "source": "git", "url": "https://github.com/anthropics/claude-plugins-official.git" }
+      "source": {
+        "source": "git",
+        "url": "https://github.com/anthropics/claude-plugins-official.git"
+      }
     },
     "ui-ux-pro-max-skill": {
-      "source": { "source": "github", "repo": "nextlevelbuilder/ui-ux-pro-max-skill" }
+      "source": {
+        "source": "github",
+        "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+      }
     },
     "obsidian-skills": {
-      "source": { "source": "github", "repo": "kepano/obsidian-skills" }
+      "source": {
+        "source": "github",
+        "repo": "kepano/obsidian-skills"
+      }
     },
     "openai-codex": {
-      "source": { "source": "github", "repo": "openai/codex-plugin-cc" }
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
     },
     "anthropic-agent-skills": {
-      "source": { "source": "git", "url": "https://github.com/anthropics/skills.git" }
-    },
-    "ponytail": {
-      "source": { "source": "git", "url": "https://github.com/DietrichGebert/ponytail.git" }
+      "source": {
+        "source": "git",
+        "url": "https://github.com/anthropics/skills.git"
+      }
     }
   }
 }

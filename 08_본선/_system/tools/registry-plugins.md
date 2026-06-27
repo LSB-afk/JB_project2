@@ -18,7 +18,7 @@ aliases:
 
 ## 🔄 프로젝트 동기화 세트 (project scope — 팀 자동 적용)
 
-> **이 repo를 clone하면 아래 12종이 자동 적용됩니다.** SSOT = `.claude/settings.json`(git 추적, `enabledPlugins` + `extraKnownMarketplaces`). 팀원이 일일이 `/plugin install` 안 해도 됨. 적용: clone 후 Claude Code 재시작 → `/reload-plugins`. 인증 필요한 것(figma 등)은 각자 OAuth.
+> **이 repo를 clone하면 아래 11종이 자동 적용됩니다.** SSOT = `.claude/settings.json`(git 추적, `enabledPlugins` + `extraKnownMarketplaces`). 팀원이 일일이 `/plugin install` 안 해도 됨. 적용: clone 후 Claude Code 재시작 → `/reload-plugins`. 인증 필요한 것(figma 등)은 각자 OAuth.
 
 | 분류 | 플러그인 | 마켓플레이스 |
 |------|---------|------------|
@@ -27,9 +27,9 @@ aliases:
 | 개발·리뷰·문서 | `superpowers` · `code-simplifier` · `code-review` · `skill-creator` · `context7` | claude-plugins-official |
 | Codex 연동 | `codex` | `github:openai/codex-plugin-cc` |
 | 볼트 운영 | `obsidian` | `github:kepano/obsidian-skills` |
-| 참조·미니멀화 | `example-skills` · `ponytail` | anthropic-agent-skills · ponytail |
+| 참조 | `example-skills` | anthropic-agent-skills |
 
-> **제외**(개인 전역 ~/.claude 에만 둠, 팀 미동기화): `agent-sdk-dev` · `telegram` · `chrome-devtools-mcp`.
+> **제외**(개인 전역 ~/.claude 에만 둠, 팀 미동기화): `agent-sdk-dev` · `telegram` · `chrome-devtools-mcp` · `ponytail`(프로젝트 스코프에서 제외).
 > ⚠️ 아래 자동생성 표(PLUGIN-REGISTRY)는 **개인 전역 기준**이라 위 프로젝트 세트와 다를 수 있음(`plugin-inventory.mjs`가 ~/.claude 읽음).
 
 ---
