@@ -52,4 +52,10 @@ aliases:
 - **이유**: 수상 이력(특히 KEG 506팀 1등=우리 hagent-os)은 발표 "검증된 실행력" 서사 자산. 단 멤버 PII는 구글폼(팀 직접)·6/29 대외비 게이트 영역이라 분리.
 - **상태**: 초안 기록 완료. 본선 4인 확정 시 `member-01~04` 본인 확인 기입.
 
+### 2026-06-27 · 서드파티 도구 — 검증 게이트 후 선별 설치, 런타임 비커밋·동기화는 레지스트리
+- **선택**: 추천 리스트 설치 요청을 GitHub API 실재·안전 검증 후 선별. 설치=`design-taste-frontend`(taste)·`notebooklm-py`(CLI+스킬). 문서화만=impeccable(대화식)·LightRAG(백엔드 phase)·Firecrawl(API키). awesome-design=URL 404 제외.
+- **이유**: 금융·PII·대외비 → 출처 미검증 코드 무조건 실행 금지. 런타임 산출물(`.agents/`·`.claude/`)은 개인별·gitignore, **팀 동기화는 git-tracked 자산**(`skills-lock.json`·registry·bootstrap STEP 3.5)으로만 — repo에 서드파티 소스 비커밋(라이선스·비대화).
+- **주의**: notebooklm·firecrawl은 데이터 외부전송 → **고객 PII·대외비 투입 금지**(제품 핵심원칙과 합치).
+- **상태**: 설치 2종·문서화 3종 완료. bootstrap·레지스트리·.gitignore 갱신.
+
 <!-- 새 결정은 이 줄 아래에 추가 -->

@@ -164,6 +164,31 @@ else
 fi
 
 # =============================================================================
+# STEP 3.5: 서드파티 에이전트 스킬·툴 (echo만 — 외부 코드 다운로드라 자동 실행 금지)
+# =============================================================================
+head "STEP 3.5 — 서드파티 스킬·툴 (팀 동기화 / 각자 터미널에서 실행)"
+echo ""
+warn "아래는 외부 repo 코드를 전 권한으로 실행합니다. 출처 확인 후 직접 실행하세요."
+warn "런타임 산출물(.agents/ .claude/)은 gitignore — 소스는 커밋 안 됨. 레지스트리=registry-skills.md"
+echo ""
+echo -e "${BOLD}── 락파일 기반 일괄 동기화 (권장) ───────────────────────────${RESET}"
+echo "  npx skills install                 # 루트 skills-lock.json 의 스킬 전부 재현"
+echo ""
+echo -e "${BOLD}── 디자인 (MVP 재설계) ──────────────────────────────────────${RESET}"
+echo "  npx skills add https://github.com/Leonxlnx/taste-skill --skill \"design-taste-frontend\""
+echo "  npx impeccable install && (echo '세션에서 /impeccable init 실행')   # ⚠️ 대화식·프로젝트 훅"
+echo ""
+echo -e "${BOLD}── 리서치 (외부 출처 전용 — 고객 PII/대외비 투입 금지) ──────${RESET}"
+echo "  uv tool install \"notebooklm-py[browser]\"   # ⚠️ 비공식 NotebookLM(구글 외부전송)"
+echo "  notebooklm skill install --scope project"
+echo ""
+echo -e "${BOLD}── 백엔드/데이터 (구현 phase에서) ──────────────────────────${RESET}"
+echo "  uv pip install lightrag-hku                  # 백엔드 RAG 구성요소"
+echo "  npm i -g @mendable/firecrawl-js              # 공개 웹 스크래핑(API 키 필요)"
+echo ""
+info "상세·주의사항 → 08_본선/_system/tools/registry-skills.md · registry-cli.md"
+
+# =============================================================================
 # STEP 4: Codex 연동 안내
 # =============================================================================
 head "STEP 4 — Codex 연동 안내 (자동 실행 없음)"

@@ -20,7 +20,7 @@ aliases:
 
 | 레지스트리 | 파일 | 분류 기준 |
 |-----------|------|----------|
-| 스킬 | [[registry-skills]] | Claude Code 스킬 (보유 + 자체 구축) |
+| 스킬 | [[registry-skills]] | Claude Code 스킬 (보유 + 자체 구축 + 서드파티 설치형) |
 | 플러그인 | [[registry-plugins]] | Obsidian / Claude Code 활성 플러그인 |
 | MCP | [[registry-mcp]] | 세션 MCP 서버 (인증 필요 여부 포함) |
 | CLI / 로컬 | [[registry-cli]] | 로컬 CLI 바이너리 + 프로젝트 스크립트 |

@@ -28,6 +28,11 @@ aliases:
 | `Playwright` | 로컬 CLI | `npm install -g playwright` → `playwright install` | 없음 | 활성 | E2E 테스트 · 브라우저 자동화 | — |
 | `render_mermaid.mjs` | 프로젝트 스크립트 | `02_제품/scripts/render_mermaid.mjs` | 없음 | 활성 | Mermaid 다이어그램 → PNG 렌더링 | node |
 | `record_demo.mjs` | 프로젝트 스크립트 | `02_제품/scripts/record_demo.mjs` | 없음 | 활성 | 시연 시나리오 자동 녹화 (Playwright 기반) | node |
+| `uv` | 로컬 CLI | `curl -LsSf https://astral.sh/uv/install.sh \| sh` or `brew install uv` | 없음 | 활성 | 파이썬 툴/패키지 격리 설치 (notebooklm 등) | — |
+| `npx skills` | 패키지 러너 | `npx skills <add\|install>` (vercel-labs/agent-skills) | 없음 | 활성 | 서드파티 에이전트 스킬 설치·락파일 동기화 | Claude/Codex |
+| `notebooklm` | 로컬 CLI | `uv tool install "notebooklm-py[browser]"` | ⚠️ 비공식·구글 외부전송 | **활성** | NotebookLM grounded 리서치(외부 출처 전용) | Claude/Codex |
+| `firecrawl` | 로컬 CLI(SDK/API) | `npm i -g @mendable/firecrawl-js` (호스티드 API) | **API 키 필요** | 미설치(문서) | 공개 웹 스크래핑(공공데이터, **공개 출처 전용**) | node |
+| `lightrag` (lib) | 파이썬 라이브러리 | `uv pip install lightrag-hku` (**백엔드 단계**) | LLM/임베딩 키 | 미설치(문서) | 백엔드 RAG(공공·내부문서) 구성요소 — 구현 phase | python |
 
 ---
 

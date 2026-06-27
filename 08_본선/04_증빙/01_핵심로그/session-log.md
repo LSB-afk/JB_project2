@@ -68,4 +68,13 @@ aliases:
 
 **다음**: ① 구글폼 6/28(팀) ② 제품 정의 §1 승인 ③ 토큰작업맵 순서대로 — A1 프롬프트검수 → A2 외부 딥리서치 회수 ④ canon-moc-sync에 "수동 표 행 드리프트" 검사 추가 검토.
 
+### 2026-06-27 15:10 · 서드파티 도구 선별 설치 + 팀 동기화 레지스트리 (S14)
+**한 일**
+- 추천 6종 GitHub API 검증(awesome-design **404 제외**). **설치**: taste-skill `design-taste-frontend`(npx skills, skills.sh Safe/Low), `notebooklm` CLI v0.7.2(uv tool)+NotebookLM 스킬(project). **문서화만**: impeccable(대화식·2분 타임아웃→수동), LightRAG(백엔드 phase), Firecrawl(API키).
+- **팀 동기화 자산**: `skills-lock.json`(커밋 → `npx skills install` 재현) + `registry-skills`·`registry-cli` + `bootstrap.sh STEP 3.5` + `.gitignore`(.agents/.impeccable/.gitmodules).
+**발견**
+- impeccable 설치기 비대화 플래그 미동작(2분 타임아웃) → 자동화 부적합, 수동 안내로 전환.
+- 전역 settings에 훅 없음 재확인(하네스 Stop훅 미활성). 외부전송 도구(notebooklm·firecrawl) PII 경고 명시.
+**다음**: ① (사용자) impeccable 수동 설치 `npx impeccable install`→`/impeccable init` ② taste 스킬 MVP 재설계에 활용 ③ 백엔드 phase LightRAG.
+
 <!-- 새 세션은 이 줄 아래에 추가 -->
