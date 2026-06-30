@@ -227,6 +227,25 @@ echo "  # claude mcp add obsidian-mcp"
 echo "  # claude mcp add notion          # 공식 Notion MCP"
 echo ""
 info "상세 목록 → 08_본선/_system/tools/registry-mcp.md"
+echo ""
+warn "플러그인(.claude/settings.json)은 clone 시 project scope로 자동 적용되지만,"
+warn "MCP 서버는 인증 때문에 팀원 각자 위 명령을 직접 실행해야 합니다."
+
+# =============================================================================
+# STEP 5.5: 협업 채널 안내 (Discord · Syncthing — echo만)
+# =============================================================================
+head "STEP 5.5 — 협업 채널 합류 안내 (echo만 — 자동 설정 없음)"
+echo ""
+info "팀 협업·공유·동기화 채널. 상세 → 08_본선/_system/tools/registry-integrations.md"
+echo ""
+echo -e "${BOLD}── Syncthing (볼트 P2P 동기화) ──────────────────────────────${RESET}"
+echo "  # 이 볼트는 Syncthing으로 팀 로컬 동기화됩니다(.stfolder/·.stignore는 gitignore)."
+echo "  # 충돌 주의: 세션 중 외부 변경 가능 → 편집 전 최신 상태 확인 권장."
+echo "  # 폴더 ID·디바이스 공유는 팀에 문의(_(팀 확정)_)."
+echo ""
+echo -e "${BOLD}── Discord (실시간 커뮤니케이션·알림) ───────────────────────${RESET}"
+echo "  # 팀 Discord 서버 초대링크는 팀에 문의(_(팀 확정)_)."
+echo "  # 코드·문서=GitHub / 볼트=Syncthing / 잡담·알림=Discord / 대용량=GDrive / 외부게시=Notion."
 
 # =============================================================================
 # STEP 6: 훅 설정 안내

@@ -1,0 +1,2 @@
+ts,engine,agent,member_slot,domain,task,tokens_in,tokens_out,duration,tools,exact_or_estimate,prompt_ref
+2026-06-29 16:36Z,claude,direct,AI,ops,(자동 기록),3922598,686846,68h43m,"Bash×47, Edit×34, Read×20, Write×11, Agent×10, Skill×2",estimate,—

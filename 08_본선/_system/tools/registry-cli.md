@@ -23,6 +23,7 @@ aliases:
 | `node` | 로컬 CLI | `brew install node` / `nvm install --lts` | 없음 | 활성 | 스크립트 실행 · Playwright · 빌드 | — |
 | `python3` | 로컬 CLI | macOS 내장 or `brew install python` | 없음 | 활성 | 데이터 처리 · 분석 스크립트 | — |
 | `gh` | 로컬 CLI | `brew install gh` → `gh auth login` | GitHub 계정 | 활성 | PR·이슈·Actions · 릴리즈 | — |
+| `codex` | 로컬 CLI(엔진) | `npm i -g @openai/codex` → 로그인 | **ChatGPT 계정(유료)** | 활성 | Codex 엔진 런타임 — 데이터분석·문서·웹·MCP/에이전트 자동화. **망상궤도 공용 계정 Pro 20×(약 $299·30만원/월) 결제(2026-06-27)**, 각자 로그아웃→공용 로그인해 공유(개인 작업환경 유지). 플러그인 연동=[[registry-plugins]] `codex` | Codex |
 | `pandoc` | 로컬 CLI | `brew install pandoc` | 없음 | 활성 | Markdown → DOCX/PDF/HTML 변환 | — |
 | `ffmpeg` | 로컬 CLI | `brew install ffmpeg` | 없음 | 활성 | 시연 영상 인코딩·편집 | — |
 | `Playwright` | 로컬 CLI | `npm install -g playwright` → `playwright install` | 없음 | 활성 | E2E 테스트 · 브라우저 자동화 | — |

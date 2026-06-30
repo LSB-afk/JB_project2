@@ -57,6 +57,13 @@ aliases:
 
 ---
 
+## 자동 생성
+
+생성기: `_system/automation/viz-generator.mjs`, 마지막 생성: 2026-06-29
+재생성: `node 08_본선/_system/automation/viz-generator.mjs` (데이터 변경 시마다)
+
+---
+
 ## 편집 방법
 
 1. Obsidian에서 `.excalidraw` 파일 클릭 → Excalidraw 뷰로 자동 열림

@@ -34,7 +34,7 @@ function main() {
   }
 
   const lines = fs.readFileSync(transcriptPath, "utf8").split("\n").filter(Boolean);
-  let inTok = 0, outTok = 0;
+  let inTok = 0, outTok = 0, cacheRead = 0;
   const tools = {};
   let firstTs = null, lastTs = null;
 
@@ -45,7 +45,11 @@ function main() {
     const msg = ev.message || ev;
     const usage = msg && msg.usage;
     if (usage) {
-      inTok += (usage.input_tokens || 0) + (usage.cache_read_input_tokens || 0) + (usage.cache_creation_input_tokens || 0);
+      // ponytail: cache_read 는 tokens_in 에서 제외 — 매 턴 전체 문맥을 재독하므로
+      // 합산하면 세션당 수억으로 폭증해 통계가 무의미해진다. fresh 입력(새 input + 캐시 생성)만 집계하고,
+      // cache_read 는 별도로 모아 비고에 표기(비용 가중치 0.1x, 참고용).
+      inTok += (usage.input_tokens || 0) + (usage.cache_creation_input_tokens || 0);
+      cacheRead += usage.cache_read_input_tokens || 0;
       outTok += usage.output_tokens || 0;
     }
     const content = (msg && msg.content) || [];
@@ -63,8 +67,10 @@ function main() {
     : "—";
   const dur = firstTs && lastTs ? humanDur(new Date(lastTs) - new Date(firstTs)) : "—";
 
+  const cacheNote = cacheRead ? `(자동 기록 · cache_read ${cacheRead})` : "(자동 기록)";
+
   // 1. _telemetry-log.md 에 append (기존 동작 유지)
-  appendRow(logPath, now, "세션종료", toolStr, `${inTok}/${outTok}`, dur, "(자동 기록)");
+  appendRow(logPath, now, "세션종료", toolStr, `${inTok}/${outTok}`, dur, cacheNote);
 
   // 2. ai-session-intake.csv 에 1행 append (신규)
   appendIntake(intakePath, {

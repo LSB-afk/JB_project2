@@ -331,7 +331,42 @@ function main() {
     process.stdout.write(`[3/4] ✓ MOC 누락 링크: 없음\n`);
   }
 
-  // ── 4. APPLY 모드 실행 ─────────────────────────────────────────────────
+  // ── 4. 죽은 링크(dead link) 감지 — 삭제·이름변경된 파일을 가리키는 링크 ──
+  // `08_본선/<path>` 형태의 경로지정 위키링크만 검사한다(고정밀: 외부·bare 링크 오탐 방지).
+  // 파일이 삭제되거나 이름이 바뀌면 이 링크가 깨지므로 "없어져도 반영"의 핵심 검출.
+  // 비-md 타깃(.excalidraw·.canvas·.base)·확장자 명시 링크도 살아있음으로 인정(오탐 방지)
+  const LINK_EXTS = [".md", ".excalidraw", ".canvas", ".base", ""];
+  // Obsidian 은 basename 으로도 링크를 해석하므로, 정확 경로 OR basename 이
+  // 볼트 어디에도 없을 때만 dead(=진짜 삭제·이름변경)로 판정한다.
+  // ⚠️ macOS readdir=NFD vs 링크 텍스트=NFC → 반드시 NFC 정규화 후 비교
+  const existingBases = new Set(allFiles.map(f => path.basename(f, ".md").normalize("NFC")));
+  const deadLinks = []; // { src, target }
+  for (const f of allFiles) {
+    const bn = path.basename(f);
+    // SKILL.md·README.md 는 예시 링크가 들어있어 소스 스캔에서 제외
+    if (f.startsWith(SYSTEM_DIR) && (bn === "SKILL.md" || bn === "README.md")) continue;
+    let text;
+    try { text = fs.readFileSync(f, "utf8"); } catch { continue; }
+    for (const m of text.matchAll(/\[\[(08_본선\/[^\]|#]+?)(?:\|[^\]]*)?\]\]/g)) {
+      const target = m[1].trim().replace(/\\+$/, ""); // 표 이스케이프 파이프(\|) 잔재 백슬래시 제거
+      const base = path.join(VAULT_ROOT, target.replace(/^08_본선\//, ""));
+      const aliveExact = LINK_EXTS.some(ext => fs.existsSync(base + ext));
+      const aliveBase  = existingBases.has(path.basename(target).normalize("NFC"));
+      if (!aliveExact && !aliveBase) deadLinks.push({ src: f, target });
+    }
+  }
+  if (deadLinks.length) {
+    process.stdout.write(`[4/4] ⚠ 죽은 링크(삭제·이름변경 대상): ${deadLinks.length}건\n`);
+    for (const { src, target } of deadLinks) {
+      process.stdout.write(`  ✗ [[${target}]]  ← ${path.relative(process.cwd(), src)}\n`);
+    }
+    process.stdout.write(`       (자동 삭제 안 함 — 링크 갱신 또는 수동 정리 필요)\n`);
+    exitCode = 0; // 경고만, 블로킹 없음
+  } else {
+    process.stdout.write(`[4/4] ✓ 죽은 링크: 없음\n`);
+  }
+
+  // ── 5. APPLY 모드 실행 ─────────────────────────────────────────────────
   if (!APPLY) {
     process.stdout.write(`\n[canon-moc-sync] dry-run 완료 — 수정 없음. --apply 로 실제 적용.\n`);
     process.exit(exitCode);

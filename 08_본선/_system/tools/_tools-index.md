@@ -16,7 +16,7 @@ aliases:
 
 ---
 
-## 5개 레지스트리 분기
+## 6개 레지스트리 분기
 
 | 레지스트리 | 파일 | 분류 기준 |
 |-----------|------|----------|
@@ -25,6 +25,7 @@ aliases:
 | MCP | [[registry-mcp]] | 세션 MCP 서버 (인증 필요 여부 포함) |
 | CLI / 로컬 | [[registry-cli]] | 로컬 CLI 바이너리 + 프로젝트 스크립트 |
 | 커맨드 | [[registry-commands]] | 슬래시 커맨드 (Claude Code 내장) |
+| 협업 통합 | [[registry-integrations]] | 협업·공유·동기화 채널 (Discord·Syncthing·GitHub·GDrive·Notion) |
 
 ---
 

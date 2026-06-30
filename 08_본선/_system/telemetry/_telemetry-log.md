@@ -70,3 +70,11 @@ aliases:
 - [[08_본선/_system/visualizations/tokens-time|토큰/시간 시각화]]
 | 2026-06-26 19:39 | 세션종료 | — | 0/0 | — | — | (자동) | (트랜스크립트 없음) |
 | 2026-06-26 19:39Z | 세션종료 | — | 0/0 | — | (트랜스크립트 없음) | direct | estimate |
+| 2026-06-27 06:10Z | 세션종료 | Agent×10(opus),Read,Write,Edit,Bash | ~30000/~540000 | ~30m | 리서치 도메인 분해 Opus 2패스 + 딥프롬프트 19종 생성 | orchestrator | estimate |
+| 2026-06-27 11:48Z | 세션종료 | codex-companion task×3 | —/— | running | 딥리서치 자동위임 D9·D10·D11(web_search·effort high) | gpt-5.3-codex-spark | estimate |
+| 2026-06-27 11:48Z | 세션종료 | Bash,Skill,Write,Edit | ~20000/~30000 | ~15m | 엔진 배정(Perplexity5/Gemini11/Codex3)+실행 대시보드 | orchestrator | estimate |
+| 2026-06-29 08:23 | 세션종료 | Bash×42, Read×19, Edit×16, Agent×10, Write×7, Skill×2 | 2663663/531834 | 60h30m | — | (자동) | (자동 기록 · cache_read 41856166) |
+| 2026-06-29 08:30 | 세션종료 | Bash×422, Edit×214, Read×170, Write×81, Agent×56, TaskUpdate×47, AskUserQuestion×31, TaskCreate×27, ToolSearch×16, ExitPlanMode×6, SendMessage×5, WebFetch×5, mcp__claude-in-chrome__tabs_context_mcp×3, mcp__claude-in-chrome__computer×3, Skill×2, mcp__claude_ai_Excalidraw__read_me×1, mcp__claude_ai_Excalidraw__create_view×1, mcp__claude_ai_Excalidraw__export_to_excalidraw×1, mcp__claude-in-chrome__navigate×1, mcp__claude-in-chrome__get_page_text×1 | 12283538/4034779 | 401h59m | — | (자동) | (자동 기록 · cache_read 684403868) |
+| 2026-06-29 08:58 | 세션종료 | Bash×42, Edit×24, Read×20, Agent×10, Write×8, Skill×2 | 2855382/584523 | 61h5m | — | (자동) | (자동 기록 · cache_read 49306386) |
+| 2026-06-29 09:03 | 세션종료 | Bash×433, Edit×233, Read×181, Write×87, Agent×56, TaskUpdate×55, TaskCreate×32, AskUserQuestion×31, ToolSearch×16, ExitPlanMode×6, SendMessage×5, WebFetch×5, mcp__claude-in-chrome__tabs_context_mcp×3, mcp__claude-in-chrome__computer×3, Skill×2, mcp__claude_ai_Excalidraw__read_me×1, mcp__claude_ai_Excalidraw__create_view×1, mcp__claude_ai_Excalidraw__export_to_excalidraw×1, mcp__claude-in-chrome__navigate×1, mcp__claude-in-chrome__get_page_text×1 | 13340308/4266565 | 402h32m | — | (자동) | (자동 기록 · cache_read 721104899) |
+| 2026-06-29 09:07 | 세션종료 | Bash×42, Edit×32, Read×20, Agent×10, Write×9, Skill×2 | 3049254/629524 | 61h13m | — | (자동) | (자동 기록 · cache_read 55283529) |

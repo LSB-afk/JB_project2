@@ -14,6 +14,7 @@ aliases:
 > 세션 MCP(Model Context Protocol) 서버 레지스트리.
 > 와이어링은 `claude mcp add <name> <command>` 또는 settings.json으로 등록.
 > 인증이 필요한 서버는 `claude mcp add` 후 별도 OAuth/토큰 플로우 필요 — bootstrap.sh는 echo 안내만 출력하고 자동 인증을 실행하지 않는다.
+> ⚠️ **팀 동기화 범위**: 플러그인은 `.claude/settings.json`(project scope)으로 clone 시 자동 적용되지만, **MCP 서버는 인증 때문에 자동 동기화되지 않는다** — 팀원 각자 위 명령을 실행하고 본인 계정으로 인증해야 한다. 협업 채널(Discord·Syncthing 등)은 [[registry-integrations]] 참조.
 
 ---
 

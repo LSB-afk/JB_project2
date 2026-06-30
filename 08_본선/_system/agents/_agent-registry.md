@@ -72,5 +72,7 @@ Orchestrator (Opus)
 
 | 에이전트 | 세션 수 | 입력 토큰 | 출력 토큰 |
 |---------|--------|---------|---------|
+| orchestrator | 2 | NaN | NaN |
 | direct | 1 | 0 | 0 |
+| gpt-5.3-codex-spark | 1 | NaN | NaN |
 <!-- /AGGREGATOR:AGENT-STATS -->
