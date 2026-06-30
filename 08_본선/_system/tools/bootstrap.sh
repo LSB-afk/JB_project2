@@ -136,7 +136,7 @@ fi
 head "STEP 3 — 자체 구축 스킬 배포"
 # _system/skills/* → 루트 .claude/skills/
 
-SKILL_DIRS=(telemetry-aggregator canon-moc-sync pii-governance-validator)
+SKILL_DIRS=(telemetry-aggregator canon-moc-sync pii-governance-validator harness-sync visualization-cycle meeting-intake)
 
 if $DRY_RUN; then
   info "[DRY-RUN] 다음 스킬을 $CLAUDE_SKILLS/ 로 복사 예정:"
@@ -171,7 +171,13 @@ echo ""
 warn "아래는 외부 repo 코드를 전 권한으로 실행합니다. 출처 확인 후 직접 실행하세요."
 warn "런타임 산출물(.agents/ .claude/)은 gitignore — 소스는 커밋 안 됨. 레지스트리=registry-skills.md"
 echo ""
-echo -e "${BOLD}── 락파일 기반 일괄 동기화 (권장) ───────────────────────────${RESET}"
+echo -e "${BOLD}── 🔒 보안 게이트: 설치 전 스캔 (NVIDIA SkillSpector) ───────${RESET}"
+echo "  uv tool install git+https://github.com/NVIDIA/skillspector.git   # 1회 설치"
+echo "  skillspector scan <스킬경로|레포URL>          # 0~100 위험점수: 51+ = 설치 금지"
+echo "  # ⚠️ 한국어 스킬은 정적모드가 놓칠 수 있음 → --no-llm 끄고 LLM모드(anthropic/claude_cli) 병행"
+echo "  # 새 서드파티 스킬·플러그인은 아래 설치 전에 반드시 스캔. 상세 → 도구-확장-리서치-20260701.md"
+echo ""
+echo -e "${BOLD}── 락파일 기반 일괄 동기화 (스캔 통과 후) ───────────────────${RESET}"
 echo "  npx skills install                 # 루트 skills-lock.json 의 스킬 전부 재현"
 echo ""
 echo -e "${BOLD}── 디자인 (MVP 재설계) ──────────────────────────────────────${RESET}"

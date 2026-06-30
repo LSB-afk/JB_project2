@@ -92,4 +92,45 @@ aliases:
 - **이유**: 사용자 "사이클 다 돌았다, 결과물은 나중에." 추가 회수·총정리본 7레이어 조립·Excalidraw는 결과 공유 시 재개.
 - **상태**: 마감. **재개 트리거** = 추가 결과물 회수(특히 D3e 총정리본). 다음 = 7레이어 조립 + Excalidraw 시각화 + 제품 정의 반영(워터폴 다음).
 
+### 2026-06-30 · 텔레메트리 누적 중복 버그 수정 + aggregator 자동연쇄 (Codex)
+- **선택**: Stop 훅이 매 종료 시 트랜스크립트 전체를 재파싱해 **누적 토큰을 새 행으로 append**하던 구조를 **session_id 키 upsert(세션당 1행)**로 변경. aggregator에 session_id별 최대-tokens_in dedup 추가(레거시 누적 행 방어). intake.csv에 `session_id` 컬럼 추가·기존 4중복행→마지막 스냅샷 1행(legacy-20260630) 정리. 추가로 Stop 훅이 upsert 직후 aggregator를 자동 호출 → **통계 4파일 매 세션 무자각 갱신(수동 실행 0)**.
+- **이유**: 한 세션이 4행으로 쌓여 합산 시 ~10.3M→~41M(4배) 부풀음 = 통계 무의미 + 수동 정리 부담. 사용자 "일일이 남기면 유지보수 힘들다"에 직접 대응.
+- **검증**: 격리 샌드박스 end-to-end — cache_read 제외 정확, 동일 세션 재실행 1행 유지(합산 안 됨), aggregator 자동연쇄 산출 확인. 마이그레이션 후 총 입력 10,365,317(정상).
+- **상태**: 완료. 수동 행(deep-research·codex 등 session_id 빈 행)은 upsert·dedup 모두에서 보존. 미커밋(사람 검토 후).
+
+### 2026-06-30 · 하네스 커버리지·견고성 보강 (Codex→Claude 캡처 + G1·G3·G4·G5)
+- **선택**: ① **Claude→Codex 실행 캡처** — 트랜스크립트 Agent tool_use의 `subagent_type=codex:*` 감지해 `engine=codex` 별도행(`#codex` 키)으로 위임 횟수 기록(실데이터에서 ×4 확인). ② **회귀 자체검증** `test-telemetry.mjs`(upsert·cache_read·codex·수동행·합산). ③ **G1 git기여 자동집계** `git-contribution.mjs` → author×도메인 표를 `_system/team/_contribution-stats.md` GIT-CONTRIB 블록(AI그리드와 공존), aggregator 연쇄. ④ **G3 PII 자동스캔** `pii-scan.mjs` + Stop훅 2번째 command(마스킹 리포트, 항상 exit0). ⑤ **G4 원자적 쓰기** intake.csv·통계 4파일 tmp+rename(+intake .bak 1세대). ⑥ **G5** 완전파생 `ai-usage-stats.md`만 gitignore+untrack(혼재 3파일은 추적 유지).
+- **이유**: 사용자 "클로드에서 코덱스 실행도 잡아라 / 유지보수 부담↓". 교차엔진·사람기여 가시화(메타평가), SSoT 유실방지, PII 비반출 자동방어, git 노이즈 절감.
+- **검증/버그**: Codex 구현 자체보고 불신·직접검증으로 **2버그 포착·수정** — (a) settings.json pii 경로 `$CLAUDE_PROJECT_DIR` 누락(`/08_본선/…` 깨짐), (b) git-contribution이 `08_본선/team/`(스트레이·파일명중복)에 출력 → `_system/team/`로 교정·스트레이 제거. 자체검증 통과, git shortlog 0% 오차.
+- **상태**: 완료, 미커밋. ⚠️ settings.json Stop훅 2개→다음 세션 `/hooks` 재승인 1회. 잔여: G2(커버리지 구멍)·G6(소요 벽시계 왜곡)·G7(viz 정체)·MOC 드리프트(리서치 결과물 frontmatter·교차볼트 링크정책)는 보고만.
+
+### 2026-07-01 · MOC→말단 도달성 복구 (리서치 딥프롬프트 체인)
+- **선택**: `_05_제출_MOC`가 리서치 말단으로 못 타고 가던 단절 복구 — ① MOC가 평문 `D1a~Dplus-b(19)` 대신 **README(프롬프트 인덱스 29개)** + **`_결과/_00-회수현황`(결과 인덱스)** 위키링크. ② `_00-회수현황`에 누락 14개(D16~D19 모델변형 8 + `_종합-*` 6) 링크 보강.
+- **이유**: 사용자 "MOC에서 말단 파일을 타고타고 갈 수 있어야 하는데 못 한다." 평문 번들·결과 인덱스 미연결이 원인.
+- **검증**: HOME에서 위키링크 BFS(이스케이프파이프 `\|`·NFC 처리) → 187노드 도달, **프롬프트 29/29·결과 44/44 전부 도달 ✅**.
+- **상태**: down-체인 완료, 미커밋. 잔여: 결과 말단 frontmatter(`up:`) 누락 46건 → up-네비(브레드크럼) 미작동. 백필은 사람 승인 후 일괄.
+
+### 2026-06-30 · 아이디어 회의 — 제품 방향 팀 합의
+- **선택**: 회의록 2종(원문 gitignore + 정리본 tracked) 기록. **제품 정의 §1 팀 확정**: JB **2계열사**(은행1+비은행 JB우리캐피탈) **RM 에이전트**(여신·여신사후관리·보이스피싱·전세사기), **차별점=확장성**(단일프로젝트→그룹 단계적 확장), 시연=**로컬모델 실동작·조직도 메인UI·JB 웹 디자인 차용**, 14에이전트 리서치 재정합. → 제품-정의 메모리·플레이북·_회의록-INDEX(#10·11·12) 반영.
+- **이유**: S16 준비물 기반으로 팀이 제품 정의·타겟·차별점을 처음 합의(브리핑 회의의 "제품정의 미흡" 해소).
+- **상태**: 반영 완료, 미커밋. ⚠️ 회의 STT 계열사 매출·인원 수치=**미검증, _canon 반영 금지**(레이블만). 잔여: 은행 전북/광주 택1·배포vs로컬·DB범위·로스터 상금분배(대외비 원문) 미정.
+
+### 2026-07-01 · 볼트 태그·부모(up) 전면 정합화 (Codex 검토→Claude판단→Codex수정)
+- **선택**: 볼트 루트=레포 루트 전제로 NFC·절대경로·basename·이스케이프파이프 인지 진단(Codex) → Claude 판단 → 수정(Codex, 멱등 스크립트 `backfill-frontmatter.mjs`). up 누락 46 backfill(_결과 42→`_00-회수현황` 등), 부모 부적합 33 교정(프롬프트→`README`, `_분석/*`→`_03_제품_MOC`), tags 누락 backfill + `area/general`→`area/product`(paperclip), up 표기 basename 통일(중복명만 경로지정), `_03_제품_MOC`↔`INDEX` 양방향 1건, 죽은링크 `08_본선/HOME` → `본선 HOME` 교정. **인덱스=양방향 허브** 규칙(비-md 자식은 인덱스 본문 나열).
+- **이유**: 사용자 "태그·부모자식 전면 검토, 인간 인지적으로 들어맞게". `_viz-index`류 유령 부모 문제.
+- **검증/판단**: Codex 진단의 "up 65% 깨짐"·"유령 부모 6+"은 **이스케이프파이프 미파싱 측정오류**로 판명(실측 깨진 부모 0, 하위 인덱스 6종 이미 하향링크됨) → Claude가 정정, 불필요한 down-link 스팸·area 재태깅 51건 churn **기각**(사용자 "경량"). 최종 실측: up 누락 0·깨진 부모 0·tags 누락 0(생성물 제외)·BFS 프롬프트29·결과44 도달·사이클 0·죽은링크 0·verify_static 통과.
+- **상태**: 완료, 미커밋. ⚠️ rename 0(옵시디언 링크 보호). 예외 1: `_pii-scan-report`(자동생성, frontmatter 면제). `backfill-frontmatter.mjs`는 멱등 재실행 가능.
+
+### 2026-07-01 · 도구셋 확장 — 직접 웹리서치 후 6종 결정
+- **선택**: [[도구-확장-리서치-20260701]] 신설. 추가 확정 — ① **NVIDIA SkillSpector**(에이전트 스킬 보안 스캐너, Apache-2.0, `uv tool install git+…/skillspector`): 서드파티 스킬·플러그인 설치 전 0~100 위험점수 게이트, bootstrap·[[registry-cli]] 등록. ② **humanize-korean(im-not-ai)**(MIT, `epoko77-ai/im-not-ai`): 전역엔 있으나 팀 세트 미등록 → settings.json enabledPlugins로 공식화. ③ **Ollama+한국어 로컬모델**(히어로=EXAONE 3.5 7.8B / 상업백업=Qwen2.5 7B): 시연 차별점 ①로컬모델 실동작. ④ Cytoscape.js(조직도 메인UI, MIT, script태그). ⑤ Hono+tsx(백엔드 실연동). ⑥ 한국어 PII 정규식 모듈.
+- **이유**: 사용자 지시("im-not-ai·엔비디아 스킬 스펙터·네 제안 추가, 문서로 남기고 직접 리서치"). 본선 4대 산출물(로컬모델·조직도·Node백엔드·PII) 갭을 런타임 도구로 메움. SkillSpector는 "공급망 거버넌스" 메타자산(스킬 26.1% 취약·5.2% 악성).
+- **검증/주의**: SkillSpector 설치·점수·17카테고리·**비영어 한계**(한국어 페이로드 정적모드 누락 가능→LLM모드 anthropic/claude_cli 병행)를 공식 README로 직접 확인. EXAONE 비상업 라이선스=데모용 명시·발표 전 재확인. 정식명=SkillSpector("스킬 스펙터"=Skill Spectre 비공식 표기).
+- **상태**: 리서치·문서 완료, 미커밋. 잔여(사람 승인): settings.json enabledPlugins 편집(팀 공유 SSOT)·bootstrap 스캔 게이트 추가·registry-cli 반영(harness-sync).
+
+### 2026-07-01 · 운영 관리 자동화 스킬화 (AI 자가인지·자가전파)
+- **선택**: 이번 세션에 수동 반복한 운영 과정을 스킬로 자동화 — ① [[canon-moc-sync]]에 **[5/5] 도달성·up 사이클 검증** 추가(루트→자식 BFS로 "조상에서 자식으로 타고 들어가기" 자동 검증; 신규 스킬 대신 **기존 확장**). ② 신규 스킬 [[meeting-intake]](회의 STT→원문+회의록+인덱스+메모리+거버넌스 절차). ③ **[[AGENTS]] §4-A 운영 자동화 규약**: 트리거→스킬 매핑으로 AI가 사용자 지시 없이 자가시행(파일생성→canon-moc-sync, 회의STT→meeting-intake, 체크포인트→harness-sync). ④ [[registry-skills]]·[[_tools-index]]·메모리 갱신.
+- **이유**: 사용자 S18 요구 — 과정 자동화·스킬 AI 자가인지·지침 문서 자가전파("팀원은 몰라도 AI는 스스로 알고 시행")·새 파일 부모-자식 연결. canon-moc-sync [5/5]가 즉시 고아 `B1` 검출→연결로 가치 실증.
+- **대안**: 새 vault-coherence 스킬 신설(기각 — canon-moc-sync 확장이 재사용·신뢰성, 기존 원칙과 일관).
+- **상태**: 완료, 미커밋. SKILL.md 2종(meeting-intake 신규, canon-moc-sync 확장) + AGENTS §4-A + 레지스트리·메모리. 검증: canon-moc-sync 5단계 통과·verify_static OK.
+
 <!-- 새 결정은 이 줄 아래에 추가 -->

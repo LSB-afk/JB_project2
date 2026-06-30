@@ -120,6 +120,30 @@ aliases:
 
 **다음**: ① 회의 후속 7건(취지·가치기준·발표내러티브 등) 반영 판단 ② 제품 정의 §1 합의 ③ 구글폼 재확인 ④ 로컬 커밋(푸시 게이트).
 
+### 2026-06-30 · 아이디어 회의 기록 + 제품 정의 팀 합의
+**한 일**
+- 6/30 밤 아이디어 회의 STT → 원문(`04_증빙/04_회의록/_원문/`, gitignore) + 정리본([[회의록-2026-06-30-아이디어회의]]) + [[_회의록-INDEX]] #10·11·12 반영. meeting-intake 스킬 절차 적용.
+- **제품 정의 §1 팀 첫 합의**: JB 2계열사(은행1+JB우리캐피탈) RM 에이전트, 차별점=확장성(단계적 청사진 MVP→전그룹), 시연=로컬모델 실동작·조직도 메인UI·JB 웹 디자인 차용. 14에이전트 리서치 재정합.
+- 반영: [[제품-정의]](인-볼트 컨텍스트)·[[본선-마스터-플레이북]](취지·가치기준·내러티브)·전역 메모리 [[본선-제품정의-확정]] 신규 생성.
+
+**결과물**: 회의록 정리본 1종·원문(레닥션·gitignore)·INDEX 갱신·제품-정의 컨텍스트 갱신·플레이북 반영.
+
+**다음**: INDEX #7(MVP 재설계)·#8(팀 로스터)·#12(상금 대외비)는 🔶팀 확인 후 반영.
+
+### 2026-06-30 · 텔레메트리 누적 중복 버그 수정 + 하네스 견고성 보강 (Codex)
+**한 일**
+- **누적 중복 버그 수정**: Stop 훅이 매 종료마다 트랜스크립트 전체 재파싱 → 세션당 N행 누적 문제. `session_id` 키 upsert(세션당 1행)로 변경, aggregator에 dedup 로직 추가, intake.csv `session_id` 컬럼 추가·레거시 4중복행 정리(~41M→10.4M 정상화). Stop 훅 종료 시 aggregator 자동연쇄 → 통계 4파일 무자각 갱신.
+- **Codex 위임 캡처**: 트랜스크립트의 `subagent_type=codex:*` 감지해 `engine=codex` 별도행 기록(실데이터 ×4 확인).
+- **G1 git기여 자동집계**: `git-contribution.mjs` → `_system/team/_contribution-stats.md` GIT-CONTRIB 블록.
+- **G3 PII 자동스캔**: `pii-scan.mjs` + Stop 훅 2번째 command(항상 exit0, 마스킹 리포트).
+- **G4 원자적 쓰기**: intake.csv·통계파일 tmp+rename(+.bak 1세대).
+- **G5 ai-usage-stats.md**: 완전파생 파일만 gitignore+untrack.
+- 회귀 자체검증 `test-telemetry.mjs`(upsert·cache_read·codex·수동행·합산) 통과.
+
+**결과물**: `session-telemetry.mjs`·`telemetry-aggregator/aggregate.mjs`·`git-contribution.mjs`·`pii-scan.mjs`·`test-telemetry.mjs`·intake.csv·`_contribution-stats.md`·`.gitignore`.
+
+**다음**: G2(커버리지 구멍)·G6(소요 벽시계 왜곡)·G7(viz 정체) 잔여. 다음 세션 `/hooks` Stop 훅 재승인 1회(2개 command로 늘어남).
+
 ### 2026-06-30 · 리서치 딥프롬프트 사이클 (실행 → 마감)
 **한 일**
 - 도메인분해 Opus 2패스 → 딥프롬프트 **27종**(D1a~D19·D+a/b·D3a~f, 형식 A). JB sharp 레이어 D3c·D3d·D3e(총정리본 풀+컴팩트)·D3f(시계열 회사소개).
@@ -136,5 +160,33 @@ aliases:
 - D3e(JB 7레이어 총정리본, **GPT-5.5 xhigh**) Sonnet 위임 회수 → `_결과/D3e-결과-gpt55xhigh.md`(369줄). 이미지=타임라인 차트(수식 아님). D3e·D3f 상호보완(동일 제목·다른 구조, 중복 아님).
 - 로우데이터 축적 점검: 모델·도메인·회차=[[_모델기록]]+intake CSV / 토큰·툴·시간=Stop훅 / 프롬프트 원문=프롬프트-로그. **통계 분석용 raw 준비 완료**.
 - 다음: D3e+D3f+D3a~d 합본 → 7레이어 총정리본 조립 + Excalidraw(재개 시).
+
+### 2026-07-01 · 볼트 태그·부모(up) 전면 정합화
+**한 일**
+- NFC·절대경로·basename·이스케이프파이프 인지 진단(Codex) → Claude 판단 → 수정(Codex, 멱등 스크립트 `backfill-frontmatter.mjs`).
+- up 누락 46건 backfill(`_결과` 42 → `_00-회수현황` 등), 부모 부적합 33건 교정(프롬프트→`README`, `_분석/*`→`_03_제품_MOC`), tags 누락 backfill, `area/general`→`area/product`(paperclip), up 표기 basename 통일(중복명만 경로지정).
+- `_03_제품_MOC`↔`INDEX` 양방향 링크 1건, 죽은링크 `08_본선/HOME`→`본선 HOME` 교정.
+- **Codex 진단 "up 65% 깨짐"·"유령 부모 6+"은 이스케이프파이프 미파싱 측정오류로 판명** → 불필요한 down-link 스팸·area 재태깅 51건 churn 기각(사용자 "경량").
+
+**결과물**: `backfill-frontmatter.mjs`(멱등). 최종: up 누락 0·깨진 부모 0·BFS 프롬프트29·결과44 도달·사이클 0·죽은링크 0.
+
+**다음**: 결과 말단 frontmatter(`up:`) 46건 백필은 사람 승인 후 일괄.
+
+### 2026-07-01 · 운영 자동화 스킬화 (AI 자가인지·자가전파)
+**한 일**
+- **[[canon-moc-sync]] [5/5] 도달성·up 사이클 검증 추가**: 루트→자식 BFS로 고아 자동 검출·연결(신규 스킬 대신 기존 확장). 즉시 고아 `B1` 검출→연결로 가치 실증.
+- **신규 스킬 [[meeting-intake]]**: 회의 STT→원문+회의록+인덱스+메모리+거버넌스 일괄 처리.
+- **[[AGENTS]] §4-A 운영 자동화 규약 신설**: 트리거→스킬 매핑(파일생성→canon-moc-sync, 회의STT→meeting-intake, 체크포인트→harness-sync) — AI가 사용자 지시 없이 자가시행.
+- [[registry-skills]]·[[_tools-index]]·메모리 [[본선-운영-하네스]] 갱신.
+
+**결과물**: `canon-moc-sync/SKILL.md`(확장), `meeting-intake/SKILL.md`(신규), `08_본선/AGENTS.md`(§4-A).
+
+**다음**: 새 파일 생성 시 canon-moc-sync 자동 실행·frontmatter+up 필수 규약 적용.
+
+### 2026-07-01 · 도구셋 확장 리서치 + 문서화
+- 팀 공유 플러그인·스킬 현황 조사(Haiku Explore 위임) → 본선 4대 산출물 갭 식별(로컬모델·조직도·Node백엔드·PII).
+- 직접 웹리서치: NVIDIA **SkillSpector**(WebFetch 공식 README) · **im-not-ai**(WebFetch) · 로컬 한국어 LLM·Cytoscape·한국어 PII(Perplexity ×4).
+- 산출물: [[도구-확장-리서치-20260701]](6종 결정표·설치명령·라이선스·한계), decision-log 1행.
+- 다음: (사람 승인) settings.json enabledPlugins(humanize-korean) · bootstrap SkillSpector 게이트 · registry-cli/plugins 반영(harness-sync) · 시연 EXAONE 7.8B 로컬 셋업.
 
 <!-- 새 세션은 이 줄 아래에 추가 -->
