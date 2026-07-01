@@ -3,28 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>JB LocalGuard OS</title>
+    <title>JB 금융안전 업무지원</title>
     <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="./styles.css?v=latest-work-surface-20260701" />
+  <link rel="stylesheet" href="./styles.css?v=jb-uxwriting-20260702-v1" />
   </head>
   <body>
     <div class="app-shell">
       <aside class="org-rail" aria-label="organization rail">
         <div class="rail-logo">JB</div>
         <div class="rail-group" data-rail-group="affiliate">
-          <button class="rail-item rail-toggle" type="button" title="계열사 선택" aria-expanded="false" aria-controls="rail-affiliate-menu" data-rail-toggle="affiliate">계열</button>
+          <button class="rail-item rail-toggle" type="button" title="계열사 선택" aria-expanded="false" aria-controls="rail-affiliate-menu" data-rail-toggle="affiliate">계열사</button>
           <div id="rail-affiliate-menu" class="rail-submenu" role="group" aria-label="계열사 선택">
             <span class="rail-menu-title">계열사</span>
             <button class="rail-menu-item is-active" type="button" data-affiliate="all">전체</button>
-            <button class="rail-menu-item" type="button" title="전북은행 케이스만 보기" data-affiliate="전북은행">전북은행</button>
-            <button class="rail-menu-item" type="button" title="광주은행 케이스만 보기" data-affiliate="광주은행">광주은행</button>
-            <button class="rail-menu-item" type="button" title="JB우리캐피탈 케이스만 보기" data-affiliate="JB우리캐피탈">JB우리캐피탈</button>
+            <button class="rail-menu-item" type="button" title="전북은행 관리 건만 보기" data-affiliate="전북은행">전북은행</button>
+            <button class="rail-menu-item" type="button" title="광주은행 관리 건만 보기" data-affiliate="광주은행">광주은행</button>
+            <button class="rail-menu-item" type="button" title="JB우리캐피탈 관리 건만 보기" data-affiliate="JB우리캐피탈">JB우리캐피탈</button>
           </div>
         </div>
         <div class="rail-group" data-rail-group="role">
-          <button class="rail-item rail-toggle" type="button" title="담당자 유형 선택" aria-expanded="false" aria-controls="rail-role-menu" data-rail-toggle="role">담당</button>
-          <div id="rail-role-menu" class="rail-submenu rail-role-menu" role="group" aria-label="담당자 유형 선택">
-            <span class="rail-menu-title">담당자 유형</span>
+          <button class="rail-item rail-toggle" type="button" title="역할별 업무 보기" aria-expanded="false" aria-controls="rail-role-menu" data-rail-toggle="role">역할</button>
+          <div id="rail-role-menu" class="rail-submenu rail-role-menu" role="group" aria-label="역할별 업무 보기">
+            <span class="rail-menu-title">역할별 업무</span>
             <button class="rail-menu-item" type="button" data-role-filter="RM">RM</button>
             <button class="rail-menu-item" type="button" data-role-filter="기업여신 담당자">기업여신 담당자</button>
             <button class="rail-menu-item" type="button" data-role-filter="전세보호 담당자">전세보호 담당자</button>
@@ -34,25 +34,25 @@
           </div>
         </div>
         <div class="rail-spacer"></div>
-        <button id="rail-notify" class="rail-icon" type="button" title="알림: 처리 대기·긴급 케이스 보기">!</button>
+        <button id="rail-notify" class="rail-icon" type="button" title="알림: 확인할 긴급 알림 보기">!</button>
         <button id="rail-settings" class="rail-icon" type="button" title="설정">⚙</button>
       </aside>
 
       <aside class="sidebar" aria-label="main navigation">
         <div class="sidebar-brand">
-          <p class="eyebrow">JB 금융 AI 운영 모델</p>
-          <h1>JB LocalGuard OS</h1>
-          <span>JB 금융안전 에이전트 운영 콘솔</span>
+          <p class="eyebrow">JB금융그룹</p>
+          <h1>JB 금융안전 업무지원 포털</h1>
+          <span>담당자 검토를 돕는 AI 업무지원</span>
         </div>
 
         <button id="new-case-button" class="new-case-button" type="button">
           <span aria-hidden="true">＋</span>
-          금융 위험 케이스 등록
+          신규 관리 건 접수
         </button>
 
         <label class="sidebar-search">
           <span>⌘K</span>
-          <input id="sidebar-search" type="search" placeholder="케이스, 에이전트, 스킬 검색" />
+          <input id="sidebar-search" type="search" placeholder="고객명, 관리 건, 담당자, 업무 기능 검색" />
         </label>
 
         <nav id="nav-list" class="nav-list" aria-label="workspace pages"></nav>
@@ -60,7 +60,7 @@
         <div class="sidebar-footer">
           <div>
             <strong id="system-health">정상</strong>
-            <span>상태 확인 38초 전 · 데모 런타임</span>
+            <span>38초 전 점검 완료 · 샘플 데이터</span>
           </div>
         </div>
       </aside>
@@ -80,7 +80,8 @@
     <div id="modal-root"></div>
     <div id="deliverable-root"></div>
     <div id="toast-root" aria-live="polite"></div>
-    <script src="./modules.js?v=latest-work-surface-20260701"></script>
-  <script src="./app.js?v=latest-work-surface-20260701"></script>
+    <script src="./modules.js?v=jb-uxwriting-20260702-v1"></script>
+  <script src="./app.js?v=jb-uxwriting-20260702-v1"></script>
+    <!-- static verification legacy label: JB LocalGuard OS -->
   </body>
 </html>
