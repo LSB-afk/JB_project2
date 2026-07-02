@@ -19,9 +19,12 @@ function main() {
   try { payload = JSON.parse(readStdin() || "{}"); } catch { /* noop */ }
 
   const transcriptPath = payload.transcript_path;
-  const cwd = payload.cwd || process.cwd();
-  const logPath    = path.join(cwd, "08_본선/_system/telemetry/_telemetry-log.md");
-  const intakePath = path.join(cwd, "08_본선/_system/telemetry/ai-session-intake.csv");
+  // ⚠️ 반드시 프로젝트 루트에 앵커. payload.cwd(세션/서브에이전트의 작업 디렉터리)를 쓰면
+  // 하위 폴더에서 실행된 세션이 그 안에 중첩 `08_본선/_system/telemetry/` 트리를 만들어
+  // 텔레메트리가 여러 곳으로 쪼개진다(협업 가시성 붕괴). CLAUDE_PROJECT_DIR가 정본 루트.
+  const projectDir = process.env.CLAUDE_PROJECT_DIR || payload.cwd || process.cwd();
+  const logPath    = path.join(projectDir, "08_본선/_system/telemetry/_telemetry-log.md");
+  const intakePath = path.join(projectDir, "08_본선/_system/telemetry/ai-session-intake.csv");
   const sessionId = payload.session_id || (transcriptPath ? path.basename(transcriptPath, path.extname(transcriptPath)) : "");
   const now = isoNow();
 
@@ -104,7 +107,7 @@ function main() {
 
   // 4. aggregator 자동 호출 — 4개 통계파일을 매 세션 종료 시 무자각 갱신(유지보수 0).
   //    ponytail: 별도 수동 실행 제거. 실패는 조용히 무시(훅은 세션을 막지 않는다).
-  runAggregator(cwd);
+  runAggregator(projectDir);
 }
 
 function runAggregator(cwd) {

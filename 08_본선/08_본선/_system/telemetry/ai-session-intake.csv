@@ -1,3 +1,0 @@
-ts,engine,agent,member_slot,domain,task,tokens_in,tokens_out,duration,tools,exact_or_estimate,prompt_ref,session_id
-2026-06-30 17:09Z,claude,direct,AI,ops,(자동 기록),357592,33807,10m,"Bash×7, mcp__perplexity__pplx_smart_query×4, Edit×1, Agent×1, ToolSearch×1, mcp__perplexity__pplx_usage×1",estimate,—,a92df88c-6d89-4878-9ce5-5a6ab95c3c25
-2026-06-30 18:21Z,claude,direct,AI,ops,(자동 기록),1012880,151609,1h31m,"Bash×20, Edit×14, Read×13, Write×2",estimate,—,e5eaf3d8-c1ed-419d-84d5-e59cc8935a65

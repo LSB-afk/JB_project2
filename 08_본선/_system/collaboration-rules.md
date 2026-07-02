@@ -52,12 +52,15 @@ types: feat | fix | docs | refactor | chore | perf | test | ci
 
 | 로그 파일 | 기록 시점 | 기록 형식 |
 |---------|---------|---------|
-| `telemetry/_telemetry-log.md` | 세션종료/체크포인트/수동 | 표 행 추가 |
+| `telemetry/_telemetry-log.md` | 세션종료/체크포인트/수동 | 표 행 추가(Stop 훅 자동) |
 | `04_증빙/01_핵심로그/프롬프트-로그.md` | 세션 중 중요 프롬프트 | H2 섹션 추가 |
 | `04_증빙/decision-log.md` | 의사결정 시점 | H2 섹션 추가 |
 | `04_증빙/session-log.md` | 세션 종료 시 | H2 섹션 추가 |
+| `04_증빙/03_daily/YYYY-MM-DD.md` | 하루 첫 세션 생성 → 이후 append | [[_daily-template]] 복사(조율 보드) |
 
 **기존 행 수정 금지** — 오류 발견 시 다음 행에 정정 행 추가.
+**데일리 노트** = 병렬 세션 조율용(현재상태·열린 핸드오프·대기 결정), session-log(시계열)와 상보. 허브 [[_daily-INDEX]].
+**⚠️ 텔레메트리 경로**: Stop 훅은 `CLAUDE_PROJECT_DIR` 앵커로만 기록 — 하위 폴더 CWD에서 실행돼도 정본 1곳. 중첩 `08_본선/…/08_본선/` 트리가 보이면 상대경로 사고 신호.
 
 ---
 

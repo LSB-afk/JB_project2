@@ -1,2 +1,0 @@
-ts,engine,agent,member_slot,domain,task,tokens_in,tokens_out,duration,tools,exact_or_estimate,prompt_ref,session_id
-2026-06-30 17:26Z,claude,direct,AI,ops,(자동 기록),466043,97514,36m,"Bash×13, Read×10, Edit×9, Write×1",estimate,—,bc863432-0ab2-4a42-95d8-0d46f7c4c8b4

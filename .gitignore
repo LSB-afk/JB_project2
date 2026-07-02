@@ -40,6 +40,8 @@ tests/results/
 # .stversions = Syncthing 버전 트래시(구 스냅샷·.DS_Store·구 _canon 사본). git 유입 시 SSOT 오염 위험.
 .stversions/
 .obsidian/
+# Syncthing 동시편집 충돌본
+*.sync-conflict-*
 
 # 서드파티 에이전트 스킬/툴 런타임 설치물 (개인 머신별 — bootstrap로 각자 설치)
 # (소스가 아니라 외부 repo 설치 산출물. 라이선스·비대화 방지. 레지스트리=08_본선/_system/tools/)
@@ -53,6 +55,11 @@ tests/results/
 08_본선/_system/telemetry/ai-usage-stats.md
 08_본선/_system/telemetry/_pii-scan-report.md
 08_본선/_system/telemetry/ai-session-intake.csv.bak
+# 백스톱: 하위 폴더 CWD에서 실행된 훅/스크립트가 만드는 중첩 `08_본선/…/08_본선/` 트리(상대경로 사고).
+# 근본수정=session-telemetry.mjs가 CLAUDE_PROJECT_DIR 앵커. 이건 재발 방지용 그물.
+08_본선/**/08_본선/
+# 루트에 잘못 떨어지는 데일리 노트(정본 위치=08_본선/04_증빙/03_daily/). 03_daily는 영향 없음.
+/20[0-9][0-9]-[0-9][0-9]-[0-9][0-9].md
 
 # 캡처 스크린샷 비트맵 — 얼굴 사진·Syncthing 장치ID·repo URL(개인정보) + 대용량(paperclip 레퍼런스 42MB).
 # 메타제목·분류 인덱스(_캡처-맵.md)만 추적, 이미지는 Syncthing/로컬 공유. 외부 공개는 사람만 결정.
