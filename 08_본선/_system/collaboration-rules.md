@@ -136,7 +136,9 @@ node 08_본선/_system/skills/canon-moc-sync/sync.mjs --apply
 
 ## 연결
 
+- [[AI-협업-맥락관리-프로토콜|병렬 세션·맥락 관리 프로토콜]]
 - [[_HARNESS-SYSTEM|하네스 시스템]]
 - [[AGENTS|협업 계약 (AGENTS.md)]]
+- [[_daily-INDEX|데일리 조율 보드]]
 - [[08_본선/_system/memory/_memory-index|메모리 인덱스]]
 - [[08_본선/_system/telemetry/_telemetry-log|텔레메트리 로그]]
