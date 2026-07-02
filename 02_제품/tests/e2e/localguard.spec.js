@@ -28,6 +28,9 @@ test("home and dashboard render without console errors", async ({ page }) => {
   await expect(page.getByText("운영 비용 해석")).toBeVisible();
   await expect(page.getByText("지역별 위험도")).toBeVisible();
   await expect(page.getByText("완료된 사용자 가치")).toBeVisible();
+  await expect(page.getByText("서버 첫 화면 업데이트")).toBeVisible();
+  await expect(page.getByText("2026-07-01 최신 반영")).toBeVisible();
+  await expect(page.getByText("신규 제안 14개 Agent와 27개 Skill")).toBeVisible();
   await expect(page.getByText("데이터 출처와 저장 상태")).toBeVisible();
   await expect(page.getByText("샘플·실제·오류 상태")).toBeVisible();
   await expect(page.locator('[data-state="sample"]')).toContainText("Sample");
@@ -185,6 +188,47 @@ test("dashboard columns pack panels without grid row gaps", async ({ page }) => 
   expect(leftFlowGap).toBeLessThanOrEqual(18);
 
   await saveShot(page, "dashboard-packed.png");
+});
+
+test("properties detail panel scrolls expanded case sections", async ({ page }) => {
+  for (const viewport of [
+    { width: 1920, height: 1080 },
+    { width: 450, height: 1044 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/index.html#cases");
+    const auditToggle = page.locator('[data-panel-key="case-audit"] .panel-toggle');
+    if (await auditToggle.count() === 1) {
+      await auditToggle.click();
+    }
+
+    const scrollState = await page.evaluate(() => {
+      const contextPanel = document.querySelector("#context-panel");
+      const summaryPanel = document.querySelector('[data-panel-key="case-summary"]');
+      const auditPanel = document.querySelector('[data-panel-key="case-audit"]');
+      if (!contextPanel || !summaryPanel || !auditPanel) return null;
+      contextPanel.scrollTop = 0;
+      const before = contextPanel.scrollTop;
+      contextPanel.scrollTop = 9999;
+      const after = contextPanel.scrollTop;
+      return {
+        before,
+        after,
+        contextClientHeight: contextPanel.clientHeight,
+        contextScrollHeight: contextPanel.scrollHeight,
+        summaryClientHeight: summaryPanel.clientHeight,
+        summaryScrollHeight: summaryPanel.scrollHeight,
+        auditClientHeight: auditPanel.clientHeight,
+        auditScrollHeight: auditPanel.scrollHeight,
+      };
+    });
+
+    expect(scrollState).not.toBeNull();
+    expect(scrollState.contextScrollHeight).toBeGreaterThan(scrollState.contextClientHeight);
+    expect(scrollState.after).toBeGreaterThan(scrollState.before);
+    expect(scrollState.summaryClientHeight).toBeGreaterThanOrEqual(scrollState.summaryScrollHeight - 1);
+    expect(scrollState.auditClientHeight).toBeGreaterThanOrEqual(scrollState.auditScrollHeight - 1);
+  }
 });
 
 test("scenario flow runs a selected case and reaches approval state", async ({ page }) => {

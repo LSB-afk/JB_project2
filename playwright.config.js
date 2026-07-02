@@ -8,13 +8,13 @@ module.exports = defineConfig({
     timeout: 8_000,
   },
   use: {
-    baseURL: "http://127.0.0.1:8010",
+    baseURL: "http://127.0.0.1:8000",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
   webServer: {
-    command: "python3 -m http.server 8010 --directory 02_제품/app",
-    url: "http://127.0.0.1:8010/index.html",
+    command: "python3 -m http.server 8000 --directory 02_제품/app",
+    url: "http://127.0.0.1:8000/index.html",
     reuseExistingServer: !process.env.CI,
     timeout: 10_000,
   },

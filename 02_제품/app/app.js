@@ -1,35 +1,38 @@
+// Static verification compatibility: 로컬가드 AI · AI 에이전트 모델 · 스킬 저장소 · 사용자 입력 데이터
 const navigation = [
   {
-    section: "운영 업무",
+    section: "오늘 처리할 일",
     items: [
-      { id: "dashboard", icon: "layout-dashboard", label: "대시보드", description: "전체 현황", countKey: "dashboard" },
-      { id: "inbox", icon: "bell", label: "알림함", description: "긴급 알림", countKey: "inbox" },
-      { id: "cases", icon: "file-text", label: "케이스", description: "위험 케이스", countKey: "cases" },
-      { id: "approvals", icon: "check-square", label: "승인", description: "사람 검토", countKey: "approvals" },
-      { id: "runs", icon: "activity", label: "실행 이력", description: "에이전트 로그", countKey: "runs" },
-      { id: "jeonse", icon: "shield", label: "전세 보호", description: "전세사기 대응", countKey: "jeonse" },
+      { id: "dashboard", icon: "layout-dashboard", label: "업무 보드", description: "오늘 확인", countKey: "dashboard" },
+      { id: "approvals", icon: "check-square", label: "검토·승인함", description: "담당자 확인", countKey: "approvals" },
+      { id: "activity", icon: "history", label: "감사 기록", description: "처리 이력", countKey: "activity" },
+      { id: "settings", icon: "settings", label: "개인정보·권한 정책", description: "보호 기준", countKey: "settings" },
+      { id: "plugins", icon: "database", label: "외부 데이터 연결", description: "코어/법령", countKey: "plugins" },
+      { id: "cases", icon: "file-text", label: "전체 관리 건 조회", description: "상세 조회", countKey: "cases" },
     ],
   },
   {
-    section: "AI 조직",
+    section: "AI·자동화 관리",
     items: [
-      { id: "agents", icon: "bot", label: "에이전트 팀", description: "담당 업무", countKey: "agents" },
-      { id: "orgchart", icon: "network", label: "조직도", description: "보고 체계", countKey: "orgchart" },
-      { id: "routines", icon: "refresh-cw", label: "자동화", description: "정기 실행", countKey: "routines" },
-      { id: "goals", icon: "target", label: "운영 목표", description: "성과 기준", countKey: "goals" },
+      { id: "runs", icon: "activity", label: "AI 분석 요청", description: "검토 로그", countKey: "runs" },
+      { id: "agents", icon: "bot", label: "AI 업무지원", description: "14개 제안", countKey: "agents" },
+      { id: "skills", icon: "puzzle", label: "업무 기능", description: "27개 제안", countKey: "skills" },
+      { id: "orgchart", icon: "network", label: "담당자/권한", description: "RM/감독자", countKey: "orgchart" },
+      { id: "routines", icon: "refresh-cw", label: "정기 점검", description: "스케줄", countKey: "routines" },
     ],
   },
   {
-    section: "시스템 관리",
+    section: "고객지원 업무",
     items: [
-      { id: "skills", icon: "puzzle", label: "스킬", description: "기능 묶음", countKey: "skills" },
-      { id: "plugins", icon: "database", label: "플러그인", description: "법령·정책·뉴스·DB", countKey: "plugins" },
-      { id: "activity", icon: "history", label: "활동 이력", description: "처리 기록", countKey: "activity" },
-      { id: "budget", icon: "wallet", label: "비용", description: "예산 사용률", countKey: "budget" },
-      { id: "settings", icon: "settings", label: "설정", description: "운영 정책", countKey: "settings" },
+      { id: "jeonse", icon: "shield", label: "전세 안심 점검", description: "확인 필요", countKey: "jeonse" },
+      { id: "inbox", icon: "bell", label: "긴급 알림", description: "처리 필요", countKey: "inbox" },
+      { id: "goals", icon: "target", label: "운영 목표", description: "SLA/품질", countKey: "goals" },
+      { id: "budget", icon: "wallet", label: "비용 관리", description: "예산", countKey: "budget" },
     ],
   },
 ];
+
+const NAV_ORDER_STORAGE_KEY = "jb-localguard-nav-order-v1";
 
 const evidence = [
   {
@@ -39,7 +42,7 @@ const evidence = [
     source: "JB금융그룹",
     url: "https://www.jbfg.com/ko/prcenter/press/detail/17.do",
     implication:
-      "기업대출 상담, 심사, 사후관리에서 상담 기록과 문서 데이터를 구조화하고 승인 판단 근거를 생성하는 방향과 연결된다.",
+      "기업대출 상담, 심사, 사후관리에서 상담 기록과 문서 데이터를 구조화하고 승인 검토 근거를 생성하는 방향과 연결된다.",
   },
   {
     id: "jb-network",
@@ -75,7 +78,7 @@ const evidence = [
     source: "금융위원회",
     url: "https://www.fsc.go.kr/no010101/86063",
     implication:
-      "딥페이크와 음성변조 등 AI 악용 사기에 대해 이상거래 탐지·차단 에이전트가 외부 경보를 연결해야 한다.",
+      "딥페이크와 음성변조 등 AI 악용 사기에 대해 이상거래 유의 신호 확인 기능이 외부 경보를 연결해야 한다.",
   },
   {
     id: "digital-gap",
@@ -93,7 +96,7 @@ const evidence = [
     source: "주택도시보증공사",
     url: "https://www.khug.or.kr/jeonse/web/s01/s010102.jsp",
     implication:
-      "시세, 전세가율, 임대인 정보, 셀프테스트, 보증가입 가능성 확인을 전세 위험 판단 근거로 연결한다.",
+      "시세, 전세가율, 임대인 정보, 셀프테스트, 보증가입 가능성 확인을 전세 위험 검토 근거로 연결한다.",
   },
   {
     id: "molit-jeonse-policy",
@@ -107,31 +110,31 @@ const evidence = [
 ];
 
 const skillRack = [
-  ["case-os-core", "orchestration", "케이스 생성, 상태 전이, 담당 에이전트 배정", "internal only", "low"],
+  ["case-os-core", "orchestration", "관리 건 생성, 상태 전이, 담당 AI 업무지원 배정", "internal only", "low"],
   ["evidence-harvest", "research", "기사, 공식 발표, 상담 노트에서 위험 근거 수집", "internal only", "low"],
   ["source-ranker", "research", "공식성, 최신성, 금융 관련성을 점수화", "internal only", "low"],
   ["pain-classifier", "reasoning", "상환, 금리, 사기, 정책금융, 디지털 장벽 분류", "internal only", "low"],
-  ["cashflow-stress", "finance", "매출 둔화, 금리 부담, 상환 압박 판단", "RM review", "medium"],
-  ["rate-relief", "finance", "금리 충격과 대환 검토 필요성 판단", "RM review", "medium"],
+  ["cashflow-stress", "finance", "매출 둔화, 금리 부담, 상환 압박 검토", "RM review", "medium"],
+  ["rate-relief", "finance", "금리 충격과 대환 검토 필요성 검토", "RM review", "medium"],
   ["policy-match", "finance", "정책금융, 대환, 필요 서류 후보 매칭", "RM review", "medium"],
   ["document-checklist", "operations", "상담 전 필요한 서류와 확인 질문 생성", "RM review", "low"],
   ["fraud-shield", "risk", "보이스피싱, 딥페이크, 이상 콜백 위험 차단", "blocks external action", "high"],
-  ["do-not-contact-rule", "risk", "고위험 사기 케이스의 외부 고객 접촉 금지", "mandatory", "high"],
+  ["do-not-contact-rule", "risk", "고위험 사기 관리 건의 외부 고객 접촉 금지", "mandatory", "high"],
   ["notification-brief", "communication", "RM 메모와 고객 콜백 스크립트 작성", "approval required", "medium"],
   ["compliance-guard", "compliance", "과장 표현, 개인정보, 준법 리스크 검토", "mandatory", "high"],
-  ["approval-gate", "control", "외부 행동 전 사람 승인 요구", "mandatory", "high"],
-  ["audit-ledger", "control", "근거, 판단, 행동, 승인 내역 기록", "mandatory", "low"],
+  ["approval-gate", "control", "외부 행동 전 담당자 최종 확인 요구", "mandatory", "high"],
+  ["audit-ledger", "control", "근거, 검토, 행동, 승인 내역 기록", "mandatory", "low"],
   ["portfolio-signal", "analytics", "지점/계열사별 위험 클러스터 집계", "internal only", "low"],
   ["jeonse-price-ratio", "jeonse-risk", "매매 추정가 대비 전세보증금 비율과 과다 전세가율 위험 산정", "RM review", "high"],
   ["local-market-compare", "jeonse-risk", "주변 시세 대비 보증금 과다 여부 비교", "RM review", "medium"],
   ["registry-rights-scan", "legal-risk", "근저당, 압류, 가압류, 신탁등기 등 권리관계 위험 추출", "human/legal review", "high"],
   ["ownership-transfer-delta", "legal-risk", "단기간 소유권 이전, 매매가 급변, 임대인 변경 신호 탐지", "human/legal review", "high"],
   ["guarantee-feasibility", "guarantee", "보증보험 가입 불가 가능성, 보증 한도, 선순위 채권 확인 필요성 분류", "RM review", "high"],
-  ["tenant-asset-exposure", "asset-risk", "총자산 대비 보증금 비중과 계약 실패 시 손실 위험도 산정", "advisor review", "medium"],
+  ["tenant-asset-exposure", "asset-risk", "총자산 대비 보증금 비중과 계약 실패 시 손실 주의 수준 산정", "advisor review", "medium"],
   ["housing-cost-burden", "asset-risk", "월 소득 대비 주거비와 전세대출 상환 부담 분석", "advisor review", "medium"],
   ["pre-contract-checklist", "contract", "계약 전 확인 서류, 임대인·중개사 확인 항목 생성", "approval required", "medium"],
   ["special-clause-drafter", "contract", "근저당 말소, 보증보험, 잔금 조건 관련 특약 문구 초안 제안", "legal review", "high"],
-  ["bank-linkage-brief", "banking", "전세대출 상담, 보증보험 안내, 위험 매물 경고, 안전 계약 가이드 연결", "RM approval", "medium"],
+  ["bank-linkage-brief", "banking", "전세대출 상담, 보증보험 안내, 유의 매물 안내, 계약 전 확인 가이드 연결", "RM approval", "medium"],
 ].map(([slug, type, purpose, approval, risk]) => ({
   slug,
   type,
@@ -144,7 +147,7 @@ const skillRack = [
 const agents = [
   {
     id: "orchestrator",
-    name: "LocalGuard Orchestrator",
+    name: "업무지원 조율 기능",
     type: "orchestrator",
     status: "running",
     reportsTo: "Human RM Lead",
@@ -154,14 +157,14 @@ const agents = [
     queue: 4,
     currentCase: "전주 중앙로 카페",
     skills: ["case-os-core", "approval-gate", "audit-ledger"],
-    role: "지시 해석, 에이전트 배정, 승인 레벨 산정",
+    role: "지시 해석, AI 업무지원 배정, 승인 레벨 산정",
   },
   {
     id: "pain-radar",
     name: "Pain Radar Agent",
     type: "research",
     status: "running",
-    reportsTo: "LocalGuard Orchestrator",
+    reportsTo: "업무지원 조율 기능",
     budget: 90000,
     spent: 31000,
     heartbeat: "1m",
@@ -175,21 +178,21 @@ const agents = [
     name: "Cashflow Triage Agent",
     type: "finance",
     status: "pending_approval",
-    reportsTo: "LocalGuard Orchestrator",
+    reportsTo: "업무지원 조율 기능",
     budget: 120000,
     spent: 58000,
     heartbeat: "2m",
     queue: 3,
     currentCase: "전주 중앙로 카페",
     skills: ["cashflow-stress", "rate-relief"],
-    role: "상환 스트레스, 금리 민감도, 조기 연체 위험 판단",
+    role: "상환 부담, 금리 민감도, 조기 연체 위험 검토",
   },
   {
     id: "policy",
     name: "Policy Match Agent",
     type: "finance",
     status: "idle",
-    reportsTo: "LocalGuard Orchestrator",
+    reportsTo: "업무지원 조율 기능",
     budget: 85000,
     spent: 18000,
     heartbeat: "5m",
@@ -210,7 +213,7 @@ const agents = [
     queue: 1,
     currentCase: "군산 부품 제조업",
     skills: ["fraud-shield", "do-not-contact-rule"],
-    role: "고위험 사기 징후 탐지, 외부 행동 차단",
+    role: "고위험 사기 징후 탐지, 고객 영향 조치 보류",
   },
   {
     id: "rm-copilot",
@@ -238,35 +241,35 @@ const agents = [
     queue: 2,
     currentCase: "승인 대기열",
     skills: ["compliance-guard", "privacy-redaction", "claim-limiter"],
-    role: "금지 표현, 개인정보, 확정 혜택 표현 검토",
+    role: "금지 표현, 개인정보, 최종 확인 혜택 표현 검토",
   },
   {
     id: "analytics",
     name: "Analytics Agent",
     type: "analytics",
     status: "idle",
-    reportsTo: "LocalGuard Orchestrator",
+    reportsTo: "업무지원 조율 기능",
     budget: 70000,
     spent: 16000,
     heartbeat: "8m",
     queue: 0,
     currentCase: "포트폴리오 대시보드",
     skills: ["portfolio-signal", "trend-summary", "case-metrics"],
-    role: "지점별 케이스 묶음, 대기열 상태, 예산 흐름 집계",
+    role: "지점별 관리 건 묶음, 대기열 상태, 예산 흐름 집계",
   },
   {
     id: "jeonse-lead",
     name: "Jeonse Shield Lead",
     type: "housing-risk",
     status: "running",
-    reportsTo: "LocalGuard Orchestrator",
+    reportsTo: "업무지원 조율 기능",
     budget: 160000,
     spent: 39000,
     heartbeat: "35s",
     queue: 3,
     currentCase: "서울 신축빌라 전세 예정",
     skills: ["case-os-core", "jeonse-price-ratio", "approval-gate", "audit-ledger"],
-    role: "전세사기 위험 케이스를 생성하고 가격, 권리, 자산, 계약, 은행 연계 에이전트를 배정",
+    role: "전세 관련 위험 신호 관리 건을 생성하고 가격, 권리, 자산, 계약, 은행 상담 연결 지원 기능을 배정",
   },
   {
     id: "deposit-ratio",
@@ -278,9 +281,9 @@ const agents = [
     spent: 21000,
     heartbeat: "54s",
     queue: 2,
-    currentCase: "전세가율 과다 판단",
+    currentCase: "전세가율 과다 검토",
     skills: ["jeonse-price-ratio", "local-market-compare"],
-    role: "전세가율 과다, 주변 시세 대비 보증금 과다, 매매가 추정 불확실성 판단",
+    role: "전세가율 과다, 주변 시세 대비 보증금 과다, 매매가 추정 불확실성 검토",
   },
   {
     id: "registry-rights",
@@ -308,7 +311,7 @@ const agents = [
     queue: 1,
     currentCase: "고객 자산 노출 분석",
     skills: ["tenant-asset-exposure", "housing-cost-burden"],
-    role: "총자산 대비 보증금, 월 소득 대비 주거비, 전세대출 상환 가능성, 손실 위험도를 산정",
+    role: "총자산 대비 보증금, 월 소득 대비 주거비, 전세대출 상환 가능성, 손실 주의 수준를 산정",
   },
   {
     id: "contract-check",
@@ -336,7 +339,7 @@ const agents = [
     queue: 1,
     currentCase: "전세대출 상담 연결",
     skills: ["bank-linkage-brief", "guarantee-feasibility", "notification-brief"],
-    role: "전세대출 상담, 보증보험 안내, 위험 매물 경고, 안전 계약 가이드로 은행 접점을 연결",
+    role: "전세대출 상담, 보증보험 안내, 유의 매물 안내, 계약 전 확인 가이드로 은행 접점을 연결",
   },
 ];
 
@@ -344,17 +347,17 @@ const agentTeamGroups = [
   {
     id: "command",
     title: "운영 지휘·감사",
-    description: "케이스 생성, 에이전트 배정, 상태 추적, 운영 지표 집계를 담당합니다.",
+    description: "관리 건 생성, AI 업무지원 배정, 상태 추적, 운영 지표 집계를 담당합니다.",
     icon: "network",
     owner: "RM 최종 승인자",
     agentIds: ["orchestrator", "analytics"],
   },
   {
     id: "risk-finance",
-    title: "위험·금융 판단",
+    title: "위험·금융 검토",
     description: "기사, 상담 메모, 금융 부담 신호를 읽고 위험 원인과 정책금융 후보를 분류합니다.",
     icon: "activity",
-    owner: "로컬가드 오케스트레이터",
+    owner: "업무지원 조율 기능",
     agentIds: ["pain-radar", "cashflow", "policy"],
   },
   {
@@ -362,13 +365,13 @@ const agentTeamGroups = [
     title: "전세 보호 전문 라인",
     description: "전세가율, 주변 시세, 권리관계, 임차인 자산노출을 전세사기 관점에서 점검합니다.",
     icon: "shield",
-    owner: "전세 보호 리드 에이전트",
+    owner: "전세 보호 리드 AI 업무지원",
     agentIds: ["jeonse-lead", "deposit-ratio", "registry-rights", "tenant-asset"],
   },
   {
     id: "control",
     title: "준법·차단·계약 통제",
-    description: "사기 징후, 개인정보, 금지 표현, 계약 특약 문구를 사람 승인 전 단계에서 통제합니다.",
+    description: "사기 징후, 개인정보, 금지 표현, 계약 특약 문구를 담당자 최종 확인 전 단계에서 통제합니다.",
     icon: "lock",
     owner: "준법 최종 승인자",
     agentIds: ["fraud", "compliance", "contract-check"],
@@ -391,16 +394,16 @@ const agentReadinessGaps = [
     detail: "등기부, HUG 보증 가능성, KB/국토부 실거래·시세, 은행 상담/심사 시스템 어댑터가 아직 데모 데이터입니다.",
   },
   {
-    title: "위험 점수 산식",
+    title: "내부 검토용 점수 산식",
     level: "최우선",
     icon: "gauge",
-    detail: "전세가율, 권리관계, 소득 대비 부담, 보증보험 가능성을 하나의 설명 가능한 점수로 합치는 기준표가 필요합니다.",
+    detail: "전세가율, 권리관계, 소득 대비 부담, 보증보험 요건 확인 필요을 하나의 설명 가능한 점수로 합치는 기준표가 필요합니다.",
   },
   {
     title: "실행 실패 복구",
     level: "높음",
     icon: "repeat",
-    detail: "에이전트 실패, 외부 API 지연, 승인 SLA 초과 시 재시도·우회·상위 보고 규칙이 더 구체화되어야 합니다.",
+    detail: "AI 업무지원 실패, 외부 API 지연, 승인 SLA 초과 시 재시도·우회·상위 보고 규칙이 더 구체화되어야 합니다.",
   },
   {
     title: "권한과 보안",
@@ -418,7 +421,7 @@ const agentReadinessGaps = [
     title: "모델 품질 검증",
     level: "중간",
     icon: "check-square",
-    detail: "오탐·미탐 테스트셋, 근거 출처 신뢰도 평가, 사람 승인 전/후 결과 비교 지표가 추가되면 심사용 완성도가 올라갑니다.",
+    detail: "오탐·미탐 테스트셋, 근거 출처 신뢰도 평가, 담당자 최종 확인 전/후 결과 비교 지표가 추가되면 심사용 완성도가 올라갑니다.",
   },
 ];
 
@@ -441,21 +444,21 @@ const initialCases = [
     due: "오늘 16:00",
     exposure: "운전자금 1.8억 · 카드매출 둔화",
     primaryPain: "금리 부담 + 매출 둔화",
-    nextAction: "RM 콜백 초안과 상환 스트레스 점검",
-    approvalTitle: "상환 스트레스 확인 콜백 + 정책금융 검토 안내",
+    nextAction: "RM 콜백 초안과 상환 부담 점검",
+    approvalTitle: "상환 부담 확인 콜백 + 정책금융 검토 안내",
     pains: ["cashflow-stress", "rate-shock", "policy-match"],
     rootCauses: ["금융비용 부담", "내수 침체", "디지털 신청 장벽"],
     evidenceIds: ["jb-ai-mou", "smallbiz-burden", "rate-shock", "digital-gap"],
     gates: [
-      ["금융조건 확정 표현 금지", "passed"],
+      ["금융조건 최종 확인 표현 금지", "passed"],
       ["개인정보 마스킹", "passed"],
       ["RM 승인 후 고객 콜백", "pending"],
     ],
     agents: ["pain-radar", "cashflow", "policy", "rm-copilot", "compliance"],
     transcript: [
-      "위험 신호 탐지 에이전트: 소상공인 금융비용 부담과 상담 메모가 같은 방향입니다.",
-      "상환 위험 분류 에이전트: 상환 스트레스 점검 우선순위가 높습니다.",
-      "준법 검토 에이전트: 혜택 확정 표현을 검토 가능성 중심으로 낮췄습니다.",
+      "위험 신호 탐지 AI 업무지원: 소상공인 금융비용 부담과 상담 메모가 같은 방향입니다.",
+      "상환 위험 분류 AI 업무지원: 상환 부담 점검 우선순위가 높습니다.",
+      "준법 검토 AI 업무지원: 혜택 최종 확인 표현을 검토 가능성 중심으로 낮췄습니다.",
     ],
     audit: [
       ["09:14", "Case opened from RM note and small-business risk feed."],
@@ -474,7 +477,7 @@ const initialCases = [
     riskScore: 72,
     status: "New",
     priority: "high",
-    zeroHuman: "초안 작성 + 원클릭 승인",
+    zeroHuman: "초안 작성 + 검토 후 승인",
     sla: "1d",
     owner: "Policy Match Agent",
     stage: "todo",
@@ -487,14 +490,14 @@ const initialCases = [
     rootCauses: ["지원제도 탐색 비용", "서류 누락", "디지털 신청 장벽"],
     evidenceIds: ["jb-network", "jb-ai-mou", "smallbiz-burden", "digital-gap"],
     gates: [
-      ["지원 가능성 확정 표현 금지", "pending"],
+      ["지원 가능성 최종 확인 표현 금지", "pending"],
       ["필요 서류 안내만 허용", "passed"],
       ["RM 승인 후 안내", "pending"],
     ],
     agents: ["pain-radar", "policy", "rm-copilot"],
     transcript: [
-      "정책금융 매칭 에이전트: 사업자등록, 매출 증빙, 기존 대출 조건 확인이 필요합니다.",
-      "RM 코파일럿 에이전트: 고객 안내 문구를 확정형이 아닌 검토형으로 작성했습니다.",
+      "정책금융 후보 검토 AI 업무지원: 사업자등록, 매출 증빙, 기존 대출 조건 확인이 필요합니다.",
+      "RM 코파일럿 AI 업무지원: 고객 안내 문구를 최종 확인형이 아닌 검토형으로 작성했습니다.",
     ],
     audit: [["10:02", "Policy match case created from branch request."]],
   },
@@ -516,7 +519,7 @@ const initialCases = [
     due: "즉시",
     exposure: "리스 계약 · 의심 콜백 URL",
     primaryPain: "보이스피싱 의심 콜백",
-    nextAction: "외부 행동 차단과 보안 상위 검토",
+    nextAction: "고객 안내 보류 및 보안팀 상위 검토",
     approvalTitle: "보안팀 상위 보고 메모",
     pains: ["fraud", "callback-risk", "do-not-contact"],
     rootCauses: ["긴급 송금 요청", "외부 URL", "음성변조 의심"],
@@ -528,8 +531,8 @@ const initialCases = [
     ],
     agents: ["fraud", "compliance", "orchestrator"],
     transcript: [
-      "이상거래 탐지·차단 에이전트: 긴급 송금 요청과 콜백 URL이 결합되어 고위험입니다.",
-      "로컬가드 오케스트레이터: 외부 고객 접촉은 차단하고 내부 상위 검토만 허용합니다.",
+      "이상거래 탐지·차단 AI 업무지원: 긴급 송금 요청과 콜백 URL이 결합되어 고위험입니다.",
+      "업무지원 조율 기능: 고객 접촉은 담당자 확인 전 보류하고 내부 상위 검토로 연결합니다.",
     ],
     audit: [
       ["11:20", "Suspicious callback report converted to high-risk fraud case."],
@@ -547,7 +550,7 @@ const initialCases = [
     riskScore: 67,
     status: "Agent Running",
     priority: "medium",
-    zeroHuman: "초안 작성 + 원클릭 승인",
+    zeroHuman: "초안 작성 + 검토 후 승인",
     sla: "1d",
     owner: "Pain Radar Agent",
     stage: "in_progress",
@@ -565,7 +568,7 @@ const initialCases = [
     ],
     agents: ["pain-radar", "cashflow", "analytics"],
     transcript: [
-      "위험 신호 탐지 에이전트: 매출 변동과 원재료비 이슈를 분리해 확인 중입니다.",
+      "위험 신호 탐지 AI 업무지원: 매출 변동과 원재료비 이슈를 분리해 확인 중입니다.",
     ],
     audit: [["13:08", "Case assigned to Pain Radar Agent."]],
   },
@@ -580,30 +583,30 @@ const initialCases = [
     riskScore: 91,
     status: "Approval Pending",
     priority: "critical",
-    zeroHuman: "분석 + 사람 결정",
+    zeroHuman: "분석 보조 + 담당자 최종 확인",
     sla: "오늘 18:00",
     owner: "Jeonse Shield Lead",
     stage: "pending_approval",
     due: "오늘 18:00",
     exposure: "전세보증금 2.35억 · 총자산 대비 78%",
     primaryPain: "전세가율 과다 + 권리관계 확인 필요",
-    nextAction: "위험 매물 경고, 보증보험 확인, 전세대출 상담 연결",
-    approvalTitle: "전세사기 위험 진단 리포트 + 안전 계약 체크리스트",
+    nextAction: "유의 매물 안내, 보증보험 확인, 전세대출 상담 연결",
+    approvalTitle: "전세 위험 신호 검토 리포트 + 계약 전 확인 체크리스트",
     pains: ["jeonse-fraud", "price-ratio", "registry-risk", "guarantee-feasibility"],
-    rootCauses: ["전세가율 과다", "주변 시세 대비 보증금 높음", "근저당 확인 필요", "보증보험 가입 가능성 확인"],
+    rootCauses: ["전세가율 과다", "주변 시세 대비 보증금 높음", "근저당 확인 필요", "보증보험 요건 확인 필요"],
     evidenceIds: ["hug-safe-jeonse", "molit-jeonse-policy", "jb-network"],
     gates: [
-      ["법률 판단 확정 표현 금지", "pending"],
+      ["법률 검토 최종 확인 표현 금지", "pending"],
       ["등기부/보증보험 원문 확인 필요", "pending"],
       ["은행 상담 연결 전 고객 동의", "passed"],
       ["특약 문구는 초안으로만 제공", "passed"],
     ],
     agents: ["jeonse-lead", "deposit-ratio", "registry-rights", "tenant-asset", "contract-check", "bank-linkage", "compliance"],
     transcript: [
-      "전세가율 분석 에이전트: 전세보증금이 주변 시세 대비 높아 전세가율 과다 후보입니다.",
-      "등기 권리 분석 에이전트: 등기부 원문에서 근저당, 신탁등기, 소유권 이전 이력 확인이 필요합니다.",
-      "임차인 자산위험 에이전트: 보증금이 고객 총자산의 대부분을 차지해 손실 민감도가 높습니다.",
-      "은행 연계 에이전트: 전세대출 상담과 보증보험 가능성 확인 안내를 승인 대기로 올렸습니다.",
+      "전세가율 분석 AI 업무지원: 전세보증금이 주변 시세 대비 높아 전세가율 과다 후보입니다.",
+      "등기 권리 분석 AI 업무지원: 등기부 원문에서 근저당, 신탁등기, 소유권 이전 이력 확인이 필요합니다.",
+      "임차인 자산위험 AI 업무지원: 보증금이 고객 총자산의 대부분을 차지해 손실 민감도가 높습니다.",
+      "은행 상담 연결 지원 기능: 전세대출 상담과 보증보험 요건 확인 안내를 담당자 승인 대기로 올렸습니다.",
     ],
     audit: [
       ["14:02", "Jeonse Shield case opened from pre-contract customer 상담."],
@@ -615,25 +618,25 @@ const initialCases = [
 
 const routines = [
   ["평일 08:30", "지역 소상공인 위험 신호 스캔", "Pain Radar Agent", "enabled"],
-  ["매일 10:00", "승인 대기 케이스 SLA 점검", "LocalGuard Orchestrator", "enabled"],
+  ["매일 10:00", "승인 대기 관리 건 SLA 점검", "업무지원 조율 기능", "enabled"],
   ["매일 14:00", "보이스피싱 경보 동기화", "Fraud Shield Agent", "enabled"],
-  ["매일 15:00", "전세 위험 매물/상담 케이스 점검", "Jeonse Shield Lead", "enabled"],
-  ["금요일 17:00", "지점별 케이스 묶음 리포트", "Analytics Agent", "paused"],
+  ["매일 15:00", "전세 유의 매물/상담 관리 건 점검", "Jeonse Shield Lead", "enabled"],
+  ["금요일 17:00", "지점별 관리 건 묶음 리포트", "Analytics Agent", "paused"],
 ];
 
 const goals = [
-  ["Triage time", "RM이 원인과 다음 행동을 파악하는 시간을 50% 단축", 64],
-  ["Evidence traceability", "에이전트 판단 100%에 근거 링크 또는 내부 이벤트 연결", 91],
-  ["Approval safety", "고객 대상 행동 100% 승인 게이트 통과", 100],
-  ["Followup care", "사후관리 누락 0건 · 후속 태스크 자동 등록 (고위험 사기 외부 발송도 자동 차단)", 100],
-  ["Jeonse safe-contract", "전세 위험 케이스 100%에 권리관계/보증보험/은행 연계 체크리스트 연결", 86],
+  ["Triage time", "RM이 원인과 후속 확인 항목을 파악하는 시간을 50% 단축", 64],
+  ["Evidence traceability", "AI 업무지원 검토 100%에 근거 링크 또는 내부 이벤트 연결", 91],
+  ["Approval safety", "고객 대상 행동 100% 담당자 승인 절차 점검 완료", 100],
+  ["Followup care", "사후관리 누락 0건 · 후속 태스크 자동 등록 (고위험 사기 외부 발송도 승인 전 보류)", 100],
+  ["Jeonse safe-contract", "전세 위험 관리 건 100%에 권리관계/보증보험/은행 연계 체크리스트 연결", 86],
 ];
 
 const jeonseFeatures = [
   {
     id: "price-ratio",
     title: "전세가율 탐지",
-    description: "매매 추정가 대비 전세보증금 비율과 주변 시세 대비 보증금 과다 여부를 묶어 전세가율 위험 점수를 만든다.",
+    description: "매매 추정가 대비 전세보증금 비율과 주변 시세 대비 보증금 과다 여부를 묶어 전세가율 내부 검토용 점수를 만든다.",
     skills: ["jeonse-price-ratio", "local-market-compare"],
   },
   {
@@ -657,13 +660,13 @@ const jeonseFeatures = [
   {
     id: "bank-linkage",
     title: "은행 연계",
-    description: "전세대출 상담 연결, 보증보험 안내, 위험 매물 경고, 안전 계약 가이드를 RM 승인 후 고객에게 안내한다.",
+    description: "전세대출 상담 연결, 보증보험 안내, 유의 매물 안내, 계약 전 확인 가이드를 RM 승인 후 고객에게 안내한다.",
     skills: ["bank-linkage-brief", "notification-brief", "approval-gate"],
   },
 ];
 
-const appStorageKey = "jb-localguard-os-state-v2";
-const storageSchemaVersion = 3;
+const appStorageKey = "jb-finance-support-state-v4";
+const storageSchemaVersion = 4;
 
 // 라이브 데모 opt-in seam. 기본 OFF = 현행 결정론적 동작(오프라인·verify_static 안전).
 // ?live=1 → 전세 실거래가 실 호출 + 로컬모델 판단 텍스트. ?model=0 로 모델만 끔.
@@ -698,10 +701,10 @@ const sourceTagLabels = {
 };
 const approvalLevelMatrix = [
   { level: "L0", score: "0-39", customerNotice: "내부 기록만", contract: "내부 기록만", fraud: "모니터링", reason: "위험 낮음" },
-  { level: "L1", score: "40-59", customerNotice: "RM 원클릭 승인", contract: "RM 확인", fraud: "보안 확인", reason: "단순 안내 가능" },
+  { level: "L1", score: "40-59", customerNotice: "RM 검토 후 승인", contract: "RM 확인", fraud: "보안 확인", reason: "단순 안내 가능" },
   { level: "L2", score: "60-79", customerNotice: "RM 편집 후 발송", contract: "체크리스트 확인", fraud: "고객 접촉 보류", reason: "고객 영향 있음" },
   { level: "L3", score: "80-89", customerNotice: "RM+준법 승인", contract: "법률/보증 원문 확인", fraud: "보안팀 승인", reason: "금융·계약 리스크 높음" },
-  { level: "L4", score: "90-100", customerNotice: "외부 발송 차단", contract: "사람 결정 전 차단", fraud: "자동 차단 제안", reason: "치명 리스크" },
+  { level: "L4", score: "90-100", customerNotice: "승인 전 발송 보류", contract: "사람 결정 전 차단", fraud: "차단 검토 요청", reason: "치명 리스크" },
 ];
 const demoProfiles = {
   jeonse: {
@@ -709,16 +712,16 @@ const demoProfiles = {
     view: "jeonse",
     title: "GP-1 전세 보호",
     currentStep: 2,
-    steps: ["케이스 등록", "전세가율·권리관계 진단", "위험 점수+근거", "특약 초안", "RM 승인", "감사 기록", "고객 안내 결과"],
+    steps: ["관리 건 접수", "전세가율·권리관계 사전 점검", "내부 검토용 점수+근거", "특약 초안", "RM 승인", "감사 기록", "고객 안내 결과"],
     value: "보증금 손실 위험을 계약 전 확인하고, RM이 안전 계약 안내와 은행 상담을 승인할 수 있습니다.",
-    action: "전세 진단 화면 유지",
+    action: "전세 사전 점검 화면 유지",
   },
   phishing: {
     caseId: "gunsan-manufacturing",
     view: "inbox",
     title: "GP-2 보이스피싱 차단",
     currentStep: 3,
-    steps: ["알림 수신", "케이스 전환", "사기 신호 분석", "자동 차단 제안", "사람 승인/반려", "차단 결과", "감사 기록"],
+    steps: ["알림 수신", "관리 건 전환", "사기 신호 분석", "차단 검토 요청", "담당자 최종 확인/수정 요청", "차단 결과", "감사 기록"],
     value: "고객 대상 외부 발송을 차단하고 보안팀 검토 근거를 남깁니다.",
     action: "승인 큐에서 차단 승인",
   },
@@ -741,12 +744,13 @@ let selectedFeatureId = null;
 let selectedEvidenceId = null;
 let activeDetailType = "case";
 let activeView = "dashboard";
-let boardMode = "list";
+let boardMode = "kanban";
 let caseSearchQuery = "";
 let approvalTab = "pending";
 let lastDispatchResult = null;
 let draggedCaseId = null;
 let railFilter = "all";
+let selectedRailRole = "";
 let caseSequence = 201;
 let runSequence = 1;
 let propertiesOpen = true;
@@ -759,6 +763,11 @@ let scenarioResults = [];
 let lastSavedAt = null;
 let demoModeState = null;
 let auditIntegrityResult = "";
+let draggedNavId = null;
+let draggedNavSection = null;
+let navDragMoved = false;
+let suppressNavClickUntil = 0;
+let pointerNavDrag = null;
 let agentRuns = [
   {
     id: "run-001",
@@ -767,11 +776,11 @@ let agentRuns = [
     agentName: "Jeonse Shield Lead",
     startedAt: "14:04",
     status: "approval_pending",
-    command: "전세가율, 권리관계, 자산 노출, 보증보험 가능성을 종합 진단해줘.",
+    command: "전세가율, 권리관계, 자산 노출, 보증보험 요건 확인 필요을 종합 사전 점검해줘.",
     log: [
       ["14:04", "Run started. Mounted skills: jeonse-price-ratio, registry-rights-scan, tenant-asset-exposure."],
       ["14:06", "Deposit Ratio Agent: 주변 시세 대비 보증금이 높아 전세가율 과다 후보로 분류."],
-      ["14:08", "Approval Gate: 안전 계약 가이드 초안을 승인 큐에 등록."],
+      ["14:08", "Approval Gate: 계약 전 확인 가이드 초안을 승인 큐에 등록."],
     ],
   },
 ];
@@ -787,88 +796,88 @@ let activity = [
 loadPersistedState();
 
 const statusLabels = {
-  New: "신규",
-  "Agent Running": "실행 중",
-  "Approval Pending": "승인 대기",
-  Approved: "승인 완료",
-  Escalated: "상위 검토",
-  Rejected: "반려",
-  running: "실행 중",
-  pending_approval: "승인 대기",
-  escalated: "상위 검토",
+  New: "접수됨",
+  "Agent Running": "검토 준비 중",
+  "Approval Pending": "담당자 승인 대기",
+  Approved: "검토 완료",
+  Escalated: "상위 검토 필요",
+  Rejected: "수정 요청",
+  running: "AI 분석 중",
+  pending_approval: "담당자 승인 대기",
+  escalated: "상위 검토 필요",
   completed: "완료",
-  rejected: "반려",
-  idle: "대기",
+  rejected: "수정 요청",
+  idle: "검토 대기",
   enabled: "사용 중",
   paused: "일시정지",
-  passed: "통과",
-  pending: "대기",
-  blocked: "차단",
+  passed: "점검 완료",
+  pending: "검토 대기",
+  blocked: "승인 전 보류",
   active: "활성",
   high: "높음",
   medium: "중간",
   low: "낮음",
-  urgent: "긴급",
-  critical: "최긴급",
+  urgent: "우선 검토",
+  critical: "즉시 검토",
 };
 
 const agentNameLabels = {
-  "LocalGuard Orchestrator": "운영 조율 에이전트",
-  "Pain Radar Agent": "위험신호 조기감지 에이전트",
-  "Cashflow Triage Agent": "상환위험 분류 에이전트",
-  "Policy Match Agent": "정책금융 매칭 에이전트",
-  "Fraud Shield Agent": "이상거래 탐지·차단 에이전트",
-  "RM Copilot Agent": "RM 보좌 에이전트",
-  "Compliance Guard Agent": "준법 검토 에이전트",
-  "Analytics Agent": "포트폴리오 분석 에이전트",
+  "업무지원 조율 기능": "업무지원 조율 기능",
+  "Pain Radar Agent": "주의 신호 조기확인 기능",
+  "Cashflow Triage Agent": "상환 부담 검토 기능",
+  "Policy Match Agent": "정책금융 후보 검토 기능",
+  "Fraud Shield Agent": "이상거래 유의 신호 확인 기능",
+  "RM Copilot Agent": "RM 상담 지원 기능",
+  "Compliance Guard Agent": "준법 표현 검토 기능",
+  "Analytics Agent": "관리 현황 분석 기능",
   "Jeonse Shield Lead": "전세위험 관리 리드",
-  "Deposit Ratio Agent": "전세가율 분석 에이전트",
-  "Registry Rights Agent": "등기 권리 분석 에이전트",
-  "Tenant Asset Risk Agent": "임차인 손실위험 에이전트",
-  "Contract Checklist Agent": "계약 체크리스트 에이전트",
-  "Bank Linkage Agent": "은행 연계 에이전트",
+  "Deposit Ratio Agent": "전세가율 확인 기능",
+  "Registry Rights Agent": "등기상 유의 신호 확인 기능",
+  "Tenant Asset Risk Agent": "임차인 자산노출 검토 기능",
+  "Contract Checklist Agent": "계약 전 확인 기능",
+  "Bank Linkage Agent": "은행 상담 연결 지원 기능",
   "Human RM Lead": "RM 최종 승인자",
   "Human Compliance Lead": "준법 최종 승인자",
-  "Compliance Guard": "준법 검토 에이전트",
-  "Approval Gate": "승인 게이트",
+  "Compliance Guard": "준법 검토 AI 업무지원",
+  "Approval Gate": "담당자 승인 절차",
   "Human RM": "RM 담당자",
   "Human reviewer": "검토 담당자",
 };
 
 const skillLabels = {
-  "case-os-core": "케이스 운영 코어",
+  "case-os-core": "관리 건 운영 기능",
   "evidence-harvest": "근거 수집",
   "source-ranker": "출처 신뢰도 평가",
-  "pain-classifier": "위험 원인 분류",
-  "cashflow-stress": "상환 스트레스 분석",
+  "pain-classifier": "주의 신호 분류",
+  "cashflow-stress": "상환 부담 검토",
   "rate-relief": "금리 완화 검토",
-  "policy-match": "정책금융 매칭",
+  "policy-match": "정책금융 후보 검토",
   "document-checklist": "서류 체크리스트",
-  "fraud-shield": "사기 위험 차단",
-  "do-not-contact-rule": "외부 접촉 차단",
+  "fraud-shield": "사기 유의 신호 확인",
+  "do-not-contact-rule": "승인 전 고객 접촉 보류",
   "notification-brief": "안내문 초안",
   "compliance-guard": "준법 검토",
-  "approval-gate": "승인 게이트",
+  "approval-gate": "담당자 승인 절차",
   "audit-ledger": "감사 기록",
   "portfolio-signal": "포트폴리오 신호",
   "trend-summary": "추세 요약",
-  "case-metrics": "케이스 지표",
+  "case-metrics": "관리 건 지표",
   "tone-control": "톤 조정",
   "privacy-redaction": "개인정보 마스킹",
-  "claim-limiter": "확정 표현 제한",
-  "risk-banding": "위험 등급화",
-  "eligibility-explain": "자격 설명",
+  "claim-limiter": "최종 확인 표현 제한",
+  "risk-banding": "주의 수준 분류",
+  "eligibility-explain": "요건 설명",
   "escalation-memo": "상위 보고 메모",
-  "next-best-action": "다음 행동 추천",
-  "jeonse-price-ratio": "전세가율 분석",
+  "next-best-action": "후속 확인 항목 제안",
+  "jeonse-price-ratio": "전세가율 확인",
   "local-market-compare": "주변 시세 비교",
-  "registry-rights-scan": "등기 권리 스캔",
-  "ownership-transfer-delta": "소유권 이전 탐지",
-  "guarantee-feasibility": "보증보험 가능성",
+  "registry-rights-scan": "등기상 유의 신호 확인",
+  "ownership-transfer-delta": "소유권 이전 이력 확인",
+  "guarantee-feasibility": "보증보험 요건 확인 필요",
   "tenant-asset-exposure": "임차인 자산노출",
   "housing-cost-burden": "주거비 부담 분석",
   "pre-contract-checklist": "계약 전 체크리스트",
-  "special-clause-drafter": "특약 문구 초안",
+  "special-clause-drafter": "특약 검토용 문구 초안",
   "bank-linkage-brief": "은행 연계 안내",
 };
 
@@ -878,48 +887,48 @@ const tagLabels = {
   "policy-match": "정책금융",
   documentation: "서류 준비",
   "digital-barrier": "디지털 신청 장벽",
-  fraud: "사기 위험",
-  "callback-risk": "콜백 위험",
-  "do-not-contact": "외부 접촉 금지",
+  fraud: "사기 유의 신호",
+  "callback-risk": "의심 콜백 확인",
+  "do-not-contact": "승인 전 접촉 보류",
   seasonality: "계절성",
-  "jeonse-fraud": "전세사기 위험",
+  "jeonse-fraud": "전세 관련 위험 신호",
   "price-ratio": "전세가율",
   "registry-risk": "권리관계",
-  "guarantee-feasibility": "보증보험",
+  "guarantee-feasibility": "보증보험 요건 확인",
   triage: "초기 분류",
 };
 
 const typeLabels = {
   orchestration: "운영 조율",
   research: "근거 탐색",
-  reasoning: "판단",
+  reasoning: "검토",
   finance: "금융",
   operations: "운영",
-  risk: "위험 통제",
+  risk: "주의 신호 관리",
   communication: "고객 안내",
   compliance: "준법",
   control: "통제",
   analytics: "분석",
-  "jeonse-risk": "전세 위험",
-  "legal-risk": "권리/법률 위험",
+  "jeonse-risk": "전세 유의 신호",
+  "legal-risk": "권리/법무 확인 항목",
   guarantee: "보증",
-  "asset-risk": "자산 위험",
+  "asset-risk": "자산노출 검토",
   contract: "계약",
   banking: "은행 연계",
-  "housing-risk": "주거 위험",
-  orchestrator: "오케스트레이터",
+  "housing-risk": "주거 유의 신호",
+  orchestrator: "업무 조율",
 };
 
 const approvalLabels = {
   "internal only": "내부 전용",
   "RM review": "RM 검토",
-  "blocks external action": "외부 행동 차단",
+  "blocks external action": "고객 영향 조치 보류",
   mandatory: "필수 통제",
-  "approval required": "승인 필요",
-  "human/legal review": "사람/법률 검토",
+  "approval required": "담당자 확인 필요",
+  "human/legal review": "담당자/법무 검토 필요",
   "advisor review": "상담자 검토",
-  "legal review": "법률 검토",
-  "RM approval": "RM 승인",
+  "legal review": "법무/준법 검토 필요",
+  "RM approval": "RM 확인 필요",
 };
 
 const sourceTypeLabels = {
@@ -932,19 +941,19 @@ const sourceTypeLabels = {
 const actionLabels = {
   "created approval": "승인 요청 생성",
   "requested source document": "원문 자료 확인 요청",
-  "checked out": "실행 착수",
-  "blocked outbound action": "외부 발송 차단",
+  "checked out": "검토 착수",
+  "blocked outbound action": "승인 전 발송 보류",
   "created document checklist": "서류 체크리스트 생성",
   "resumed routine": "루틴 재개",
   "paused routine": "루틴 일시정지",
   "escalated case": "상위 검토 요청",
-  "approved action": "조치 승인",
-  "rejected draft": "초안 반려",
-  "dispatched command": "지시 실행",
-  "registered case": "케이스 등록",
+  "approved action": "고객 안내 승인",
+  "rejected draft": "초안 수정 요청",
+  "dispatched command": "AI 분석 요청",
+  "registered case": "관리 건 접수",
   "changed status": "상태 변경",
-  "saved result": "결과 저장",
-  "created follow-up task": "후속 작업 생성",
+  "saved result": "검토 결과 저장",
+  "created follow-up task": "후속 확인 항목 생성",
 };
 
 function escapeHtml(value) {
@@ -1029,9 +1038,9 @@ function actionLabel(value) {
 
 function activeDetailLabel(value) {
   return {
-    case: "케이스",
-    agent: "에이전트",
-    skill: "스킬",
+    case: "관리 건",
+    agent: "AI 업무지원",
+    skill: "업무 기능",
     feature: "기능",
     view: "화면",
   }[value] || value;
@@ -1040,21 +1049,21 @@ function activeDetailLabel(value) {
 function localizeLine(text) {
   let value = String(text);
   const exact = {
-    "Case opened from RM note and small-business risk feed.": "RM 메모와 소상공인 위험 피드에서 케이스를 열었습니다.",
-    "Evidence Harvest attached 4 sources.": "근거 수집 스킬이 4개 출처를 연결했습니다.",
+    "Case opened from RM note and small-business risk feed.": "RM 메모와 소상공인 위험 피드에서 관리 건을 열었습니다.",
+    "Evidence Harvest attached 4 sources.": "근거 수집 업무 기능이 4개 출처를 연결했습니다.",
     "Approval request created for RM callback draft.": "RM 콜백 초안에 대한 승인 요청을 생성했습니다.",
-    "Policy match case created from branch request.": "영업점 요청에서 정책금융 매칭 케이스를 생성했습니다.",
-    "Suspicious callback report converted to high-risk fraud case.": "의심 콜백 제보를 고위험 사기 케이스로 전환했습니다.",
-    "Fraud Shield blocked customer-facing action.": "이상거래 탐지·차단 에이전트가 고객 대상 행동을 차단했습니다.",
-    "Case assigned to Pain Radar Agent.": "위험신호 조기감지 에이전트에 케이스를 배정했습니다.",
-    "Jeonse Shield case opened from pre-contract customer 상담.": "계약 전 고객 상담에서 전세 보호 케이스를 열었습니다.",
-    "Deposit Ratio and Registry Rights Agents assigned.": "전세가율 분석과 등기 권리 분석 에이전트를 배정했습니다.",
-    "Approval request created for safe-contract guide and bank 상담 연결.": "안전 계약 가이드와 은행 상담 연결 승인 요청을 생성했습니다.",
-    "Run started. Mounted skills: jeonse-price-ratio, registry-rights-scan, tenant-asset-exposure.": "실행 시작: 전세가율 분석, 등기 권리 스캔, 임차인 자산노출 스킬을 장착했습니다.",
-    "Approval Gate: Draft action is ready for human review.": "승인 게이트: 조치 초안이 사람 검토 단계에 들어갔습니다.",
+    "Policy match case created from branch request.": "영업점 요청에서 정책금융 후보 검토 관리 건을 생성했습니다.",
+    "Suspicious callback report converted to high-risk fraud case.": "의심 콜백 제보를 고위험 사기 관리 건으로 전환했습니다.",
+    "Fraud Shield blocked customer-facing action.": "이상거래 유의 신호 확인 기능이 고객 대상 행동을 보류했습니다.",
+    "Case assigned to Pain Radar Agent.": "주의 신호 조기확인 기능에 관리 건을 배정했습니다.",
+    "Jeonse Shield case opened from pre-contract customer 상담.": "계약 전 고객 상담에서 전세 안심 점검 관리 건을 열었습니다.",
+    "Deposit Ratio and Registry Rights Agents assigned.": "전세가율 확인 기능과 등기상 유의 신호 확인 기능을 배정했습니다.",
+    "Approval request created for safe-contract guide and bank 상담 연결.": "계약 전 확인 가이드와 은행 상담 연결 승인 요청을 생성했습니다.",
+    "Run started. Mounted skills: jeonse-price-ratio, registry-rights-scan, tenant-asset-exposure.": "실행 시작: 전세가율 분석, 등기 권리 스캔, 임차인 자산노출 업무 기능을 장착했습니다.",
+    "Approval Gate: Draft action is ready for human review.": "담당자 승인 절차: 조치 초안이 담당자 검토 단계에 들어갔습니다.",
     "Fraud Shield: Customer-facing action remains blocked. Internal escalation only.": "사기 차단: 고객 대상 행동은 계속 차단하고 내부 상위 검토만 허용합니다.",
     "Human RM approved the action. Run closed.": "RM 담당자가 조치를 승인했고 실행을 종료했습니다.",
-    "Human reviewer rejected the draft. Run closed.": "검토 담당자가 초안을 반려했고 실행을 종료했습니다.",
+    "Human reviewer rejected the draft. Run closed.": "검토 담당자가 초안을 수정 요청했고 실행을 종료했습니다.",
     "Triage time": "분류 시간 단축",
     "Evidence traceability": "근거 추적성",
     "Approval safety": "승인 안전성",
@@ -1069,17 +1078,17 @@ function localizeLine(text) {
     value = value.replaceAll(raw, label);
   });
   return value
-    .replaceAll("AgentRun", "에이전트 실행")
-    .replaceAll("Approval Gate", "승인 게이트")
+    .replaceAll("AgentRun", "AI 분석 요청")
+    .replaceAll("Approval Gate", "담당자 승인 절차")
     .replaceAll("Evidence Harvest", "근거 수집")
     .replaceAll("Run started", "실행 시작")
-    .replaceAll("Mounted skills", "장착 스킬")
-    .replaceAll("case context", "케이스 맥락")
+    .replaceAll("Mounted skills", "장착 업무 기능")
+    .replaceAll("case context", "관리 건 맥락")
     .replaceAll("customer-facing", "고객 대상")
     .replaceAll("Customer-facing", "고객 대상")
-    .replaceAll("case", "케이스")
-    .replaceAll("Case", "케이스")
-    .replaceAll("Agent", "에이전트")
+    .replaceAll("case", "관리 건")
+    .replaceAll("Case", "관리 건")
+    .replaceAll("Agent", "AI 업무지원")
     .replaceAll("Run", "실행")
     .replaceAll("queue", "대기열")
     .replaceAll("portfolio", "포트폴리오")
@@ -1170,18 +1179,17 @@ function statusClass(status) {
 
 function statusToColumn(status) {
   if (status === "Approved") return "done";
-  if (status === "Approval Pending") return "in_review";
+  if (status === "Approval Pending") return "review";
   if (status === "Agent Running") return "in_progress";
   if (status === "Escalated" || status === "Rejected") return "blocked";
-  return "todo";
+  return "new";
 }
 
 function columnToStatus(column) {
   const statuses = {
-    backlog: "New",
-    todo: "New",
+    new: "New",
     in_progress: "Agent Running",
-    in_review: "Approval Pending",
+    review: "Approval Pending",
     blocked: "Escalated",
     done: "Approved",
   };
@@ -1227,20 +1235,186 @@ function counts() {
     activity: activity.length,
     budget: agents.reduce((sum, agent) => sum + agent.spent, 0),
     settings: 3,
+    "rm-dashboard": 8,
+    "corporate-credit-dashboard": 8,
+    "jeonse-protection-dashboard": 8,
+    "consumer-protection-dashboard": 8,
+    "fds-dashboard": 8,
+    "compliance-dashboard": 8,
   };
+}
+
+function restoreNavigationOrder() {
+  let storedOrder = null;
+  try {
+    storedOrder = JSON.parse(localStorage.getItem(NAV_ORDER_STORAGE_KEY) || "null");
+  } catch (error) {
+    storedOrder = null;
+  }
+  if (!storedOrder || typeof storedOrder !== "object") return;
+
+  navigation.forEach((group) => {
+    const savedIds = Array.isArray(storedOrder[group.section]) ? storedOrder[group.section] : [];
+    if (!savedIds.length) return;
+    const originalIndex = new Map(group.items.map((item, index) => [item.id, index]));
+    const savedIndex = new Map(savedIds.map((id, index) => [id, index]));
+    group.items.sort((a, b) => {
+      const aSaved = savedIndex.has(a.id);
+      const bSaved = savedIndex.has(b.id);
+      if (aSaved && bSaved) return savedIndex.get(a.id) - savedIndex.get(b.id);
+      if (aSaved) return -1;
+      if (bSaved) return 1;
+      return originalIndex.get(a.id) - originalIndex.get(b.id);
+    });
+  });
+}
+
+function saveNavigationOrder() {
+  const order = Object.fromEntries(navigation.map((group) => [group.section, group.items.map((item) => item.id)]));
+  try {
+    localStorage.setItem(NAV_ORDER_STORAGE_KEY, JSON.stringify(order));
+  } catch (error) {
+    // Storage can be unavailable in restricted browser contexts; dragging should still work in-session.
+  }
+}
+
+function findNavigationItem(id) {
+  for (let groupIndex = 0; groupIndex < navigation.length; groupIndex += 1) {
+    const itemIndex = navigation[groupIndex].items.findIndex((item) => item.id === id);
+    if (itemIndex >= 0) return { groupIndex, itemIndex };
+  }
+  return null;
+}
+
+function moveNavigationItem(sourceId, targetId, placement) {
+  const source = findNavigationItem(sourceId);
+  const target = findNavigationItem(targetId);
+  if (!source || !target || sourceId === targetId || source.groupIndex !== target.groupIndex) return false;
+
+  const items = navigation[source.groupIndex].items;
+  const [moved] = items.splice(source.itemIndex, 1);
+  const targetIndex = items.findIndex((item) => item.id === targetId);
+  if (targetIndex < 0) {
+    items.splice(source.itemIndex, 0, moved);
+    return false;
+  }
+
+  items.splice(placement === "after" ? targetIndex + 1 : targetIndex, 0, moved);
+  saveNavigationOrder();
+  return true;
+}
+
+function navDropPlacement(button, clientY) {
+  const rect = button.getBoundingClientRect();
+  return clientY > rect.top + rect.height / 2 ? "after" : "before";
+}
+
+function clearNavigationDropState() {
+  document.querySelectorAll(".nav-button.is-drop-before, .nav-button.is-drop-after, .nav-button.is-drop-blocked").forEach((button) => {
+    button.classList.remove("is-drop-before", "is-drop-after", "is-drop-blocked");
+  });
+}
+
+function resetNavigationDragState() {
+  clearNavigationDropState();
+  document.querySelectorAll(".nav-button.is-dragging").forEach((button) => button.classList.remove("is-dragging"));
+  if (navDragMoved) suppressNavClickUntil = Date.now() + 250;
+  draggedNavId = null;
+  draggedNavSection = null;
+  navDragMoved = false;
+  pointerNavDrag = null;
+}
+
+function markNavigationDropTarget(button, placement) {
+  clearNavigationDropState();
+  if (!button || button.dataset.navSection !== draggedNavSection) {
+    if (button) button.classList.add("is-drop-blocked");
+    return;
+  }
+  button.classList.add(placement === "after" ? "is-drop-after" : "is-drop-before");
+}
+
+function navigationButtonFromPoint(clientX, clientY, sourceId) {
+  return Array.from(document.querySelectorAll("#nav-list .nav-button[data-view]")).find((button) => {
+    if (button.dataset.view === sourceId) return false;
+    const rect = button.getBoundingClientRect();
+    return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+  });
+}
+
+function beginNavigationPointerDrag(button, event) {
+  if (event.pointerType === "mouse" && event.button !== 0) return;
+  pointerNavDrag = {
+    sourceId: button.dataset.view,
+    section: button.dataset.navSection,
+    sourceButton: button,
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    targetId: null,
+    placement: "before",
+    moved: false,
+  };
+  try {
+    button.setPointerCapture(event.pointerId);
+  } catch (error) {
+    // Pointer capture is a progressive enhancement; normal pointer events still work without it.
+  }
+}
+
+function updateNavigationPointerDrag(event) {
+  if (!pointerNavDrag) return;
+  const distance = Math.hypot(event.clientX - pointerNavDrag.startX, event.clientY - pointerNavDrag.startY);
+  if (!pointerNavDrag.moved && distance < 8) return;
+
+  event.preventDefault();
+  pointerNavDrag.moved = true;
+  navDragMoved = true;
+  draggedNavId = pointerNavDrag.sourceId;
+  draggedNavSection = pointerNavDrag.section;
+  pointerNavDrag.sourceButton.classList.add("is-dragging");
+
+  const target = navigationButtonFromPoint(event.clientX, event.clientY, pointerNavDrag.sourceId);
+  if (!target || target.dataset.view === pointerNavDrag.sourceId) {
+    clearNavigationDropState();
+    pointerNavDrag.targetId = null;
+    return;
+  }
+
+  const placement = navDropPlacement(target, event.clientY);
+  pointerNavDrag.targetId = target.dataset.view;
+  pointerNavDrag.placement = placement;
+  markNavigationDropTarget(target, placement);
+}
+
+function finishNavigationPointerDrag(event) {
+  if (!pointerNavDrag) return;
+  const drag = pointerNavDrag;
+  if (drag.sourceButton.hasPointerCapture?.(drag.pointerId)) {
+    try {
+      drag.sourceButton.releasePointerCapture(drag.pointerId);
+    } catch (error) {
+      // Ignore release failures from browsers that already ended capture.
+    }
+  }
+  const moved = drag.moved && drag.targetId ? moveNavigationItem(drag.sourceId, drag.targetId, drag.placement) : false;
+  if (drag.moved) suppressNavClickUntil = Date.now() + 250;
+  resetNavigationDragState();
+  if (moved) renderNavigation();
 }
 
 function renderNavigation() {
   const currentCounts = counts();
-  document.getElementById("nav-list").innerHTML = navigation
+  const navList = document.getElementById("nav-list");
+  navList.innerHTML = navigation
     .map(
       (group) => `
         <div class="nav-section">
           <div class="nav-section-title">${escapeHtml(group.section)}</div>
           ${group.items
             .map(
-              (item) => `
-                <button class="nav-button ${activeView === item.id ? "is-active" : ""}" type="button" data-view="${escapeHtml(item.id)}" title="${escapeHtml(`${group.section} · ${item.label} · ${item.description}`)}" aria-label="${escapeHtml(`${group.section} ${item.label}: ${item.description}`)}">
+              (item, index) => `
+                <button class="nav-button ${activeView === item.id ? "is-active" : ""}" type="button" data-nav-draggable="true" data-view="${escapeHtml(item.id)}" data-nav-section="${escapeHtml(group.section)}" data-nav-index="${index}" title="${escapeHtml(`${group.section} · ${item.label} · ${item.description} · 같은 범주 안에서 드래그 정렬 가능`)}" aria-label="${escapeHtml(`${group.section} ${item.label}: ${item.description}. 같은 범주 안에서 드래그해서 순서를 바꿀 수 있습니다.`)}">
                   <span class="nav-button-main">
                     <span class="nav-icon" aria-hidden="true">${iconSvg(item.icon)}</span>
                     <span class="nav-text">
@@ -1258,20 +1432,72 @@ function renderNavigation() {
     )
     .join("");
 
-  document.querySelectorAll("[data-view]").forEach((button) => {
-    button.addEventListener("click", () => {
+  const navButtons = navList.querySelectorAll("[data-view]");
+  navButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      if (Date.now() < suppressNavClickUntil) {
+        event.preventDefault();
+        return;
+      }
       activeView = button.dataset.view;
       activeDetailType = defaultDetailForView(activeView);
       selectDefaultCaseForView(activeView);
       render();
     });
+
+    button.addEventListener("dragstart", (event) => {
+      draggedNavId = button.dataset.view;
+      draggedNavSection = button.dataset.navSection;
+      navDragMoved = false;
+      button.classList.add("is-dragging");
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", draggedNavId);
+    });
+
+    button.addEventListener("dragenter", (event) => {
+      if (!draggedNavId || button.dataset.view === draggedNavId) return;
+      const placement = navDropPlacement(button, event.clientY);
+      markNavigationDropTarget(button, placement);
+    });
+
+    button.addEventListener("dragover", (event) => {
+      if (!draggedNavId || button.dataset.view === draggedNavId) return;
+      if (button.dataset.navSection !== draggedNavSection) {
+        event.dataTransfer.dropEffect = "none";
+        markNavigationDropTarget(button, "before");
+        return;
+      }
+      event.preventDefault();
+      navDragMoved = true;
+      const placement = navDropPlacement(button, event.clientY);
+      event.dataTransfer.dropEffect = "move";
+      markNavigationDropTarget(button, placement);
+    });
+
+    button.addEventListener("drop", (event) => {
+      if (!draggedNavId || button.dataset.view === draggedNavId) return;
+      event.preventDefault();
+      const placement = navDropPlacement(button, event.clientY);
+      const moved = moveNavigationItem(draggedNavId, button.dataset.view, placement);
+      suppressNavClickUntil = Date.now() + 250;
+      resetNavigationDragState();
+      if (moved) renderNavigation();
+    });
+
+    button.addEventListener("dragend", resetNavigationDragState);
+    button.addEventListener("pointerdown", (event) => beginNavigationPointerDrag(button, event));
+    button.addEventListener("pointermove", updateNavigationPointerDrag);
+    button.addEventListener("pointerup", finishNavigationPointerDrag);
+    button.addEventListener("pointercancel", resetNavigationDragState);
   });
 }
 
 function renderShellState() {
   const shell = document.querySelector(".app-shell");
   const toggle = document.getElementById("properties-toggle");
-  if (shell) shell.classList.toggle("properties-collapsed", !propertiesOpen);
+  if (shell) {
+    shell.classList.toggle("properties-collapsed", !propertiesOpen);
+  }
   if (!toggle) return;
   toggle.setAttribute("aria-expanded", String(propertiesOpen));
   toggle.innerHTML = `${iconSvg(propertiesOpen ? "panel-close" : "panel-open")}<span>${propertiesOpen ? "상세 패널 닫기" : "상세 패널 열기"}</span>`;
@@ -1281,7 +1507,22 @@ function defaultDetailForView(view) {
   if ((view === "agents" || view === "orgchart") && selectedAgentId) return "agent";
   if (view === "skills" && selectedSkillId) return "skill";
   if (view === "jeonse" && selectedFeatureId) return "feature";
-  const summaryViews = ["agents", "orgchart", "skills", "routines", "goals", "activity", "budget", "settings"];
+  const summaryViews = [
+    "agents",
+    "orgchart",
+    "skills",
+    "routines",
+    "goals",
+    "activity",
+    "budget",
+    "settings",
+    "rm-dashboard",
+    "corporate-credit-dashboard",
+    "jeonse-protection-dashboard",
+    "consumer-protection-dashboard",
+    "fds-dashboard",
+    "compliance-dashboard",
+  ];
   if (summaryViews.includes(view)) return "view";
   return "case";
 }
@@ -1305,10 +1546,10 @@ function renderMetrics() {
   if (!metricGrid) return;
   const data = buildDashboardData();
   const cards = [
-    ["고위험 전세", `${data.jeonseRisk.filter((item) => item.riskScore >= 85).length}건`, "전세가율·권리관계·보증 가능성을 우선 확인"],
-    ["승인 대기", `${data.pending.length}건`, "고객 대상 행동 전 RM/준법 검토 필요"],
-    ["외부 행동 차단", `${data.blocked.length}건`, "사기·준법 리스크로 자동 발송 차단"],
-    ["근거 연결률", `${data.evidenceRate}%`, "판단 근거가 연결된 케이스 비율"],
+    ["전세 안심 점검", `${data.jeonseRisk.filter((item) => item.riskScore >= 85).length}건`, "전세가율·권리관계·보증보험 요건을 우선 확인"],
+    ["담당자 승인 대기", `${data.pending.length}건`, "고객 대상 행동 전 RM/준법 검토 필요"],
+    ["고객 영향 조치 보류", `${data.blocked.length}건`, "사기·준법 리스크로 담당자 확인 전 발송 보류"],
+    ["근거 연결률", `${data.evidenceRate}%`, "검토 근거가 연결된 관리 건 비율"],
   ];
   metricGrid.innerHTML = cards
     .map(
@@ -1326,9 +1567,9 @@ function renderMetrics() {
 
 function metricIcon(label) {
   return {
-    "고위험 전세": "shield",
-    "승인 대기": "check-square",
-    "외부 행동 차단": "lock",
+    "전세 안심 점검": "shield",
+    "담당자 승인 대기": "check-square",
+    "고객 영향 조치 보류": "lock",
     "근거 연결률": "database",
   }[label] || "layout-dashboard";
 }
@@ -1343,7 +1584,7 @@ function renderBoard() {
     const queued = scoped.slice().sort((a, b) => b.riskScore - a.riskScore);
     caseBoard.innerHTML = `
       <div class="case-list">
-      ${queued.length ? groupedCaseList(queued) : '<div class="empty-state">검색 조건에 맞는 케이스 없음</div>'}
+      ${queued.length ? groupedCaseList(queued) : '<div class="empty-state">검색 조건에 맞는 관리 건이 없습니다</div>'}
       </div>
     `;
     return;
@@ -1351,27 +1592,23 @@ function renderBoard() {
 
   caseBoard.className = "case-board hagent-kanban";
   const columns = [
-    ["backlog", "백로그"],
-    ["todo", "신규"],
-    ["in_progress", "진행 중"],
-    ["in_review", "검토"],
-    ["blocked", "차단"],
-    ["done", "완료"],
+    ["new", "접수됨"],
+    ["in_progress", "검토 준비 중"],
+    ["review", "담당자 승인 대기"],
+    ["done", "검토 완료"],
+    ["blocked", "보류"],
   ];
 
   caseBoard.innerHTML = columns
     .map(([key, label]) => {
-      const items =
-        key === "backlog"
-          ? scoped.filter((item) => item.status === "New" && item.riskScore < 70)
-          : scoped.filter((item) => statusToColumn(item.status) === key && !(key === "todo" && item.riskScore < 70));
+      const items = scoped.filter((item) => statusToColumn(item.status) === key);
       return `
         <section class="board-column" data-drop-status="${escapeHtml(key)}">
           <h4><span>${label}</span><span>${items.length}</span></h4>
           ${
             items.length
               ? items.map(renderCaseCard).join("")
-              : '<div class="empty-state">대기 케이스 없음</div>'
+              : '<div class="empty-state">대기 중인 관리 건이 없습니다</div>'
           }
         </section>
       `;
@@ -1381,11 +1618,11 @@ function renderBoard() {
 
 function groupedCaseList(items) {
   const groups = [
-    ["approval", "승인 필요", (item) => item.status === "Approval Pending"],
-    ["running", "에이전트 실행 중", (item) => item.status === "Agent Running"],
+    ["approval", "담당자 승인 대기", (item) => item.status === "Approval Pending"],
+    ["running", "AI 분석 요청 중", (item) => item.status === "Agent Running"],
     ["risk", "고위험 점검", (item) => item.riskScore >= 85 && item.status !== "Approval Pending"],
-    ["new", "신규/분류", (item) => item.status === "New" && item.riskScore < 85],
-    ["closed", "완료/차단", (item) => ["Approved", "Escalated", "Rejected"].includes(item.status)],
+    ["new", "접수됨/분류", (item) => item.status === "New" && item.riskScore < 85],
+    ["closed", "검토 완료/보류", (item) => ["Approved", "Escalated", "Rejected"].includes(item.status)],
   ];
   const seen = new Set();
   const markup = groups
@@ -1406,7 +1643,7 @@ function groupedCaseList(items) {
       `;
     })
     .join("");
-  return markup || '<div class="empty-state">표시할 케이스 없음</div>';
+  return markup || '<div class="empty-state">표시할 관리 건이 없습니다</div>';
 }
 
 function renderCaseRow(item) {
@@ -1465,7 +1702,7 @@ function renderLiveRuns() {
         </article>
       `;
     })
-    .join("") || '<div class="empty-state">실행 중인 에이전트 없음</div>';
+    .join("") || '<div class="empty-state">검토 중인 AI 업무지원이 없습니다</div>';
 }
 
 function renderWorkbench() {
@@ -1488,6 +1725,12 @@ function renderWorkbench() {
     budget: budgetPage,
     settings: settingsPage,
     plugins: pluginsPage,
+    "rm-dashboard": rmDashboardPage,
+    "corporate-credit-dashboard": corporateCreditDashboardPage,
+    "jeonse-protection-dashboard": jeonseProtectionDashboardPage,
+    "consumer-protection-dashboard": consumerProtectionDashboardPage,
+    "fds-dashboard": fdsDashboardPage,
+    "compliance-dashboard": complianceDashboardPage,
     "case-detail": () => caseDetailPage(currentCase()),
   };
 
@@ -1594,15 +1837,15 @@ function advanceDemoAction(type) {
 
 function heroMarkup() {
   return `
-    <section class="jb-hero" aria-label="JB LocalGuard OS hero">
+    <section class="jb-hero" aria-label="JB 금융안전 업무지원 hero">
       <div class="hero-copy">
         <span class="status-badge">JB금융그룹 Fin:AI Challenge · 자유주제</span>
-        <h2>JB LocalGuard OS</h2>
-        <p>지역 금융 위험 신호를 케이스, 에이전트 실행, 승인, 감사 로그로 자동화하는 AI 에이전트 모델</p>
+        <h2>JB 금융안전 업무지원</h2>
+        <p>지역 금융 위험 신호를 관리 건으로 모으고, AI 분석 요청부터 담당자 승인, 감사 기록까지 한 흐름으로 관리합니다.</p>
       </div>
       <div class="hero-mark" aria-hidden="true">
         <span class="mark-box"></span>
-        <strong>로컬가드 AI</strong>
+          <strong>JB 금융안전</strong>
       </div>
     </section>
   `;
@@ -1640,10 +1883,10 @@ function commandMarkup() {
       <div class="instruction-copy">
         <p class="eyebrow">운영 지시</p>
         <h3>한 줄로 바로 실행합니다.</h3>
-        <p>케이스 생성, 에이전트 배정, 승인 큐 등록, 감사 로그까지 같은 프로세스로 처리합니다.</p>
+        <p>관리 건 생성, AI 업무지원 배정, 승인 큐 등록, 감사 로그까지 같은 프로세스로 처리합니다.</p>
       </div>
       <div class="command-row">
-        <textarea id="command-input" rows="3" aria-label="운영 지시 입력">전주 카페 케이스의 금리 부담, 정책금융 후보, 고객 안내 초안을 승인 가능한 형태로 정리해줘.</textarea>
+        <textarea id="command-input" rows="3" aria-label="운영 지시 입력">전주 카페 관리 건의 금리 부담, 정책금융 후보, 고객 안내 초안을 승인 가능한 형태로 정리해줘.</textarea>
         <button id="dispatch-command" class="primary-button icon-command-button" type="button" title="지시 실행">
           <span aria-hidden="true">↗</span>
         </button>
@@ -1652,31 +1895,1071 @@ function commandMarkup() {
   `;
 }
 
+function latestWorkSummaryView() {
+  const roles = [
+    ["기업여신", "AI 3개 · 업무 기능 5개", "서류·재무분석, 전결 라우팅, 자금용도 사후점검", "#corporate-credit-dashboard"],
+    ["소비자 보호", "AI 4개 · 업무 기능 7개", "적합성·적정성, 부당권유, 민원, 취약고객 보호", "#consumer-protection-dashboard"],
+    ["FDS/보이스피싱", "AI 3개 · 업무 기능 6개", "이상징후, 지급정지·해제, 탐지룰 운영", "#fds-dashboard"],
+    ["준법감시", "AI 4개 · 업무 기능 9개", "책무구조도, 데이터 경계, 감사 무결성, 사고대응", "#compliance-dashboard"],
+  ];
+  return `
+    <div class="latest-work">
+      <div class="latest-work-head">
+        <div>
+          <span class="source-badge">2026-07-01 최신 반영</span>
+          <strong>담당자별 AI 업무지원과 업무 기능 후보가 서버 첫 화면에 노출됩니다.</strong>
+          <p>본선 리서치 딥프롬프트에서 정리한 신규 제안 14개 Agent와 27개 Skill을 검토 후보로 연결했습니다. 실제 고객 안내는 담당자 승인 후에만 진행됩니다.</p>
+        </div>
+        <div class="latest-work-metrics" aria-label="latest work metrics">
+          <span><strong>14</strong> AI 업무지원</span>
+          <span><strong>27</strong> 업무 기능</span>
+          <span><strong>4</strong> 역할 대시보드</span>
+        </div>
+      </div>
+      <div class="latest-role-grid">
+        ${roles
+          .map(
+            ([label, count, description, href]) => `
+              <a class="latest-role-card" href="${escapeHtml(href)}">
+                <span>${escapeHtml(label)}</span>
+                <strong>${escapeHtml(count)}</strong>
+                <p>${escapeHtml(description)}</p>
+              </a>
+            `,
+          )
+          .join("")}
+      </div>
+      <p class="insight-copy">승인 전에는 실제 연결된 업무 기능이 아니라 제안 근거와 검토 범위로만 표시됩니다. 고객 영향 조치는 담당자 승인 절차를 거쳐야 합니다.</p>
+    </div>
+  `;
+}
+
+function consolePrinciplesView() {
+  const items = [
+    ["담당자 최종 확인", "AI는 주의 신호 분류와 안내 초안까지만 만들고, 고객에게 연락하기 전에는 담당자 확인을 반드시 거칩니다.", "check-square"],
+    ["개인정보 비반출", "성명, 연락처, 계좌, 신용정보는 기본 마스킹하며 외부 전송 전 비식별 처리와 점검을 거쳐야 합니다.", "lock"],
+    ["감사 추적", "관리 건, AI 분석 요청, 승인, 보안 상태 변화는 담당자와 시각이 포함된 감사 기록으로 남깁니다.", "database"],
+  ];
+  return `
+    <div class="principle-grid">
+      ${items
+        .map(
+          ([title, detail, icon]) => `
+            <article class="principle-card">
+              <span aria-hidden="true">${iconSvg(icon)}</span>
+              <strong>${escapeHtml(title)}</strong>
+              <p>${escapeHtml(detail)}</p>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function dashboardCaseBoardView() {
+  return `
+    <div class="case-toolbar console-case-toolbar">
+      <label class="case-search">
+        <span>검색</span>
+        <input id="case-search" type="search" value="${escapeHtml(caseSearchQuery)}" placeholder="관리 건 번호, 고객명, 주의 신호, 담당 업무 검색" />
+      </label>
+      <div class="view-switch board-switch" aria-label="board mode">
+        <button class="${boardMode === "kanban" ? "is-active" : ""}" type="button" data-board-mode="kanban">업무 보드</button>
+        <button class="${boardMode === "list" ? "is-active" : ""}" type="button" data-board-mode="list">목록</button>
+      </div>
+    </div>
+    <div id="case-board" class="case-board"></div>
+  `;
+}
+
+function securityOpsSnapshotView() {
+  const rows = [
+    ["은행 코어", "정상", "상담/거래 위험 신호 수신"],
+    ["법령·보증 기준", "정상", "전세·준법 검토 근거 참조"],
+    ["고객 알림", "담당자 확인 필요", "담당자 확인 전 발송 보류"],
+    ["외부 전송 전 점검", "보류", "식별정보 포함 가능성 1건 보류"],
+  ];
+  return `
+    <div class="integration-grid">
+      ${rows
+        .map(
+          ([name, state, detail]) => `
+            <article class="integration-card integration-${state === "보류" ? "blocked" : state === "담당자 확인 필요" ? "guarded" : "connected"}">
+              <span>${escapeHtml(state)}</span>
+              <strong>${escapeHtml(name)}</strong>
+              <p>${escapeHtml(detail)}</p>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
 function dashboardPage() {
   return `
-    ${pageHeader("대시보드", "대시보드", "오케스트레이터 상태와 최근 흐름을 한 화면에서 확인합니다.")}
-    ${commandMarkup()}
-    ${dispatchResultMarkup()}
+    ${pageHeader("JB금융그룹 업무포털", "JB 금융안전 업무지원 포털", "지역 고객의 위험 신호를 관리 건으로 모아 분석하고, 담당자 승인 후에만 고객 안내로 이어지도록 관리합니다.")}
     <section id="metric-grid" class="metric-grid" aria-label="metrics"></section>
-    ${panelMarkup("의사결정 요약", "오늘 우선 처리 기준", dashboardDecisionView(), "decision-panel panel-primary")}
+    ${panelMarkup("업무 보드", "접수됨 → 검토 준비 중 → 담당자 승인 대기 → 검토 완료 / 보류", dashboardCaseBoardView(), "board-panel dashboard-board-panel")}
+    ${panelMarkup("최신 작업 반영", "2026-07-01 서버 첫 화면 업데이트", latestWorkSummaryView(), "latest-work-panel panel-primary")}
+    ${panelMarkup("운영 원칙", "AI 초안 · 담당자 승인 · 감사 기록", consolePrinciplesView(), "principle-panel panel-primary")}
+    ${dispatchResultMarkup()}
     <section class="dashboard-grid">
       <div class="dashboard-column">
+        ${commandMarkup()}
+        ${panelMarkup("의사결정 요약", "오늘 우선 처리 기준", dashboardDecisionView(), "decision-panel panel-primary")}
         ${panelMarkup("실시간 실행", "실시간 실행", '<div id="live-runs" class="live-runs"></div><span id="live-count" class="count-pill ghost-count">0</span>', "live-panel")}
-        ${panelMarkup("위험도·지역 분포", "지역별 위험도", dashboardRegionView(), "region-panel")}
         ${panelMarkup("처리 흐름", "처리 흐름 상태", dashboardView(), "process-panel")}
-        ${panelMarkup("우선순위", "위험도 순위", dashboardRankingView(), "ranking-panel")}
-        ${panelMarkup("활동 이력", "최근 처리 이력", activityView(), "activity-panel panel-secondary")}
+        ${panelMarkup("우선순위", "주의 수준 순위", dashboardRankingView(), "ranking-panel")}
       </div>
       <div class="dashboard-column">
+        ${panelMarkup("보안·연동", "개인정보·반출·시스템 연동 상태", securityOpsSnapshotView(), "security-snapshot-panel panel-secondary")}
+        ${panelMarkup("활동 이력", "최근 감사 로그", activityView(), "activity-panel panel-secondary")}
+        ${panelMarkup("주의 수준·지역 분포", "지역별 주의 수준", dashboardRegionView(), "region-panel")}
         ${panelMarkup("비용과 효과", "운영 비용 해석", dashboardCostView(), "cost-panel")}
         ${panelMarkup("서비스 사이클", "완료된 사용자 가치", scenarioCompletionView(), "scenario-panel")}
-        ${panelMarkup("추세", "월별 비용 추이", dashboardTrendView(), "trend-panel")}
         ${panelMarkup("데이터 신뢰도", "샘플·실제·오류 상태", dataReliabilityView(), "data-reliability-panel panel-secondary")}
         ${panelMarkup("데이터 상태", "데이터 출처와 저장 상태", dataStatusView(), "data-panel panel-secondary")}
-        ${panelMarkup("최근 케이스", "최근 케이스", recentCasesView(), "recent-panel panel-secondary")}
       </div>
     </section>
   `;
+}
+
+function rmDashboardPage() {
+  const rmKpis = [
+    ["오늘 우선 상담", "7건", "고위험 3건 · 보증/정책금융 후보 4건", "users"],
+    ["승인 대기", "2건", "고객 안내 전 RM 확인 필요", "check-square"],
+    ["서류 보완", "6건", "사업자·세무·임대차 자료 누락 탐지", "file-text"],
+    ["후속관리", "4건", "EWS·연체·만기연장 알림", "activity"],
+  ];
+  const rmWork = [
+    {
+      title: "상담 전 AI 브리핑",
+      caseId: "case-104",
+      customer: "전주 중앙로 카페",
+      detail: "매출 둔화, 금리 민감도, 정책금융 후보, 콜백 질문을 RM 검토용으로 요약합니다.",
+      status: "오늘 16:00",
+      skills: ["거래이력 요약", "상담 질문", "정책금융 후보"],
+    },
+    {
+      title: "여신 서류 체크",
+      caseId: "case-118",
+      customer: "광주 송정 도소매",
+      detail: "사업자등록, 부가세 자료, 임대차·세금계산서 누락 여부를 대조합니다.",
+      status: "보완 요청",
+      skills: ["서류 누락", "증빙 대조", "KYC"],
+    },
+    {
+      title: "품의·심사 연결",
+      caseId: "case-201",
+      customer: "서울 신축빌라 전세 예정",
+      detail: "RM 의견 초안, 근거 링크, 담당자 승인 절차를 묶어 심사/준법 검토로 넘깁니다.",
+      status: "승인 대기",
+      skills: ["품의 초안", "근거 패킷", "담당자 승인 절차"],
+    },
+    {
+      title: "사후관리·EWS",
+      caseId: "case-127",
+      customer: "군산 부품 제조업",
+      detail: "조기경보 신호, 자금용도 점검, 기록 보관 필요 항목을 RM 후속 태스크로 정리합니다.",
+      status: "상위 검토",
+      skills: ["EWS", "사후점검", "감사로그"],
+    },
+  ];
+  const rmFlow = [
+    ["01", "고객 신호 수집", "상담 메모, 거래 이력, 정책/보증 가능성을 한곳에 모읍니다."],
+    ["02", "사전 브리핑", "AI가 확인할 항목과 질문 후보만 제안하고 RM이 검토합니다."],
+    ["03", "서류·근거 대조", "누락 서류, 증빙 불일치, 신뢰도 낮은 근거를 표시합니다."],
+    ["04", "품의·승인 연결", "고객 영향 행동은 승인 큐를 거쳐야만 다음 단계로 넘어갑니다."],
+    ["05", "사후관리 기록", "콜메모, 후속 태스크, 감사 로그를 관리 건에 남깁니다."],
+  ];
+  const roleCases = [
+    ["신규여신 상담", "필요서류와 자금용도를 정리하고 상담 전 질문지를 만듭니다."],
+    ["만기연장·조건변경", "기존 조건, 갱신 리스크, 고객 안내 초안을 비교합니다."],
+    ["정책금융·보증서 매칭", "지역신보·정책자금 후보와 누락 서류를 좁힙니다."],
+    ["사후관리·연체 알림", "EWS, 연체, 자금용도 점검을 후속 조치로 전환합니다."],
+  ];
+
+  return `
+    ${pageHeader("담당자 유형", "RM 역할 대시보드", "RM이 상담, 여신 서류, 품의 연결, 사후관리까지 한 화면에서 처리하도록 구성한 역할 전용 화면입니다.")}
+    <section class="workspace-panel rm-hero">
+      <div>
+        <p class="eyebrow">RM 업무 사이클</p>
+        <h3>AI는 확인할 항목을 제안하고, 고객 영향 행동은 RM이 승인합니다.</h3>
+        <p>리서치 기준 RM 업무는 상담, 서류징구·대조, 신용평가 입력, 품의·심사 핸드오프, 실행 후 사후관리와 기록보관까지 이어집니다. 이 화면은 그 반복 업무를 관리 건 큐로 묶어 후속 확인 항목을 바로 보이게 합니다.</p>
+      </div>
+      <div class="rm-hero-actions">
+        <span class="status-pill status-approved">개인정보 비반출</span>
+        <span class="status-pill status-pending">담당자 최종 확인 우선</span>
+        <span class="status-pill status-new">근거 기록</span>
+      </div>
+    </section>
+    <section class="rm-kpi-grid" aria-label="RM KPI">
+      ${rmKpis
+        .map(
+          ([label, value, description, icon]) => `
+            <article class="rm-kpi-card">
+              <span class="rm-kpi-icon" aria-hidden="true">${iconSvg(icon)}</span>
+              <div>
+                <p>${escapeHtml(label)}</p>
+                <strong>${escapeHtml(value)}</strong>
+                <span>${escapeHtml(description)}</span>
+              </div>
+            </article>
+          `,
+        )
+        .join("")}
+    </section>
+    <section class="rm-layout-grid">
+      ${panelMarkup(
+        "오늘 처리",
+        "RM 업무 큐",
+        `<div class="rm-work-list">
+          ${rmWork
+            .map(
+              (item) => `
+                <button class="rm-work-card" type="button" data-case-id="${escapeHtml(item.caseId)}">
+                  <div class="rm-work-head">
+                    <span>${escapeHtml(item.title)}</span>
+                    <span class="status-pill ${item.status === "상위 검토" ? "status-escalated" : item.status === "승인 대기" || item.status === "보완 요청" ? "status-pending" : "status-new"}">${escapeHtml(item.status)}</span>
+                  </div>
+                  <strong>${escapeHtml(item.customer)}</strong>
+                  <p>${escapeHtml(item.detail)}</p>
+                  <div class="tag-row">${item.skills.map((skill) => `<span class="tag">${escapeHtml(skill)}</span>`).join("")}</div>
+                </button>
+              `,
+            )
+            .join("")}
+        </div>`,
+        "rm-work-panel",
+      )}
+      ${panelMarkup(
+        "프로세스",
+        "RM 업무 흐름",
+        `<div class="rm-flow-list">
+          ${rmFlow
+            .map(
+              ([step, title, description]) => `
+                <article class="rm-flow-step">
+                  <span>${escapeHtml(step)}</span>
+                  <div>
+                    <strong>${escapeHtml(title)}</strong>
+                    <p>${escapeHtml(description)}</p>
+                  </div>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>`,
+        "rm-flow-panel",
+      )}
+    </section>
+    <section class="rm-layout-grid rm-layout-bottom">
+      ${panelMarkup(
+        "관리 건 유형",
+        "RM이 맡는 업무 범주",
+        `<div class="rm-role-case-grid">
+          ${roleCases
+            .map(
+              ([title, description]) => `
+                <article class="rm-role-case">
+                  <strong>${escapeHtml(title)}</strong>
+                  <p>${escapeHtml(description)}</p>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>`,
+        "rm-role-panel",
+      )}
+      ${panelMarkup(
+        "통제 원칙",
+        "RM 승인 전 자동 실행 금지",
+        `<div class="rm-control-box">
+          <div class="rm-control-main">
+            <span aria-hidden="true">${iconSvg("lock")}</span>
+            <div>
+              <strong>고객 안내·조건 제시·거래 제한은 승인 큐를 점검 완료해야 합니다.</strong>
+              <p>AI 산출물은 상담 브리핑, 서류 체크, 품의 초안, 사후관리 기록까지만 생성합니다. 최종 조건 제시와 고객 영향 행동은 RM 또는 지정 승인자가 처리합니다.</p>
+            </div>
+          </div>
+          <div class="property-list">
+            ${propertyRow("외부 전송 전 점검", "비식별 처리·마스킹 후 검증")}
+            ${propertyRow("감사 기록", "Case → Evidence → Approval → Audit")}
+            ${propertyRow("미검증 값", "추정/미검증 표기 유지")}
+          </div>
+        </div>`,
+        "rm-control-panel panel-primary",
+      )}
+    </section>
+  `;
+}
+
+function corporateCreditDashboardPage() {
+  const creditKpis = [
+    ["심사 패킷", "9건", "상담·서류·담보·품의 초안 묶음", "file-text"],
+    ["서류 보완", "5건", "재무제표·납세·등기·견적 누락", "check-square"],
+    ["본부 심사", "3건", "전결 초과·고위험·예외 승인 후보", "users"],
+    ["사후점검", "4건", "자금용도·PF·리스/할부 통제", "activity"],
+  ];
+  const creditWork = [
+    {
+      title: "운전자금 신규여신 검토",
+      caseId: "case-104",
+      customer: "전주 중앙로 카페",
+      detail: "매출 둔화, 비용 부담, 1회전 운전자금 적정 한도와 상환 가능성을 심사 패킷으로 정리합니다.",
+      status: "심사 준비",
+      skills: ["매출·현금흐름", "상환능력", "품의 초안"],
+    },
+    {
+      title: "시설자금·기계류 할부 검토",
+      caseId: "case-127",
+      customer: "군산 부품 제조업",
+      detail: "설비 견적, 담보·리스 물건, 회수 가능성, CREFIA 리스/할부 공시 참고 항목을 대조합니다.",
+      status: "본부 심사",
+      skills: ["시설자금", "담보가치", "리스·할부"],
+    },
+    {
+      title: "보증서·정책금융 구조화",
+      caseId: "case-118",
+      customer: "광주 송정 도소매",
+      detail: "지역신보·정책자금 후보, 보증 가능 금액, 제출 서류 누락 여부를 담당자 검토용으로 좁힙니다.",
+      status: "보완 요청",
+      skills: ["보증 매칭", "정책자금", "서류 체크"],
+    },
+    {
+      title: "자금용도외 유용 사후점검",
+      caseId: "case-133",
+      customer: "익산 음식점",
+      detail: "대출 실행 후 세금계산서, 송금 내역, 사용처 증빙을 대조해 이상 지출 신호를 표시합니다.",
+      status: "점검 대기",
+      skills: ["자금용도", "증빙 대조", "감사 기록"],
+    },
+  ];
+  const creditFlow = [
+    ["01", "상담·신청 접수", "운전자금/시설자금/리스·할부 목적과 차주 실체를 분리합니다."],
+    ["02", "서류·공시 체크", "재무제표, 세무, 등기, 견적, CREFIA 공시/규정 참고 항목을 대조합니다."],
+    ["03", "신용·상환 분석", "현금흐름, 이자보상, 부채비율, 담보·보증을 한 화면에서 점검합니다."],
+    ["04", "전결·본부심사 라우팅", "전결 가능, 본부 심사, 여신위원회 후보를 규칙 기반으로 분기합니다."],
+    ["05", "약정·실행 전 통제", "조건 제시와 실행은 승인 큐를 점검 완료한 항목만 다음 단계로 보냅니다."],
+    ["06", "사후점검·감사기록", "자금용도, 연체/EWS, 담보 변동, 감사 로그를 관리 건에 남깁니다."],
+  ];
+  const roleCases = [
+    ["운전자금", "매출 회전, 원재료·인건비 소요, 적정 한도와 상환 재원을 검토합니다."],
+    ["시설자금", "설비·공장·사업장 투자 목적, 자기자본 투입, 장기 현금흐름을 확인합니다."],
+    ["리스·할부금융", "기계류·차량·기타할부 공시 기준과 물건 회수 가능성을 대조합니다."],
+    ["부동산PF/고위험", "PF 모범규준, 익스포저 한도, 본부 심사·위원회 상정 필요성을 표시합니다."],
+    ["보증·정책금융", "신보·기보·지역신보·지자체 정책자금 후보와 누락 서류를 정리합니다."],
+    ["사후관리", "자금용도외 유용, EWS, 만기연장, 감사 검증 대상 여부를 기록합니다."],
+  ];
+
+  return `
+    ${pageHeader("담당자 유형", "기업여신 담당자 대시보드", "기업여신 담당자가 상담 접수부터 품의, 심사 라우팅, 실행 전 통제, 사후점검까지 처리하도록 구성한 역할 전용 화면입니다.")}
+    <section class="workspace-panel rm-hero">
+      <div>
+        <p class="eyebrow">기업여신 업무 사이클</p>
+        <h3>AI는 심사 가능한 패킷을 만들고, 조건 최종 확인은 사람이 승인합니다.</h3>
+        <p>리서치 기준 기업여신은 자금용도 확인, 서류·재무·담보 분석, 전결권 분기, 약정/실행, 사후관리로 이어집니다. 이 화면은 CREFIA의 여신금융업권 법규·자율규제·상품공시 항목을 참고해 담당자가 무엇을 먼저 확인해야 하는지 보여줍니다.</p>
+      </div>
+      <div class="rm-hero-actions">
+        <span class="status-pill status-approved">개인정보 비반출</span>
+        <span class="status-pill status-pending">전결 라우팅</span>
+        <span class="status-pill status-new">CREFIA 참고</span>
+      </div>
+    </section>
+    <section class="rm-kpi-grid" aria-label="기업여신 KPI">
+      ${creditKpis
+        .map(
+          ([label, value, description, icon]) => `
+            <article class="rm-kpi-card">
+              <span class="rm-kpi-icon" aria-hidden="true">${iconSvg(icon)}</span>
+              <div>
+                <p>${escapeHtml(label)}</p>
+                <strong>${escapeHtml(value)}</strong>
+                <span>${escapeHtml(description)}</span>
+              </div>
+            </article>
+          `,
+        )
+        .join("")}
+    </section>
+    <section class="rm-layout-grid">
+      ${panelMarkup(
+        "오늘 처리",
+        "기업여신 업무 큐",
+        `<div class="rm-work-list">
+          ${creditWork
+            .map(
+              (item) => `
+                <button class="rm-work-card" type="button" data-case-id="${escapeHtml(item.caseId)}">
+                  <div class="rm-work-head">
+                    <span>${escapeHtml(item.title)}</span>
+                    <span class="status-pill ${item.status === "본부 심사" ? "status-escalated" : item.status === "보완 요청" ? "status-pending" : "status-new"}">${escapeHtml(item.status)}</span>
+                  </div>
+                  <strong>${escapeHtml(item.customer)}</strong>
+                  <p>${escapeHtml(item.detail)}</p>
+                  <div class="tag-row">${item.skills.map((skill) => `<span class="tag">${escapeHtml(skill)}</span>`).join("")}</div>
+                </button>
+              `,
+            )
+            .join("")}
+        </div>`,
+        "rm-work-panel",
+      )}
+      ${panelMarkup(
+        "프로세스",
+        "기업여신 처리 흐름",
+        `<div class="rm-flow-list">
+          ${creditFlow
+            .map(
+              ([step, title, description]) => `
+                <article class="rm-flow-step">
+                  <span>${escapeHtml(step)}</span>
+                  <div>
+                    <strong>${escapeHtml(title)}</strong>
+                    <p>${escapeHtml(description)}</p>
+                  </div>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>`,
+        "rm-flow-panel",
+      )}
+    </section>
+    <section class="rm-layout-grid rm-layout-bottom">
+      ${panelMarkup(
+        "관리 건 유형",
+        "기업여신 담당 업무 범주",
+        `<div class="rm-role-case-grid">
+          ${roleCases
+            .map(
+              ([title, description]) => `
+                <article class="rm-role-case">
+                  <strong>${escapeHtml(title)}</strong>
+                  <p>${escapeHtml(description)}</p>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>`,
+        "rm-role-panel",
+      )}
+      ${panelMarkup(
+        "통제 원칙",
+        "기업여신 승인 전 자동 실행 금지",
+        `<div class="rm-control-box">
+          <div class="rm-control-main">
+            <span aria-hidden="true">${iconSvg("lock")}</span>
+            <div>
+              <strong>한도·금리·약정·실행은 승인 큐를 점검 완료해야 합니다.</strong>
+              <p>AI 산출물은 서류 대조, 심사 의견 초안, 전결 라우팅, 자금용도 점검까지 제안합니다. 차주에게 영향을 주는 조건 최종 확인과 실행은 기업여신 담당자 또는 여신심사역의 승인 뒤에만 진행됩니다.</p>
+            </div>
+          </div>
+          <div class="property-list">
+            ${propertyRow("업권 참고", "여신전문금융업법·감독규정·자율규제")}
+            ${propertyRow("공시 참고", "리스/할부·신용대출·경영공시")}
+            ${propertyRow("감사 기록", "상담 → 심사패킷 → 승인 → 실행전 통제")}
+          </div>
+        </div>`,
+        "rm-control-panel panel-primary",
+      )}
+    </section>
+  `;
+}
+
+function roleStatusPillClass(status) {
+  if (/긴급|상위|차단|위반|지급정지|사고/.test(status)) return "status-escalated";
+  if (/대기|검토|보완|소명|승인|재심|점검/.test(status)) return "status-pending";
+  if (/완료|점검 완료|정상|활성/.test(status)) return "status-approved";
+  return "status-new";
+}
+
+function roleDashboardPage(config) {
+  return `
+    ${pageHeader("담당자 유형", config.title, config.description)}
+    <section class="workspace-panel rm-hero">
+      <div>
+        <p class="eyebrow">${escapeHtml(config.heroEyebrow)}</p>
+        <h3>${escapeHtml(config.heroTitle)}</h3>
+        <p>${escapeHtml(config.heroBody)}</p>
+      </div>
+      <div class="rm-hero-actions">
+        ${config.badges.map((badge) => `<span class="status-pill ${escapeHtml(badge.className)}">${escapeHtml(badge.label)}</span>`).join("")}
+      </div>
+    </section>
+    <section class="rm-kpi-grid" aria-label="${escapeHtml(config.title)} KPI">
+      ${config.kpis
+        .map(
+          ([label, value, description, icon]) => `
+            <article class="rm-kpi-card">
+              <span class="rm-kpi-icon" aria-hidden="true">${iconSvg(icon)}</span>
+              <div>
+                <p>${escapeHtml(label)}</p>
+                <strong>${escapeHtml(value)}</strong>
+                <span>${escapeHtml(description)}</span>
+              </div>
+            </article>
+          `,
+        )
+        .join("")}
+    </section>
+    <section class="rm-layout-grid">
+      ${panelMarkup(
+        "오늘 처리",
+        config.workTitle,
+        `<div class="rm-work-list">
+          ${config.work
+            .map(
+              (item) => `
+                <button class="rm-work-card" type="button" data-case-id="${escapeHtml(item.caseId)}">
+                  <div class="rm-work-head">
+                    <span>${escapeHtml(item.title)}</span>
+                    <span class="status-pill ${roleStatusPillClass(item.status)}">${escapeHtml(item.status)}</span>
+                  </div>
+                  <strong>${escapeHtml(item.customer)}</strong>
+                  <p>${escapeHtml(item.detail)}</p>
+                  <div class="tag-row">${item.skills.map((skill) => `<span class="tag">${escapeHtml(skill)}</span>`).join("")}</div>
+                </button>
+              `,
+            )
+            .join("")}
+        </div>`,
+        "rm-work-panel",
+      )}
+      ${panelMarkup(
+        "프로세스",
+        config.flowTitle,
+        `<div class="rm-flow-list">
+          ${config.flow
+            .map(
+              ([step, title, description]) => `
+                <article class="rm-flow-step">
+                  <span>${escapeHtml(step)}</span>
+                  <div>
+                    <strong>${escapeHtml(title)}</strong>
+                    <p>${escapeHtml(description)}</p>
+                  </div>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>`,
+        "rm-flow-panel",
+      )}
+    </section>
+    <section class="rm-layout-grid rm-layout-bottom">
+      ${panelMarkup(
+        "업무 범주",
+        config.roleCaseTitle,
+        `<div class="rm-role-case-grid">
+          ${config.roleCases
+            .map(
+              ([title, description]) => `
+                <article class="rm-role-case">
+                  <strong>${escapeHtml(title)}</strong>
+                  <p>${escapeHtml(description)}</p>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>`,
+        "rm-role-panel",
+      )}
+      ${panelMarkup(
+        "통제 원칙",
+        config.controlTitle,
+        `<div class="rm-control-box">
+          <div class="rm-control-main">
+            <span aria-hidden="true">${iconSvg(config.controlIcon)}</span>
+            <div>
+              <strong>${escapeHtml(config.controlLead)}</strong>
+              <p>${escapeHtml(config.controlBody)}</p>
+            </div>
+          </div>
+          <div class="property-list">
+            ${config.controlRows.map(([label, value]) => propertyRow(label, value)).join("")}
+          </div>
+        </div>`,
+        "rm-control-panel panel-primary",
+      )}
+    </section>
+  `;
+}
+
+function roleDashboardContextMarkup(config) {
+  return `
+    ${compactPanel(
+      config.context.roleEyebrow,
+      config.context.roleTitle,
+      `<div class="property-list">
+        ${config.context.roleRows.map(([label, value]) => propertyRow(label, value)).join("")}
+      </div>`,
+    )}
+    ${compactPanel(
+      "오늘 우선순위",
+      config.context.priorityTitle,
+      `<div class="context-list">
+        ${config.context.priorities.map(([title, description, metric]) => workItem(title, description, metric)).join("")}
+      </div>`,
+    )}
+    ${compactPanel(
+      "참고 기준",
+      config.context.referenceTitle,
+      `<div class="property-list">
+        ${config.context.references.map(([label, value]) => propertyRow(label, value)).join("")}
+      </div>`,
+    )}
+  `;
+}
+
+function jeonseProtectionDashboardConfig() {
+  return {
+    title: "전세보호 담당자 대시보드",
+    description: "전세 계약 전 권리관계, 주변 시세, 보증 가능성, 피해지원 연결까지 확인하는 역할 전용 화면입니다.",
+    heroEyebrow: "전세 보호 업무 사이클",
+    heroTitle: "AI는 위험 신호를 묶고, 대출·계약 진행은 사람이 승인합니다.",
+    heroBody: "국토교통부 전세사기피해자 지원관리시스템, HUG 전세피해지원센터, 전세사기피해자 지원 특별법 흐름을 참고해 등기·신탁·선순위채권·전세가율·보증보험 요건 확인 필요을 한 번에 점검합니다.",
+    badges: [
+      { label: "HUG/HF/SGI 확인", className: "status-new" },
+      { label: "권리관계 검토", className: "status-pending" },
+      { label: "피해지원 연결", className: "status-approved" },
+    ],
+    kpis: [
+      ["고위험 계약", "4건", "전세가율·선순위채권·신탁 신호", "shield"],
+      ["보증 확인", "3건", "보증보험 가입 가능성 재검토", "check-square"],
+      ["권리 하자", "2건", "근저당·압류·신탁등기 확인 필요", "file-text"],
+      ["지원 연결", "5건", "법률·주거·금융지원 안내 후보", "link"],
+    ],
+    workTitle: "전세보호 업무 큐",
+    work: [
+      {
+        title: "전세가율·주변 시세 점검",
+        caseId: "case-201",
+        customer: "서울 신축빌라 전세 예정",
+        detail: "보증금이 주변 실거래·매매가 대비 높은지 확인하고 HUG 담보인정비율 기준을 함께 표시합니다.",
+        status: "검토 대기",
+        skills: ["전세가율", "주변 시세", "보증금 과다"],
+      },
+      {
+        title: "등기·신탁·선순위 권리 확인",
+        caseId: "case-104",
+        customer: "전주 중앙로 임차 상담",
+        detail: "근저당, 압류, 신탁등기, 단기 소유권 이전 여부를 분리해 계약 전 확인 항목으로 정리합니다.",
+        status: "상위 검토",
+        skills: ["등기 권리", "신탁 확인", "선순위채권"],
+      },
+      {
+        title: "보증보험 가입 가능성",
+        caseId: "case-118",
+        customer: "광주 오피스텔 임차인",
+        detail: "임대인, 주택 유형, 보증금, 선순위채권, 보증기관 조건을 비교해 가입 가능성을 제안합니다.",
+        status: "보완 요청",
+        skills: ["HUG 확인", "HF/SGI 후보", "서류 누락"],
+      },
+      {
+        title: "피해지원·법률상담 연결",
+        caseId: "case-133",
+        customer: "익산 전세계약 피해 상담",
+        detail: "결정신청, 이의신청, 법률·심리·주거지원 연결 여부를 사람이 확인할 수 있게 묶습니다.",
+        status: "승인 대기",
+        skills: ["특별법", "지원신청", "상담 연결"],
+      },
+    ],
+    flowTitle: "전세보호 처리 흐름",
+    flow: [
+      ["01", "상담·계약 정보 접수", "주소, 보증금, 계약 예정일, 임대인, 중개사 정보를 가상 데이터로 구조화합니다."],
+      ["02", "시세·전세가율 확인", "주변 시세 대비 보증금 과다, 전세가율, 가격 급변 신호를 먼저 봅니다."],
+      ["03", "등기·권리관계 확인", "근저당, 압류, 신탁등기, 선순위 권리, 단기 소유권 이전을 체크합니다."],
+      ["04", "보증보험 요건 확인 필요 검토", "HUG/HF/SGI 가입 가능성과 보완 서류를 후보로 제시합니다."],
+      ["05", "안전계약 담당자 승인 절차", "특약 문구와 계약 진행 안내는 담당자 승인 뒤에만 고객에게 나갑니다."],
+      ["06", "피해지원·사후기록", "위험 계약은 지원기관 연결, 법률상담, 감사 로그로 남깁니다."],
+    ],
+    roleCaseTitle: "전세 위험 신호 범주",
+    roleCases: [
+      ["전세가율 과다", "보증금이 매매가 또는 주변 시세 대비 높을 때 우선 경고합니다."],
+      ["권리관계 위험", "근저당·압류·가압류·신탁등기·선순위채권을 계약 전 확인합니다."],
+      ["소유권 변동", "단기간 소유권 이전, 법인 임대인, 다주택 임대인 신호를 표시합니다."],
+      ["보증보험 불가", "보증기관별 가입 제한 가능성과 보완 서류를 분리합니다."],
+      ["임차인 자산 위험", "총자산 대비 보증금, 월소득 대비 주거비, 대출 상환 가능성을 봅니다."],
+      ["피해지원 연결", "특별법 결정신청, 이의신청, 주거·금융·법률지원 흐름을 안내합니다."],
+    ],
+    controlTitle: "전세보호 승인 전 고객 안내 금지",
+    controlIcon: "lock",
+    controlLead: "계약 진행, 대출 상담, 보증 가능 안내는 사람이 최종 확인합니다.",
+    controlBody: "AI는 위험 신호, 서류 누락, 특약 후보, 보증기관 후보를 제안합니다. 계약 안전성 최종 확인 표현이나 보증 가능 최종 확인 표현은 담당자 승인 없이는 고객에게 표시하지 않습니다.",
+    controlRows: [
+      ["법령 참고", "전세사기피해자 지원 및 주거안정 특별법"],
+      ["기관 연결", "국토부·HUG·HF·SGI·법률지원"],
+      ["감사 기록", "상담 → 위험점검 → 승인 → 고객안내"],
+    ],
+    context: {
+      roleEyebrow: "전세보호 역할",
+      roleTitle: "계약 전 위험을 먼저 줄이는 담당자",
+      roleRows: [
+        ["핵심 업무", "권리관계·전세가율·보증가능성·피해지원"],
+        ["AI 역할", "등기/시세/보증 조건 후보와 체크리스트 제안"],
+        ["사람 역할", "고객 안내·계약 진행·지원기관 연결 승인"],
+      ],
+      priorityTitle: "전세보호 담당자가 먼저 볼 항목",
+      priorities: [
+        ["고위험 계약", "전세가율 90% 이상 또는 선순위권리 존재", "4건"],
+        ["보증 불확실", "보증기관 가입 조건과 누락 서류 재검토", "3건"],
+        ["피해지원 후보", "결정신청·법률지원 연결 가능 관리 건", "5건"],
+      ],
+      referenceTitle: "외부 참고 기준",
+      references: [
+        ["정부 시스템", "전세사기피해자 지원관리시스템"],
+        ["지원기관", "HUG 전세피해지원센터"],
+        ["법령", "전세사기피해자 지원 및 주거안정 특별법"],
+      ],
+    },
+  };
+}
+
+function consumerProtectionDashboardConfig() {
+  return {
+    title: "소비자 보호 담당자 대시보드",
+    description: "적합성·적정성, 설명의무, 부당권유, 민원·분쟁, 취약고객 보호를 한 화면에서 처리하는 역할 전용 화면입니다.",
+    heroEyebrow: "금융소비자 보호 업무 사이클",
+    heroTitle: "AI는 위험 문구와 누락 설명을 찾아주고, 보호 조치는 사람이 최종 확인합니다.",
+    heroBody: "금융소비자보호법상 적합성·적정성 원칙, 불완전판매 예방, 소비자보호 조직 독립성, 민원 대응 흐름을 반영해 고객에게 나가기 전 문구와 근거를 검토합니다.",
+    badges: [
+      { label: "적합성 점검", className: "status-new" },
+      { label: "부당권유 차단", className: "status-escalated" },
+      { label: "민원 SLA", className: "status-pending" },
+    ],
+    kpis: [
+      ["고위험 권유", "6건", "최종 확인·과장·오인 표현 검토", "alert"],
+      ["설명의무 보완", "4건", "위험·수수료·중도해지 설명 누락", "file-text"],
+      ["민원 SLA", "3건", "답변 초안과 근거 보강 필요", "history"],
+      ["취약고객", "5건", "고령·디지털 취약 고객 안내 강화", "users"],
+    ],
+    workTitle: "소비자보호 업무 큐",
+    work: [
+      {
+        title: "적합성·적정성 재점검",
+        caseId: "case-104",
+        customer: "전주 중앙로 카페",
+        detail: "상담 기록과 상품 특성을 대조해 부적합·부적정 가능성과 고객 확인 문구를 정리합니다.",
+        status: "검토 대기",
+        skills: ["적합성", "적정성", "고객속성"],
+      },
+      {
+        title: "부당권유 문구 차단",
+        caseId: "case-118",
+        customer: "광주 송정 도소매",
+        detail: "최종 확인 수익, 손실 축소, 대출 유도성 표현을 고객 안내 전 담당자 승인 절차로 올립니다.",
+        status: "위반 후보",
+        skills: ["표현 점검", "광고심의", "금지문구"],
+      },
+      {
+        title: "민원 답변 근거 패킷",
+        caseId: "case-133",
+        customer: "익산 음식점",
+        detail: "민원 요지, 상담 이력, 약관·설명서 근거, 보완 조치 후보를 답변 초안으로 묶습니다.",
+        status: "보완 요청",
+        skills: ["민원 분류", "근거 패킷", "답변 초안"],
+      },
+      {
+        title: "취약고객 안내 강화",
+        caseId: "case-201",
+        customer: "서울 전세대출 고객",
+        detail: "고령·사회초년생·디지털 취약 고객에게 필요한 추가 설명과 재확인 절차를 표시합니다.",
+        status: "승인 대기",
+        skills: ["취약고객", "쉬운 문구", "재확인"],
+      },
+    ],
+    flowTitle: "소비자보호 처리 흐름",
+    flow: [
+      ["01", "고객 속성 확인", "투자성향, 상환능력, 취약고객 여부, 기존 상담 기록을 확인합니다."],
+      ["02", "상품·권유 적합성 점검", "상품 위험과 고객 상황이 맞는지 부적합 후보를 표시합니다."],
+      ["03", "설명·고지 누락 탐지", "위험, 수수료, 중도해지, 대체상품, 불이익 설명 누락을 찾습니다."],
+      ["04", "부당권유 표현 차단", "최종 확인·과장·오인·불완전판매 유발 문구를 승인 전 차단합니다."],
+      ["05", "민원·분쟁 답변", "근거, 녹취/메모, 조치 계획을 묶어 답변 초안을 만듭니다."],
+      ["06", "개선 요구·교육", "반복 위반 유형은 영업점·상품·프로세스 개선으로 넘깁니다."],
+    ],
+    roleCaseTitle: "소비자보호 업무 범주",
+    roleCases: [
+      ["적합성·적정성", "고객 상황에 맞지 않는 상품 권유 가능성을 사전 점검합니다."],
+      ["설명의무", "위험·비용·불이익·대안 설명 누락을 찾아 담당자에게 보완 요청합니다."],
+      ["부당권유", "최종 확인 수익, 손실 축소, 대출 강요성 표현을 차단합니다."],
+      ["민원·분쟁", "민원 요지, 근거 자료, 답변 초안, 후속 조치를 연결합니다."],
+      ["취약고객 보호", "고령자, 사회초년생, 디지털 취약 고객에게 쉬운 안내와 재확인을 붙입니다."],
+      ["내부 개선", "반복 민원과 위반 문구를 교육·정책·상품 개선 과제로 전환합니다."],
+    ],
+    controlTitle: "소비자 보호 승인 전 고객 발송 금지",
+    controlIcon: "shield",
+    controlLead: "고객 안내문, 민원 답변, 권유 문구는 보호 담당자 승인 뒤에만 나갑니다.",
+    controlBody: "AI는 위험 문구와 설명 누락을 찾아 보완안을 제안합니다. 고객에게 권리·비용·혜택을 최종 확인하는 표현은 보호 담당자가 근거를 확인한 뒤 발송됩니다.",
+    controlRows: [
+      ["법령 참고", "금융소비자보호법·적합성/적정성 원칙"],
+      ["통제 대상", "광고·권유·설명서·민원 답변"],
+      ["감사 기록", "탐지 문구 → 보완 → 승인 → 고객 발송"],
+    ],
+    context: {
+      roleEyebrow: "소비자보호 역할",
+      roleTitle: "고객 오해와 불완전판매를 줄이는 담당자",
+      roleRows: [
+        ["핵심 업무", "적합성·설명의무·부당권유·민원·취약고객"],
+        ["AI 역할", "위험 문구 탐지·근거 패킷·답변 초안 제안"],
+        ["사람 역할", "고객 발송 승인·보상/개선 검토"],
+      ],
+      priorityTitle: "소비자보호 담당자가 먼저 볼 항목",
+      priorities: [
+        ["고위험 권유 문구", "최종 확인·과장·오인 가능 문구", "6건"],
+        ["설명의무 누락", "위험·비용·해지 설명 보완", "4건"],
+        ["민원 SLA", "답변 마감과 근거 보강 필요", "3건"],
+      ],
+      referenceTitle: "외부 참고 기준",
+      references: [
+        ["법령", "금융소비자보호법"],
+        ["감독 방향", "불완전판매 예방·소비자보호 조직 강화"],
+        ["내부 통제", "권유 문구·설명서·민원 답변 승인 로그"],
+      ],
+    },
+  };
+}
+
+function fdsDashboardConfig() {
+  return {
+    title: "보이스피싱/FDS 담당자 대시보드",
+    description: "실시간 이상거래 탐지, 보이스피싱 신호, 지급정지 후보, 오탐 소명을 한 화면에서 처리하는 역할 전용 화면입니다.",
+    heroEyebrow: "FDS·보이스피싱 대응 사이클",
+    heroTitle: "AI는 의심 신호를 묶고, 피해 방지 차단과 해제는 기록 기반으로 처리합니다.",
+    heroBody: "금융권 공동 FDS 탐지룰, 신종 보이스피싱·대포통장 의심룰, 신고·피해구제 절차를 참고해 선제 차단 후보와 오탐 재심 큐를 분리합니다.",
+    badges: [
+      { label: "공동 탐지룰", className: "status-new" },
+      { label: "긴급 차단", className: "status-escalated" },
+      { label: "오탐 재심", className: "status-pending" },
+    ],
+    kpis: [
+      ["실시간 경보", "12건", "기관사칭·앱설치·새벽이체 신호", "alert"],
+      ["지급정지 후보", "4건", "피해 확산 방지 선차단 대상", "lock"],
+      ["룰 업데이트", "6건", "공동룰·자체룰 개선 후보", "refresh-cw"],
+      ["오탐 재심", "2건", "소명 자료와 해제 승인 대기", "check-square"],
+    ],
+    workTitle: "FDS 대응 업무 큐",
+    work: [
+      {
+        title: "기관사칭 패턴 탐지",
+        caseId: "case-133",
+        customer: "익산 음식점",
+        detail: "검찰·금감원 사칭, 원격제어 앱 설치, 신규 수취인 고액 이체를 묶어 긴급 경보로 올립니다.",
+        status: "긴급 차단",
+        skills: ["기관사칭", "원격앱", "고액이체"],
+      },
+      {
+        title: "대포통장 의심계좌",
+        caseId: "case-127",
+        customer: "군산 부품 제조업",
+        detail: "짧은 기간 다수 입금·분산 출금, 신규 계좌 급증, 타행 신고 이력을 대조합니다.",
+        status: "지급정지 후보",
+        skills: ["대포통장", "분산출금", "타행공조"],
+      },
+      {
+        title: "새벽 이체·기기 변경 룰",
+        caseId: "case-104",
+        customer: "전주 중앙로 카페",
+        detail: "기기 변경 직후 새벽 시간대 이체와 인증 실패 패턴을 자체룰 개선 후보로 기록합니다.",
+        status: "룰 점검",
+        skills: ["기기변경", "시간대 룰", "인증 실패"],
+      },
+      {
+        title: "오탐 소명·해제 검토",
+        caseId: "case-118",
+        customer: "광주 송정 도소매",
+        detail: "정상 거래 소명 자료, 통화 기록, 영업점 확인을 묶어 해제 승인 큐로 보냅니다.",
+        status: "재심 대기",
+        skills: ["오탐 소명", "해제 승인", "고객 안내"],
+      },
+    ],
+    flowTitle: "FDS 처리 흐름",
+    flow: [
+      ["01", "거래·기기·상담 신호 수집", "거래 패턴, 신규 수취인, 기기 변경, 상담 메모를 실시간 이벤트로 받습니다."],
+      ["02", "공동룰·자체룰 점수화", "금융권 공동 탐지룰과 회사별 룰을 함께 적용합니다."],
+      ["03", "긴급 차단·지급정지 후보", "피해 확산 우려 거래는 선차단 후보로 올리고 해제는 승인 큐로 분리합니다."],
+      ["04", "타행·기관 공조", "112, 1332, 지급정지 요청, 통합신고센터 연결 여부를 기록합니다."],
+      ["05", "소명·해제 재심", "오탐 가능성은 근거 패킷과 담당자 최종 확인으로 해제합니다."],
+      ["06", "룰 개선·감사", "탐지 결과, 오탐, 미탐, 피해구제 결과를 룰 개선 로그로 남깁니다."],
+    ],
+    roleCaseTitle: "FDS·보이스피싱 업무 범주",
+    roleCases: [
+      ["기관사칭", "검찰·금감원·은행 사칭과 원격제어 앱 설치 유도 신호를 탐지합니다."],
+      ["대포통장", "입출금 패턴, 분산 출금, 신고 이력으로 의심 계좌를 분류합니다."],
+      ["이상거래", "고액·새벽·신규수취인·기기변경·인증실패 조합을 봅니다."],
+      ["지급정지", "피해 확산 가능성이 높을 때 차단 후보와 법적 절차를 분리합니다."],
+      ["오탐 해제", "정상거래 소명, 영업점 확인, 해제 승인을 기록합니다."],
+      ["룰 운영", "공동룰과 자체룰을 주기적으로 갱신하고 성능을 감시합니다."],
+    ],
+    controlTitle: "긴급 차단과 해제는 감사 로그 필수",
+    controlIcon: "lock",
+    controlLead: "피해 방지 선차단은 빠르게, 해제와 고객 영향 조치는 승인 기반으로 처리합니다.",
+    controlBody: "AI는 의심 신호와 차단 후보를 제안합니다. 지급정지, 해제, 고객 통지는 담당자 승인과 근거 로그를 남긴 뒤 실행됩니다.",
+    controlRows: [
+      ["공동 기준", "금융권 FDS 공동 탐지룰·운영 가이드라인"],
+      ["신고 연결", "112·1332·1566-1188·금융회사 지급정지"],
+      ["감사 기록", "탐지 → 차단 후보 → 승인/해제 → 룰 개선"],
+    ],
+    context: {
+      roleEyebrow: "FDS 역할",
+      roleTitle: "피해 확산을 막고 오탐을 관리하는 담당자",
+      roleRows: [
+        ["핵심 업무", "보이스피싱·대포통장·이상거래·지급정지"],
+        ["AI 역할", "신호 조합·공동룰 적용·오탐 후보 제안"],
+        ["사람 역할", "지급정지·해제·고객 통지 승인"],
+      ],
+      priorityTitle: "FDS 담당자가 먼저 볼 항목",
+      priorities: [
+        ["긴급 차단 후보", "기관사칭·고액이체·원격앱 설치", "4건"],
+        ["오탐 재심", "정상 거래 소명과 해제 승인", "2건"],
+        ["룰 업데이트", "공동룰/자체룰 개선 후보", "6건"],
+      ],
+      referenceTitle: "외부 참고 기준",
+      references: [
+        ["공동룰", "금융권 FDS 공동 탐지룰"],
+        ["피해구제", "경찰 112·금감원 1332·통합신고 1566-1188"],
+        ["절차", "지급정지·채권소멸·피해환급 흐름"],
+      ],
+    },
+  };
+}
+
+function complianceDashboardConfig() {
+  return {
+    title: "내부통제 준법감시 담당자 대시보드",
+    description: "책무구조도, 담당자 승인 절차, 개인정보·가명처리, 감사 로그, 사고보고를 점검하는 역할 전용 화면입니다.",
+    heroEyebrow: "내부통제·준법감시 사이클",
+    heroTitle: "AI 운영의 책임 소재, 승인 근거, 개인정보 통제를 한 화면에서 확인합니다.",
+    heroBody: "금융회사 지배구조법상 내부통제 강화, 책무구조도, 3선 방어 체계, 신용정보·개인정보 보호 요구를 반영해 AI가 제안한 업무가 통제선 안에서 처리되는지 검증합니다.",
+    badges: [
+      { label: "책무구조도", className: "status-new" },
+      { label: "담당자 승인 절차", className: "status-pending" },
+      { label: "감사 무결성", className: "status-approved" },
+    ],
+    kpis: [
+      ["책무 점검", "8건", "업무·임원·부서 책임 매핑 확인", "network"],
+      ["정책 위반", "3건", "가드레일·승인 누락·개인정보 위험", "alert"],
+      ["감사 샘플", "11건", "해시 체인과 승인 근거 점검", "history"],
+      ["보고 패킷", "2건", "사고보고·개선명령 후보", "file-text"],
+    ],
+    workTitle: "준법감시 업무 큐",
+    work: [
+      {
+        title: "책무구조도 이행 점검",
+        caseId: "case-127",
+        customer: "군산 부품 제조업",
+        detail: "AI 제안, 담당 승인, 본부 심사, 최종 책임자를 책무구조도 관점으로 연결합니다.",
+        status: "점검 대기",
+        skills: ["책무 매핑", "3선 방어", "승인권자"],
+      },
+      {
+        title: "개인정보·가명처리 통제",
+        caseId: "case-104",
+        customer: "전주 중앙로 카페",
+        detail: "외부 분석 환경으로 나간 비식별 데이터, 식별정보 원문 격리, 출력 재식별 가능성을 샘플링합니다.",
+        status: "위반 후보",
+        skills: ["개인정보 비반출", "가명처리", "출력필터"],
+      },
+      {
+        title: "승인 로그 무결성 검증",
+        caseId: "case-201",
+        customer: "서울 신축빌라 전세 예정",
+        detail: "승인자, 시간, 근거, 프롬프트/룰 버전, 해시 체인 누락 여부를 점검합니다.",
+        status: "검증 대기",
+        skills: ["해시체인", "승인근거", "룰버전"],
+      },
+      {
+        title: "사고보고·비상정지 리허설",
+        caseId: "case-133",
+        customer: "익산 음식점",
+        detail: "오탐 차단, 부당권유, 개인정보 노출 의심 상황에서 비상정지와 보고 양식을 생성합니다.",
+        status: "상위 검토",
+        skills: ["킬스위치", "사고보고", "개선명령"],
+      },
+    ],
+    flowTitle: "준법감시 처리 흐름",
+    flow: [
+      ["01", "정책·책무 매핑", "업무, 역할, 승인권자, 책임자를 책무구조도에 연결합니다."],
+      ["02", "가드레일 적용 확인", "부당권유, 최종 확인 표현, 개인정보, 외부반출, 승인 누락 규칙을 봅니다."],
+      ["03", "담당자 승인 절차 점검", "고객 영향 조치가 담당자 최종 확인 없이 나가지 않았는지 확인합니다."],
+      ["04", "감사 원장 검증", "입력, 산출, 승인자, 시간, 해시, 버전, 근거 링크를 샘플링합니다."],
+      ["05", "예외·위반 조치", "재심, 수정 요청, 격상, 비상정지, 고객 통지 필요 여부를 정합니다."],
+      ["06", "보고·개선", "사고보고, 개선명령, 교육, 정책 업데이트로 후속 조치를 남깁니다."],
+    ],
+    roleCaseTitle: "준법감시 업무 범주",
+    roleCases: [
+      ["책무구조도", "업무별 책임자와 내부통제 관리의무 이행 여부를 확인합니다."],
+      ["담당자 승인 절차", "AI 제안이 고객 영향 조치로 자동 실행되지 않았는지 검증합니다."],
+      ["개인정보 비반출", "원본 개인정보와 토큰/가명정보 분리, 외부반출 차단을 점검합니다."],
+      ["가드레일", "최종 확인·과장·부당권유·불완전판매 유발 표현을 통제합니다."],
+      ["감사 무결성", "해시 체인, 룰 버전, 승인자, 변경 이력을 샘플링합니다."],
+      ["사고 대응", "킬스위치, 보고 양식, 고객 통지, 법적 보존을 준비합니다."],
+    ],
+    controlTitle: "AI 운영 통제선 밖 자동 실행 금지",
+    controlIcon: "shield",
+    controlLead: "책임자, 승인권자, 감사 근거가 없는 고객 영향 조치는 차단합니다.",
+    controlBody: "AI는 정책 위반 가능성과 누락 로그를 제안합니다. 내부통제 담당자는 근거와 책임 소재를 확인해 승인, 수정 요청, 재심, 비상정지를 결정합니다.",
+    controlRows: [
+      ["법령 참고", "금융회사 지배구조법·신용정보법·개인정보보호법"],
+      ["통제 구조", "1선 업무·2선 준법/리스크·3선 감사"],
+      ["감사 기록", "정책 → 승인 → 실행 → 예외/보고 → 개선"],
+    ],
+    context: {
+      roleEyebrow: "준법감시 역할",
+      roleTitle: "AI 운영의 책임과 통제선을 지키는 담당자",
+      roleRows: [
+        ["핵심 업무", "책무구조도·승인게이트·개인정보·감사·사고보고"],
+        ["AI 역할", "위반 후보·로그 누락·보고 패킷 제안"],
+        ["사람 역할", "승인·수정 요청·재심·비상정지·개선명령"],
+      ],
+      priorityTitle: "준법감시 담당자가 먼저 볼 항목",
+      priorities: [
+        ["정책 위반 후보", "승인 누락·개인정보·부당권유 표현", "3건"],
+        ["감사 샘플", "해시 체인과 근거 링크 확인", "11건"],
+        ["책무 매핑", "담당·승인·책임자 연결", "8건"],
+      ],
+      referenceTitle: "외부 참고 기준",
+      references: [
+        ["법령", "금융회사 지배구조법"],
+        ["내부통제", "책무구조도·3선 방어 체계"],
+        ["정보보호", "신용정보법·개인정보보호법·가명처리"],
+      ],
+    },
+  };
+}
+
+function jeonseProtectionDashboardPage() {
+  return roleDashboardPage(jeonseProtectionDashboardConfig());
+}
+
+function consumerProtectionDashboardPage() {
+  return roleDashboardPage(consumerProtectionDashboardConfig());
+}
+
+function fdsDashboardPage() {
+  return roleDashboardPage(fdsDashboardConfig());
+}
+
+function complianceDashboardPage() {
+  return roleDashboardPage(complianceDashboardConfig());
+}
+
+function jeonseProtectionDashboardContextMarkup() {
+  return roleDashboardContextMarkup(jeonseProtectionDashboardConfig());
+}
+
+function consumerProtectionDashboardContextMarkup() {
+  return roleDashboardContextMarkup(consumerProtectionDashboardConfig());
+}
+
+function fdsDashboardContextMarkup() {
+  return roleDashboardContextMarkup(fdsDashboardConfig());
+}
+
+function complianceDashboardContextMarkup() {
+  return roleDashboardContextMarkup(complianceDashboardConfig());
 }
 
 function inboxPage() {
@@ -1688,14 +2971,14 @@ function inboxPage() {
 
 function casesPage() {
   return `
-    ${pageHeader("케이스", "케이스", "지역 금융 위험 케이스를 목록으로 빠르게 읽고, 보드에서 상태를 이동합니다.")}
+    ${pageHeader("전체 관리 건 조회", "관리 건", "지역 금융 위험 관리 건을 목록으로 빠르게 읽고, 보드에서 상태를 이동합니다.")}
     ${panelMarkup(
-      "케이스 작업공간",
-      "위험 케이스 운영",
+      "관리 건 작업공간",
+      "위험 관리 건 운영",
       `<div class="case-toolbar">
         <label class="case-search">
           <span>검색</span>
-          <input id="case-search" type="search" value="${escapeHtml(caseSearchQuery)}" placeholder="고객, 지역, 위험 원인, 에이전트 검색" />
+          <input id="case-search" type="search" value="${escapeHtml(caseSearchQuery)}" placeholder="고객, 지역, 위험 원인, AI 업무지원 검색" />
         </label>
         <div class="view-switch board-switch" aria-label="board mode">
           <button class="${boardMode === "list" ? "is-active" : ""}" type="button" data-board-mode="list">목록</button>
@@ -1709,7 +2992,7 @@ function casesPage() {
 
 function approvalsPage() {
   return `
-    ${pageHeader("승인", "승인 큐", "고객 대상 행동, 법률/권리 리스크, 금융조건 표현을 사람 승인 전까지 차단합니다.")}
+    ${pageHeader("승인", "승인 큐", "고객 대상 행동, 법률/권리 리스크, 금융조건 표현을 담당자 최종 확인 전까지 차단합니다.")}
     ${panelMarkup(
       "승인 대기열",
       "승인 대기 항목",
@@ -1723,9 +3006,9 @@ function approvalsPage() {
 
 function runsPage() {
   return `
-    ${pageHeader("실행 이력", "실시간 실행", "지시 실행과 수동 실행으로 생성된 에이전트 실행 로그와 라이브 상태를 확인합니다.")}
+    ${pageHeader("실행 이력", "실시간 실행", "지시 실행과 수동 실행으로 생성된 AI 분석 요청 로그와 라이브 상태를 확인합니다.")}
     <section class="page-two-col">
-      ${panelMarkup("실행 로그", "에이전트 실행 로그", runsView())}
+      ${panelMarkup("실행 로그", "AI 분석 요청 로그", runsView())}
       ${panelMarkup("실시간 실행", "실시간 실행", '<div id="live-runs" class="live-runs run-page-list"></div><span id="live-count" class="count-pill ghost-count">0</span>')}
     </section>
   `;
@@ -1733,14 +3016,14 @@ function runsPage() {
 
 function jeonsePage() {
   return `
-    ${pageHeader("전세 보호", "전세사기 AI 에이전트 라인", "전세 위험 신호, 고객 자산노출, 계약 전 체크리스트, 은행 서비스 연계를 전용 에이전트들이 분담합니다.")}
+    ${pageHeader("전세 안심 점검", "전세 관련 위험 신호 관리", "전세 관련 위험 신호, 고객 자산노출, 계약 전 체크리스트, 은행 서비스 연계를 전용 AI 업무지원 기능이 분담합니다.")}
     ${panelMarkup("전세 보호", "전세사기 대응 기능", jeonseView())}
   `;
 }
 
 function goalsPage() {
   return `
-    ${pageHeader("운영 목표", "운영 목표", "에이전트 운영의 성공 기준과 달성률을 추적합니다.")}
+    ${pageHeader("운영 목표", "운영 목표", "AI 업무지원 운영의 성공 기준과 달성률을 추적합니다.")}
     ${panelMarkup("운영 목표", "목표 달성률", goalsView())}
   `;
 }
@@ -1771,49 +3054,49 @@ function agentHealthView() {
 
 function agentsPage() {
   return `
-    ${pageHeader("에이전트", "에이전트 팀", "각 AI 에이전트의 상태, 역할, 장착 스킬, 보고 체계를 확인합니다.")}
-    ${panelMarkup("운영 현황", "에이전트 헬스 요약", agentHealthView(), "agent-health-panel panel-primary")}
-    ${panelMarkup("에이전트 팀", "업무 범주별 에이전트 팀", agentsView(), "agent-team-panel")}
+    ${pageHeader("AI 업무지원", "AI 업무지원 기능", "각 AI 업무지원의 상태, 역할, 연결된 업무 기능, 보고 체계를 확인합니다.")}
+    ${panelMarkup("운영 현황", "AI 업무지원 헬스 요약", agentHealthView(), "agent-health-panel panel-primary")}
+    ${panelMarkup("AI 업무지원 팀", "업무 범주별 AI 업무지원 팀", agentsView(), "agent-team-panel")}
     ${panelMarkup("보완 필요 사항", "현재 부족한 부분", agentReadinessView(), "agent-gap-panel panel-secondary")}
   `;
 }
 
 function orgChartPage() {
   return `
-    ${pageHeader("조직도", "에이전트 조직도", "AI 에이전트들이 어떤 상위 에이전트 또는 사람에게 보고하는지 조직도로 확인합니다.")}
-    ${panelMarkup("에이전트 조직", "에이전트 조직도", orgChartView())}
+    ${pageHeader("조직도", "AI 업무지원 조직도", "AI 업무지원 기능이 어떤 담당자 또는 상위 업무에 연결되는지 조직도로 확인합니다.")}
+    ${panelMarkup("AI 업무지원 조직", "AI 업무지원 조직도", orgChartView())}
   `;
 }
 
 function skillsPage() {
   return `
-    ${pageHeader("스킬", "스킬 저장소", "에이전트에게 장착되는 금융, 리스크, 계약, 준법 스킬 패키지를 확인합니다.")}
-    ${panelMarkup("스킬 저장소", "장착 가능 스킬", skillsView())}
+    ${pageHeader("업무 기능", "업무 기능 저장소", "AI 업무지원에게 장착되는 금융, 리스크, 계약, 준법 업무 기능 패키지를 확인합니다.")}
+    ${panelMarkup("업무 기능 저장소", "장착 가능 업무 기능", skillsView())}
     ${panelMarkup("승인 정책", "점수 × 조치 유형 라우팅", approvalMatrixView(), "approval-matrix-panel panel-secondary")}
   `;
 }
 
 function routinesPage() {
   return `
-    ${pageHeader("자동화", "정기 실행 루틴", "정기 실행되는 에이전트 점검과 SLA 점검 루틴을 관리합니다.")}
+    ${pageHeader("자동화", "정기 실행 루틴", "정기 실행되는 AI 업무지원 점검과 SLA 점검 루틴을 관리합니다.")}
     ${panelMarkup("루틴 일정", "정기 실행", routinesView())}
   `;
 }
 
 function activityPage() {
   return `
-    ${pageHeader("활동 이력", "처리 이력", "에이전트 착수, 승인 생성, 상위 검토, 승인/반려 기록을 시간순으로 봅니다.")}
+    ${pageHeader("활동 이력", "처리 이력", "AI 업무지원 착수, 승인 생성, 상위 검토, 승인/수정 요청 기록을 시간순으로 봅니다.")}
     ${panelMarkup("활동 장부", "처리 이력", activityView())}
   `;
 }
 
 function budgetPage() {
   return `
-    ${pageHeader("비용", "비용과 효과", "에이전트별 예산뿐 아니라 예상 비용, 절감 가능 비용, 비용 대비 효과를 함께 봅니다.")}
-    ${panelMarkup("비용 요약", "월간 비용 판단", dashboardCostView(), "cost-panel")}
+    ${pageHeader("비용", "비용과 효과", "AI 업무지원별 예산뿐 아니라 예상 비용, 절감 가능 비용, 비용 대비 효과를 함께 봅니다.")}
+    ${panelMarkup("비용 요약", "월간 비용 검토", dashboardCostView(), "cost-panel")}
     ${panelMarkup("토큰 사용량", "일간·주간·월간 토큰 통계", tokenStatsView(), "token-panel")}
     ${panelMarkup("월별 추세", "비용 변화", dashboardTrendView(), "trend-panel")}
-    ${panelMarkup("비용 사용률", "에이전트별 사용률", budgetView())}
+    ${panelMarkup("비용 사용률", "AI 업무지원별 사용률", budgetView())}
   `;
 }
 
@@ -1828,9 +3111,9 @@ function dashboardView() {
   const scoped = visibleCases();
   const flow = [
     ["백로그", scoped.filter((item) => item.status === "New").length, "신규 접수와 위험 원인 분류 대기"],
-    ["진행 중", scoped.filter((item) => item.status === "Agent Running").length, "에이전트 실행으로 근거와 초안 생성"],
+    ["진행 중", scoped.filter((item) => item.status === "Agent Running").length, "AI 분석 요청으로 근거와 초안 생성"],
     ["검토 중", scoped.filter((item) => item.status === "Approval Pending").length, "RM/준법 승인 대기"],
-    ["차단됨", scoped.filter((item) => item.status === "Escalated" || item.status === "Rejected").length, "외부 행동 차단 또는 반려"],
+    ["차단됨", scoped.filter((item) => item.status === "Escalated" || item.status === "Rejected").length, "고객 영향 조치 보류 또는 수정 요청"],
     ["완료", scoped.filter((item) => item.status === "Approved").length, "승인 후 감사 로그 기록"],
   ];
   return `
@@ -1857,24 +3140,24 @@ function dashboardDecisionView() {
   const pendingCount = data.pending.length;
   const blockedCount = data.blocked.length;
   const summary = topCase
-    ? `${topCase.code} ${topCase.customerName}이 위험도 ${topCase.riskScore}점으로 최우선입니다. 승인 대기 ${pendingCount}건, 외부 행동 차단 ${blockedCount}건을 먼저 정리해야 합니다.`
-    : "현재 표시 범위에 케이스가 없습니다.";
+    ? `${topCase.code} ${topCase.customerName}이 주의 수준 ${topCase.riskScore}점으로 최우선입니다. 승인 대기 ${pendingCount}건, 고객 영향 조치 보류 ${blockedCount}건을 먼저 정리해야 합니다.`
+    : "현재 표시 범위에 관리 건가 없습니다.";
   return `
     <div class="decision-summary">
       <article>
         <span class="decision-icon">${iconSvg("target")}</span>
-        <strong>오늘의 판단</strong>
+        <strong>오늘의 검토</strong>
         <p>${escapeHtml(summary)}</p>
       </article>
       <article>
         <span class="decision-icon">${iconSvg("shield")}</span>
         <strong>전세 보호</strong>
-        <p>전세 위험 케이스 ${jeonseCount}건은 전세가율, 권리관계, 보증보험 가능성을 확인한 뒤 은행 상담으로 연결합니다.</p>
+        <p>전세 위험 관리 건 ${jeonseCount}건은 전세가율, 권리관계, 보증보험 요건 확인 필요을 확인한 뒤 은행 상담으로 연결합니다.</p>
       </article>
       <article>
         <span class="decision-icon">${iconSvg("database")}</span>
         <strong>데이터 기준</strong>
-        <p>현재 화면은 데모 데이터 ${data.demoData.length}건과 사용자 입력 데이터 ${data.userInput.length}건을 구분하며, 저장 결과는 로컬 저장소에 남깁니다.</p>
+        <p>현재 화면은 데모 데이터 ${data.demoData.length}건과 신규 접수 정보 ${data.userInput.length}건을 구분하며, 저장 결과는 로컬 저장소에 남깁니다.</p>
       </article>
     </div>
   `;
@@ -1887,11 +3170,11 @@ function scenarioCompletionView() {
   return `
     <div class="scenario-cycle">
       <div class="cycle-kpis">
-        ${costKpi("분석 생성", `${data.scoped.filter((item) => item.analysisResult).length}건`, "판단 결과가 만들어진 케이스")}
-        ${costKpi("결과 저장", `${data.savedResults.length}건`, "사용자 가치가 기록된 케이스")}
-        ${costKpi("후속 작업", `${data.followUps.length}건`, "다음 행동까지 이어진 케이스")}
+        ${costKpi("분석 생성", `${data.scoped.filter((item) => item.analysisResult).length}건`, "검토 결과가 만들어진 관리 건")}
+        ${costKpi("검토 결과 저장", `${data.savedResults.length}건`, "사용자 가치가 기록된 관리 건")}
+        ${costKpi("후속 작업", `${data.followUps.length}건`, "후속 확인 항목까지 이어진 관리 건")}
       </div>
-      <p class="insight-copy">완료 기준은 분석 결과 생성, 결과 저장, 후속 작업 생성 3단계입니다. 현재 완성형 사이클은 ${completeCases.length}건입니다.</p>
+      <p class="insight-copy">완료 기준은 분석 결과 생성, 검토 결과 저장, 후속 작업 생성 3단계입니다. 현재 완성형 사이클은 ${completeCases.length}건입니다.</p>
       <div class="scenario-result-list">
         ${
           latest.length
@@ -1902,7 +3185,7 @@ function scenarioCompletionView() {
                   <p>${escapeHtml(entry.value)}</p>
                 </article>
               `).join("")
-            : '<div class="empty-state">저장된 시나리오 결과 없음. 전세 진단 또는 케이스 실행 후 결과 저장을 누르세요.</div>'
+            : '<div class="empty-state">저장된 시나리오 결과 없음. 전세 사전 점검 또는 관리 건 실행 후 검토 결과 저장을 누르세요.</div>'
         }
       </div>
     </div>
@@ -1912,9 +3195,9 @@ function scenarioCompletionView() {
 function dataStatusView() {
   const data = buildDashboardData();
   const sources = [
-    ["데모 데이터", data.demoData.length, "제안서 시연용 기본 케이스"],
-    ["사용자 입력 데이터", data.userInput.length, "등록 폼으로 생성된 케이스"],
-    ["저장된 분석 결과", data.savedResults.length, "결과 저장 버튼으로 기록된 케이스"],
+    ["데모 데이터", data.demoData.length, "제안서 시연용 기본 관리 건"],
+    ["신규 접수 정보", data.userInput.length, "등록 폼으로 생성된 관리 건"],
+    ["저장된 분석 결과", data.savedResults.length, "검토 결과 저장 버튼으로 기록된 관리 건"],
   ];
   return `
     <div class="data-status">
@@ -1942,7 +3225,7 @@ function dataReliabilityView() {
       state: "sample",
       title: "샘플 데이터",
       value: `${data.demoData.length}건`,
-      detail: "제안서 시연을 위해 준비된 기본 케이스입니다.",
+      detail: "제안서 시연을 위해 준비된 기본 관리 건입니다.",
     },
     {
       state: "real",
@@ -1954,19 +3237,19 @@ function dataReliabilityView() {
       state: "success",
       title: "분석 완료",
       value: `${data.savedResults.length}건`,
-      detail: "결과 저장과 후속 작업 생성까지 완료된 케이스를 추적합니다.",
+      detail: "검토 결과 저장과 후속 작업 생성까지 완료된 관리 건을 추적합니다.",
     },
     {
       state: "loading",
       title: "분석 중",
       value: `${running}건`,
-      detail: running ? "에이전트가 근거 수집과 승인 게이트를 확인 중입니다." : "현재 실행 중인 분석은 없습니다.",
+      detail: running ? "AI 업무지원 기능이 근거 수집과 담당자 승인 절차를 확인 중입니다." : "현재 실행 중인 분석은 없습니다.",
     },
     {
       state: "empty",
       title: "빈 상태",
       value: scenarioResults.length ? "해소" : "대기",
-      detail: scenarioResults.length ? "저장된 시나리오 결과가 있습니다." : "진단 실행 후 결과 저장을 누르면 완료 기록이 생성됩니다.",
+      detail: scenarioResults.length ? "저장된 시나리오 결과가 있습니다." : "사전 점검 실행 후 검토 결과 저장을 누르면 완료 기록이 생성됩니다.",
     },
     {
       state: "error",
@@ -1987,7 +3270,7 @@ function dataReliabilityView() {
       <div class="data-state-grid" aria-label="데이터 신뢰도 상태">
         ${cards.map(dataStateCard).join("")}
       </div>
-      <p class="insight-copy">현재 대시보드는 샘플 데이터와 사용자 입력 데이터를 함께 사용합니다. 실제 API 미연결 항목은 고객 안내나 자동 실행 근거로 사용하지 말고, 승인 전 추가 확인이 필요합니다.</p>
+      <p class="insight-copy">현재 대시보드는 샘플 데이터와 신규 접수 정보를 함께 사용합니다. 실제 API 미연결 항목은 고객 안내나 자동 실행 근거로 사용하지 말고, 승인 전 추가 확인이 필요합니다.</p>
     </div>
   `;
 }
@@ -2053,10 +3336,10 @@ function generateCostInsight(data) {
     : data.pending.length
       ? "승인 대기"
       : data.blocked.length
-        ? "외부 행동 차단"
+        ? "고객 영향 조치 보류"
         : "근거 미연결";
-  const action = data.roi >= 3 ? "비용 대비 효과가 큰 케이스" : "승인 SLA가 임박한 케이스";
-  return `이번 주 예상 비용 ${formatWon(data.expected)} 중 ${topLabel}이 ${topPercent}%를 차지합니다. ${priority} 케이스부터 ${action} 기준으로 처리하면 예상 절감 가능액 ${formatWon(data.avoidableLoss)}을 우선 방어할 수 있습니다.`;
+  const action = data.roi >= 3 ? "비용 대비 효과가 큰 관리 건" : "승인 SLA가 임박한 관리 건";
+  return `이번 주 예상 비용 ${formatWon(data.expected)} 중 ${topLabel}이 ${topPercent}%를 차지합니다. ${priority} 관리 건부터 ${action} 기준으로 처리하면 예상 절감 가능액 ${formatWon(data.avoidableLoss)}을 우선 방어할 수 있습니다.`;
 }
 
 function costKpi(label, value, detail) {
@@ -2088,9 +3371,9 @@ function dashboardRegionView() {
     value: e.average,
   })));
   return `
-    <div class="viz-label">위험도 점수 분포</div>
+    <div class="viz-label">주의 수준 점수 분포</div>
     ${riskHistogram(visibleCases())}
-    <div class="viz-label">지역별 평균 위험도</div>
+    <div class="viz-label">지역별 평균 주의 수준</div>
     ${bars}
   `;
 }
@@ -2111,7 +3394,7 @@ function dispatchResultMarkup() {
   return `
     <section class="dispatch-result workspace-panel">
       <div>
-        <p class="eyebrow">에이전트 실행 생성</p>
+        <p class="eyebrow">AI 분석 요청 생성</p>
         <h3>${escapeHtml(lastDispatchResult.caseCode)} · ${escapeHtml(lastDispatchResult.caseTitle)}</h3>
         <p>${escapeHtml(lastDispatchResult.summary)}</p>
       </div>
@@ -2135,7 +3418,7 @@ function recentCasesView() {
 
 function inboxView() {
   const targets = visibleCases().filter((item) => item.status === "Escalated" || item.status === "Approval Pending");
-  if (!targets.length) return '<div class="empty-state">처리 필요 알림 없음</div>';
+  if (!targets.length) return '<div class="empty-state">확인할 긴급 알림이 없습니다</div>';
   return `
     <div class="work-grid">
       ${targets
@@ -2171,7 +3454,7 @@ function approvalsView() {
     if (approvalTab === "rejected") return item.status === "Rejected" || item.status === "Escalated";
     return true;
   });
-  if (!approvals.length) return '<div class="empty-state">승인 대기 항목 없음</div>';
+  if (!approvals.length) return '<div class="empty-state">검토할 승인 요청이 없습니다</div>';
   return `
     <div class="approval-list">
       ${approvals
@@ -2190,7 +3473,7 @@ function approvalsView() {
                 </button>
                 <button class="danger-button" type="button" data-reject-case="${escapeHtml(item.id)}" ${item.status === "Approval Pending" ? "" : "disabled"}>
                   <span aria-hidden="true">×</span>
-                  반려
+                  수정 요청
                 </button>
                 <button class="ghost-button" type="button" data-case-id="${escapeHtml(item.id)}">상세 보기</button>
               </div>
@@ -2206,7 +3489,7 @@ function approvalMatrixView() {
   return `
     <div class="matrix-table" role="table" aria-label="승인 레벨 매트릭스">
       <div class="matrix-row matrix-head" role="row">
-        <span>레벨</span><span>점수</span><span>고객 안내</span><span>계약/전세</span><span>사기 차단</span><span>판단 이유</span>
+        <span>레벨</span><span>점수</span><span>고객 안내</span><span>계약/전세</span><span>사기 차단</span><span>검토 근거</span>
       </div>
       ${approvalLevelMatrix
         .map(
@@ -2223,7 +3506,7 @@ function approvalMatrixView() {
         )
         .join("")}
     </div>
-    <p class="insight-copy">판단 카드는 신호별 기여 점수를 합산해 위험 점수를 만들고, 이 표의 점수 구간과 조치 유형으로 승인 레벨을 계산합니다.</p>
+    <p class="insight-copy">검토 카드는 신호별 기여 점수를 합산해 내부 검토용 점수를 만들고, 이 표의 점수 구간과 조치 유형으로 승인 레벨을 계산합니다.</p>
   `;
 }
 
@@ -2232,7 +3515,7 @@ function approvalTabLabel(tab) {
     all: "전체",
     pending: "대기",
     approved: "승인",
-    rejected: "차단/반려",
+    rejected: "차단/수정 요청",
   }[tab] || tab;
 }
 
@@ -2242,13 +3525,13 @@ function runStatusLabel(status) {
     approval_pending: "승인 대기",
     escalated: "상위 검토",
     completed: "완료",
-    rejected: "반려",
+    rejected: "수정 요청",
   };
   return labels[status] || status;
 }
 
 function runsView() {
-  if (!agentRuns.length) return '<div class="empty-state">실행된 에이전트 실행 없음</div>';
+  if (!agentRuns.length) return '<div class="empty-state">요청된 AI 분석이 없습니다</div>';
   return `
     <div class="run-log-list">
       ${agentRuns
@@ -2262,7 +3545,7 @@ function runsView() {
               <span class="status-pill ${statusClass(run.status)}">${escapeHtml(label)}</span>
               </div>
               <button class="link-button" type="button" data-case-id="${escapeHtml(run.caseId)}">
-                ${escapeHtml(run.caseCode)} · ${escapeHtml(target ? target.customerName : "케이스 없음")}
+                ${escapeHtml(run.caseCode)} · ${escapeHtml(target ? target.customerName : "관리 건 없음")}
               </button>
               <p class="run-command">“${escapeHtml(run.command)}”</p>
               <div class="run-log">
@@ -2290,7 +3573,7 @@ function jeonseView() {
   if (!jeonseCase) {
     return `
       <div class="empty-state">
-        <p>전세사기 위험 케이스가 없습니다. 케이스를 등록한 뒤 다시 시도하세요.</p>
+        <p>전세 관련 위험 신호 관리 건이 없습니다. 관리 건을 등록한 뒤 다시 시도하세요.</p>
       </div>
     `;
   }
@@ -2307,7 +3590,7 @@ function jeonseView() {
       <section class="diagnosis-panel">
         <div class="diagnosis-copy">
           <p class="eyebrow">실제 입력 흐름</p>
-          <h3>전세 위험 진단 실행</h3>
+          <h3>전세 위험 사전 점검 실행</h3>
           <p>보증금, 주변 매매가, 고객 자산, 월소득, 권리관계 신호를 입력하면 전세가율·자산노출·주거비 부담을 계산해 승인 대기 리포트로 연결합니다.</p>
         </div>
         ${jeonseDiagnosisFormMarkup(jeonseCase)}
@@ -2321,7 +3604,7 @@ function jeonseView() {
               <article class="work-item is-clickable ${feature.id === selectedFeatureId && activeDetailType === "feature" ? "is-selected" : ""}" data-feature-id="${escapeHtml(feature.id)}" role="button" tabindex="0">
                 <div class="item-head">
                   <strong>${escapeHtml(feature.title)}</strong>
-                  <span class="source-badge">${featureAgents.length}개 에이전트 · ${feature.skills.length}개 스킬</span>
+                  <span class="source-badge">${featureAgents.length}개 AI 업무지원 · ${feature.skills.length}개 업무 기능</span>
                 </div>
                 <p>${escapeHtml(feature.description)}</p>
                 <div class="tag-row">${feature.skills.map((skill) => `<span class="tag">${escapeHtml(skillLabel(skill))}</span>`).join("")}</div>
@@ -2368,7 +3651,7 @@ function jeonseDiagnosisFormMarkup(item) {
       </label>
       <button class="primary-button" type="submit">
         <span aria-hidden="true">${iconSvg("activity")}</span>
-        진단 실행
+        사전 점검 실행
       </button>
     </form>
   `;
@@ -2378,8 +3661,8 @@ function jeonseDiagnosticResultMarkup(item) {
   if (!item.jeonseInputs) {
     return `
       <div class="diagnosis-result empty-diagnosis">
-        <strong>아직 계산된 진단 없음</strong>
-        <p>입력값으로 진단을 실행하면 전세가율, 자산노출, 월 부담률, 다음 행동이 표시됩니다.</p>
+        <strong>아직 계산된 사전 점검 없음</strong>
+        <p>입력값으로 사전 점검을 실행하면 전세가율, 자산노출, 월 부담률, 후속 확인 항목이 표시됩니다.</p>
       </div>
     `;
   }
@@ -2387,7 +3670,7 @@ function jeonseDiagnosticResultMarkup(item) {
   return `
     <div class="diagnosis-result">
       <div class="diagnosis-result-head">
-        <strong>진단 결과 · 위험도 ${item.riskScore}점</strong>
+        <strong>사전 점검 결과 · 주의 수준 ${item.riskScore}점</strong>
         <span class="status-pill ${statusClass(item.status)}">${escapeHtml(statusLabel(item.status))}</span>
       </div>
       <div class="diagnosis-kpis">
@@ -2417,7 +3700,7 @@ function agentsView() {
                   <p>${escapeHtml(group.description)}</p>
                 </div>
                 <div class="agent-team-stats">
-                  <span>${groupAgents.length}개 에이전트</span>
+                  <span>${groupAgents.length}개 AI 업무지원</span>
                   <span>실행 ${groupAgents.filter((agent) => agent.status === "running").length}</span>
                   <span>대기열 ${groupAgents.reduce((sum, agent) => sum + agent.queue, 0)}</span>
                 </div>
@@ -2486,7 +3769,7 @@ function orgChartView() {
     },
     {
       title: "승인과 고객 운영",
-      subtitle: "RM 초안, 승인 게이트, 고객 안내 전 통제",
+      subtitle: "RM 초안, 담당자 승인 절차, 고객 안내 전 통제",
       agents: ["rm-copilot"],
     },
     {
@@ -2497,7 +3780,7 @@ function orgChartView() {
   ];
 
   return `
-      <div class="org-diagram" role="img" aria-label="JB LocalGuard OS AI 에이전트 조직도">
+      <div class="org-diagram" role="img" aria-label="JB 금융안전 업무지원 조직도">
       <div class="org-tier org-human-tier">
         ${humanNode("RM 최종 승인자", "고객 안내와 RM 조치 최종 승인")}
         ${humanNode("준법 최종 승인자", "규제, 개인정보, 법률 표현 최종 검토")}
@@ -2523,7 +3806,7 @@ function orgChartView() {
 function humanNode(title, description) {
   return `
     <article class="org-node human">
-      <span class="node-kicker">사람 승인</span>
+      <span class="node-kicker">담당자 최종 확인</span>
       <strong>${escapeHtml(title)}</strong>
       <p>${escapeHtml(description)}</p>
     </article>
@@ -2559,7 +3842,7 @@ function orgNode(agent, variant = "") {
       <div class="node-meta">
         <span>상태 확인 ${escapeHtml(agent.heartbeat)}</span>
         <span>대기열 ${agent.queue}</span>
-        <span>스킬 ${agent.skills.length}개</span>
+        <span>업무 기능 ${agent.skills.length}개</span>
       </div>
     </article>
   `;
@@ -2710,6 +3993,12 @@ function renderProperties() {
     activity: activityContextMarkup,
     budget: budgetContextMarkup,
     settings: settingsContextMarkup,
+    "rm-dashboard": rmDashboardContextMarkup,
+    "corporate-credit-dashboard": corporateCreditDashboardContextMarkup,
+    "jeonse-protection-dashboard": jeonseProtectionDashboardContextMarkup,
+    "consumer-protection-dashboard": consumerProtectionDashboardContextMarkup,
+    "fds-dashboard": fdsDashboardContextMarkup,
+    "compliance-dashboard": complianceDashboardContextMarkup,
   };
 
   let markup;
@@ -2741,6 +4030,12 @@ function propertyPanelTitle() {
   if (activeDetailType === "agent" && currentAgent()) return agentLabel(currentAgent());
   if (activeDetailType === "skill" && currentSkill()) return skillLabel(currentSkill().slug);
   if (activeDetailType === "feature" && currentFeature()) return currentFeature().title;
+  if (activeDetailType === "view" && activeView === "rm-dashboard") return "RM 역할 대시보드";
+  if (activeDetailType === "view" && activeView === "corporate-credit-dashboard") return "기업여신 담당자 대시보드";
+  if (activeDetailType === "view" && activeView === "jeonse-protection-dashboard") return "전세보호 담당자 대시보드";
+  if (activeDetailType === "view" && activeView === "consumer-protection-dashboard") return "소비자 보호 담당자 대시보드";
+  if (activeDetailType === "view" && activeView === "fds-dashboard") return "보이스피싱/FDS 담당자 대시보드";
+  if (activeDetailType === "view" && activeView === "compliance-dashboard") return "내부통제 준법감시 담당자 대시보드";
   if (activeDetailType === "view") return "선택 화면 요약";
   const item = currentCase();
   return item ? `${item.code} · ${item.customerName}` : "속성";
@@ -2801,12 +4096,12 @@ function groupedAgentsMarkup(agentList) {
   const groups = ["관제·통제", "탐지·분석", "금융·은행", "고객 안내"]
     .map((title) => [title, agentList.filter((agent) => categorizeAgent(agent) === title)])
     .filter(([, entries]) => entries.length);
-  if (!groups.length) return '<div class="empty-state">배정된 에이전트 없음</div>';
+  if (!groups.length) return '<div class="empty-state">배정된 AI 업무지원 없음</div>';
   return groups
     .map(([title, entries]) =>
       detailGroup(
         title,
-        `${entries.length}개 에이전트`,
+        `${entries.length}개 AI 업무지원`,
         `<div class="context-list">${entries.map(agentLinkButton).join("")}</div>`,
         title === "관제·통제" ? "key" : title === "금융·은행" ? "wallet" : title === "고객 안내" ? "users" : "activity",
       ),
@@ -2841,12 +4136,12 @@ function agentDetailMarkup() {
   return `
     ${collapsiblePanel(
       "agent-summary",
-      "선택 에이전트",
+      "선택 AI 업무지원",
       agentLabel(agent),
       `<div class="case-properties">
         ${detailGroup(
           "역할과 보고",
-          "이 에이전트가 맡은 업무와 보고 대상을 확인합니다.",
+          "이 AI 업무지원 기능이 맡은 업무와 보고 대상을 확인합니다.",
           `<div class="property-list">
             ${propertyRow("담당 업무", localizeLine(agent.role))}
             ${propertyRow("유형", typeLabel(agent.type))}
@@ -2865,17 +4160,17 @@ function agentDetailMarkup() {
           </div>`,
           "activity",
         )}
-        ${detailGroup("장착 스킬", "이 에이전트가 실행할 수 있는 기능입니다.", `<div class="tag-row">${agent.skills.map(skillTagButton).join("")}</div>`, "puzzle")}
+        ${detailGroup("연결된 업무 기능", "이 AI 업무지원 기능이 실행할 수 있는 기능입니다.", `<div class="tag-row">${agent.skills.map(skillTagButton).join("")}</div>`, "puzzle")}
       </div>`,
       statusLabel(agent.status),
       "selected-case-panel",
     )}
     ${compactPanel(
-      "담당 케이스",
-      "담당 케이스",
+      "담당 관리 건",
+      "담당 관리 건",
       linked.length
         ? `<div class="context-list">${linked.map(caseLinkButton).join("")}</div>`
-        : '<div class="empty-state">연결된 케이스 없음</div>',
+        : '<div class="empty-state">연결된 관리 건 없음</div>',
       `${linked.length}개`,
     )}
     ${compactPanel(
@@ -2884,10 +4179,10 @@ function agentDetailMarkup() {
       `<div class="action-row action-stack">
         <button id="agent-run-case" class="primary-button" type="button" ${firstCase && firstCase.status !== "Agent Running" ? "" : "disabled"}>
           <span aria-hidden="true">▶</span>
-          ${escapeHtml(firstCase ? `${firstCase.code} 실행` : "실행할 케이스 없음")}
+          ${escapeHtml(firstCase ? `${firstCase.code} AI 분석 요청` : "분석 요청할 관리 건 없음")}
         </button>
-        <button id="agent-open-cases" class="secondary-button" type="button" ${firstCase ? "" : "disabled"}>케이스 화면으로 이동</button>
-        <button id="back-to-case" class="ghost-button" type="button">선택 케이스로 돌아가기</button>
+        <button id="agent-open-cases" class="secondary-button" type="button" ${firstCase ? "" : "disabled"}>관리 건 화면으로 이동</button>
+        <button id="back-to-case" class="ghost-button" type="button">선택 관리 건으로 돌아가기</button>
       </div>`,
     )}
   `;
@@ -2901,12 +4196,12 @@ function skillDetailMarkup() {
   return `
     ${collapsiblePanel(
       "skill-summary",
-      "선택 스킬",
+      "선택 업무 기능",
       skillLabel(skill.slug),
       `<div class="case-properties">
         ${detailGroup(
           "기능 정보",
-          "스킬의 목적과 적용 범주입니다.",
+          "업무 기능의 목적과 적용 범주입니다.",
           `<div class="property-list">
             ${propertyRow("유형", typeLabel(skill.type))}
             ${propertyRow("목적", localizeLine(skill.purpose))}
@@ -2917,7 +4212,7 @@ function skillDetailMarkup() {
           "통제 정책",
           "실행 전에 필요한 승인과 위험 수준입니다.",
           `<div class="property-list">
-            ${propertyRow("위험도", statusLabel(skill.risk))}
+            ${propertyRow("주의 수준", statusLabel(skill.risk))}
             ${propertyRow("승인 정책", approvalLabel(skill.approval))}
             ${propertyRow("사용 여부", skill.enabled ? "사용 중" : "중지")}
           </div>`,
@@ -2929,22 +4224,22 @@ function skillDetailMarkup() {
     )}
     ${skillBodyPanel(skill)}
     ${compactPanel(
-      "장착 에이전트",
-      "이 스킬을 사용하는 에이전트",
+      "장착 AI 업무지원",
+      "이 업무 기능을 사용하는 AI 업무지원",
       users.length
         ? `<div class="context-list">${users.map(agentLinkButton).join("")}</div>`
-        : '<div class="empty-state">장착한 에이전트 없음</div>',
+        : '<div class="empty-state">장착한 AI 업무지원 없음</div>',
       `${users.length}개`,
     )}
     ${compactPanel(
-      "적용 케이스",
-      "이 스킬이 적용된 케이스",
+      "적용 관리 건",
+      "이 업무 기능이 적용된 관리 건",
       linked.length
         ? `<div class="context-list">${linked.map(caseLinkButton).join("")}</div>`
-        : '<div class="empty-state">적용된 케이스 없음</div>',
+        : '<div class="empty-state">적용된 관리 건 없음</div>',
       `${linked.length}개`,
     )}
-    ${compactPanel("이동", "이동", '<div class="action-row action-stack"><button id="back-to-case" class="ghost-button" type="button">선택 케이스로 돌아가기</button></div>')}
+    ${compactPanel("이동", "이동", '<div class="action-row action-stack"><button id="back-to-case" class="ghost-button" type="button">선택 관리 건으로 돌아가기</button></div>')}
   `;
 }
 
@@ -2959,25 +4254,25 @@ function featureDetailMarkup() {
       feature.title,
       `<div class="case-properties">
         ${detailGroup("기능 설명", "사용자가 이 항목에서 확인할 업무입니다.", `<p>${escapeHtml(feature.description)}</p>`, "shield")}
-        ${detailGroup("연결 스킬", "이 기능을 실행하는 세부 스킬입니다.", `<div class="tag-row">${feature.skills.map(skillTagButton).join("")}</div>`, "puzzle")}
+        ${detailGroup("연결 업무 기능", "이 기능을 실행하는 세부 업무 기능입니다.", `<div class="tag-row">${feature.skills.map(skillTagButton).join("")}</div>`, "puzzle")}
       </div>`,
       "활성",
       "selected-case-panel",
     )}
     ${compactPanel(
-      "연결 에이전트",
-      "이 기능을 수행하는 에이전트",
+      "연결 AI 업무지원",
+      "이 기능을 수행하는 AI 업무지원",
       featureAgents.length
         ? `<div class="context-list">${featureAgents.map(agentLinkButton).join("")}</div>`
-        : '<div class="empty-state">연결된 에이전트 없음</div>',
+        : '<div class="empty-state">연결된 AI 업무지원 없음</div>',
       `${featureAgents.length}개`,
     )}
     ${compactPanel(
-      "대상 케이스",
-      "적용 대상 케이스",
-      jeonseCase ? `<div class="context-list">${caseLinkButton(jeonseCase)}</div>` : '<div class="empty-state">전세 케이스 없음</div>',
+      "대상 관리 건",
+      "적용 대상 관리 건",
+      jeonseCase ? `<div class="context-list">${caseLinkButton(jeonseCase)}</div>` : '<div class="empty-state">전세 관리 건 없음</div>',
     )}
-    ${compactPanel("이동", "이동", '<div class="action-row action-stack"><button id="back-to-case" class="ghost-button" type="button">선택 케이스로 돌아가기</button></div>')}
+    ${compactPanel("이동", "이동", '<div class="action-row action-stack"><button id="back-to-case" class="ghost-button" type="button">선택 관리 건으로 돌아가기</button></div>')}
   `;
 }
 
@@ -3001,9 +4296,9 @@ function caseContextMarkup() {
     <div id="case-properties" class="case-properties">
       ${detailGroup(
         "기본 식별",
-        "어느 고객과 계열사 케이스인지 확인합니다.",
+        "어느 고객과 계열사 관리 건인지 확인합니다.",
         `<div class="property-list">
-          ${propertyRow("케이스 코드", item.code)}
+          ${propertyRow("관리 건 코드", item.code)}
           ${propertyRow("계열사", item.affiliate)}
           ${propertyRow("지역/업종", `${item.region} · ${item.industry}`)}
           ${propertyRow("데이터 출처", caseDataSource(item))}
@@ -3011,10 +4306,10 @@ function caseContextMarkup() {
         "file-text",
       )}
       ${detailGroup(
-        "위험 판단",
+        "위험 검토",
         "왜 우선 처리해야 하는지 확인합니다.",
         `<div class="property-list">
-          ${propertyRow("위험도", `${item.riskScore}/100 · ${statusLabel(item.priority)}`)}
+          ${propertyRow("주의 수준", `${item.riskScore}/100 · ${statusLabel(item.priority)}`)}
           ${propertyRow("노출 위험", item.exposure)}
         </div>
         <div class="tag-row">${item.rootCauses.map((cause) => `<span class="tag">${escapeHtml(cause)}</span>`).join("")}</div>`,
@@ -3022,7 +4317,7 @@ function caseContextMarkup() {
       )}
       ${detailGroup(
         "처리 책임",
-        "누가 어떤 스킬로 처리하는지 확인합니다.",
+        "누가 어떤 업무 기능로 처리하는지 확인합니다.",
         `<div class="property-list">
           ${propertyRow("자동화 수준", item.zeroHuman)}
           ${propertyRow("담당자", agentLabel(item.owner))}
@@ -3034,22 +4329,22 @@ function caseContextMarkup() {
     </div>
   `;
   const approvalBody = `
-    ${detailGroup("고객 전 통제", "고객 안내 전에 통과해야 하는 조건입니다.", `<div id="approval-gates" class="approval-gates">${gateRows}</div>`, "check-square")}
+    ${detailGroup("고객 전 통제", "고객 안내 전에 점검 완료해야 하는 조건입니다.", `<div id="approval-gates" class="approval-gates">${gateRows}</div>`, "check-square")}
     ${detailGroup(
       "처리 버튼",
-      "실행, 승인, 반려를 한곳에서 처리합니다.",
+      "AI 분석 요청, 고객 안내 승인, 수정 요청을 한곳에서 처리합니다.",
       `<div class="action-row">
         <button id="run-agents" class="primary-button" type="button" ${runDisabled}>
           <span aria-hidden="true">${iconSvg("activity")}</span>
-          실행
+          AI 분석 요청
         </button>
         <button id="approve-action" class="secondary-button" type="button" ${reviewDisabled}>
           <span aria-hidden="true">${iconSvg("check-square")}</span>
-          승인
+          고객 안내 승인
         </button>
         <button id="reject-action" class="danger-button" type="button" ${reviewDisabled}>
           <span aria-hidden="true">${iconSvg("alert")}</span>
-          반려
+          수정 요청
         </button>
       </div>`,
       "activity",
@@ -3059,30 +4354,30 @@ function caseContextMarkup() {
   return `
     <button class="open-detail-button" type="button" data-open-case-detail="${escapeHtml(item.id)}">
       <span aria-hidden="true">${iconSvg("layout-dashboard")}</span>
-      케이스 상세 페이지 열기
+      관리 건 상세 페이지 열기
     </button>
 
     ${collapsiblePanel(
       "case-summary",
-      "선택 케이스",
+      "선택 관리 건",
       item.customerName,
       caseSummaryBody,
-      `${statusLabel(item.status)} · 위험도 ${item.riskScore}`,
+      `${statusLabel(item.status)} · 주의 수준 ${item.riskScore}`,
       "selected-case-panel",
     )}
 
     ${collapsiblePanel(
       "case-result",
       "분석 결과",
-      "생성 산출물과 다음 행동",
+      "생성 산출물과 후속 확인 항목",
       analysisResultMarkup(item),
       item.status === "Agent Running" ? "처리 중" : item.analysisResult ? `${item.analysisResult.confidence}% 신뢰도` : "미생성",
     )}
 
     ${collapsiblePanel(
       "case-agents",
-      "담당 에이전트",
-      "업무와 스킬",
+      "담당 AI 업무지원",
+      "업무와 업무 기능",
       groupedAgentsMarkup(caseAgents(item)),
       `${caseAgents(item).length}개 배정`,
     )}
@@ -3090,7 +4385,7 @@ function caseContextMarkup() {
     ${collapsiblePanel(
       "case-approval",
       "승인 정책",
-      "사람 승인 게이트",
+      "담당자 승인 절차",
       approvalBody,
       `${item.gates.length}개 통제`,
     )}
@@ -3106,8 +4401,8 @@ function analysisResultMarkup(item) {
     return `
       <div class="result-empty loading-result" aria-live="polite">
         <span class="loading-spinner" aria-hidden="true"></span>
-        <strong>${escapeHtml(item.processingStep || "에이전트가 케이스를 분석 중입니다.")}</strong>
-        <p>근거 수집, 위험 분류, 승인 게이트 검토가 끝나면 이 영역에 분석 결과와 생성 산출물이 표시됩니다.</p>
+        <strong>${escapeHtml(item.processingStep || "AI 업무지원 기능이 관리 건을 분석 중입니다.")}</strong>
+        <p>근거 수집, 위험 분류, 담당자 승인 절차 검토가 끝나면 이 영역에 분석 결과와 생성 산출물이 표시됩니다.</p>
       </div>
     `;
   }
@@ -3116,7 +4411,7 @@ function analysisResultMarkup(item) {
       <div class="result-empty">
         <span class="detail-group-icon" aria-hidden="true">${iconSvg("activity")}</span>
         <strong>아직 분석 결과가 없습니다.</strong>
-        <p>실행 버튼이나 전세 진단 폼을 사용하면 에이전트가 판단 결과, 생성 산출물, 다음 행동을 이 영역에 기록합니다.</p>
+        <p>AI 분석 요청 버튼이나 전세 사전 점검 폼을 사용하면 AI 업무지원 기능이 검토 결과, 생성 산출물, 후속 확인 항목을 이 영역에 기록합니다.</p>
       </div>
     `;
   }
@@ -3127,15 +4422,15 @@ function analysisResultMarkup(item) {
       <div class="result-summary">
         <span class="source-badge">${escapeHtml(result.source)} · ${escapeHtml(result.createdAt)}</span>
         <strong>${escapeHtml(result.summary)}</strong>
-        <p><b>권고 조치</b> · ${escapeHtml(result.recommendation)}</p>
-        <p><b>판단 이유</b> · ${escapeHtml(result.reason)}</p>
-        <p><b>반려 시 대안</b> · ${escapeHtml(result.rejectionAlternative)}</p>
+        <p><b>검토할 조치</b> · ${escapeHtml(result.recommendation)}</p>
+        <p><b>검토 근거</b> · ${escapeHtml(result.reason)}</p>
+        <p><b>수정 요청 시 대안</b> · ${escapeHtml(result.rejectionAlternative)}</p>
         <div class="source-chip-row">
           ${decision.signals.map((signal) => sourceChip(signal.sourceTag, signal.source)).join("")}
         </div>
       </div>
       <details class="score-breakdown" open>
-        <summary>위험 점수 분해 · ${decision.score}점 · ${decision.level}</summary>
+        <summary>내부 검토용 점수 구성 · ${decision.score}점 · ${decision.level}</summary>
         <div class="score-signal-list">
           ${decision.signals
             .map(
@@ -3158,13 +4453,13 @@ function analysisResultMarkup(item) {
       <div class="result-lists">
         ${detailGroup(
           "생성 산출물",
-          "저장하면 케이스 처리 기록에 남습니다.",
+          "저장하면 관리 건 처리 기록에 남습니다.",
           `<div class="tag-row">${result.deliverables.map((entry) => `<span class="tag">${escapeHtml(entry)}</span>`).join("")}</div>`,
           "file-text",
         )}
         ${detailGroup(
           "체크리스트",
-          "다음 행동 전에 확인할 항목입니다.",
+          "후속 확인 항목 전에 확인할 항목입니다.",
           `<ol class="check-list">${result.checklist.map((entry) => `<li>${escapeHtml(entry)}</li>`).join("")}</ol>`,
           "check-square",
         )}
@@ -3172,11 +4467,11 @@ function analysisResultMarkup(item) {
       <div class="action-row result-actions">
         <button id="save-case-result" class="secondary-button" type="button" ${item.resultSaved ? "disabled" : ""}>
           <span aria-hidden="true">${iconSvg("database")}</span>
-          ${item.resultSaved ? "저장 완료" : "결과 저장"}
+          ${item.resultSaved ? "저장 완료" : "검토 결과 저장"}
         </button>
         <button id="create-follow-up" class="primary-button" type="button" ${item.nextTaskCreated ? "disabled" : ""}>
           <span aria-hidden="true">${iconSvg("link")}</span>
-          ${item.nextTaskCreated ? "작업 생성됨" : "다음 행동 생성"}
+          ${item.nextTaskCreated ? "작업 생성됨" : "후속 확인 항목 만들기"}
         </button>
       </div>
     </div>
@@ -3208,16 +4503,16 @@ function agentContextMarkup() {
 
   return `
     ${compactPanel(
-      "에이전트 통제",
+      "AI 업무지원 통제",
       "팀 운영 요약",
       `<div class="property-list">
-        ${propertyRow("에이전트", agents.length)}
+        ${propertyRow("AI 업무지원", agents.length)}
         ${propertyRow("실행 중", running)}
         ${propertyRow("승인 대기", pending)}
         ${propertyRow("전체 대기열", queue)}
       </div>`,
     )}
-    ${compactPanel("활성 에이전트", "실행/승인 대기", `<div class="context-list">${topAgents}</div>`)}
+    ${compactPanel("활성 AI 업무지원", "실행/승인 대기", `<div class="context-list">${topAgents}</div>`)}
   `;
 }
 
@@ -3233,11 +4528,11 @@ function skillContextMarkup() {
 
   return `
     ${compactPanel(
-      "스킬 저장소",
-      "스킬 구성",
+      "업무 기능 저장소",
+      "업무 기능 구성",
       `<div class="property-list">
-        ${propertyRow("전체 스킬", skillRack.length)}
-        ${propertyRow("고위험 스킬", highRisk)}
+        ${propertyRow("전체 업무 기능", skillRack.length)}
+        ${propertyRow("고위험 업무 기능", highRisk)}
         ${propertyRow("필수 통제", skillRack.filter((skill) => skill.approval === "mandatory").length)}
       </div>`,
     )}
@@ -3280,7 +4575,7 @@ function budgetContextMarkup() {
 
   return `
     ${compactPanel("비용", "전체 예산", `<div class="property-list">${propertyRow("사용액", `₩${spent.toLocaleString()}`)}${propertyRow("예산", `₩${budget.toLocaleString()}`)}${propertyRow("사용률", `${Math.round((spent / budget) * 100)}%`)}</div>`)}
-    ${compactPanel("사용률", "사용률 상위 에이전트", `<div class="context-list">${heavyUsers}</div>`)}
+    ${compactPanel("사용률", "사용률 상위 AI 업무지원", `<div class="context-list">${heavyUsers}</div>`)}
   `;
 }
 
@@ -3290,10 +4585,74 @@ function settingsContextMarkup() {
     "운영 정책",
     `<div class="property-list">
       ${propertyRow("조직", "전북은행 · 광주은행 · JB우리캐피탈")}
-      ${propertyRow("승인", "L0-L4 사람 승인 게이트")}
+      ${propertyRow("승인", "L0-L4 담당자 승인 절차")}
       ${propertyRow("외부 연동", "데모 어댑터")}
     </div>`,
   );
+}
+
+function rmDashboardContextMarkup() {
+  return `
+    ${compactPanel(
+      "RM 역할",
+      "상담부터 사후관리까지",
+      `<div class="property-list">
+        ${propertyRow("핵심 업무", "상담·서류·품의·심사 연결·사후관리")}
+        ${propertyRow("AI 역할", "브리핑·누락 탐지·초안·근거 패킷")}
+        ${propertyRow("사람 역할", "조건 제시·예외 검토·고객 영향 승인")}
+      </div>`,
+    )}
+    ${compactPanel(
+      "오늘 우선순위",
+      "RM이 먼저 볼 항목",
+      `<div class="context-list">
+        ${workItem("고위험 상담 브리핑", "상환 압박·금리 민감도·정책금융 후보 확인", "3건")}
+        ${workItem("서류 보완 요청", "사업자·세무·임대차 자료 누락 탐지", "6건")}
+        ${workItem("승인 대기", "고객 안내 전 RM 승인 필요", "2건")}
+      </div>`,
+    )}
+    ${compactPanel(
+      "측정 항목",
+      "파일럿에서 검증할 값",
+      `<div class="property-list">
+        ${propertyRow("관리 건/인", "내부 실측 필요")}
+        ${propertyRow("절감 시간", "초안·대조·기록·재작업 분리")}
+        ${propertyRow("승인 채택률", "초안 수정률과 수정 요청 사유 추적")}
+      </div>`,
+    )}
+  `;
+}
+
+function corporateCreditDashboardContextMarkup() {
+  return `
+    ${compactPanel(
+      "기업여신 역할",
+      "심사 가능한 패킷 생성",
+      `<div class="property-list">
+        ${propertyRow("핵심 업무", "상담·자금용도·서류·재무·담보·전결")}
+        ${propertyRow("AI 역할", "누락 탐지·상환 분석·라우팅 제안")}
+        ${propertyRow("사람 역할", "한도·금리·조건·실행 승인")}
+      </div>`,
+    )}
+    ${compactPanel(
+      "오늘 우선순위",
+      "기업여신 담당자가 먼저 볼 항목",
+      `<div class="context-list">
+        ${workItem("전결 초과 후보", "본부 심사/위원회 상정 여부 사전 분기", "3건")}
+        ${workItem("서류 보완 요청", "재무제표·납세·등기·견적 증빙 누락", "5건")}
+        ${workItem("자금용도 점검", "실행 후 증빙 대조와 유용 가능성 확인", "4건")}
+      </div>`,
+    )}
+    ${compactPanel(
+      "CREFIA 반영",
+      "외부 참고 기준",
+      `<div class="property-list">
+        ${propertyRow("법규", "여신전문금융업법·감독규정")}
+        ${propertyRow("자율규제", "기업여신 심사·사후관리, PF, 금리체계")}
+        ${propertyRow("공시", "리스/할부·신용대출·경영공시")}
+      </div>`,
+    )}
+  `;
 }
 
 function renderEvidence() {
@@ -3308,10 +4667,10 @@ function renderEvidence() {
       const judgment = selected
         ? `
           <div class="evidence-judgment">
-            <p class="eyebrow">이 근거가 연결된 판단</p>
+            <p class="eyebrow">이 근거가 연결된 검토</p>
             <p><strong>${escapeHtml(item.code)}</strong> · ${escapeHtml(item.approvalTitle)}</p>
-            <p>다음 행동: ${escapeHtml(item.nextAction)}</p>
-            <p>사용 케이스: ${linkedCases.map((linked) => escapeHtml(linked.code)).join(", ") || "없음"}</p>
+            <p>후속 확인 항목: ${escapeHtml(item.nextAction)}</p>
+            <p>사용 관리 건: ${linkedCases.map((linked) => escapeHtml(linked.code)).join(", ") || "없음"}</p>
           </div>
         `
         : "";
@@ -3332,7 +4691,7 @@ function renderAudit() {
   const auditLog = document.getElementById("audit-log");
   if (!auditLog) return;
   if (!item) {
-    auditLog.innerHTML = `<div class="empty-state"><p>선택된 케이스가 없어 감사 로그를 표시할 수 없습니다.</p></div>`;
+    auditLog.innerHTML = `<div class="empty-state"><p>선택된 관리 건가 없어 감사 로그를 표시할 수 없습니다.</p></div>`;
     return;
   }
   const records = auditChainRecords(item);
@@ -3402,7 +4761,7 @@ function inferAuditActor(text) {
   const value = String(text || "");
   if (/RM|담당자|reviewer|검토 담당자/.test(value)) return "사람";
   if (/사용자 입력|콘솔|보드|오케스트레이터|LocalGuard/.test(value)) return "오케스트레이터";
-  return "에이전트";
+  return "AI 업무지원";
 }
 
 function verifyAuditChain(item) {
@@ -3492,7 +4851,7 @@ function safeNumber(value, fallback = 0) {
 
 function caseDataSource(item) {
   if (item.sourceLabel) return item.sourceLabel;
-  return item.id && item.id.startsWith("manual-") ? "사용자 입력 데이터" : "데모 데이터";
+  return item.id && item.id.startsWith("manual-") ? "신규 접수 정보" : "데모 데이터";
 }
 
 function buildDashboardData() {
@@ -3501,7 +4860,7 @@ function buildDashboardData() {
   const jeonseRisk = scoped.filter((item) => item.pains.includes("jeonse-fraud"));
   const blocked = scoped.filter((item) => item.status === "Escalated" || (item.gates || []).some((gate) => gate[1] === "blocked"));
   const pending = scoped.filter((item) => item.status === "Approval Pending");
-  const userInput = scoped.filter((item) => caseDataSource(item) === "사용자 입력 데이터");
+  const userInput = scoped.filter((item) => caseDataSource(item) === "신규 접수 정보");
   const demoData = scoped.filter((item) => caseDataSource(item) === "데모 데이터");
   const savedResults = scoped.filter((item) => item.resultSaved);
   const followUps = scoped.filter((item) => item.nextTaskCreated);
@@ -3585,23 +4944,23 @@ function computeRiskDecision(item) {
       scoreSignal("전세가율", `${inputs.ratio || "추정"}%`, 0.34, baseScore, "estimate", "보증금/주변 매매가 산식"),
       scoreSignal("권리관계", item.rootCauses.find((cause) => /근저당|신탁|권리/.test(cause)) || "등기 원문 확인 필요", 0.24, baseScore, "public", "HUG·국토교통부 확인 항목"),
       scoreSignal("임차인 자산노출", `${inputs.exposureRatio || "추정"}%`, 0.18, baseScore, "estimate", "보증금/총자산 산식"),
-      scoreSignal("보증보험 가능성", item.gates.some((gate) => gate[1] === "pending") ? "가입 가능성 확인 전" : "확인 완료", 0.14, baseScore, "public", "HUG 안심전세 기준"),
-      scoreSignal("은행 연계 필요", item.agents.includes("bank-linkage") ? "상담 연결 필요" : "내부 검토", 0.1, baseScore, "simulation", "데모 에이전트 배정"),
+      scoreSignal("보증보험 요건 확인 필요", item.gates.some((gate) => gate[1] === "pending") ? "가입 가능성 확인 전" : "확인 완료", 0.14, baseScore, "public", "HUG 안심전세 기준"),
+      scoreSignal("은행 연계 필요", item.agents.includes("bank-linkage") ? "상담 연결 필요" : "내부 검토", 0.1, baseScore, "simulation", "데모 AI 업무지원 배정"),
     ];
   } else if (actionType === "fraud") {
     signals = [
       scoreSignal("외부 URL·콜백 위험", item.rootCauses.join(", "), 0.34, baseScore, "public", "금융위원회 보이스피싱 경보"),
       scoreSignal("고객 접촉 차단 필요", item.gates.some((gate) => gate[1] === "blocked") ? "자동 발송 금지" : "검토 필요", 0.28, baseScore, "simulation", "데모 차단 게이트"),
       scoreSignal("AI 악용 사기 신호", "음성변조·긴급 송금 요청", 0.22, baseScore, "public", "금융위원회 AI 사기 대응"),
-      scoreSignal("준법 승인 필요", item.agents.includes("compliance") ? "준법 에이전트 배정" : "미배정", 0.16, baseScore, "simulation", "에이전트 배정 상태"),
+      scoreSignal("준법 승인 필요", item.agents.includes("compliance") ? "준법 AI 업무지원 배정" : "미배정", 0.16, baseScore, "simulation", "AI 업무지원 배정 상태"),
     ];
   } else {
     signals = [
-      scoreSignal("상환 스트레스", item.exposure, 0.32, baseScore, "simulation", "상담 메모 기반 데모 수치"),
-      scoreSignal("정책금융 매칭 필요", item.pains.includes("policy-match") ? "후보 탐색 필요" : "낮음", 0.22, baseScore, "public", "JB 계열사 지역 금융 접점"),
+      scoreSignal("상환 부담", item.exposure, 0.32, baseScore, "simulation", "상담 메모 기반 데모 수치"),
+      scoreSignal("정책금융 후보 검토 필요", item.pains.includes("policy-match") ? "후보 탐색 필요" : "낮음", 0.22, baseScore, "public", "JB 계열사 지역 금융 접점"),
       scoreSignal("서류·디지털 장벽", item.rootCauses.join(", "), 0.18, baseScore, "simulation", "데모 분류 결과"),
       scoreSignal("근거 연결성", `${item.evidenceIds.length}개 출처`, 0.16, baseScore, "public", "연결 근거 피드"),
-      scoreSignal("고객 안내 영향", item.gates.some((gate) => gate[1] === "pending") ? "승인 필요" : "내부 처리", 0.12, baseScore, "estimate", "승인 게이트 산식"),
+      scoreSignal("고객 안내 영향", item.gates.some((gate) => gate[1] === "pending") ? "승인 필요" : "내부 처리", 0.12, baseScore, "estimate", "담당자 승인 절차 산식"),
     ];
   }
 
@@ -3642,7 +5001,7 @@ function createAnalysisResult(item, mode = "agent") {
       ]
     : blocked
       ? ["고객 대상 발송 차단", "보안팀 상위 검토", "콜백 URL과 통화 기록 보존", "RM 안내 전 준법 확인"]
-      : ["매출·상환 스트레스 확인", "정책금융 후보 검토", "필요 서류 체크리스트 전달", "RM 콜백 초안 승인 요청"];
+      : ["매출·상환 부담 확인", "정책금융 후보 검토", "필요 서류 체크리스트 전달", "RM 콜백 초안 승인 요청"];
   return {
     mode,
     confidence,
@@ -3650,26 +5009,26 @@ function createAnalysisResult(item, mode = "agent") {
     source: caseDataSource(item),
     decision,
     summary: isJeonse
-      ? `규칙 기반 점수 ${decision.score}점, ${decision.level} 라우팅으로 계약 전 사람 검토가 필요합니다.`
+      ? `규칙 기반 점수 ${decision.score}점, ${decision.level} 라우팅으로 계약 전 담당자 검토가 필요합니다.`
       : blocked
-        ? `규칙 기반 점수 ${decision.score}점, ${decision.level} 라우팅으로 외부 발송 차단이 필요합니다.`
+        ? `규칙 기반 점수 ${decision.score}점, ${decision.level} 라우팅으로 승인 전 발송 보류이 필요합니다.`
         : `규칙 기반 점수 ${decision.score}점, ${decision.level} 라우팅으로 RM 확인 후 고객 안내가 가능합니다.`,
     recommendation: isJeonse
-      ? "등기부·보증보험 원문 확인 후 안전 계약 체크리스트와 은행 상담 안내를 승인 큐에서 확정하세요."
+      ? "등기부·보증보험 원문 확인 후 계약 전 확인 체크리스트와 은행 상담 안내를 승인 큐에서 최종 확인하세요."
       : blocked
         ? "고객 접촉 없이 보안팀 보고 메모를 먼저 생성하고 차단 근거를 감사 로그에 남기세요."
         : "정책금융 후보와 필요 서류를 RM이 검토한 뒤 콜백 태스크로 연결하세요.",
     reason: `${decision.signals[0].name}와 ${decision.signals[1].name} 신호가 총점의 핵심 기여 항목입니다.`,
     rejectionAlternative: isJeonse
-      ? "승인 반려 시 고객 안내 대신 원문 등기부·보증보험 확인 요청 태스크만 남깁니다."
+      ? "승인 수정 요청 시 고객 안내 대신 원문 등기부·보증보험 확인 요청 태스크만 남깁니다."
       : blocked
-        ? "반려 시에도 고객 발송은 유지 차단하고 보안팀 수동 검토로만 넘깁니다."
-        : "반려 시 고객 콜백 없이 서류 확인 요청과 내부 메모만 남깁니다.",
+        ? "수정 요청 시에도 고객 발송은 유지 차단하고 보안팀 수동 검토로만 넘깁니다."
+        : "수정 요청 시 고객 콜백 없이 서류 확인 요청과 내부 메모만 남깁니다.",
     deliverables: isJeonse
-      ? ["위험 진단 리포트", "계약 전 체크리스트", "특약 문구 초안", "은행 상담 연결 카드"]
+      ? ["위험 사전 점검 리포트", "계약 전 체크리스트", "특약 문구 초안", "은행 상담 연결 카드"]
       : blocked
         ? ["보안팀 보고 메모", "고객 발송 차단 기록", "준법 검토 메모"]
-        : ["RM 콜백 초안", "정책금융 후보 요약", "서류 체크리스트", "상환 스트레스 요약"],
+        : ["RM 콜백 초안", "정책금융 후보 요약", "서류 체크리스트", "상환 부담 요약"],
     checklist,
   };
 }
@@ -3678,8 +5037,8 @@ function saveCaseResult(item) {
   if (!item || !item.analysisResult) return;
   item.resultSaved = true;
   item.resultSavedAt = timestamp();
-  item.audit.push([timestamp(), "분석 결과와 생성 산출물을 케이스 기록에 저장했습니다."]);
-  activity.unshift([timestamp(), "LocalGuard Orchestrator", "saved result", item.code]);
+  item.audit.push([timestamp(), "분석 결과와 생성 산출물을 관리 건 기록에 저장했습니다."]);
+  activity.unshift([timestamp(), "업무지원 조율 기능", "saved result", item.code]);
   scenarioResults.unshift({
     time: timestamp(),
     caseCode: item.code,
@@ -3720,7 +5079,7 @@ function buildManualCase(form) {
   const region = String(formData.get("region") || "").trim();
   const exposureInput = String(formData.get("exposure") || "").trim();
   if (!customerName || !region) {
-    modalError = "고객명과 지역은 필수입니다.";
+    modalError = "고객/관리 건 이름과 지역을 입력해 주세요.";
     renderModal();
     return null;
   }
@@ -3734,7 +5093,7 @@ function buildManualCase(form) {
     customerName,
     affiliate,
     region,
-    sourceLabel: "사용자 입력 데이터",
+    sourceLabel: "신규 접수 정보",
     status: "New",
     stage: "todo",
     due: "오늘 18:00",
@@ -3742,7 +5101,7 @@ function buildManualCase(form) {
     resultSaved: false,
     nextTaskCreated: false,
     transcript: [],
-    audit: [[timestamp(), "사용자 입력 폼으로 케이스를 등록했습니다."]],
+    audit: [[timestamp(), "사용자 입력 폼으로 관리 건을 등록했습니다."]],
   };
 
   if (riskType === "jeonse") {
@@ -3755,11 +5114,11 @@ function buildManualCase(form) {
       zeroHuman: "분석 + 사람 결정",
       owner: "Jeonse Shield Lead",
       exposure: exposureInput || "전세보증금 입력 필요 · 등기부 확인 필요",
-      primaryPain: "전세사기 위험 사전 점검",
-      nextAction: "전세 진단 실행 후 보증보험·은행 상담 연결",
-      approvalTitle: "전세 위험 진단 리포트와 안전 계약 체크리스트",
+      primaryPain: "전세 관련 위험 신호 사전 점검",
+      nextAction: "전세 사전 점검 실행 후 보증보험·은행 상담 연결",
+      approvalTitle: "전세 위험 사전 점검 리포트와 계약 전 확인 체크리스트",
       pains: ["jeonse-fraud", "price-ratio", "registry-risk", "guarantee-feasibility"],
-      rootCauses: ["전세가율 확인 필요", "권리관계 원문 확인 필요", "보증보험 가능성 확인"],
+      rootCauses: ["전세가율 확인 필요", "권리관계 원문 확인 필요", "보증보험 요건 확인 필요 확인"],
       evidenceIds: ["hug-safe-jeonse", "molit-jeonse-policy", "jb-network"],
       gates: [["등기부/보증보험 원문 확인", "pending"], ["고객 동의 후 은행 상담 연결", "pending"], ["특약 문구는 초안으로만 제공", "passed"]],
       agents: ["jeonse-lead", "deposit-ratio", "registry-rights", "tenant-asset", "contract-check", "bank-linkage", "compliance"],
@@ -3793,7 +5152,7 @@ function buildManualCase(form) {
     industry: "상담 접수",
     riskScore: 70,
     priority: "high",
-    zeroHuman: "초안 작성 + 원클릭 승인",
+    zeroHuman: "초안 작성 + 검토 후 승인",
     owner: "Policy Match Agent",
     exposure: exposureInput || "정책금융 상담 후보 · 서류 확인 필요",
     primaryPain: "정책금융 탐색과 상환 부담",
@@ -3802,7 +5161,7 @@ function buildManualCase(form) {
     pains: ["policy-match", "documentation", "digital-barrier"],
     rootCauses: ["지원제도 탐색 비용", "서류 누락", "디지털 신청 장벽"],
     evidenceIds: ["jb-network", "smallbiz-burden", "digital-gap"],
-    gates: [["지원 가능성 확정 표현 금지", "pending"], ["필요 서류 안내만 허용", "passed"], ["RM 승인 후 안내", "pending"]],
+    gates: [["지원 가능성 최종 확인 표현 금지", "pending"], ["필요 서류 안내만 허용", "passed"], ["RM 승인 후 안내", "pending"]],
     agents: ["pain-radar", "policy", "rm-copilot", "compliance"],
   };
 }
@@ -3843,12 +5202,12 @@ function runJeonseDiagnosis(form) {
     ["특약 문구는 초안으로만 제공", "passed"],
   ];
   item.analysisResult = createAnalysisResult(item, "jeonse-diagnosis");
-  item.audit.push([timestamp(), `전세 진단 실행: 전세가율 ${ratio}%, 자산노출 ${exposureRatio}%, 주거비 부담 ${housingBurden}%.`]);
+  item.audit.push([timestamp(), `전세 사전 점검 실행: 전세가율 ${ratio}%, 자산노출 ${exposureRatio}%, 주거비 부담 ${housingBurden}%.`]);
   activity.unshift([timestamp(), "Jeonse Shield Lead", "created approval", item.code]);
   selectedCaseId = item.id;
   activeDetailType = "case";
   persistState();
-  notify("전세 위험 진단 리포트를 생성했습니다.");
+  notify("전세 위험 사전 점검 리포트를 생성했습니다.");
   render();
 }
 
@@ -3876,24 +5235,24 @@ function renderModal() {
       <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="new-case-title">
         <div class="modal-head">
           <div>
-            <p class="eyebrow">사용자 입력 데이터</p>
-            <h2 id="new-case-title">금융 위험 케이스 등록</h2>
-            <p>고객 상황을 입력하면 위험 유형에 맞는 에이전트, 스킬, 승인 게이트가 배정됩니다.</p>
+            <p class="eyebrow">신규 접수 정보</p>
+            <h2 id="new-case-title">위험 관리 건 접수</h2>
+            <p>고객 상황을 입력하면 점검 유형에 맞는 AI 업무지원, 업무 기능, 담당자 승인 절차가 배정됩니다.</p>
           </div>
           <button id="modal-close" class="icon-only-button" type="button" aria-label="닫기">${iconSvg("x")}</button>
         </div>
         ${modalError ? `<p class="form-error">${escapeHtml(modalError)}</p>` : ""}
         <form id="new-case-form" class="case-form">
           <label>
-            <span>위험 유형</span>
+            <span>점검 유형</span>
             <select name="riskType">
-              <option value="jeonse">전세사기 위험</option>
+              <option value="jeonse">전세 관련 위험 신호</option>
               <option value="smallbiz">소상공인 금융 부담</option>
-              <option value="fraud">사기 의심 콜백</option>
+              <option value="fraud">의심 콜백 확인</option>
             </select>
           </label>
           <label>
-            <span>고객/케이스명</span>
+            <span>고객/관리 건명</span>
             <input name="customerName" placeholder="예: 부산 신혼부부 전세 예정" />
           </label>
           <label>
@@ -3909,7 +5268,7 @@ function renderModal() {
             <input name="region" placeholder="예: 부산 해운대구" />
           </label>
           <label class="case-form-wide">
-            <span>노출 위험/상담 메모</span>
+            <span>위험 내용 및 상담 메모</span>
             <textarea name="exposure" rows="3" placeholder="예: 전세보증금 2.1억, 등기부 근저당 확인 필요"></textarea>
           </label>
           <div class="modal-actions">
@@ -3919,7 +5278,7 @@ function renderModal() {
             </button>
             <button class="primary-button" type="submit">
               <span aria-hidden="true">${iconSvg("check-square")}</span>
-              케이스 등록
+              관리 건 접수
             </button>
           </div>
         </form>
@@ -3937,14 +5296,14 @@ function renderModal() {
       const fresh = buildManualCase(form);
       if (!fresh) return;
       cases.push(fresh);
-      activity.unshift([timestamp(), "LocalGuard Orchestrator", "registered case", fresh.code]);
+      activity.unshift([timestamp(), "업무지원 조율 기능", "registered case", fresh.code]);
       selectedCaseId = fresh.id;
       activeView = fresh.pains.includes("jeonse-fraud") ? "jeonse" : "cases";
       activeDetailType = "case";
       modalState = null;
       modalError = "";
       persistState();
-      notify(`${fresh.code} 케이스를 등록했습니다.`);
+      notify(`${fresh.code} 관리 건을 등록했습니다.`);
       render();
     });
   }
@@ -3968,14 +5327,14 @@ function startAgentRun(item, command) {
     startedAt: timestamp(),
     status: "running",
     command,
-    log: [[timestamp(), `${agentLabel(item.owner)}가 실행을 시작하고 케이스 맥락과 장착 스킬을 불러왔습니다.`]],
+    log: [[timestamp(), `${agentLabel(item.owner)}가 실행을 시작하고 관리 건 맥락과 장착 업무 기능을 불러왔습니다.`]],
   };
   agentRuns.unshift(run);
 
   item.status = "Agent Running";
   item.stage = "in_progress";
-  item.processingStep = "에이전트 실행 준비 중";
-  item.audit.push([timestamp(), `에이전트 실행 ${run.id} 시작: ${command}`]);
+  item.processingStep = "AI 분석 요청 준비 중";
+  item.audit.push([timestamp(), `AI 분석 요청 ${run.id} 시작: ${command}`]);
   activity.unshift([timestamp(), item.owner, "checked out", item.code]);
   persistState();
 
@@ -3986,8 +5345,8 @@ function startAgentRun(item, command) {
     run.log.push([
       timestamp(),
       target && target.pains.includes("jeonse-fraud")
-        ? "등기 권리 분석 에이전트: 등기부 권리관계와 전세가율 신호를 교차 확인 중."
-        : "근거 수집: 출처와 상담 메모를 케이스 맥락에 연결 중.",
+        ? "등기 권리 분석 AI 업무지원: 등기부 권리관계와 전세가율 신호를 교차 확인 중."
+        : "근거 수집: 출처와 상담 메모를 관리 건 맥락에 연결 중.",
     ]);
     persistState();
     render();
@@ -4003,7 +5362,7 @@ function startAgentRun(item, command) {
       timestamp(),
       escalate
         ? "사기 차단: 고객 대상 행동은 계속 차단하고 내부 상위 검토만 허용합니다."
-        : "승인 게이트: 조치 초안이 사람 검토 단계에 들어갔습니다.",
+        : "담당자 승인 절차: 조치 초안이 담당자 검토 단계에 들어갔습니다.",
     ]);
     if (target.status === "Agent Running") {
       target.status = escalate ? "Escalated" : "Approval Pending";
@@ -4011,13 +5370,13 @@ function startAgentRun(item, command) {
       target.transcript.push(
         escalate
           ? "사기 차단: 고객 대상 행동은 계속 차단하고 내부 상위 검토만 허용합니다."
-          : "승인 게이트: 조치 초안이 사람 검토 단계에 들어갔습니다.",
+          : "담당자 승인 절차: 조치 초안이 담당자 검토 단계에 들어갔습니다.",
       );
       target.analysisResult = createAnalysisResult(target, "agent-run");
       delete target.processingStep;
       target.resultSaved = false;
       target.nextTaskCreated = false;
-      target.audit.push([timestamp(), `에이전트 실행 ${run.id} 완료 및 승인 정책을 검토했습니다.`]);
+      target.audit.push([timestamp(), `AI 분석 요청 ${run.id} 완료 및 승인 정책을 검토했습니다.`]);
       activity.unshift([timestamp(), "Approval Gate", escalate ? "escalated case" : "created approval", target.code]);
     }
     persistState();
@@ -4058,9 +5417,9 @@ function rejectCase(item) {
   if (!item || item.status !== "Approval Pending") return;
   item.status = "Rejected";
   item.stage = "blocked";
-  item.audit.push([timestamp(), "검토 담당자가 초안을 반려하고 수정을 요청했습니다."]);
+  item.audit.push([timestamp(), "검토 담당자가 초안을 수정 요청하고 수정을 요청했습니다."]);
   activity.unshift([timestamp(), "Human reviewer", "rejected draft", item.code]);
-  closeRunsForCase(item, "rejected", "검토 담당자가 초안을 반려했고 실행을 종료했습니다.");
+  closeRunsForCase(item, "rejected", "검토 담당자가 초안을 수정 요청했고 실행을 종료했습니다.");
   persistState();
   render();
 }
@@ -4082,13 +5441,13 @@ function dispatchCommand() {
     return;
   }
   item.audit.push([timestamp(), `오케스트레이터 지시 수신: ${command}`]);
-  activity.unshift([timestamp(), "LocalGuard Orchestrator", "dispatched command", item.code]);
+  activity.unshift([timestamp(), "업무지원 조율 기능", "dispatched command", item.code]);
   const run = startAgentRun(item, command);
   lastDispatchResult = {
     caseCode: item.code,
     caseTitle: item.customerName,
     runId: run.id,
-    summary: "지시가 에이전트 실행으로 변환되었고 담당 에이전트에게 케이스 맥락, 근거, 승인 게이트가 전달되었습니다.",
+    summary: "지시가 AI 분석 요청으로 변환되었고 담당 AI 업무지원에게 관리 건 맥락, 근거, 담당자 승인 절차가 전달되었습니다.",
     next: "완료된 초안은 승인 큐와 감사 로그에 자동 반영됩니다.",
   };
   activeView = "dashboard";
@@ -4111,7 +5470,7 @@ function applyDemoModeFromUrl() {
 
   cases = JSON.parse(JSON.stringify(initialCases));
   agentRuns = [];
-  activity = [["09:00", "LocalGuard Orchestrator", "dispatched command", profile.caseId]];
+  activity = [["09:00", "업무지원 조율 기능", "dispatched command", profile.caseId]];
   scenarioResults = [];
   lastSavedAt = null;
   selectedCaseId = profile.caseId;
@@ -4138,23 +5497,23 @@ function applyDemoModeFromUrl() {
     item.status = "Approval Pending";
     item.stage = "pending_approval";
     item.audit = [
-      ["09:00", "데모 GP-1: 전세 보호 케이스를 결정론적 시작 상태로 시드했습니다."],
-      ["09:01", "전세가율·권리관계·자산노출 신호를 규칙 기반 판단 엔진에 입력했습니다."],
+      ["09:00", "데모 GP-1: 전세 안심 점검 관리 건을 시작 상태로 준비했습니다."],
+      ["09:01", "전세가율·권리관계·자산노출 신호를 규칙 기반 검토 엔진에 입력했습니다."],
     ];
   } else if (type === "phishing") {
     item.status = "Approval Pending";
     item.stage = "pending_approval";
     item.riskScore = 96;
     item.audit = [
-      ["09:00", "데모 GP-2: 보이스피싱 의심 알림을 케이스로 전환했습니다."],
-      ["09:01", "자동 차단 제안을 생성하고 사람 승인 대기 상태로 올렸습니다."],
+      ["09:00", "데모 GP-2: 보이스피싱 의심 알림을 관리 건으로 전환했습니다."],
+      ["09:01", "차단 검토 요청을 생성하고 담당자 최종 확인 대기 상태로 올렸습니다."],
     ];
   } else if (type === "sme") {
     item.status = "Approval Pending";
     item.stage = "pending_approval";
     item.riskScore = 84;
     item.audit = [
-      ["09:00", "데모 GP-3: 매출 둔화 신호를 소상공인 자금압박 케이스로 시드했습니다."],
+      ["09:00", "데모 GP-3: 매출 둔화 신호를 소상공인 자금압박 관리 건으로 준비했습니다."],
       ["09:01", "정책금융 체크리스트와 준법 검토 결과를 승인 큐에 올렸습니다."],
     ];
   }
@@ -4179,14 +5538,14 @@ function newCaseDemo() {
     riskScore: 55,
     status: "New",
     priority: "medium",
-    zeroHuman: "초안 작성 + 원클릭 승인",
+    zeroHuman: "초안 작성 + 검토 후 승인",
     sla: "1d",
-    owner: "LocalGuard Orchestrator",
+    owner: "업무지원 조율 기능",
     stage: "todo",
     due: "내일 18:00",
     exposure: "상담 접수 · 분류 대기",
     primaryPain: "분류 대기",
-    nextAction: "위험 원인 분류와 담당 에이전트 배정",
+    nextAction: "위험 원인 분류와 담당 AI 업무지원 배정",
     approvalTitle: "초기 분류 결과 확인",
     pains: ["triage"],
     rootCauses: ["신규 접수"],
@@ -4194,10 +5553,10 @@ function newCaseDemo() {
     gates: [["RM 승인 후 고객 접촉", "pending"]],
     agents: ["orchestrator", "pain-radar"],
     transcript: [],
-    audit: [[timestamp(), "콘솔의 신규 케이스 버튼으로 케이스를 등록했습니다."]],
+    audit: [[timestamp(), "콘솔의 신규 관리 건 버튼으로 관리 건을 등록했습니다."]],
   };
   cases.push(fresh);
-  activity.unshift([timestamp(), "LocalGuard Orchestrator", "registered case", code]);
+  activity.unshift([timestamp(), "업무지원 조율 기능", "registered case", code]);
   selectedCaseId = fresh.id;
   activeView = "cases";
   activeDetailType = "case";
@@ -4248,7 +5607,7 @@ function moveCaseToColumn(caseId, column) {
       caseCode: item.code,
       caseTitle: item.customerName,
       runId: agentRuns[0].id,
-      summary: "보드 상태 이동으로 에이전트 실행이 시작되었습니다.",
+      summary: "보드 상태 이동으로 AI 분석 요청이 시작되었습니다.",
       next: "완료된 초안은 승인 큐로 이동합니다.",
     };
     render();
@@ -4257,13 +5616,13 @@ function moveCaseToColumn(caseId, column) {
   item.status = nextStatus;
   item.stage = column;
   item.audit.push([timestamp(), `보드 상태 변경: ${statusLabel(previous)}에서 ${statusLabel(nextStatus)}로 이동했습니다.`]);
-  activity.unshift([timestamp(), "LocalGuard Orchestrator", "changed status", item.code]);
+  activity.unshift([timestamp(), "업무지원 조율 기능", "changed status", item.code]);
   selectedCaseId = item.id;
   activeDetailType = "case";
   // 보드 처리 훅: 승인 대기로 이동 시 산출물 생성 트리거 (04 board-hook)
   if (nextStatus === "Approval Pending" && typeof generateDeliverables === "function" && deliverableRegistry[item.id]) {
     generateDeliverables(item.id);
-    item.audit.push([timestamp(), "보드 훅: 산출물 생성 및 승인 게이트 활성화."]);
+    item.audit.push([timestamp(), "보드 훅: 산출물 생성 및 담당자 승인 절차 활성화."]);
   }
   persistState();
   render();
@@ -4359,18 +5718,117 @@ function bindActions() {
     }
   });
 
+  const closeRailGroups = (exceptKey = "") => {
+    document.querySelectorAll("[data-rail-group]").forEach((group) => {
+      const key = group.dataset.railGroup;
+      const isOpen = Boolean(exceptKey && key === exceptKey);
+      group.classList.toggle("is-open", isOpen);
+      const toggle = group.querySelector("[data-rail-toggle]");
+      if (toggle) toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+  };
+
+  document.querySelectorAll("[data-rail-toggle]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const key = button.dataset.railToggle;
+      const group = document.querySelector(`[data-rail-group="${key}"]`);
+      const willOpen = !group?.classList.contains("is-open");
+      closeRailGroups(willOpen ? key : "");
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("[data-rail-group]")) closeRailGroups();
+  });
+
   document.querySelectorAll("[data-affiliate]").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
       const next = button.dataset.affiliate;
-      railFilter = railFilter === next ? "all" : next;
+      railFilter = !next || next === "all" || railFilter === next ? "all" : next;
       document.querySelectorAll("[data-affiliate]").forEach((entry) => {
-        entry.classList.toggle("is-active", entry.dataset.affiliate === railFilter);
+        const isAll = railFilter === "all" && entry.dataset.affiliate === "all";
+        entry.classList.toggle("is-active", isAll || entry.dataset.affiliate === railFilter);
       });
       const scoped = visibleCases();
       if (!scoped.some((item) => item.id === selectedCaseId) && scoped.length) {
         selectedCaseId = scoped[0].id;
       }
+      closeRailGroups();
       render();
+    });
+  });
+
+  document.querySelectorAll("[data-role-filter]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      selectedRailRole = button.dataset.roleFilter || "";
+      document.querySelectorAll("[data-role-filter]").forEach((entry) => {
+        entry.classList.toggle("is-active", entry.dataset.roleFilter === selectedRailRole);
+      });
+      closeRailGroups();
+      if (selectedRailRole === "RM") {
+        activeView = "rm-dashboard";
+        activeDetailType = defaultDetailForView(activeView);
+        if (window.location.hash !== "#rm-dashboard") {
+          window.location.hash = "rm-dashboard";
+        }
+        render();
+        notify("RM 역할 대시보드로 이동했습니다.");
+        return;
+      }
+      if (selectedRailRole === "기업여신 담당자") {
+        activeView = "corporate-credit-dashboard";
+        activeDetailType = defaultDetailForView(activeView);
+        if (window.location.hash !== "#corporate-credit-dashboard") {
+          window.location.hash = "corporate-credit-dashboard";
+        }
+        render();
+        notify("기업여신 담당자 대시보드로 이동했습니다.");
+        return;
+      }
+      if (selectedRailRole === "전세보호 담당자") {
+        activeView = "jeonse-protection-dashboard";
+        activeDetailType = defaultDetailForView(activeView);
+        if (window.location.hash !== "#jeonse-protection-dashboard") {
+          window.location.hash = "jeonse-protection-dashboard";
+        }
+        render();
+        notify("전세보호 담당자 대시보드로 이동했습니다.");
+        return;
+      }
+      if (selectedRailRole === "소비자 보호 담당자") {
+        activeView = "consumer-protection-dashboard";
+        activeDetailType = defaultDetailForView(activeView);
+        if (window.location.hash !== "#consumer-protection-dashboard") {
+          window.location.hash = "consumer-protection-dashboard";
+        }
+        render();
+        notify("소비자 보호 담당자 대시보드로 이동했습니다.");
+        return;
+      }
+      if (selectedRailRole === "보이스피싱/FDS 담당자") {
+        activeView = "fds-dashboard";
+        activeDetailType = defaultDetailForView(activeView);
+        if (window.location.hash !== "#fds-dashboard") {
+          window.location.hash = "fds-dashboard";
+        }
+        render();
+        notify("보이스피싱/FDS 담당자 대시보드로 이동했습니다.");
+        return;
+      }
+      if (selectedRailRole === "내부통제 준법감시 담당자") {
+        activeView = "compliance-dashboard";
+        activeDetailType = defaultDetailForView(activeView);
+        if (window.location.hash !== "#compliance-dashboard") {
+          window.location.hash = "compliance-dashboard";
+        }
+        render();
+        notify("내부통제 준법감시 담당자 대시보드로 이동했습니다.");
+        return;
+      }
+      notify(`${selectedRailRole} 유형을 선택했습니다.`);
     });
   });
 
@@ -4491,7 +5949,9 @@ function render() {
 
 function applyHashRoute() {
   const view = window.location.hash.replace("#", "");
-  const known = navigation.flatMap((group) => group.items.map((item) => item.id));
+  const known = navigation
+    .flatMap((group) => group.items.map((item) => item.id))
+    .concat(["rm-dashboard", "corporate-credit-dashboard", "jeonse-protection-dashboard", "consumer-protection-dashboard", "fds-dashboard", "compliance-dashboard"]);
   if (!known.includes(view)) return;
   activeView = view;
   activeDetailType = defaultDetailForView(view);
@@ -4503,6 +5963,7 @@ window.addEventListener("hashchange", () => {
   render();
 });
 
+restoreNavigationOrder();
 bindActions();
 applyHashRoute();
 applyDemoModeFromUrl();
