@@ -363,3 +363,13 @@ test("settings can reset local demo state", async ({ page }) => {
   await page.waitForLoadState("domcontentloaded");
   await expect(page.locator("#page-content")).not.toBeEmpty();
 });
+
+test("live flag toggles RUNTIME_CONFIG", async ({ page }) => {
+  await page.goto("/index.html?demo=jeonse&live=1");
+  const live = await page.evaluate(() => window.RUNTIME_CONFIG && window.RUNTIME_CONFIG.liveApi);
+  expect(live).toBe(true);
+
+  await page.goto("/index.html?demo=jeonse");
+  const off = await page.evaluate(() => window.RUNTIME_CONFIG && window.RUNTIME_CONFIG.liveApi);
+  expect(off).toBe(false);
+});

@@ -664,6 +664,21 @@ const jeonseFeatures = [
 
 const appStorageKey = "jb-localguard-os-state-v2";
 const storageSchemaVersion = 3;
+
+// 라이브 데모 opt-in seam. 기본 OFF = 현행 결정론적 동작(오프라인·verify_static 안전).
+// ?live=1 → 전세 실거래가 실 호출 + 로컬모델 판단 텍스트. ?model=0 로 모델만 끔.
+const RUNTIME_CONFIG = (() => {
+  const p = new URLSearchParams(window.location.search);
+  const live = p.get("live") === "1";
+  return {
+    liveApi: live,
+    localModel: live && p.get("model") !== "0",
+    apiProxyBase: "http://127.0.0.1:8020",
+    ollamaBase: "http://127.0.0.1:11434",
+  };
+})();
+window.RUNTIME_CONFIG = RUNTIME_CONFIG;
+function isLive() { return RUNTIME_CONFIG.liveApi === true; }
 const monthlyCostTrend = [
   ["3월", 218000],
   ["4월", 246000],
