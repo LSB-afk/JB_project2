@@ -200,6 +200,7 @@ function svgFor(name, elements) {
 }
 
 function writeIndex(rows) {
+  const shareRows = rows.filter((row) => SHARE_PICKS.has(row.name));
   const lines = [
     "---",
     "tags:",
@@ -223,18 +224,59 @@ function writeIndex(rows) {
     "|---|---|---|---|",
   ];
 
-  for (const row of rows.filter((row) => SHARE_PICKS.has(row.name))) {
+  for (const row of shareRows) {
     lines.push(
-      `| ✅ | ![[${row.png}]] | \`${path.relative(OUT_DIR, row.source)}\` | ${purpose(row.name)} |`,
+      `| ✅ | ![${row.name}](${row.png}) | \`${path.relative(OUT_DIR, row.source)}\` | ${purpose(row.name)} |`,
     );
   }
 
   lines.push("", "## 전체 Export", "", "| PNG | SVG | 원본 |", "|---|---|---|");
   for (const row of rows) {
-    lines.push(`| \`${row.png}\` | \`${row.svg}\` | \`${row.source}\` |`);
+    lines.push(`| [${row.png}](${row.png}) | [${row.svg}](${row.svg}) | \`${row.source}\` |`);
   }
   lines.push("");
   fs.writeFileSync(path.join(OUT_DIR, "_export-index.md"), `${lines.join("\n")}\n`);
+
+  const readme = [
+    "---",
+    "tags:",
+    "  - area/assets",
+    "  - type/index",
+    "  - status/active",
+    "date: 2026-07-02",
+    'up: "[[08_본선/_system/visualizations/_viz-index|시각화 인덱스]]"',
+    "---",
+    "",
+    "# Excalidraw Exported Images",
+    "",
+    `Generated: ${GENERATED_AT}`,
+    `Export style: ${EXPORT_STYLE}`,
+    "",
+    "GitHub preview page for the shared hand-drawn Excalidraw exports.",
+    "",
+    "## Recommended Sharing Order",
+    "",
+    "1. `project-master-timeline.png` — 전체 일정",
+    "2. `workflow-gantt-blueprint.png` — 간트·역할·AI 협업",
+    "3. `team-contribution-role-radar.png` — 팀원/AI 기여 구조",
+    "4. `research-to-product-funnel.png` — 리서치→제품결정 흐름",
+    "5. `evidence-traceability-board.png` — 주장→근거→제출물",
+    "6. `demo-video-storyboard.png` — 시연영상 구성",
+    "",
+    "## Share Picks",
+    "",
+  ];
+
+  for (const row of shareRows) {
+    readme.push(`### ${row.name}`, "", `![${row.name}](${row.png})`, "");
+  }
+
+  readme.push("## Full Export List", "", "| PNG | SVG |", "|---|---|");
+  for (const row of rows) {
+    readme.push(`| [${row.png}](${row.png}) | [${row.svg}](${row.svg}) |`);
+  }
+  readme.push("");
+  fs.writeFileSync(path.join(OUT_DIR, "README.md"), `${readme.join("\n")}\n`);
 }
 
 function purpose(name) {

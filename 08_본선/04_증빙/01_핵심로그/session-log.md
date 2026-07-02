@@ -286,3 +286,15 @@ aliases:
 - `node --check 08_본선/_system/automation/viz-exporter.mjs` 통과.
 - `node 08_본선/_system/automation/viz-exporter.mjs` 통과 — 20개 보드 재export.
 - `workflow-gantt-blueprint.png` 직접 시각 확인.
+
+### 2026-07-02 · GitHub 미리보기용 이미지 README
+**한 일**
+- `viz-exporter.mjs`가 `README.md`를 함께 생성하도록 수정.
+- GitHub가 렌더링하지 못하는 Obsidian `![[...]]` 임베드를 표준 Markdown `![](file.png)` 이미지 링크로 변경.
+- `08_본선/assets/excalidraw/exported-images/20260702/README.md`에 추천 공유 순서와 6개 대표 이미지를 직접 표시.
+
+**검증**
+- `node --check 08_본선/_system/automation/viz-exporter.mjs` 통과.
+- `node 08_본선/_system/automation/viz-exporter.mjs` 통과.
+- `npm run test` 통과.
+- `canon-moc-sync` dry-run 통과: frontmatter·MOC·죽은 링크·도달성 정합.
