@@ -26,6 +26,7 @@ aliases:
 
 | 목적 | 링크 |
 |------|------|
+| 🆕 **새 세션 부팅(핸드오프)** | [[HANDOFF\|HANDOFF — 현재 상태·다음 할 일·가드레일]] |
 | 공유 패키지 (외부 독자용) | [[08_본선/SHARE-PACKAGE\|공유 패키지]] |
 | AI 리포트 최종본 | [[08_본선/05_제출/ai-report-final\|AI 리포트 최종]] |
 | 종합 아키텍처 다이어그램 | [[08_본선/03_제품/05_diagrams/99_comprehensive-architecture\|종합 아키텍처]] |
