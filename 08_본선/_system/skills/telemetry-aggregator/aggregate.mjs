@@ -5,7 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const BASE = path.join(process.cwd(), "08_본선/_system");
+const BASE = path.join(process.env.CLAUDE_PROJECT_DIR || process.cwd(), "08_본선/_system");
 
 // ── 경로 상수 ─────────────────────────────────────────────────────────────
 const PATHS = {
