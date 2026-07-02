@@ -12,7 +12,7 @@ tools:
 tags:
   - area/system
   - type/agent
-  - status/candidate
+  - status/active
 date: 2026-06-27
 up: "[[_agent-registry]]"
 ---
@@ -20,9 +20,9 @@ up: "[[_agent-registry]]"
 
 ## 역할·분야
 
-**데이터 엔지니어 (후보 에이전트)**
+**데이터 엔지니어 (활성 역할 — 2026-07-02 후보→승격)**
 
-> ⚠️ 후보 에이전트 — 필요 시 orchestrator가 승격 결정.
+> ✅ 승격됨(트리거: 본선 서버 API·데이터 레이어 구축 착수). [[architect]]·[[builder]]와 협력.
 
 공공데이터·외부 API를 수집하고, RAG 파이프라인과 데이터 모델을 설계·구현한다. builder가 구현하는 애플리케이션 레이어에 데이터를 공급하는 역할.
 

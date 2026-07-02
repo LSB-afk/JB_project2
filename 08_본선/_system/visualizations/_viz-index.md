@@ -42,6 +42,7 @@ aliases:
 | [[08_본선/_system/visualizations/demo-video-storyboard\|demo-video-storyboard.excalidraw]] | 시연 시나리오, 발표 스크립트 | SME 히어로 중심 시연영상 12컷 스토리보드 | 발표·영상 |
 | [[08_본선/_system/visualizations/evidence-traceability-board\|evidence-traceability-board.excalidraw]] | `_canon`, D결과, 제출문서, 심사기준 | 주장→근거→산출물→심사항목 + 제품결정/API승격 추적판 | 발표 백업 |
 | [[08_본선/_system/visualizations/demo-golden-path-state-machine\|demo-golden-path-state-machine.excalidraw]] | 본선 시연 시나리오, live verification | SME 히어로/피싱 보조/전세 optional 데모 상태기계 | 시연·QA |
+| [[08_본선/_system/visualizations/research-domain-atlas\|research-domain-atlas.excalidraw]] | 리서치 README, 회수현황, 인사이트맵, 논증척추 | 리서치 도메인 6범주 + D/B 코드 + 교차 연결 + 제품/시연/발표 활용처 | 팀 운영·발표 백업 |
 | [[08_본선/_system/visualizations/research-to-product-funnel\|research-to-product-funnel.excalidraw]] | D1~D23, D+a/b, 갭감사, 제품정의 | 리서치→Decision Gate→제품결정→MVP/발표 전환 흐름 | 제품·발표 |
 
 ---
@@ -137,10 +138,10 @@ aliases:
 - **업데이트 트리거**: `PROGRESS.md` 체크박스 변경
 
 ### demo-video-storyboard.excalidraw
-- **소스**: [[본선-시연-시나리오]], [[03-발표-시연-스크립트]]
+- **소스**: [[본선-시연-시나리오]], [[03-발표-시연-스크립트]], [[발표-PPT-전략-스토리보드]]
 - **형식**: 12컷 영상 제작판(컷·자막·화면요소·증빙요소)
-- **목적**: 시연영상 제작 시 무엇을 녹화하고 강조할지 고정
-- **업데이트 트리거**: 시연 흐름·영상 규칙·제출 조건 변경
+- **목적**: 시연영상 제작 시 무엇을 녹화하고 강조할지 고정하고, 발표 PPT 데모 구간과 충돌하지 않게 관리
+- **업데이트 트리거**: 시연 흐름·영상 규칙·제출 조건·PPT 전략 변경
 
 ### evidence-traceability-board.excalidraw
 - **소스**: [[_canon]], 리서치 결과, 제출 문서, [[심사기준]]
@@ -153,6 +154,12 @@ aliases:
 - **형식**: Input → Classify → Generate → Govern → Approve → Audit 상태기계
 - **목적**: 시연이 정적 화면이 아니라 통제되는 상태 전이임을 증명
 - **업데이트 트리거**: 데모 플로우·폴백 시나리오 변경
+
+### research-domain-atlas.excalidraw
+- **소스**: [[research-domain-atlas-plan]], [[README]], [[_00-도메인-분해-점검]], [[_00-회수현황]], [[_인사이트맵]], [[_본선-논증척추]]
+- **형식**: 좌측 리서치 입력 레이어 + 중앙 6개 도메인 클러스터 + 우측 제품/시연/발표 활용처 + 연결선
+- **목적**: 다량의 D/B 리서치가 어떤 범주와 근거 네트워크를 이루는지 한눈에 보여주고, 발표 백업 질의 때 어디를 봐야 하는지 안내
+- **업데이트 트리거**: D시리즈 추가·회수, 인사이트맵·논증척추·제품정의·발표 전략 변경
 
 ### research-to-product-funnel.excalidraw
 - **소스**: D1~D23, D+a/b, [[리서치-갭감사]], 제품정의
@@ -169,7 +176,7 @@ aliases:
 - 생성기: `08_본선/_system/automation/viz-exporter.mjs`
 - 최신 export: `08_본선/assets/excalidraw/exported-images/20260702/`
 - 인덱스: [[08_본선/assets/excalidraw/exported-images/20260702/_export-index|Excalidraw Exported Images]]
-- 우선 공유 후보: `workflow-gantt-blueprint`, `project-master-timeline`, `team-contribution-role-radar`, `research-to-product-funnel`, `evidence-traceability-board`, `demo-video-storyboard`
+- 우선 공유 후보: `workflow-gantt-blueprint`, `project-master-timeline`, `team-contribution-role-radar`, `research-domain-atlas`, `research-to-product-funnel`, `evidence-traceability-board`, `demo-video-storyboard`
 - 주의: PNG는 팀 공유·메신저용, SVG는 발표덱 재편집용. 발표 최종본은 Obsidian/Excalidraw 네이티브 export와 비교 QA한다.
 
 ## 자동 생성
@@ -179,6 +186,7 @@ aliases:
 이미지 export: `node 08_본선/_system/automation/viz-exporter.mjs`
 
 기획 문서: [[VISUALIZATION-PLAN]]
+보드별 기획: [[research-domain-atlas-plan]]
 담당 역할: [[visualization]]
 
 ## 감사·개선 문서

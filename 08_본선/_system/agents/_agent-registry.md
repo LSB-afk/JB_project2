@@ -35,6 +35,17 @@ aliases:
 
 ---
 
+## 역할 로스터 변경 (2026-07-02 · 앱 설계·구축 진입)
+
+> 역할 페르소나 SSOT = `roles/*.md`. 앱 설계 단계 진입에 맞춰 셋업(사용자 승인).
+
+- **[[architect]] 신설 ★** — product(무엇을)와 builder(구현) 사이 **기술 아키텍처 리드**(데이터모델·에이전트 런타임·로컬모델·API 계약·PII 아키텍처·배포). 로스터 공백 보강.
+- **[[data-engineer]] 후보→활성 승격** — 공공데이터·API·RAG·데이터모델. 트리거(서버 API 착수) 충족.
+- **[[designer]]·[[compliance-risk]] 앱 설계 단계 배정** — designer=JB 디자인시스템(토큰 확보)·조직도 메인UI·IA / compliance-risk=PII 비반출을 설계 첫날부터.
+- 남은 후보: pitch-storyteller·red-team-judge·security(트리거 대기).
+
+---
+
 ## 누적 집계
 
 | 항목 | 값 |
@@ -75,9 +86,9 @@ Orchestrator (Opus)
 
 | 에이전트 | 세션 수 | 입력 토큰 | 출력 토큰 |
 |---------|--------|---------|---------|
-| direct | 6 | 29,086,247 | 7,281,183 |
+| direct | 8 | 44,016,059 | 11,532,959 |
+| via-claude | 3 | 0 | 0 |
 | orchestrator | 2 | 50,000 | 570,000 |
-| via-claude | 2 | 0 | 0 |
 | gpt-5.3-codex-spark | 1 | 0 | 0 |
 | gpt-5.5-xhigh | 1 | 0 | 0 |
 <!-- /AGGREGATOR:AGENT-STATS -->

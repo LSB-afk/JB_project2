@@ -21,6 +21,7 @@ up: "[[08_본선/_system/visualizations/_viz-index|시각화 인덱스]]"
 | ✅ | ![demo-video-storyboard](demo-video-storyboard.png) | `../../../../_system/visualizations/demo-video-storyboard.excalidraw` | 시연영상 구성 논의 |
 | ✅ | ![evidence-traceability-board](evidence-traceability-board.png) | `../../../../_system/visualizations/evidence-traceability-board.excalidraw` | 주장→근거→제출물 추적 |
 | ✅ | ![project-master-timeline](project-master-timeline.png) | `../../../../_system/visualizations/project-master-timeline.excalidraw` | 프로젝트 전체 일정 공유 |
+| ✅ | ![research-domain-atlas](research-domain-atlas.png) | `../../../../_system/visualizations/research-domain-atlas.excalidraw` | 리서치 범주·연결 지도 |
 | ✅ | ![research-to-product-funnel](research-to-product-funnel.png) | `../../../../_system/visualizations/research-to-product-funnel.excalidraw` | 리서치→제품결정 흐름 |
 | ✅ | ![team-contribution-role-radar](team-contribution-role-radar.png) | `../../../../_system/visualizations/team-contribution-role-radar.excalidraw` | 팀원/AI 기여 설명 |
 | ✅ | ![workflow-gantt-blueprint](workflow-gantt-blueprint.png) | `../../../../_system/visualizations/workflow-gantt-blueprint.excalidraw` | 팀 운영·간트·역할 보고 |
@@ -42,6 +43,7 @@ up: "[[08_본선/_system/visualizations/_viz-index|시각화 인덱스]]"
 | [jb-history-timeline.png](jb-history-timeline.png) | [jb-history-timeline.svg](jb-history-timeline.svg) | `08_본선/_system/visualizations/jb-history-timeline.excalidraw` |
 | [judge-criteria-coverage-map.png](judge-criteria-coverage-map.png) | [judge-criteria-coverage-map.svg](judge-criteria-coverage-map.svg) | `08_본선/_system/visualizations/judge-criteria-coverage-map.excalidraw` |
 | [project-master-timeline.png](project-master-timeline.png) | [project-master-timeline.svg](project-master-timeline.svg) | `08_본선/_system/visualizations/project-master-timeline.excalidraw` |
+| [research-domain-atlas.png](research-domain-atlas.png) | [research-domain-atlas.svg](research-domain-atlas.svg) | `08_본선/_system/visualizations/research-domain-atlas.excalidraw` |
 | [research-to-product-funnel.png](research-to-product-funnel.png) | [research-to-product-funnel.svg](research-to-product-funnel.svg) | `08_본선/_system/visualizations/research-to-product-funnel.excalidraw` |
 | [team-contribution-role-radar.png](team-contribution-role-radar.png) | [team-contribution-role-radar.svg](team-contribution-role-radar.svg) | `08_본선/_system/visualizations/team-contribution-role-radar.excalidraw` |
 | [timeline.png](timeline.png) | [timeline.svg](timeline.svg) | `08_본선/_system/visualizations/timeline.excalidraw` |

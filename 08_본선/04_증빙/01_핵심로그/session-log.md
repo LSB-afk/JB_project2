@@ -343,3 +343,47 @@ aliases:
 - 결과물: [[paperclip-런타임-데이터흐름]](루프1~3 실측)·[[nemotron-personas-korea]](재사용 데이터셋). 서버 `localhost:3100` 가동.
 - 격리: JBproject 볼트 무영향(verify_static 34 green). 볼트 신규=학습문서 1개(텍스트).
 - 다음: Codex 병렬 결과 회수 → 시각 갤러리 캡처. 제품 채택 여부는 제품정의 확정 후(사람).
+
+### 2026-07-02 · JB 콘솔 프로토타입 착수 (fork를 우리 예선 설계+JB디자인으로)
+- **재프레이밍(사용자)**: 현 fork는 "paperclip에 이름만 바꾼 것" → 우리 예선 15페이지 IA·전세Shield·PII거버넌스·L0~L4·증빙체인으로 재구성 + 표절우려 해소용 **깊은 JB 디자인**. **위상=팀 내부 레퍼런스**(실제 제품은 팀원 별도). 품질 바=**5천만원 외주 납품물**([[jb-console-quality-bar]]).
+- **컨텍스트 관리**: fork 독립 git **jb-console 브랜치** 신설. SSOT [[JB-콘솔-프로토타입-스펙]] 신설. 토큰 파이프라인 `scripts/jb-tokens-sync.mjs`.
+- **Codex 5병렬 착수**: C1 JB디자인CSS·C2 IA맵·C3 전세Shield·C4 PII+감사체인·C5 리스크L0~L4. ⚠️Codex sandbox localhost·Downloads쓰기 차단→적용·시드=메인세션.
+- 볼트 무영향(verify_static green 유지).
+
+### 2026-07-02 · JB 콘솔 심화: 실 은행 워크플로 3종 + 14 canon 에이전트 + JB 아이콘 (커밋 jb-console `389e5ca`)
+- **사용자 판정**: 현 프로토타입은 실 은행 운영 불가(실 업무 자동화 부족)·에이전트 종류 부족·아이콘 paperclip 그대로 → JB 토큰 정합 요구. 품질 바=**5천만원 외주 납품물**([[jb-console-quality-bar]]).
+- **인터랙티브 워크플로 3종**(JeonseShield 골격 복제·useMemo 실시간, `RiskDecisionView.buildSignalsForAction` 가중치 미러): FraudShieldPage(이상거래 L4 자동차단→사람 승인 게이트·fraud 4신호)·RepaymentTriagePage(상환위험 sme 5신호+시나리오 3종)·PolicyMatchPage(정책금융 매칭 대환대출·햇살론뱅크·소진공·지역신보+서류·연계). 신규 정적 데이터(시나리오·상품표)는 "데모/시뮬" 라벨.
+- **14 canon 운영 + 2 사람 승인자 리시드**: `packages/db/src/jb-reseed-agents.ts`(기존 4행 UPDATE·나머지 INSERT=FK 보존), LocalGuard 회사(db37c44b). 운영 조율=root, 전세 3종→전세위험 관리 리드, 나머지+승인자→운영 조율 → `/agents`·`/org` 실 조직 렌더. role enum 12개 고정 준수(정체성=name/title).
+- **아이콘 JB 정렬**: `svg.lucide{stroke-width:1.75px}`(전 아이콘 경량화·JbIcon 래퍼 대신 1줄 전역)·승인/신규 nav 의미 정합. PII거버넌스·감사체인 하드코딩 팔레트→JB 토큰 하모나이즈(의미색 유지).
+- **검증**: UI/DB `tsc -b` exit 0 · 6라우트(fraud/repayment/policy/pii/audit/org) 라이브 렌더 pageerror 0·needle 통과 · verify_static 34 green · 볼트 fork 코드 0. 갤러리 6컷 캡처.
+- **분업**: 3페이지·리시드·하모나이즈 전부 메인세션 직접 저작(패턴 충실도·HTML이스케이프 버그 회피). Codex는 이번 회차 미사용(직접 저작이 5천만원 바에 더 부합).
+
+## 2026-07-02 · 리서치 시각화 — 리서치 지도(mermaid) + Obsidian 임베드
+- 목적: 리서치 36건 각각의 핵심을 한 장에, 팀원(렌더)+AI(텍스트) 공용.
+- 산출: [[_리서치-지도]] — mermaid mindmap(4클러스터: 사실·시장/규제·법/AI·에이전트/검증·운영) + 클러스터별 so-what 표. ⭐=D25·D30·D23.
+- 시각화 고안: 계층1 볼트내 mermaid(자동 렌더)·계층2 PNG(덱용, chromium 미설치로 보류). 연결 = `![[_리서치-지도]]` 임베드.
+- 임베드 배치: [[_00-회수현황]]·[[_인사이트맵]] 상단에 인라인, [[_01-실행-대시보드]]에 포인터.
+
+## 2026-07-02 · 리서치 운영문서 정합성 감사 (Codex 4병렬 위임)
+- 감사: 프롬프트 카운트 문서마다 불일치(README 30/대시보드 27/회수현황 20·21/MOC 29·19/지도 36) → 권위값 **36종**(D1a~D30·D3a~f·D+a/b·B1) 확정, 미생성 후보 5(D24·D26~29), 결과 44파일.
+- 위임: Codex gpt-5.5 4병렬(workspace-write) — C1 README+MOC / C2 대시보드 / C3 회수현황+모델기록 / C4 분해+_02+_03. C1·C3·C4 완료, C2는 하네스 타임아웃으로 잘려 직접 마무리.
+- 통합: _02-코덱스-점검 frontmatter 깨짐 수정 + status/archived·스냅샷 명시(2026-06-29 19종 시점, _03·회수현황으로 상위대체). "1차 사이클 마감" 프레임 폐기 → 리서치→빌드 피벗.
+- 검증: 구닥다리 마커 clean, canon-moc-sync 죽은 링크 0·도달성 OK.
+
+## 2026-07-02 · 빌드 플랜 초안(히어로 실동작 데모)
+- writing-plans로 [[빌드플랜-히어로-실동작-데모]] 작성(회의5 게이트 초안). Explore 서브에이전트가 app.js 매핑(4함수계약·jeonse 경로·persist·fetch/모델 훅·verify_static 니들) 선행.
+- 핵심 발견: 감사체인 이미 실제(auditChainRecords 해시체인+persistState). 실 데이터/로컬모델만 RUNTIME_CONFIG opt-in seam으로 주입.
+- 5 Phase: P0 설정seam / P1 전세 국토부 실거래가 프록시+주입(머니샷) / P2 로컬모델 판단텍스트(Ollama) / P3 감사체인 노출 / P4 폴백·리허설. 전부 폴백=현행 결정론(오프라인·verify_static 안전).
+
+## 2026-07-02 · 빌드 Phase 0 실행 완료 (RUNTIME_CONFIG seam)
+- [[빌드플랜-히어로-실동작-데모]] Phase 0 실행: app.js에 RUNTIME_CONFIG opt-in seam(기본 OFF)·isLive() 추가, 02_제품/scripts/api-proxy.mjs(국토부 프록시 스캐폴드) 생성, package.json demo:proxy 추가, E2E "live flag" 테스트 추가.
+- 검증: node --check(app+proxy) OK · verify_static 34파일 통과 · 전체 E2E 20/20 통과(회귀 0).
+- 미실행(의존성/게이트): Phase1 Task2(실 시세 주입, DATA_GO_KR_KEY 필요)·Phase2(Ollama 데모머신)·Phase3~4. 회의5·개발리드 몫.
+- 커밋 안 함(지시 대기).
+
+### 2026-07-02 · JB 콘솔 케이스 중심 재구현 P0~P4 ("디자인 티 제거→실사용 UX", Codex 구현)
+- **피벗**: 계산기 4종은 케이스와 분리돼 "이게 뭔 프로그램인지" 안 읽힘 → MVP(`02_제품/app/`) 정답지로 **케이스 중심 운영 콘솔** 재구현. 개념(Case→AgentRun→Agent→Skill→Evidence→Approval→Audit)은 이미 정답, 디자인/UX만 프로덕션 품질로. 계산기=보조 탭 유지(임베드 폐기).
+- **P0~P4 완료**(커밋 2324d28·427f6bd·282de15): 밝은 테마 기본·nav 정리 / 시드데이터 5모듈 / 케이스 큐+상세 전용뷰(8단계 타임라인·근거·산출물MD·승인+감사) / 스킬 콘텐츠 엔진·플러그인 MCP 레지스트리 / 디자인 폴리시(게이지·버튼).
+- **fork 이전**: `~/Downloads/archives/`→`~/project/active/paperclip-jb-fork`(Codex TCC 우회, 볼트 sibling). [[paperclip-fork-experiment]] 갱신.
+- **개발 분업(Codex 구현·토큰 절약)**: 신규파일=Codex 생성→`/tmp` 스테이징→Claude 이동(P1·P2·P3), 기존편집·디자인 반복=Claude(P0·P4), localhost·스크린샷·시드·검증=Claude. Codex 샌드박스는 fork read/write 불가(볼트만) — 정본 [[JB-콘솔-개발도구-SDK-플랜]].
+- **검증**: 전 tsc 0·pageerror 0·verify_static 34 green·볼트 fork코드 0. 스펙 [[JB-콘솔-프로토타입-스펙]]·프롬프트로그 [P]브랜치(P1~P24) 갱신.

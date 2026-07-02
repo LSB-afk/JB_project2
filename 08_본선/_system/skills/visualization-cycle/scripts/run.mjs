@@ -18,6 +18,7 @@ const required = [
   'demo-video-storyboard.excalidraw',
   'evidence-traceability-board.excalidraw',
   'demo-golden-path-state-machine.excalidraw',
+  'research-domain-atlas.excalidraw',
   'research-to-product-funnel.excalidraw',
 ]
 
@@ -97,6 +98,15 @@ function main() {
 
   const funnelText = textOfBoard(path.join(VIZ, 'research-to-product-funnel.excalidraw'))
   assertIncludes(funnelText, 'Decision Gate', 'research-to-product-funnel decision gate sync')
+
+  const atlasText = textOfBoard(path.join(VIZ, 'research-domain-atlas.excalidraw'))
+  assertIncludes(atlasText, 'Pain & RM Workflow', 'research-domain-atlas domain clusters')
+  assertIncludes(atlasText, 'JB Fit & Market', 'research-domain-atlas domain clusters')
+  assertIncludes(atlasText, 'Data & Regulation', 'research-domain-atlas domain clusters')
+  assertIncludes(atlasText, 'Agent/System Architecture', 'research-domain-atlas domain clusters')
+  assertIncludes(atlasText, 'Governance & Validation', 'research-domain-atlas domain clusters')
+  assertIncludes(atlasText, 'Synthesis & Pitch Spine', 'research-domain-atlas synthesis layer')
+  assertIncludes(atlasText, 'D25', 'research-domain-atlas TBD gap')
 
   const contributionText = textOfBoard(path.join(VIZ, 'team-contribution-role-radar.excalidraw'))
   assertIncludes(contributionText, '🧑', 'team-contribution-role-radar people layer')

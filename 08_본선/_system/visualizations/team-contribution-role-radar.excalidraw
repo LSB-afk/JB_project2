@@ -225,7 +225,7 @@
       "type": "rectangle",
       "x": 83,
       "y": 182,
-      "width": 126,
+      "width": 117,
       "height": 26
     },
     {
@@ -254,14 +254,14 @@
       "y": 187,
       "width": 176,
       "height": 15,
-      "text": "Human share 67% · weight 102",
+      "text": "Human share 62% · weight 102",
       "fontSize": 10,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 13,
       "containerId": null,
-      "originalText": "Human share 67% · weight 102",
+      "originalText": "Human share 62% · weight 102",
       "lineHeight": 1.25
     },
     {
@@ -522,7 +522,7 @@
       "type": "rectangle",
       "x": 368,
       "y": 182,
-      "width": 32,
+      "width": 30,
       "height": 26
     },
     {
@@ -551,14 +551,14 @@
       "y": 187,
       "width": 176,
       "height": 15,
-      "text": "Human share 17% · weight 26",
+      "text": "Human share 16% · weight 26",
       "fontSize": 10,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 13,
       "containerId": null,
-      "originalText": "Human share 17% · weight 26",
+      "originalText": "Human share 16% · weight 26",
       "lineHeight": 1.25
     },
     {
@@ -783,7 +783,7 @@
       "type": "rectangle",
       "x": 653,
       "y": 182,
-      "width": 23,
+      "width": 21,
       "height": 26
     },
     {
@@ -812,14 +812,14 @@
       "y": 187,
       "width": 176,
       "height": 15,
-      "text": "Human share 12% · weight 18",
+      "text": "Human share 11% · weight 18",
       "fontSize": 10,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 13,
       "containerId": null,
-      "originalText": "Human share 12% · weight 18",
+      "originalText": "Human share 11% · weight 18",
       "lineHeight": 1.25
     },
     {
@@ -947,14 +947,14 @@
       "y": 142,
       "width": 208,
       "height": 18,
-      "text": "금융·전략·BM",
+      "text": "데이터·시스템 설계·금융 전략",
       "fontSize": 10,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 13,
       "containerId": null,
-      "originalText": "금융·전략·BM",
+      "originalText": "데이터·시스템 설계·금융 전략",
       "lineHeight": 1.25
     },
     {
@@ -1008,7 +1008,7 @@
       "type": "rectangle",
       "x": 938,
       "y": 182,
-      "width": 8,
+      "width": 21,
       "height": 26
     },
     {
@@ -1037,14 +1037,14 @@
       "y": 187,
       "width": 176,
       "height": 15,
-      "text": "Human share 4% · weight 6",
+      "text": "Human share 11% · weight 18",
       "fontSize": 10,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 13,
       "containerId": null,
-      "originalText": "Human share 4% · weight 6",
+      "originalText": "Human share 11% · weight 18",
       "lineHeight": 1.25
     },
     {
@@ -1086,6 +1086,42 @@
     {
       "id": "viz-34",
       "angle": 0,
+      "strokeColor": "#334155",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 2477,
+      "version": 1,
+      "versionNonce": 4743,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "type": "text",
+      "x": 930,
+      "y": 255,
+      "width": 205,
+      "height": 15,
+      "text": "dev: 데이터 모델·시스템 구조·API/DB 범위 설계 지",
+      "fontSize": 8,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 10,
+      "containerId": null,
+      "originalText": "dev: 데이터 모델·시스템 구조·API/DB 범위 설계 지",
+      "lineHeight": 1.25
+    },
+    {
+      "id": "viz-35",
+      "angle": 0,
       "strokeColor": "#7c3aed",
       "backgroundColor": "#ede9fe",
       "fillStyle": "solid",
@@ -1111,7 +1147,7 @@
       "height": 95
     },
     {
-      "id": "viz-35",
+      "id": "viz-36",
       "angle": 0,
       "strokeColor": "#312e81",
       "backgroundColor": "transparent",
@@ -1147,7 +1183,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-36",
+      "id": "viz-37",
       "angle": 0,
       "strokeColor": "#312e81",
       "backgroundColor": "transparent",
@@ -1183,7 +1219,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-37",
+      "id": "viz-38",
       "angle": 0,
       "strokeColor": "#312e81",
       "backgroundColor": "transparent",
@@ -1208,18 +1244,18 @@
       "y": 456,
       "width": 1045,
       "height": 18,
-      "text": "간트 동기화 기준: 제품 결정은 전원 협업, UX/UI는 김민주 lead, MVP/API는 이승보 lead, PM·문서·툴은 김주용 lead.",
+      "text": "간트 동기화 기준: 제품 결정은 전원 협업, UX/UI는 김민주 lead, MVP/API는 이승보 lead, 데이터·시스템 설계는 재형 support, PM·문서·툴은 김주용 lead.",
       "fontSize": 10,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 13,
       "containerId": null,
-      "originalText": "간트 동기화 기준: 제품 결정은 전원 협업, UX/UI는 김민주 lead, MVP/API는 이승보 lead, PM·문서·툴은 김주용 lead.",
+      "originalText": "간트 동기화 기준: 제품 결정은 전원 협업, UX/UI는 김민주 lead, MVP/API는 이승보 lead, 데이터·시스템 설계는 재형 support, PM·문서·툴은 김주용 lead.",
       "lineHeight": 1.25
     },
     {
-      "id": "viz-38",
+      "id": "viz-39",
       "angle": 0,
       "strokeColor": "#94a3b8",
       "backgroundColor": "#f8fafc",
@@ -1246,7 +1282,7 @@
       "height": 88
     },
     {
-      "id": "viz-39",
+      "id": "viz-40",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "transparent",
@@ -1282,7 +1318,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-40",
+      "id": "viz-41",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "transparent",
@@ -1318,7 +1354,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-41",
+      "id": "viz-42",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "transparent",
@@ -1354,7 +1390,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-42",
+      "id": "viz-43",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "transparent",

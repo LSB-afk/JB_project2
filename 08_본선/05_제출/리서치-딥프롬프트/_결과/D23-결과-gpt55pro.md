@@ -1,3 +1,11 @@
+---
+tags:
+  - area/general
+  - status/draft
+date: 2026-07-01
+up: "[[08_본선/_MOC/_system_tools_MOC|system_tools_MOC]]"
+---
+
 # 지역은행의 거버넌드 AI 에이전트 콘솔 경제성·리스크 정량모델
 
 ## 모델 검증·정정 로그

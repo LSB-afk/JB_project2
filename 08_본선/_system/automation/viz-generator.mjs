@@ -751,21 +751,21 @@ const buildWorkflowGanttBlueprint = () => {
     { iso: '2026-07-04', label: '07/04' }, { iso: '2026-07-05', label: '07/05' },
   ]
   const lanes = [
-    { name: '1. 문제정의/JB 리서치', humans: '🧑 김주용 · 🧑 재형', robots: '🤖 research(Claude Sonnet) · GPT/Gemini DR', bg: '#e8f4fd', bars: [
+    { name: '1. 문제정의/JB 리서치', humans: '🧑 김주용 · 🧑 재형(data/system)', robots: '🤖 research(Claude Sonnet) · GPT/Gemini DR', bg: '#e8f4fd', bars: [
       { s: 0, e: 3, label: 'Pain·JB 사업 근거', owner: '🧑김주용 main · 🤖research', tag: '1.x · 2.x', color: '#4a9eed' },
       { s: 6, e: 8, label: 'D1~D19 딥리서치', owner: '🧑김주용 main · 🤖GPT/Gemini', tag: '1.3 · 2.1 · 2.5', color: '#2563eb' },
     ]},
     { name: '2. 제품 결정/범위 확정', humans: '🧑 김주용 · 🧑 이승보 · 🧑 김민주 · 🧑 재형', robots: '🤖 product(Claude Sonnet) · judge-qa · submission', bg: '#ecfeff', bars: [
-      { s: 8, e: 10, label: '은행·로컬·DB 범위 결정', owner: '🧑김주용 main · 🧑재형 finance · 🧑이승보 tech · 🤖product', tag: 'G4 · 제품 §1', color: '#0e7490' },
+      { s: 8, e: 10, label: '은행·로컬·DB 범위 결정', owner: '🧑김주용 main · 🧑재형 data/system · 🧑이승보 tech · 🤖product', tag: 'G4 · 제품 §1', color: '#0e7490' },
       { s: 9, e: 11, label: 'SME 히어로·조직도 UX 확정', owner: '🧑김민주 UX main · 🧑김주용 story · 🤖designer', tag: '시연 SSOT', color: '#0891b2' },
     ]},
-    { name: '3. AI Agent 설계', humans: '🧑 김주용 · 🧑 이승보', robots: '🤖 orchestrator(Claude Opus 4.5) · builder(Sonnet)', bg: '#f3f0ff', bars: [
-      { s: 0, e: 3, label: 'Case→AgentRun→Audit', owner: '🧑김주용 main · 🧑이승보 support · 🤖orchestrator', tag: '3.1 · 3.2 · 3.4', color: '#8b5cf6' },
-      { s: 6, e: 9, label: '멀티 Agent·모델기록', owner: '🤖orchestrator main · 🧑김주용', tag: '3.3 · 3.5', color: '#7c3aed' },
+    { name: '3. AI Agent 설계', humans: '🧑 김주용 · 🧑 이승보 · 🧑 재형', robots: '🤖 orchestrator(Claude Opus 4.5) · builder(Sonnet)', bg: '#f3f0ff', bars: [
+      { s: 0, e: 3, label: 'Case→AgentRun→Audit', owner: '🧑김주용 main · 🧑재형 data model · 🧑이승보 support · 🤖orchestrator', tag: '3.1 · 3.2 · 3.4', color: '#8b5cf6' },
+      { s: 6, e: 9, label: '멀티 Agent·모델기록', owner: '🤖orchestrator main · 🧑김주용 · 🧑재형 system review', tag: '3.3 · 3.5', color: '#7c3aed' },
     ]},
-    { name: '4. MVP 구현/고도화', humans: '🧑 이승보 · 🧑 김주용 · 🧑 김민주', robots: '🤖 builder(Claude Sonnet) · Codex GPT-5.5', bg: '#f0fdf4', bars: [
+    { name: '4. MVP 구현/고도화', humans: '🧑 이승보 · 🧑 김주용 · 🧑 김민주 · 🧑 재형', robots: '🤖 builder(Claude Sonnet) · Codex GPT-5.5', bg: '#f0fdf4', bars: [
       { s: 0, e: 4, label: '라이브 콘솔·골든패스', owner: '🧑이승보 main · 🧑김민주 UX support · 🤖builder/Codex', tag: '4.2 · 4.4', color: '#22c55e' },
-      { s: 10, e: 12, label: '정적 MVP→백엔드/API 승격', owner: '🧑이승보 main · 🧑김주용 spec · 🤖Codex', tag: 'G5 · API 승격', color: '#15803d' },
+      { s: 10, e: 12, label: '정적 MVP→백엔드/API 승격', owner: '🧑이승보 main · 🧑재형 DB/API · 🧑김주용 spec · 🤖Codex', tag: 'G5 · API 승격', color: '#15803d' },
       { s: 11, e: 13, label: '본선 시연 안정화', owner: '🧑김주용 main · 🧑이승보 · 🤖judge-qa', tag: '4.2 · 직접 시연', color: '#16a34a' },
     ]},
     { name: '5. UX/UI·브랜딩·시연 화면', humans: '🧑 김민주 · 🧑 김주용', robots: '🤖 design-ai(Figma/Claude) · visualization(Codex)', bg: '#fdf2f8', bars: [
@@ -773,9 +773,9 @@ const buildWorkflowGanttBlueprint = () => {
       { s: 9, e: 11, label: '조직도 중심 UX/UI', owner: '🧑김민주 main · 🧑이승보 implement · 🤖builder', tag: '2.2 · 5.2', color: '#be185d' },
       { s: 10, e: 13, label: '발표덱·시연영상 비주얼', owner: '🧑김민주 main · 🧑김주용 story · 🤖visualization', tag: '4.5 · 발표', color: '#9d174d' },
     ]},
-    { name: '6. 문서/기능명세/변경이력', humans: '🧑 김주용 · 🧑 재형', robots: '🤖 evidence(Claude Haiku) · submission(Sonnet)', bg: '#fff7ed', bars: [
+    { name: '6. 문서/기능명세/변경이력', humans: '🧑 김주용 · 🧑 재형(data/system)', robots: '🤖 evidence(Claude Haiku) · submission(Sonnet)', bg: '#fff7ed', bars: [
       { s: 2, e: 4, label: '제안서·기능명세·변경이력', owner: '🧑김주용 main · 🤖submission', tag: '4.1 · 4.3 · 4.5', color: '#f59e0b' },
-      { s: 8, e: 13, label: '문서정리·툴관리·정합성', owner: '🧑김주용 main · 🧑재형 review · 🤖evidence', tag: '기능 변경이력', color: '#ea580c' },
+      { s: 8, e: 13, label: '문서정리·툴관리·정합성', owner: '🧑김주용 main · 🧑재형 data/system review · 🤖evidence', tag: '기능 변경이력', color: '#ea580c' },
     ]},
     { name: '7. QA/검증/시연 안정화', humans: '🧑 김주용 · 🧑 이승보 · 🧑 김민주', robots: '🤖 judge-qa(Claude Sonnet) · Codex GPT-5.5', bg: '#f0fdfa', bars: [
       { s: 2, e: 4, label: 'E2E·정적검증·스크린샷', owner: '🤖judge-qa main · 🧑이승보 fix', tag: '4.2 · 4.5', color: '#06b6d4' },
@@ -788,7 +788,7 @@ const buildWorkflowGanttBlueprint = () => {
     { name: '9. 발표/시연/리허설', humans: '🧑 김주용 · 🧑 김민주 · 🧑 재형', robots: '🤖 pitch-storyteller(Sonnet) · visualization(Sonnet/Codex)', bg: '#fff1f2', bars: [
       { s: 9, e: 10, label: 'MVP 완료+시나리오', owner: '🧑김주용 main · 🤖pitch', tag: '4.2', color: '#ef4444' },
       { s: 10, e: 11, label: '발표 덱 최종', owner: '🧑김민주 visual main · 🧑김주용 story · 🤖visualization', tag: '1~5 전체', color: '#dc2626' },
-      { s: 11, e: 13, label: '최종 리허설→본선', owner: '🧑김주용 main · 🧑재형 Q&A · 🤖judge-qa', tag: '직접 시연', color: '#b91c1c' },
+      { s: 11, e: 13, label: '최종 리허설→본선', owner: '🧑김주용 main · 🧑재형 data/system Q&A · 🤖judge-qa', tag: '직접 시연', color: '#b91c1c' },
     ]},
   ]
 
@@ -935,7 +935,7 @@ const buildAxOperatingSystemMap = () => {
   elements.push(text(1, 42, 52, 1160, 22, '대회 작업을 단순 프롬프트가 아니라 운영체계처럼 기록·분업·검증한 구조', 12, 'left'))
 
   const cols = [
-    { x: 55, title: 'Human Team', color: '#dbeafe', items: ['🧑 김주용 / PM·문서·툴', '🧑 김민주 / UXUI·브랜딩', '🧑 이승보 / 개발·아키텍처', '🧑 재형 / 금융·전략'] },
+    { x: 55, title: 'Human Team', color: '#dbeafe', items: ['🧑 김주용 / PM·문서·툴', '🧑 김민주 / UXUI·브랜딩', '🧑 이승보 / 개발·아키텍처', '🧑 재형 / 데이터·시스템 설계'] },
     { x: 285, title: 'AI Engines', color: '#ede9fe', items: engines.length ? engines.map(e => e) : ['claude', 'codex', 'chatgpt', 'gemini'] },
     { x: 515, title: 'Agents', color: '#fef3c7', items: ['Orchestrator', 'research', 'designer', 'evidence', 'builder', 'judge-qa'] },
     { x: 745, title: 'Tools', color: '#dcfce7', items: toolNames.length ? toolNames : ['GitHub', 'Obsidian', 'Excalidraw', 'Syncthing'] },
@@ -1001,7 +1001,7 @@ const buildTeamContributionRoleRadar = () => {
   elements.push(rect(300, 55, 385, 1090, 95, '#ede9fe', '#7c3aed'))
   elements.push(text(301, 75, 402, 1045, 22, `${emoji.AI} AI Support Layer · Claude / Codex / ChatGPT / Gemini · support weight ${aiWeight}`, 16, 'left', '#312e81'))
   elements.push(text(302, 75, 432, 1045, 22, 'AI는 사람 기여와 경쟁하지 않고 리서치·코딩·검증·시각화 보조층으로 분리 표기한다.', 12, 'left', '#312e81'))
-  elements.push(text(303, 75, 456, 1045, 18, '간트 동기화 기준: 제품 결정은 전원 협업, UX/UI는 김민주 lead, MVP/API는 이승보 lead, PM·문서·툴은 김주용 lead.', 10, 'left', '#312e81'))
+  elements.push(text(303, 75, 456, 1045, 18, '간트 동기화 기준: 제품 결정은 전원 협업, UX/UI는 김민주 lead, MVP/API는 이승보 lead, 데이터·시스템 설계는 재형 support, PM·문서·툴은 김주용 lead.', 10, 'left', '#312e81'))
   metaBox(elements, 340, 850, 510, 350, 'contribution-ledger.csv, _team-roster, _contribution-stats', '팀원 역할·작업 원장 변경', 'visualization', 'estimate')
 
   return elements
@@ -1139,7 +1139,120 @@ const buildDemoGoldenPathStateMachine = () => {
   return elements
 }
 
-// ── 20. RESEARCH-TO-PRODUCT-FUNNEL ─────────────────────────────────────────
+// ── 20. RESEARCH-DOMAIN-ATLAS ──────────────────────────────────────────────
+const buildResearchDomainAtlas = () => {
+  _id = 0
+  const elements = []
+  elements.push(text(0, 40, 18, 1180, 34, 'Research Domain Atlas — 리서치 지형도와 근거 네트워크', 22, 'left'))
+  elements.push(text(1, 42, 52, 1220, 24, '31+개 D/B 리서치를 큰 범주·연결선·제품/시연/발표 활용처로 압축한 발표 백업 지도', 12, 'left'))
+
+  const inputs = [
+    ['Prompt Set', 'D1~D23\nD30·D25\nB1'],
+    ['Results', '회수현황\n모델기록\n종합검증'],
+    ['Synthesis', '연결-1..6\n인사이트맵\n논증척추'],
+  ]
+  elements.push(text(10, 55, 100, 230, 20, 'Research Intake', 15, 'center'))
+  inputs.forEach((item, i) => {
+    const y = 140 + i * 118
+    elements.push(rect(20 + i, 55, y, 210, 82, i === 0 ? '#dbeafe' : i === 1 ? '#ecfeff' : '#fef3c7', '#334155'))
+    elements.push(text(40 + i, 70, y + 12, 180, 18, item[0], 13, 'center'))
+    elements.push(text(60 + i, 75, y + 38, 170, 34, item[1], 10, 'center'))
+    if (i < inputs.length - 1) elements.push(arrow(80 + i, 160, y + 82, 0, 36))
+  })
+
+  const clusters = [
+    {
+      x: 300, y: 115, color: '#dbeafe', title: 'Pain & RM Workflow',
+      codes: 'D1a D1b D2 D4 D16',
+      body: '소상공인·전세·피싱 pain\nRM 업무량·조직/직무',
+      output: '문제정의 · SME hero',
+    },
+    {
+      x: 610, y: 115, color: '#fef3c7', title: 'JB Fit & Market',
+      codes: 'D3a~f D30 D+a D23',
+      body: 'JB 2계열사 정합\n시장·ROI·why now',
+      output: '바이어 언어 · 금융가치',
+    },
+    {
+      x: 920, y: 115, color: '#fee2e2', title: 'Data & Regulation',
+      codes: 'D5a D5b D7a/b D12 D17 D25',
+      body: '법령·망분리·데이터/API\n계열사 공동이용·적법성',
+      output: 'PII 비반출 · 데이터 레인',
+    },
+    {
+      x: 300, y: 360, color: '#ede9fe', title: 'Agent/System Architecture',
+      codes: 'D6 D9 D10 D11 D20 D21 D22 B1',
+      body: '코어뱅킹·보안·메모리\n모델주권·하네스·OSS',
+      output: 'model-agnostic OS',
+    },
+    {
+      x: 610, y: 360, color: '#dcfce7', title: 'Governance & Validation',
+      codes: 'D8 D13 D14 D15 D18 D19 D+b',
+      body: 'MVP 검증·데이터품질\n승인/감사·운영리스크',
+      output: '상태 변화 불변식',
+    },
+    {
+      x: 920, y: 360, color: '#f8fafc', title: 'Synthesis & Pitch Spine',
+      codes: '연결-1..6 · 인사이트맵 · 논증척추',
+      body: '교차 인사이트\n심사5기준·반론방어',
+      output: '발표 첫 문장 · QA 백업',
+    },
+  ]
+
+  clusters.forEach((c, i) => {
+    elements.push(rect(120 + i, c.x, c.y, 250, 172, c.color, '#334155'))
+    elements.push(text(150 + i, c.x + 14, c.y + 14, 222, 22, c.title, 14, 'center'))
+    elements.push(rect(180 + i, c.x + 20, c.y + 44, 210, 28, '#ffffff', '#94a3b8'))
+    elements.push(text(210 + i, c.x + 28, c.y + 51, 194, 14, c.codes, 9, 'center', '#334155'))
+    elements.push(text(240 + i, c.x + 20, c.y + 88, 210, 42, c.body, 10, 'center'))
+    elements.push(text(270 + i, c.x + 20, c.y + 140, 210, 18, `→ ${c.output}`, 10, 'center', '#0f766e'))
+  })
+
+  const link = (i, x, y, dx, dy, label, lx, ly) => {
+    elements.push(arrow(i, x, y, dx, dy))
+    elements.push(text(i + 1, lx, ly, 140, 16, label, 8, 'center', '#475569'))
+  }
+  link(300, 550, 188, 60, 0, 'pain to buyer', 548, 167)
+  link(302, 860, 188, 60, 0, 'value needs trust', 850, 167)
+  link(304, 1045, 287, -10, 73, 'PII shapes architecture', 1038, 314)
+  link(306, 550, 446, 60, 0, 'OS contract', 548, 424)
+  link(308, 860, 446, 60, 0, 'pitch spine', 858, 424)
+  link(310, 735, 287, 0, 73, '검증 기준', 746, 318)
+
+  elements.push(rect(330, 1265, 105, 250, 132, '#ecfeff', '#0891b2'))
+  elements.push(text(331, 1282, 122, 216, 20, 'Product Decisions', 14, 'center'))
+  elements.push(text(332, 1286, 156, 210, 52, 'Zero-PII Case Hub\nApproval-first\n전북은행+JB우리캐피탈', 10, 'center'))
+
+  elements.push(rect(340, 1265, 275, 250, 132, '#dcfce7', '#16a34a'))
+  elements.push(text(341, 1282, 292, 216, 20, 'Demo / MVP', 14, 'center'))
+  elements.push(text(342, 1286, 326, 210, 52, 'SME hero\njeonse/phishing optional\nverify_static + Playwright', 10, 'center'))
+
+  elements.push(rect(350, 1265, 445, 250, 132, '#fef3c7', '#ca8a04'))
+  elements.push(text(351, 1282, 462, 216, 20, 'Pitch / Judge QA', 14, 'center'))
+  elements.push(text(352, 1286, 496, 210, 52, '심사 5기준\n반론 방어\n백업 근거 위치', 10, 'center'))
+
+  elements.push(arrow(360, 1170, 200, 95, -20))
+  elements.push(arrow(361, 1170, 438, 95, -95))
+  elements.push(arrow(362, 1170, 438, 95, 55))
+
+  const gaps = [
+    ['TBD', 'D25 데이터 레인 적법성 실행대기'],
+    ['mixed', 'D23 ROI: GPT 그룹스케일 ↔ Gemini 전북은행 단독 reconcile'],
+    ['next', '제품정의·PPT전략 변경 시 atlas→funnel→evidence 동시 갱신'],
+  ]
+  elements.push(rect(380, 55, 620, 1120, 86, '#fff7ed', '#ea580c'))
+  elements.push(text(381, 75, 636, 150, 18, 'Open Gaps / Update Rule', 13, 'left'))
+  gaps.forEach((g, i) => {
+    elements.push(rect(390 + i, 250 + i * 300, 638, 270, 42, i === 0 ? '#fee2e2' : '#ffffff', '#fed7aa'))
+    elements.push(text(410 + i, 262 + i * 300, 651, 38, 14, g[0], 10, 'center', '#9a3412'))
+    elements.push(text(430 + i, 305 + i * 300, 650, 195, 18, g[1], 9, 'left', '#7c2d12'))
+  })
+
+  metaBox(elements, 500, 1195, 620, 340, 'research-domain-atlas-plan, README, 회수현황, 인사이트맵, 논증척추', 'D시리즈 추가·회수, 제품정의·PPT 변경', 'research + visualization', 'mixed')
+  return elements
+}
+
+// ── 21. RESEARCH-TO-PRODUCT-FUNNEL ─────────────────────────────────────────
 const buildResearchToProductFunnel = () => {
   _id = 0
   const elements = []
@@ -1194,6 +1307,7 @@ save('update-control-tower.excalidraw', buildUpdateControlTower())
 save('demo-video-storyboard.excalidraw', buildDemoVideoStoryboard())
 save('evidence-traceability-board.excalidraw', buildEvidenceTraceabilityBoard())
 save('demo-golden-path-state-machine.excalidraw', buildDemoGoldenPathStateMachine())
+save('research-domain-atlas.excalidraw', buildResearchDomainAtlas())
 save('research-to-product-funnel.excalidraw', buildResearchToProductFunnel())
 
 console.log('Done. Re-run whenever source data changes.')

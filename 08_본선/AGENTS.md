@@ -41,7 +41,9 @@ aliases:
 | **product** | 제품 정의·스코프·25항목 매핑·우선순위 | `02_전략`, `심사기준` | `03_제품/01_prd` | 제안→승인 | Sonnet |
 | **designer** ★ | paperclip 기준 디자인시스템·IA·화면맵·발표 비주얼·Excalidraw | paperclip 분석, `03_제품/03_ux` | `03_제품/03_ux`, `assets`, `visualizations` | 제안→승인 | Sonnet |
 | **visualization** ★ | 시각화 기획 선행·Excalidraw 자동생성·업그레이드 사이클·보드 데이터 품질 관리 | `VISUALIZATION-PLAN`, `PROGRESS`, 원장 CSV, 레지스트리 | `visualizations`, `viz-generator.mjs`, 원장 CSV | 자율(시각화 갱신), 새 보드 기획 선행 | Sonnet |
+| **architect** ★ | 기술 아키텍처 리드(데이터모델·에이전트 런타임·로컬모델·API 계약·PII 아키텍처·배포). product와 builder 사이 시스템 설계 소유 | `_canon`, `00_vision`, `01_prd`, `05_리서치`, paperclip | `03_제품/04_tech`, `05_diagrams`, `06_build-roadmap` | 제안→승인; 갭정정 자율 | Sonnet |
 | **builder** | 백엔드+프론트 구현·TDD·오프라인 구동(승인 후 코드) | `03_제품/04_tech`, `app` | `03_제품/app`, `tests` | 제안→승인; 버그 자율 | Sonnet |
+| **data-engineer** | 공공데이터·ECOS·등기·HUG·RAG 파이프라인·데이터 모델(2026-07-02 후보→승격) | API 문서, `_canon §10`, `05_리서치` | `03_제품/04_tech`, 데이터 스키마 | 자율(수집·스키마); 외부 API 제안→승인 | Sonnet |
 | **judge-qa** | 25항목 적합성·verify-implementation·심사 시뮬 | `05_제출`, `심사기준` | `04_증빙`, `05_제출/live-final-verification` | 자율(검증) | Sonnet |
 | **evidence** | Capture-by-default 집행·intake append·기여 통계 | 전체 | `04_증빙/*`, `_system/telemetry`, `team` | 자율(증빙) | **Haiku** |
 | **submission** | 패키징·README→SHARE-PACKAGE·피칭 | `05_제출`, `00_제출` | `05_제출`, `00_제출` | **사람만**(제출 확정) | Sonnet |
@@ -55,7 +57,7 @@ aliases:
 | 역할 | 목적 | 승격 트리거 |
 |------|------|-----------|
 | **red-team-judge** | 적대적 심사위원 페르소나. 데모·발표를 깨려 시도해 약점 사전 발견 | 발표 리허설 전, 제출 패키지 완성 후 |
-| **data-engineer** | 공공데이터·ECOS·등기·HUG·RAG 파이프라인·데이터 모델 | 본선 서버 API 구현 시작 시 |
+| ~~data-engineer~~ | → **활성 승격됨(2026-07-02)**. 위 역할표 참조. | (승격 완료) |
 | **pitch-storyteller** | 발표 내러티브·스토리텔링·시간 배분 코치 | 7/4~5 발표 준비 2주 전 |
 | **security** | 위협 모델·망분리·시크릿·취약점 (준법과 별도 기술 보안) | 코드 보안 검토 필요 시 |
 
@@ -130,5 +132,5 @@ raw 원천을 매번 다시 읽기 전에 정제된 지식을 먼저 본다: [[_
 
 ## 6. 연결
 - [[본선 HOME|본선 홈]] · [[project-dashboard|운영 대시보드]] · [[hagent-os-구조-청사진|구조 청사진]]
-- 역할 상세: [[_system/agents/roles/orchestrator|orchestrator]] · [[_system/agents/roles/finance-domain|finance-domain]] · [[_system/agents/roles/compliance-risk|compliance-risk]] · [[_system/agents/roles/research|research]] · [[_system/agents/roles/product|product]] · [[_system/agents/roles/designer|designer]] · [[_system/agents/roles/visualization|visualization]] · [[_system/agents/roles/builder|builder]] · [[_system/agents/roles/judge-qa|judge-qa]] · [[_system/agents/roles/evidence|evidence]] · [[_system/agents/roles/submission|submission]]
-- 후보: [[_system/agents/candidates/red-team-judge|red-team-judge]] · [[_system/agents/candidates/data-engineer|data-engineer]] · [[_system/agents/candidates/pitch-storyteller|pitch-storyteller]] · [[_system/agents/candidates/security|security]]
+- 역할 상세: [[_system/agents/roles/orchestrator|orchestrator]] · [[_system/agents/roles/finance-domain|finance-domain]] · [[_system/agents/roles/compliance-risk|compliance-risk]] · [[_system/agents/roles/research|research]] · [[_system/agents/roles/product|product]] · [[_system/agents/roles/architect|architect]] · [[_system/agents/roles/designer|designer]] · [[_system/agents/roles/visualization|visualization]] · [[_system/agents/roles/builder|builder]] · [[_system/agents/roles/data-engineer|data-engineer]] · [[_system/agents/roles/judge-qa|judge-qa]] · [[_system/agents/roles/evidence|evidence]] · [[_system/agents/roles/submission|submission]]
+- 후보: [[_system/agents/candidates/red-team-judge|red-team-judge]] · [[_system/agents/candidates/pitch-storyteller|pitch-storyteller]] · [[_system/agents/candidates/security|security]]

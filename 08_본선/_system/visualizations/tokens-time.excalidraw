@@ -1327,9 +1327,9 @@
       "locked": false,
       "type": "rectangle",
       "x": 1270,
-      "y": 253,
+      "y": 247,
       "width": 44,
-      "height": 27
+      "height": 33
     },
     {
       "id": "viz-43",
@@ -1354,9 +1354,9 @@
       "locked": false,
       "type": "rectangle",
       "x": 1315,
-      "y": 274,
+      "y": 272,
       "width": 44,
-      "height": 6
+      "height": 8
     },
     {
       "id": "viz-44",
@@ -1384,14 +1384,14 @@
       "y": 284,
       "width": 115,
       "height": 30,
-      "text": "2026-07-01 direct",
+      "text": "2026-07-02 direct",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "2026-07-01 direct",
+      "originalText": "2026-07-02 direct",
       "lineHeight": 1.25
     },
     {
@@ -1417,17 +1417,17 @@
       "locked": false,
       "type": "text",
       "x": 1265,
-      "y": 237,
+      "y": 231,
       "width": 110,
       "height": 16,
-      "text": "3675K",
+      "text": "4499K",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "3675K",
+      "originalText": "4499K",
       "lineHeight": 1.25
     },
     {
@@ -1510,14 +1510,14 @@
       "y": 284,
       "width": 115,
       "height": 30,
-      "text": "2026-07-01 via-claude",
+      "text": "2026-07-02 via-claude",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "2026-07-01 via-claude",
+      "originalText": "2026-07-02 via-claude",
       "lineHeight": 1.25
     },
     {
@@ -1543,9 +1543,9 @@
       "locked": false,
       "type": "rectangle",
       "x": 1510,
-      "y": 258,
+      "y": 239,
       "width": 44,
-      "height": 22
+      "height": 41
     },
     {
       "id": "viz-50",
@@ -1570,9 +1570,9 @@
       "locked": false,
       "type": "rectangle",
       "x": 1555,
-      "y": 275,
+      "y": 267,
       "width": 44,
-      "height": 5
+      "height": 13
     },
     {
       "id": "viz-51",
@@ -1600,14 +1600,14 @@
       "y": 284,
       "width": 115,
       "height": 30,
-      "text": "2026-07-01 direct",
+      "text": "2026-07-02 direct",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "2026-07-01 direct",
+      "originalText": "2026-07-02 direct",
       "lineHeight": 1.25
     },
     {
@@ -1633,17 +1633,17 @@
       "locked": false,
       "type": "text",
       "x": 1505,
-      "y": 242,
+      "y": 223,
       "width": 110,
       "height": 16,
-      "text": "3007K",
+      "text": "5942K",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "3007K",
+      "originalText": "5942K",
       "lineHeight": 1.25
     },
     {
@@ -1726,14 +1726,14 @@
       "y": 284,
       "width": 115,
       "height": 30,
-      "text": "2026-07-01 via-claude",
+      "text": "2026-07-02 via-claude",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "2026-07-01 via-claude",
+      "originalText": "2026-07-02 via-claude",
       "lineHeight": 1.25
     },
     {
@@ -1759,9 +1759,9 @@
       "locked": false,
       "type": "rectangle",
       "x": 1750,
-      "y": 247,
+      "y": 243,
       "width": 44,
-      "height": 33
+      "height": 37
     },
     {
       "id": "viz-57",
@@ -1786,9 +1786,9 @@
       "locked": false,
       "type": "rectangle",
       "x": 1795,
-      "y": 274,
+      "y": 273,
       "width": 44,
-      "height": 6
+      "height": 7
     },
     {
       "id": "viz-58",
@@ -1816,14 +1816,14 @@
       "y": 284,
       "width": 115,
       "height": 30,
-      "text": "2026-07-01 direct",
+      "text": "2026-07-02 direct",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "2026-07-01 direct",
+      "originalText": "2026-07-02 direct",
       "lineHeight": 1.25
     },
     {
@@ -1849,17 +1849,17 @@
       "locked": false,
       "type": "text",
       "x": 1745,
-      "y": 231,
+      "y": 227,
       "width": 110,
       "height": 16,
-      "text": "4200K",
+      "text": "4890K",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "4200K",
+      "originalText": "4890K",
       "lineHeight": 1.25
     },
     {

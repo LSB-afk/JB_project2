@@ -19,9 +19,10 @@ GitHub preview page for the shared hand-drawn Excalidraw exports.
 1. `project-master-timeline.png` — 전체 일정
 2. `workflow-gantt-blueprint.png` — 간트·역할·AI 협업
 3. `team-contribution-role-radar.png` — 팀원/AI 기여 구조
-4. `research-to-product-funnel.png` — 리서치→제품결정 흐름
-5. `evidence-traceability-board.png` — 주장→근거→제출물
-6. `demo-video-storyboard.png` — 시연영상 구성
+4. `research-domain-atlas.png` — 리서치 범주·연결 지도
+5. `research-to-product-funnel.png` — 리서치→제품결정 흐름
+6. `evidence-traceability-board.png` — 주장→근거→제출물
+7. `demo-video-storyboard.png` — 시연영상 구성
 
 ## Share Picks
 
@@ -36,6 +37,10 @@ GitHub preview page for the shared hand-drawn Excalidraw exports.
 ### project-master-timeline
 
 ![project-master-timeline](project-master-timeline.png)
+
+### research-domain-atlas
+
+![research-domain-atlas](research-domain-atlas.png)
 
 ### research-to-product-funnel
 
@@ -66,6 +71,7 @@ GitHub preview page for the shared hand-drawn Excalidraw exports.
 | [jb-history-timeline.png](jb-history-timeline.png) | [jb-history-timeline.svg](jb-history-timeline.svg) |
 | [judge-criteria-coverage-map.png](judge-criteria-coverage-map.png) | [judge-criteria-coverage-map.svg](judge-criteria-coverage-map.svg) |
 | [project-master-timeline.png](project-master-timeline.png) | [project-master-timeline.svg](project-master-timeline.svg) |
+| [research-domain-atlas.png](research-domain-atlas.png) | [research-domain-atlas.svg](research-domain-atlas.svg) |
 | [research-to-product-funnel.png](research-to-product-funnel.png) | [research-to-product-funnel.svg](research-to-product-funnel.svg) |
 | [team-contribution-role-radar.png](team-contribution-role-radar.png) | [team-contribution-role-radar.svg](team-contribution-role-radar.svg) |
 | [timeline.png](timeline.png) | [timeline.svg](timeline.svg) |

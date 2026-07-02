@@ -8,6 +8,7 @@ date,weekday,member_slot,member_name,role,domain,task,artifact_path,support_type
 2026-06-30,화,AI,ChatGPT GPT-5.5/Gemini,딥리서치 엔진,research,D3e/D3f·D16~D19 등 다중 플랫폼 리서치 결과 생성,08_본선/05_제출/리서치-딥프롬프트/_결과/_모델기록.md,support,26,done,R30
 2026-07-01,수,M2,김민주,UX/UI 디자이너·브랜딩,design,JB 톤앤매너·조직도 중심 UX/UI·핵심 화면 흐름 설계,08_본선/03_제품/03_ux/design-system.md,lead,16,in_progress,USER:2026-07-01
 2026-07-01,수,M2,김민주,시각 디렉터·발표 비주얼,pitch,발표덱·시연영상 화면 구성과 심사자용 시각 언어 정리,08_본선/_system/visualizations/demo-video-storyboard.excalidraw,lead,10,planned,USER:2026-07-01
-2026-07-01,수,M4,재형,금융·전략·BM,finance,JB 사업정합성·ROI·발표 Q&A 금융 논리 지원 예정,08_본선/_system/team/_team-roster.md,support,6,waiting,PROGRESS:팀로스터
+2026-07-01,수,M4,재형,데이터·시스템 설계·금융 전략,finance,JB 사업정합성·ROI·발표 Q&A 금융 논리 지원 예정,08_본선/_system/team/_team-roster.md,support,6,waiting,PROGRESS:팀로스터
+2026-07-02,목,M4,재형,데이터·시스템 설계,dev,데이터 모델·시스템 구조·API/DB 범위 설계 지원,08_본선/03_제품/04_tech/data-model.md,support,12,planned,USER:2026-07-02
 2026-07-01,수,M1,김주용,PM·문서정리·툴관리·전영역서포트,ops,프로젝트 운영·문서 구조·툴/스킬/시각화 자동화 관리와 각 영역 연결,08_본선/_system/visualizations/VISUALIZATION-PLAN.md,lead,16,in_progress,USER:2026-07-01
 2026-07-01,수,AI,Codex GPT-5.5/Codex Spark,코딩·검증 에이전트,ops,시각화 기획·원장·Excalidraw 자동생성기 개선,08_본선/_system/visualizations/VISUALIZATION-PLAN.md,support,10,in_progress,S31
