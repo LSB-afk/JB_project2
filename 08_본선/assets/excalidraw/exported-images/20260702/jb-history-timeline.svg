@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1068" height="478" viewBox="-37 -30 1068 478" role="img" aria-label="jb-history-timeline">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#1e293b" />
+    </marker>
+    <marker id="arrowhead-start" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M9,0 L9,6 L0,3 z" fill="#1e293b" />
+    </marker>
+    <filter id="roughen" x="-4%" y="-4%" width="108%" height="108%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="1" seed="11" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.65" />
+    </filter>
+    <filter id="fillRoughen" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="7" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.35" />
+    </filter>
+  </defs>
+  <rect x="-37" y="-30" width="1068" height="478" fill="#ffffff" />
+  <text x="20" y="30" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="20" font-weight="700" text-anchor="start" opacity="1"><tspan x="20" dy="0">JB금융 성장 타임라인 — 지역은행에서 AX 금융그룹으로</tspan></text>
+  <polyline points="55.039081263923805,184.0515815641851 926.5374751686904,185.52497486842913" fill="none" stroke="#475569" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity="0.76" filter="url(#roughen)" />
+  <polyline points="54.737359144524056,183.7264213817954 923.6165572386274,182.627495001356" fill="none" stroke="#475569" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round" opacity="0.66" />
+  <path d="M 10.945382925738903 62.958664494766545 L 119.67475261892535 61.66147104989771 L 121.50017888015141 127.51346044917905 L 10.031391916966856 126.01811034793921 Z" fill="#dbeafe" stroke="none" opacity="0.9" filter="url(#fillRoughen)" />
+  <path d="M 9.845644383212933 61.82142505145665 L 122.13281602199022 64.15703535374651 L 118.835954211032 124.81173487927572 L 9.022202444104991 125.04642177586128 Z" fill="none" stroke="#475569" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity="0.82" filter="url(#roughen)" />
+  <path d="M 9.420540408352515 61.438509589978146 L 120.51410368844263 62.49613450681701 L 118.67267577652183 124.69064495814746 L 10.031481201884215 126.01351202025859 Z" fill="none" stroke="#475569" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.62" />
+  <text x="65" y="84" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="middle" opacity="1"><tspan x="65" dy="0">1969</tspan></text>
+  <text x="65" y="102" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="10" font-weight="500" text-anchor="middle" opacity="1"><tspan x="65" dy="0">전북은행</tspan></text>
+  <ellipse cx="55" cy="184" rx="6" ry="6" fill="#0f172a" stroke="none" opacity="0.9" />
+  <ellipse cx="56.16972829624306" cy="185.17910352143903" rx="7.485598433293775" ry="7.497317464788751" fill="none" stroke="#0f172a" stroke-width="1.1" opacity="0.82" filter="url(#roughen)" />
+  <ellipse cx="53.807229196468185" cy="182.81660442166418" rx="4.532474558575189" ry="4.544193590070166" fill="none" stroke="#0f172a" stroke-width="0.85" opacity="0.62" />
+  <text x="62" y="211" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="9" font-weight="500" text-anchor="middle" opacity="1"><tspan x="62" dy="0">그룹 모태 형성</tspan></text>
+  <path d="M 156.41019618327502 63.39691461424737 L 264.4790648159522 61.49234638497987 L 265.8400385588268 126.82675698979915 L 153.9088255212197 124.92210709024735 Z" fill="#fef3c7" stroke="none" opacity="0.9" filter="url(#fillRoughen)" />
+  <path d="M 154.7871431296894 61.811362461445704 L 266.23091829282487 63.206698961068575 L 263.74914264405356 124.77336197580988 L 155.61058506879738 126.58636573704108 Z" fill="none" stroke="#475569" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity="0.82" filter="url(#roughen)" />
+  <path d="M 156.98218436392074 63.96421518229512 L 264.0791181593619 61.09708734098754 L 266.21068414163557 127.19271496000995 L 156.34897880965121 127.36694799127685 Z" fill="none" stroke="#475569" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.62" />
+  <text x="210" y="84" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="middle" opacity="1"><tspan x="210" dy="0">2013</tspan></text>
+  <text x="210" y="102" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="10" font-weight="500" text-anchor="middle" opacity="1"><tspan x="210" dy="0">금융지주 전환</tspan></text>
+  <ellipse cx="200" cy="184" rx="6" ry="6" fill="#0f172a" stroke="none" opacity="0.9" />
+  <ellipse cx="200.60624910541955" cy="184.5781234298316" rx="6.734373318784492" ry="6.792968476259375" fill="none" stroke="#0f172a" stroke-width="1.1" opacity="0.82" filter="url(#roughen)" />
+  <ellipse cx="200.64375000620348" cy="184.61562433061553" rx="6.7812494447643985" ry="6.839844602239282" fill="none" stroke="#0f172a" stroke-width="0.85" opacity="0.62" />
+  <text x="207" y="211" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="9" font-weight="500" text-anchor="middle" opacity="1"><tspan x="207" dy="0">JB금융지주 출범</tspan><tspan x="207" dy="11.25">JB우리캐피탈 편입</tspan></text>
+  <path d="M 299.1739813074176 61.16069973838997 L 408.3657770750266 60.37905864405424 L 409.72776403986563 125.71448247083799 L 300.08805398647394 126.10133555550159 Z" fill="#dcfce7" stroke="none" opacity="0.9" filter="url(#fillRoughen)" />
+  <path d="M 297.7722960837354 59.796515415491655 L 411.29391985819535 63.26970052643905 L 408.78013861586345 124.80435794761972 L 298.59389038279045 124.56967105103416 Z" fill="none" stroke="#475569" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity="0.82" filter="url(#roughen)" />
+  <path d="M 302.06077058905754 64.04280140743191 L 410.67970040295734 62.69766958458295 L 408.23216031518115 124.21419113355553 L 301.4512006252425 127.46916980686811 Z" fill="none" stroke="#475569" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.62" />
+  <text x="355" y="84" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="middle" opacity="1"><tspan x="355" dy="0">2014</tspan></text>
+  <text x="355" y="102" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="10" font-weight="500" text-anchor="middle" opacity="1"><tspan x="355" dy="0">광주은행 인수</tspan></text>
+  <ellipse cx="345" cy="184" rx="6" ry="6" fill="#0f172a" stroke="none" opacity="0.9" />
+  <ellipse cx="344.12920874327637" cy="183.11983351808038" rx="4.8880728661054915" ry="4.876353834610515" fill="none" stroke="#0f172a" stroke-width="1.1" opacity="0.82" filter="url(#roughen)" />
+  <ellipse cx="344.09170784249244" cy="183.08233261729646" rx="4.841196740125585" ry="4.829477708630607" fill="none" stroke="#0f172a" stroke-width="0.85" opacity="0.62" />
+  <text x="352" y="211" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="9" font-weight="500" text-anchor="middle" opacity="1"><tspan x="352" dy="0">호남 양대 은행 축 완성</tspan><tspan x="352" dy="11.25">자산운용 편입</tspan></text>
+  <path d="M 443.78618379609804 60.79946536512567 L 554.8069748032156 61.79369323418795 L 556.6313878424771 127.6446694115048 L 446.27117956615314 127.2578979971255 Z" fill="#ccfbf1" stroke="none" opacity="0.9" filter="url(#fillRoughen)" />
+  <path d="M 444.2113773275426 61.18715799578632 L 552.7374442108994 59.76166354265568 L 555.2510765250659 126.22685719330954 L 445.87806681412695 126.90228614588321 Z" fill="none" stroke="#475569" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity="0.82" filter="url(#roughen)" />
+  <path d="M 443.1108537425312 60.128822924156864 L 556.0139199470901 62.99595076546444 L 553.883724794533 124.90169397615867 L 446.47427767291066 127.45630849128503 Z" fill="none" stroke="#475569" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.62" />
+  <text x="500" y="84" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="middle" opacity="1"><tspan x="500" dy="0">2016</tspan></text>
+  <text x="500" y="102" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="10" font-weight="500" text-anchor="middle" opacity="1"><tspan x="500" dy="0">PPCBank</tspan></text>
+  <ellipse cx="490" cy="184" rx="6" ry="6" fill="#0f172a" stroke="none" opacity="0.9" />
+  <ellipse cx="491.198267052136" cy="182.8263927271651" rx="4.521271877461409" ry="4.556428971946339" fill="none" stroke="#0f172a" stroke-width="1.1" opacity="0.82" filter="url(#roughen)" />
+  <ellipse cx="488.8357679523611" cy="182.86389362794904" rx="4.5681480034413156" ry="4.603305097926246" fill="none" stroke="#0f172a" stroke-width="0.85" opacity="0.62" />
+  <text x="497" y="211" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="9" font-weight="500" text-anchor="middle" opacity="1"><tspan x="497" dy="0">캄보디아 은행 플랫폼</tspan><tspan x="497" dy="11.25">해외 확장 본격화</tspan></text>
+  <path d="M 590.454172308127 62.46745387715461 L 699.1999168933136 61.18663532428598 L 701.0089682625395 127.02224983156711 L 589.5401812993549 125.52689973032729 Z" fill="#ede9fe" stroke="none" opacity="0.9" filter="url(#fillRoughen)" />
+  <path d="M 589.6866405968058 61.66242126504947 L 702.0036723327598 64.02789166451616 L 698.6768014964593 124.65258216470308 L 588.8630497295323 124.88726906128862 Z" fill="none" stroke="#475569" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity="0.82" filter="url(#roughen)" />
+  <path d="M 590.059095434928 62.077064616553734 L 701.1526587150182 63.134689533392596 L 699.2890765374501 125.30704571907573 L 590.6700362284598 126.65206704683418 Z" fill="none" stroke="#475569" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.62" />
+  <text x="645" y="84" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="middle" opacity="1"><tspan x="645" dy="0">2020</tspan></text>
+  <text x="645" y="102" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="10" font-weight="500" text-anchor="middle" opacity="1"><tspan x="645" dy="0">JBSV·PPAM</tspan></text>
+  <ellipse cx="635" cy="184" rx="6" ry="6" fill="#0f172a" stroke="none" opacity="0.9" />
+  <ellipse cx="634.1714722308263" cy="183.18084745602238" rx="4.98777835152293" ry="4.999497383017907" fill="none" stroke="#0f172a" stroke-width="1.1" opacity="0.82" filter="url(#roughen)" />
+  <ellipse cx="634.2089731316103" cy="183.2183483568063" rx="5.034654477502837" ry="4.858869005078186" fill="none" stroke="#0f172a" stroke-width="0.85" opacity="0.62" />
+  <text x="642" y="211" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="9" font-weight="500" text-anchor="middle" opacity="1"><tspan x="642" dy="0">베트남 증권·캄보디아 운용</tspan><tspan x="642" dy="11.25">현지법인 네트워크</tspan></text>
+  <path d="M 736.1035241961022 63.09024262707453 L 844.1723111584951 61.18559272752274 L 845.5497414636542 126.5364598946265 L 733.6185284260471 124.63180999507472 Z" fill="#fee2e2" stroke="none" opacity="0.9" filter="url(#fillRoughen)" />
+  <path d="M 735.36023927812 62.38445860987633 L 846.8341723947633 63.809953063006965 L 844.352396745992 125.37661607774827 L 736.2138391707358 127.18961983897947 Z" fill="none" stroke="#475569" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity="0.82" filter="url(#roughen)" />
+  <path d="M 737.1277267646575 64.10975758303184 L 844.2246605600986 61.24262974172426 L 846.3562265423723 127.33825736074668 L 736.4944107152975 127.51237989692305 Z" fill="none" stroke="#475569" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.62" />
+  <text x="790" y="84" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="middle" opacity="1"><tspan x="790" dy="0">2025</tspan></text>
+  <text x="790" y="102" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="10" font-weight="500" text-anchor="middle" opacity="1"><tspan x="790" dy="0">Naver Cloud MOU</tspan></text>
+  <ellipse cx="780" cy="184" rx="6" ry="6" fill="#0f172a" stroke="none" opacity="0.9" />
+  <ellipse cx="779.8766454864938" cy="183.88602071168972" rx="5.869244921107135" ry="5.880963952602112" fill="none" stroke="#0f172a" stroke-width="1.1" opacity="0.82" filter="url(#roughen)" />
+  <ellipse cx="779.9141463872777" cy="183.92352161247365" rx="5.916121047087042" ry="5.927840078582019" fill="none" stroke="#0f172a" stroke-width="0.85" opacity="0.62" />
+  <text x="787" y="211" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="9" font-weight="500" text-anchor="middle" opacity="1"><tspan x="787" dy="0">기업여신 상담→심사→사후관리</tspan><tspan x="787" dy="11.25">AI 적용 검토</tspan></text>
+  <path d="M 881.556583135076 63.54330156604836 L 989.4108385490978 61.42412011812537 L 991.0028820729123 126.98960050388463 L 881.1050182007265 127.11829976975413 Z" fill="#fef9c3" stroke="none" opacity="0.9" filter="url(#fillRoughen)" />
+  <path d="M 877.4625555860257 59.486774917782 L 989.323849082604 61.29962975084773 L 992.65086884707 128.6750881788263 L 881.9938695326666 127.96965020091032 Z" fill="none" stroke="#475569" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity="0.82" filter="url(#roughen)" />
+  <path d="M 879.2241159598632 61.206146778237574 L 991.2112983218187 63.2292675034444 L 988.4526157375781 124.43464655595241 L 880.4620628602714 126.48003204189708 Z" fill="none" stroke="#475569" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.62" />
+  <text x="935" y="84" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="middle" opacity="1"><tspan x="935" dy="0">2026</tspan></text>
+  <text x="935" y="102" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="10" font-weight="500" text-anchor="middle" opacity="1"><tspan x="935" dy="0">AX 원년</tspan></text>
+  <ellipse cx="925" cy="184" rx="6" ry="6" fill="#0f172a" stroke="none" opacity="0.9" />
+  <ellipse cx="925.1034547197874" cy="184.1315803953753" rx="6.152756462724124" ry="6.187913557209054" fill="none" stroke="#0f172a" stroke-width="1.1" opacity="0.82" filter="url(#roughen)" />
+  <ellipse cx="925.1409556205713" cy="184.16908129615922" rx="6.199632588704031" ry="6.047285179269334" fill="none" stroke="#0f172a" stroke-width="0.85" opacity="0.62" />
+  <text x="932" y="211" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="9" font-weight="500" text-anchor="middle" opacity="1"><tspan x="932" dy="0">그룹 AI 에이전트 플랫폼</tspan><tspan x="932" dy="11.25">LocalGuard 정합 지점</tspan></text>
+  <path d="M 80.58577113111637 330.599052700144 L 929.1005276056474 329.0872460366197 L 931.1385406415999 409.1518222106276 L 81.03632284350142 409.02304127447377 Z" fill="#f8fafc" stroke="none" opacity="0.9" filter="url(#fillRoughen)" />
+  <path d="M 78.44106432342461 328.4168449916683 L 931.1194405504082 331.14365988216446 L 927.401216197736 405.3769968659796 L 80.1096014500618 408.1338207818181 Z" fill="none" stroke="#94a3b8" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity="0.82" filter="url(#roughen)" />
+  <path d="M 77.73663429553542 327.754603477161 L 929.1175939865451 329.0996248049195 L 931.5860280053424 409.6039971869681 L 81.09857690110769 409.0806077194821 Z" fill="none" stroke="#94a3b8" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.62" />
+  <text x="95" y="359" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="15" font-weight="500" text-anchor="start" opacity="1"><tspan x="95" dy="0">발표용 메시지</tspan></text>
+  <text x="95" y="382" fill="#1e293b" font-family="Virgil, Comic Sans MS, Pretendard, Apple SD Gothic Neo, Noto Sans CJK KR, Arial, sans-serif" font-size="12" font-weight="500" text-anchor="start" opacity="1"><tspan x="95" dy="0">JB는 “지역은행”이 아니라 은행·캐피탈·해외·AX가 결합된 운영 복잡도가 높은 그룹이다. 그래서 단순 챗봇보다 감사 가능한 운영 콘솔이 맞다.</tspan></text>
+</svg>

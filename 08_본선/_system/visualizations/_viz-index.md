@@ -32,17 +32,17 @@ aliases:
 | [[08_본선/_system/visualizations/jb-finance-snapshot\|jb-finance-snapshot.excalidraw]] | D3e/D3f 결과, `_canon §10`          | 총자산·순익·ROE·CET1·계열사 순익 한눈 보기   | 발표·보고서      |
 | [[08_본선/_system/visualizations/jb-ecosystem-fit\|jb-ecosystem-fit.excalidraw]]       | `JB-총정리본-플랜`, 리서치 갭감사             | JB 문제면 × LocalGuard OS 코어 정합 맵 | 제품정의·발표     |
 | [[08_본선/_system/visualizations/urgent-action-map\|urgent-action-map.excalidraw]]     | `PROGRESS`, `_회의록-INDEX`, 리서치 갭감사 | 지금 남은 작업 우선순위와 시각화 연결도         | 팀 운영        |
-| [[08_본선/_system/visualizations/project-master-timeline\|project-master-timeline.excalidraw]] | `git log`, `기능-변경이력`, 본선 로그 | 프로젝트 시작→본선 발표까지 심사기준 기반 마스터 타임라인 | 발표·심사자 |
-| [[08_본선/_system/visualizations/workflow-gantt-blueprint\|workflow-gantt-blueprint.excalidraw]] | `심사기준`, `PLAN`, `PROGRESS`, `기능-변경이력` | 전체 워크플로 간트차트 + UX/UI 레인 + 담당자/AI | 발표·팀 운영 |
+| [[08_본선/_system/visualizations/project-master-timeline\|project-master-timeline.excalidraw]] | `git log`, `기능-변경이력`, 본선 로그 | 프로젝트 시작→본선 발표까지 심사기준 기반 마스터 타임라인 + 간트 동기화 마일스톤 | 발표·심사자 |
+| [[08_본선/_system/visualizations/workflow-gantt-blueprint\|workflow-gantt-blueprint.excalidraw]] | `심사기준`, `PLAN`, `PROGRESS`, `기능-변경이력` | 전체 워크플로 간트차트 + 제품결정/API승격/UXUI 레인 + 담당자/AI | 발표·팀 운영 |
 | [[08_본선/_system/visualizations/judge-criteria-coverage-map\|judge-criteria-coverage-map.excalidraw]] | `_체계/심사기준`, 제출 패키지 매핑 | 25개 심사 세부항목 커버리지 맵 | 발표 백업 |
-| [[08_본선/_system/visualizations/finals-demo-readiness-map\|finals-demo-readiness-map.excalidraw]] | 본선 안내, 본선 준비계획 | 직접 시연·오프라인 구동·변경이력·리스크 방어 맵 | 발표·리허설 |
+| [[08_본선/_system/visualizations/finals-demo-readiness-map\|finals-demo-readiness-map.excalidraw]] | 본선 안내, 본선 준비계획 | SME 히어로 직접 시연·정적 MVP/API승격 분리·리스크 방어 맵 | 발표·리허설 |
 | [[08_본선/_system/visualizations/ax-operating-system-map\|ax-operating-system-map.excalidraw]] | `_agent-registry`, `registry-*`, `tool-usage-ledger.csv` | 사람·AI·툴·산출물·거버넌스 연결 맵 | 심사자·발표 |
 | [[08_본선/_system/visualizations/team-contribution-role-radar\|team-contribution-role-radar.excalidraw]] | `_team-roster`, `_contribution-stats`, `contribution-ledger.csv` | 김주용 PM·김민주 UX/UI 포함 팀원 역할·기여 %·AI Support Layer | PM·발표 |
-| [[08_본선/_system/visualizations/update-control-tower\|update-control-tower.excalidraw]] | `PROGRESS`, `PLAN`, `phase-ledger.csv` | Done/In Progress/Waiting/Risk 추적판 | 팀 운영 |
-| [[08_본선/_system/visualizations/demo-video-storyboard\|demo-video-storyboard.excalidraw]] | 시연 시나리오, 발표 스크립트 | 시연영상 12컷 스토리보드 | 발표·영상 |
-| [[08_본선/_system/visualizations/evidence-traceability-board\|evidence-traceability-board.excalidraw]] | `_canon`, D결과, 제출문서, 심사기준 | 주장→근거→산출물→심사항목 추적판 | 발표 백업 |
-| [[08_본선/_system/visualizations/demo-golden-path-state-machine\|demo-golden-path-state-machine.excalidraw]] | 본선 시연 시나리오, live verification | SME/전세/피싱 데모 상태기계 | 시연·QA |
-| [[08_본선/_system/visualizations/research-to-product-funnel\|research-to-product-funnel.excalidraw]] | D1~D19, D+a/b, 갭감사, 제품정의 | 리서치→제품결정→MVP/발표 전환 흐름 | 제품·발표 |
+| [[08_본선/_system/visualizations/update-control-tower\|update-control-tower.excalidraw]] | `PROGRESS`, `PLAN`, `phase-ledger.csv` | Done/In Progress/Waiting/Risk + 제품결정/API승격 리스크 추적판 | 팀 운영 |
+| [[08_본선/_system/visualizations/demo-video-storyboard\|demo-video-storyboard.excalidraw]] | 시연 시나리오, 발표 스크립트 | SME 히어로 중심 시연영상 12컷 스토리보드 | 발표·영상 |
+| [[08_본선/_system/visualizations/evidence-traceability-board\|evidence-traceability-board.excalidraw]] | `_canon`, D결과, 제출문서, 심사기준 | 주장→근거→산출물→심사항목 + 제품결정/API승격 추적판 | 발표 백업 |
+| [[08_본선/_system/visualizations/demo-golden-path-state-machine\|demo-golden-path-state-machine.excalidraw]] | 본선 시연 시나리오, live verification | SME 히어로/피싱 보조/전세 optional 데모 상태기계 | 시연·QA |
+| [[08_본선/_system/visualizations/research-to-product-funnel\|research-to-product-funnel.excalidraw]] | D1~D23, D+a/b, 갭감사, 제품정의 | 리서치→Decision Gate→제품결정→MVP/발표 전환 흐름 | 제품·발표 |
 
 ---
 
@@ -105,8 +105,8 @@ aliases:
 
 ### workflow-gantt-blueprint.excalidraw
 - **소스**: [[심사기준]], [[PLAN]], [[PROGRESS]], [[기능-변경이력]], [[_team-roster]], [[_agent-registry]]
-- **형식**: 레인별 간트차트(문제정의/JB리서치, AI Agent 설계, MVP, UX/UI·브랜딩, 문서, QA, 하네스, 발표) + 사람/AI 담당자
-- **목적**: 전체 협업 워크플로를 심사기준 코드·완료율·담당 사람(🧑)·AI 에이전트/모델(🤖)과 함께 추적
+- **형식**: 레인별 간트차트(문제정의/JB리서치, 제품결정/범위확정, AI Agent 설계, MVP/API승격, UX/UI·브랜딩, 문서, QA, 하네스, 발표) + 사람/AI 담당자
+- **목적**: 전체 협업 워크플로를 심사기준 코드·완료율·담당 사람(🧑)·AI 에이전트/모델(🤖)과 함께 추적하고 G4/G5/G6 갭감사 권고를 보드 동기화 기준으로 삼음
 
 ### judge-criteria-coverage-map.excalidraw
 - **소스**: [[심사기준]], [[제출 패키지 체크리스트 + 심사 25항목 매핑]]
@@ -115,7 +115,7 @@ aliases:
 
 ### finals-demo-readiness-map.excalidraw
 - **소스**: [[본선 안내]], [[본선 준비 실행 계획]]
-- **형식**: 직접 시연 필수, 오프라인 안정성, 산출물 정합, 리스크 방어 4분면
+- **형식**: SME 히어로 직접 시연, 오프라인 안정성, 산출물 정합, 리스크 방어 4분면
 - **목적**: 본선 현장 시연 불가·장비·변경이력·리스크 대응 문제를 사전에 방어
 
 ### ax-operating-system-map.excalidraw
@@ -155,17 +155,28 @@ aliases:
 - **업데이트 트리거**: 데모 플로우·폴백 시나리오 변경
 
 ### research-to-product-funnel.excalidraw
-- **소스**: D1~D19, D+a/b, [[리서치-갭감사]], 제품정의
-- **형식**: 리서치 → 갭감사 → 제품결정 → MVP/발표 funnel
+- **소스**: D1~D23, D+a/b, [[리서치-갭감사]], 제품정의
+- **형식**: 리서치 → 갭감사 → Decision Gate → 제품결정 → MVP/발표 funnel
 - **목적**: 리서치가 실제 기능과 발표 문장으로 변환된 과정을 설명
 - **업데이트 트리거**: 리서치 회수·제품 반영 변경
 
 ---
 
+## 공유용 이미지 Export
+
+공유용 PNG/SVG는 원본 Excalidraw에서 자동 추출해 아래 폴더에 보관한다. 기본 공유본은 깔끔한 차트 렌더가 아니라 Excalidraw 손그림풍으로 export한다.
+
+- 생성기: `08_본선/_system/automation/viz-exporter.mjs`
+- 최신 export: `08_본선/assets/excalidraw/exported-images/20260702/`
+- 인덱스: [[08_본선/assets/excalidraw/exported-images/20260702/_export-index|Excalidraw Exported Images]]
+- 우선 공유 후보: `workflow-gantt-blueprint`, `project-master-timeline`, `team-contribution-role-radar`, `research-to-product-funnel`, `evidence-traceability-board`, `demo-video-storyboard`
+- 주의: PNG는 팀 공유·메신저용, SVG는 발표덱 재편집용. 발표 최종본은 Obsidian/Excalidraw 네이티브 export와 비교 QA한다.
+
 ## 자동 생성
 
-생성기: `_system/automation/viz-generator.mjs`, 마지막 생성: 2026-07-01
+생성기: `_system/automation/viz-generator.mjs`, 마지막 생성: 2026-07-02
 재생성: `node 08_본선/_system/automation/viz-generator.mjs` (데이터 변경 시마다)
+이미지 export: `node 08_본선/_system/automation/viz-exporter.mjs`
 
 기획 문서: [[VISUALIZATION-PLAN]]
 담당 역할: [[visualization]]

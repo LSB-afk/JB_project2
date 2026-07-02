@@ -80,9 +80,23 @@ function main() {
 
   const workflowText = textOfBoard(path.join(VIZ, 'workflow-gantt-blueprint.excalidraw'))
   assertIncludes(workflowText, 'UX/UI', 'workflow-gantt-blueprint visual brief')
+  assertIncludes(workflowText, '제품 결정', 'workflow-gantt-blueprint product decision lane')
+  assertIncludes(workflowText, 'API 승격', 'workflow-gantt-blueprint API escalation lane')
+  assertIncludes(workflowText, 'SME', 'workflow-gantt-blueprint SME hero sync')
   assertIncludes(workflowText, '🧑', 'workflow-gantt-blueprint people layer')
   assertIncludes(workflowText, '🤖', 'workflow-gantt-blueprint AI layer')
   assertIncludes(workflowText, '%', 'workflow-gantt-blueprint progress layer')
+
+  const readinessText = textOfBoard(path.join(VIZ, 'finals-demo-readiness-map.excalidraw'))
+  assertIncludes(readinessText, 'SME', 'finals-demo-readiness-map SME hero sync')
+  assertIncludes(readinessText, 'API 승격', 'finals-demo-readiness-map API escalation sync')
+
+  const evidenceText = textOfBoard(path.join(VIZ, 'evidence-traceability-board.excalidraw'))
+  assertIncludes(evidenceText, '제품 결정', 'evidence-traceability-board product decision sync')
+  assertIncludes(evidenceText, 'API 승격', 'evidence-traceability-board API escalation sync')
+
+  const funnelText = textOfBoard(path.join(VIZ, 'research-to-product-funnel.excalidraw'))
+  assertIncludes(funnelText, 'Decision Gate', 'research-to-product-funnel decision gate sync')
 
   const contributionText = textOfBoard(path.join(VIZ, 'team-contribution-role-radar.excalidraw'))
   assertIncludes(contributionText, '🧑', 'team-contribution-role-radar people layer')

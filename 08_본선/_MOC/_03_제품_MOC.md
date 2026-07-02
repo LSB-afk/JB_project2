@@ -59,6 +59,12 @@ up: "[[_MOC_HOME|본선 MOC 허브]]"
 | [[08_본선/03_제품/04_tech/api-spec\|API 명세]] | 주요 엔드포인트 |
 | [[08_본선/03_제품/04_tech/rag-rule-engine\|RAG·규칙 엔진]] | 금융 규정 검색·적용 |
 
+### Tech References
+
+| 파일 | 역할 |
+|-----|------|
+| [[08_본선/_분석/paperclip-런타임-데이터흐름\|paperclip 런타임 데이터흐름]] | 서버 API·DB 영속·운영계약 참조 실측 |
+
 ---
 
 ## 05 Diagrams (다이어그램)

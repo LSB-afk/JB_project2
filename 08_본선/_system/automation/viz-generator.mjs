@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url'
 const __dir = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dir, '..', '..')
 const VIZ = join(__dir, '..', 'visualizations')
-const GENERATED_AT = '2026-07-01 KST'
+const GENERATED_AT = '2026-07-02 KST'
 
 // ── Element builders ──────────────────────────────────────────────────────────
 let _id = 0
@@ -628,10 +628,10 @@ const buildUrgentActionMap = () => {
   elements.push(text(0, 20, 10, 940, 30, '당장 해야 할 시각화/작업 맵 — PROGRESS 기준', 20, 'left'))
 
   const lanes = [
-    { x: 35, title: '1. 총정리본', color: '#dbeafe', items: ['D3e+D3f+D3a~d 조립', 'L1~L7 섹션 분할', '그룹 구조·연혁·재무·정합맵 Excalidraw'] },
-    { x: 285, title: '2. 제품 반영', color: '#dcfce7', items: ['제품 정의 §1 확정', '11블록 캔버스 채움', 'IA·화면 지도 / 디자인 시스템'] },
-    { x: 535, title: '3. 검증·근거', color: '#fef3c7', items: ['D3a 핵심 수치 1차화', 'D+a 숫자 라벨·과장 제거', 'D16~D19 운영성 근거 반영'] },
-    { x: 785, title: '4. 발표·운영', color: '#fee2e2', items: ['발표 내러티브 확정', '시연 리허설', 'MOC 검증 CP1 + 커밋'] },
+    { x: 35, title: '1. 총정리본', color: '#dbeafe', items: ['D3e+D3f+D3a~d 조립', '리서치 흡수→제품 결정', '그룹 구조·연혁·재무·정합맵 Excalidraw'] },
+    { x: 285, title: '2. 제품 결정', color: '#dcfce7', items: ['은행·로컬·DB 범위 확정', 'SME 히어로 시연 SSOT', 'IA·디자인 시스템·조직도 UX'] },
+    { x: 535, title: '3. MVP/API', color: '#fef3c7', items: ['정적 MVP 현상태 검증', '백엔드/API 승격 범위 결정', 'SME E2E·피싱 보조 리허설'] },
+    { x: 785, title: '4. 발표·운영', color: '#fee2e2', items: ['발표덱·영상 보드 동기화', '제출 정합성 체크', 'MOC 검증 CP1 + 커밋'] },
   ]
 
   lanes.forEach((lane, i) => {
@@ -647,7 +647,7 @@ const buildUrgentActionMap = () => {
 
   elements.push(rect(260, 35, 480, 960, 70, '#f8fafc', '#94a3b8'))
   elements.push(text(261, 55, 496, 920, 34,
-    '우선순위: 시각화 4종은 총정리본 조립의 선행 스케치로 바로 사용 가능. 이후 제품 정의·발표 덱으로 옮긴다.',
+    '우선순위: 간트 변경(G4/G5/G6)은 제품 결정·MVP/API·시연·제출 보드까지 같이 동기화한다. 이후 발표 덱으로 옮긴다.',
     13, 'left'))
 
   return elements
@@ -666,7 +666,7 @@ const buildProjectMasterTimeline = () => {
   const dates = [
     ['2026-06-11', '06/11', 'Start'], ['2026-06-12', '06/12', 'Ops'], ['2026-06-13', '06/13', 'QA'], ['2026-06-14', '06/14', 'Submit'],
     ['2026-06-15', '06/15', 'Close'], ['2026-06-26', '06/26', 'Finals'], ['2026-06-27', '06/27', 'Harness'], ['2026-06-29', '06/29', 'Open'],
-    ['2026-06-30', '06/30', 'Research'], ['2026-07-01', '07/01', 'MVP'], ['2026-07-02', '07/02', 'Deck'], ['2026-07-03', '07/03', 'Rehearsal'],
+    ['2026-06-30', '06/30', 'Research'], ['2026-07-01', '07/01', 'MVP/Viz'], ['2026-07-02', '07/02', 'Deck/Sync'], ['2026-07-03', '07/03', 'Rehearsal'],
     ['2026-07-04', '07/04', 'Onsite'], ['2026-07-05', '07/05', 'Final'],
   ]
   const milestones = [
@@ -674,6 +674,8 @@ const buildProjectMasterTimeline = () => {
     { i: 3, label: '예선 제출\n제안서·명세서', color: '#16a34a' },
     { i: 5, label: '본선 안내\n13팀 진출', color: '#7c3aed' },
     { i: 8, label: '리서치 1차\n27종 회수', color: '#ea580c' },
+    { i: 9, label: '간트 수정\n보드 동기화', color: '#db2777' },
+    { i: 10, label: '정합성·덱\n제출 준비', color: '#0891b2' },
     { i: 13, label: '발표·시연\n수상 평가', color: '#dc2626' },
   ]
   const cards = [
@@ -716,8 +718,8 @@ const buildProjectMasterTimeline = () => {
   elements.push(text(252, x0 + colW * 5 + 20, y0 + 128, colW * 4 - 38, 18, '2.1~2.5 · 3.5 · 5.4 · 5.5', 10, 'center', '#6d28d9'))
 
   elements.push(rect(260, x0 + colW * 9 + 8, y0 + 82, colW * 5 - 14, rowH, '#fee2e2', '#dc2626'))
-  elements.push(text(261, x0 + colW * 9 + 20, y0 + 102, colW * 5 - 38, 24, '본선 고도화·발표 덱·시연·리허설', 13, 'center'))
-  elements.push(text(262, x0 + colW * 9 + 20, y0 + 128, colW * 5 - 38, 18, '4.2 · 4.4 · 5.4 · 5.5 · 직접 시연', 10, 'center', '#b91c1c'))
+  elements.push(text(261, x0 + colW * 9 + 20, y0 + 102, colW * 5 - 38, 24, '제품 결정·MVP 고도화·보드 동기화·리허설', 13, 'center'))
+  elements.push(text(262, x0 + colW * 9 + 20, y0 + 128, colW * 5 - 38, 18, 'G4/G5/G6 · 4.2 · 4.4 · 5.5 · 직접 시연', 10, 'center', '#b91c1c'))
 
   cards.forEach((c, i) => {
     elements.push(rect(300 + i, c.x, c.y, 160, 104, c.color, '#334155'))
@@ -727,7 +729,7 @@ const buildProjectMasterTimeline = () => {
 
   elements.push(rect(420, 70, 505, 1260, 62, '#f8fafc', '#94a3b8'))
   elements.push(text(421, 88, 520, 1215, 24,
-    '발표 문장: “우리는 결과물만 만든 것이 아니라, 심사기준 25개를 작업 레인·로그·검증·변경이력으로 추적하며 고도화했습니다.”',
+    '발표 문장: “우리는 결과물만 만든 것이 아니라, 심사기준 25개를 작업 레인·로그·검증·변경이력으로 추적했고, 간트 변경은 관련 보드까지 같이 동기화했습니다.”',
     14, 'left'))
   metaBox(elements, 460, 1000, 585, 330, 'git log, 기능-변경이력, PROGRESS', '일정·마일스톤 변경', 'visualization', 'mixed')
 
@@ -741,7 +743,7 @@ const buildWorkflowGanttBlueprint = () => {
   const x0 = 340
   const y0 = 92
   const colW = 78
-  const rowH = 82
+  const rowH = 90
   const dates = [
     { iso: '2026-06-11', label: '06/11' }, { iso: '2026-06-12', label: '06/12' }, { iso: '2026-06-13', label: '06/13' }, { iso: '2026-06-14', label: '06/14' },
     { iso: '2026-06-15', label: '06/15' }, { iso: '2026-06-26', label: '06/26' }, { iso: '2026-06-27', label: '06/27' }, { iso: '2026-06-29', label: '06/29' },
@@ -753,32 +755,37 @@ const buildWorkflowGanttBlueprint = () => {
       { s: 0, e: 3, label: 'Pain·JB 사업 근거', owner: '🧑김주용 main · 🤖research', tag: '1.x · 2.x', color: '#4a9eed' },
       { s: 6, e: 8, label: 'D1~D19 딥리서치', owner: '🧑김주용 main · 🤖GPT/Gemini', tag: '1.3 · 2.1 · 2.5', color: '#2563eb' },
     ]},
-    { name: '2. AI Agent 설계', humans: '🧑 김주용 · 🧑 이승보', robots: '🤖 orchestrator(Claude Opus 4.5) · builder(Sonnet)', bg: '#f3f0ff', bars: [
+    { name: '2. 제품 결정/범위 확정', humans: '🧑 김주용 · 🧑 이승보 · 🧑 김민주 · 🧑 재형', robots: '🤖 product(Claude Sonnet) · judge-qa · submission', bg: '#ecfeff', bars: [
+      { s: 8, e: 10, label: '은행·로컬·DB 범위 결정', owner: '🧑김주용 main · 🧑재형 finance · 🧑이승보 tech · 🤖product', tag: 'G4 · 제품 §1', color: '#0e7490' },
+      { s: 9, e: 11, label: 'SME 히어로·조직도 UX 확정', owner: '🧑김민주 UX main · 🧑김주용 story · 🤖designer', tag: '시연 SSOT', color: '#0891b2' },
+    ]},
+    { name: '3. AI Agent 설계', humans: '🧑 김주용 · 🧑 이승보', robots: '🤖 orchestrator(Claude Opus 4.5) · builder(Sonnet)', bg: '#f3f0ff', bars: [
       { s: 0, e: 3, label: 'Case→AgentRun→Audit', owner: '🧑김주용 main · 🧑이승보 support · 🤖orchestrator', tag: '3.1 · 3.2 · 3.4', color: '#8b5cf6' },
       { s: 6, e: 9, label: '멀티 Agent·모델기록', owner: '🤖orchestrator main · 🧑김주용', tag: '3.3 · 3.5', color: '#7c3aed' },
     ]},
-    { name: '3. MVP 구현/고도화', humans: '🧑 이승보 · 🧑 김주용 · 🧑 김민주', robots: '🤖 builder(Claude Sonnet) · Codex GPT-5.5', bg: '#f0fdf4', bars: [
+    { name: '4. MVP 구현/고도화', humans: '🧑 이승보 · 🧑 김주용 · 🧑 김민주', robots: '🤖 builder(Claude Sonnet) · Codex GPT-5.5', bg: '#f0fdf4', bars: [
       { s: 0, e: 4, label: '라이브 콘솔·골든패스', owner: '🧑이승보 main · 🧑김민주 UX support · 🤖builder/Codex', tag: '4.2 · 4.4', color: '#22c55e' },
-      { s: 9, e: 13, label: '본선 시연 안정화', owner: '🧑김주용 main · 🧑이승보 · 🤖judge-qa', tag: '4.2 · 직접 시연', color: '#16a34a' },
+      { s: 10, e: 12, label: '정적 MVP→백엔드/API 승격', owner: '🧑이승보 main · 🧑김주용 spec · 🤖Codex', tag: 'G5 · API 승격', color: '#15803d' },
+      { s: 11, e: 13, label: '본선 시연 안정화', owner: '🧑김주용 main · 🧑이승보 · 🤖judge-qa', tag: '4.2 · 직접 시연', color: '#16a34a' },
     ]},
-    { name: '4. UX/UI·브랜딩·시연 화면', humans: '🧑 김민주 · 🧑 김주용', robots: '🤖 design-ai(Figma/Claude) · visualization(Codex)', bg: '#fdf2f8', bars: [
+    { name: '5. UX/UI·브랜딩·시연 화면', humans: '🧑 김민주 · 🧑 김주용', robots: '🤖 design-ai(Figma/Claude) · visualization(Codex)', bg: '#fdf2f8', bars: [
       { s: 7, e: 9, label: 'JB 톤앤매너·디자인 시스템', owner: '🧑김민주 main · 🧑김주용 context · 🤖design-ai', tag: '2.2 · 4.5', color: '#db2777' },
       { s: 9, e: 11, label: '조직도 중심 UX/UI', owner: '🧑김민주 main · 🧑이승보 implement · 🤖builder', tag: '2.2 · 5.2', color: '#be185d' },
       { s: 10, e: 13, label: '발표덱·시연영상 비주얼', owner: '🧑김민주 main · 🧑김주용 story · 🤖visualization', tag: '4.5 · 발표', color: '#9d174d' },
     ]},
-    { name: '5. 문서/기능명세/변경이력', humans: '🧑 김주용 · 🧑 재형', robots: '🤖 evidence(Claude Haiku) · submission(Sonnet)', bg: '#fff7ed', bars: [
+    { name: '6. 문서/기능명세/변경이력', humans: '🧑 김주용 · 🧑 재형', robots: '🤖 evidence(Claude Haiku) · submission(Sonnet)', bg: '#fff7ed', bars: [
       { s: 2, e: 4, label: '제안서·기능명세·변경이력', owner: '🧑김주용 main · 🤖submission', tag: '4.1 · 4.3 · 4.5', color: '#f59e0b' },
       { s: 8, e: 13, label: '문서정리·툴관리·정합성', owner: '🧑김주용 main · 🧑재형 review · 🤖evidence', tag: '기능 변경이력', color: '#ea580c' },
     ]},
-    { name: '6. QA/검증/시연 안정화', humans: '🧑 김주용 · 🧑 이승보 · 🧑 김민주', robots: '🤖 judge-qa(Claude Sonnet) · Codex GPT-5.5', bg: '#f0fdfa', bars: [
+    { name: '7. QA/검증/시연 안정화', humans: '🧑 김주용 · 🧑 이승보 · 🧑 김민주', robots: '🤖 judge-qa(Claude Sonnet) · Codex GPT-5.5', bg: '#f0fdfa', bars: [
       { s: 2, e: 4, label: 'E2E·정적검증·스크린샷', owner: '🤖judge-qa main · 🧑이승보 fix', tag: '4.2 · 4.5', color: '#06b6d4' },
-      { s: 11, e: 13, label: '로컬 구동·폴백 리허설', owner: '🧑김주용 main · 🧑이승보 · 🧑김민주 visual QA', tag: '본선 실격 방어', color: '#0891b2' },
+      { s: 11, e: 13, label: 'SME JBG-104 E2E·피싱 보조', owner: '🧑김주용 main · 🧑이승보 · 🧑김민주 visual QA', tag: 'G1/G2 · 본선 방어', color: '#0891b2' },
     ]},
-    { name: '7. 운영 하네스/AI 협업 증빙', humans: '🧑 김주용 · 🧑 전체 팀', robots: '🤖 evidence(Haiku) · visualization(Sonnet/Codex GPT-5.5)', bg: '#fefce8', bars: [
+    { name: '8. 운영 하네스/AI 협업 증빙', humans: '🧑 김주용 · 🧑 전체 팀', robots: '🤖 evidence(Haiku) · visualization(Sonnet/Codex GPT-5.5)', bg: '#fefce8', bars: [
       { s: 5, e: 9, label: 'Stop훅·텔레메트리·에이전트 로그', owner: '🤖evidence main · 🧑김주용', tag: '2.5 · 5.2', color: '#fbbf24' },
-      { s: 8, e: 13, label: '청사진·Excalidraw·통계', owner: '🤖visualization main · 🧑김주용 PM/tool', tag: '방법론 증빙', color: '#eab308' },
+      { s: 8, e: 13, label: '청사진·Excalidraw·보드 동기화', owner: '🤖visualization main · 🧑김주용 PM/tool', tag: 'G6 · 방법론 증빙', color: '#eab308' },
     ]},
-    { name: '8. 발표/시연/리허설', humans: '🧑 김주용 · 🧑 김민주 · 🧑 재형', robots: '🤖 pitch-storyteller(Sonnet) · visualization(Sonnet/Codex)', bg: '#fff1f2', bars: [
+    { name: '9. 발표/시연/리허설', humans: '🧑 김주용 · 🧑 김민주 · 🧑 재형', robots: '🤖 pitch-storyteller(Sonnet) · visualization(Sonnet/Codex)', bg: '#fff1f2', bars: [
       { s: 9, e: 10, label: 'MVP 완료+시나리오', owner: '🧑김주용 main · 🤖pitch', tag: '4.2', color: '#ef4444' },
       { s: 10, e: 11, label: '발표 덱 최종', owner: '🧑김민주 visual main · 🧑김주용 story · 🤖visualization', tag: '1~5 전체', color: '#dc2626' },
       { s: 11, e: 13, label: '최종 리허설→본선', owner: '🧑김주용 main · 🧑재형 Q&A · 🤖judge-qa', tag: '직접 시연', color: '#b91c1c' },
@@ -799,7 +806,7 @@ const buildWorkflowGanttBlueprint = () => {
 
   lanes.forEach((lane, i) => {
     const y = y0 + 62 + i * rowH
-    const pct = ['80%', '93%', '60%', '45%', '67%', '67%', '93%', '67%'][i] ?? 'TBD'
+    const pct = ['80%', '70%', '93%', '60%', '45%', '67%', '67%', '93%', '67%'][i] ?? 'TBD'
     elements.push(rect(100 + i, 40, y, x0 + dates.length * colW - 50, rowH - 8, lane.bg, 'transparent'))
     elements.push(text(130 + i, 56, y + 10, 230, 18, lane.name, 12, 'left'))
     elements.push(text(150 + i, 286, y + 10, 42, 18, pct, 12, 'center', '#0f172a'))
@@ -818,7 +825,9 @@ const buildWorkflowGanttBlueprint = () => {
   ;[
     { idx: 3, label: '예선 제출', color: '#16a34a' },
     { idx: 5, label: '본선 안내', color: '#7c3aed' },
-    { idx: 9, label: 'MVP 완료', color: '#ea580c' },
+    { idx: 8, label: '제품§1', color: '#0e7490' },
+    { idx: 9, label: 'MVP/Viz', color: '#ea580c' },
+    { idx: 10, label: '동기화', color: '#0891b2' },
     { idx: 13, label: '발표·시연', color: '#dc2626' },
   ].forEach((m, i) => {
     const x = x0 + m.idx * colW + colW / 2
@@ -829,7 +838,7 @@ const buildWorkflowGanttBlueprint = () => {
   const legendY = y0 + lanes.length * rowH + 158
   elements.push(rect(500, 40, legendY, x0 + dates.length * colW - 50, 78, '#f8fafc', '#94a3b8'))
   elements.push(text(501, 60, legendY + 14, 1160, 22,
-    '범례: 레인 왼쪽은 전체 담당, 각 작업 바 내부는 해당 작업 단위의 main/support 담당이다. 🧑 사람 · 🤖 AI 에이전트(모델).',
+    '범례: 레인 왼쪽은 전체 담당, 각 작업 바 내부는 해당 작업 단위의 main/support 담당이다. G4/G5/G6는 간트 갭 감사 권고 반영. 🧑 사람 · 🤖 AI 에이전트(모델).',
     12, 'left'))
   elements.push(text(502, 60, legendY + 42, 1160, 18,
     '현재 시각화 담당 로봇 인물: 🤖 visualization · Sonnet/Codex GPT-5.5 · VISUALIZATION-PLAN→Excalidraw 업그레이드 사이클 담당',
@@ -846,8 +855,8 @@ const buildJudgeCriteriaCoverageMap = () => {
   const groups = [
     { title: '1. 주제적합성·문제정의', color: '#dbeafe', items: ['1.1 자유주제 취지', '1.2 RM·상황 정의', '1.3 Pain·병목·리스크', '1.4 JB 관점 중요도', '1.5 서비스 과제화'], evidence: '문제정의·리서치·SCQA' },
     { title: '2. 금융업무·고객가치', color: '#dcfce7', items: ['2.1 JB 사업 연결', '2.2 업무/고객 여정', '2.3 가치·효율·리스크', '2.4 규제·보안·내부통제', '2.5 AX·인재 취지'], evidence: 'D3e/D3f·JB 정합맵' },
-    { title: '3. AI Agent 설계', color: '#ede9fe', items: ['3.1 판단·행동·검증', '3.2 데이터→액션 흐름', '3.3 모델/RAG/Rule/멀티', '3.4 구성도·구현가능', '3.5 API·라이선스 제약'], evidence: 'Agent-flow·기능명세' },
-    { title: '4. MVP 완성도·검증', color: '#fef3c7', items: ['4.1 산출물 일관성', '4.2 실제 동작 MVP', '4.3 명세 구체성', '4.4 고도화 기반', '4.5 형식·가독성'], evidence: 'E2E·변경이력·시연' },
+    { title: '3. AI Agent 설계', color: '#ede9fe', items: ['3.1 판단·행동·검증', '3.2 데이터→액션 흐름', '3.3 모델/RAG/Rule/멀티', '3.4 구성도·구현가능', '3.5 API·라이선스 제약'], evidence: 'Agent-flow·기능명세·API 승격' },
+    { title: '4. MVP 완성도·검증', color: '#fef3c7', items: ['4.1 산출물 일관성', '4.2 실제 동작 MVP', '4.3 명세 구체성', '4.4 고도화 기반', '4.5 형식·가독성'], evidence: 'SME E2E·변경이력·시연' },
     { title: '5. 혁신·확장·리스크', color: '#fee2e2', items: ['5.1 업무방식 차별성', '5.2 새 경험/전환', '5.3 계열사 확장', '5.4 PoC→상용 경로', '5.5 PII·보안·환각·책임'], evidence: 'PII Guard·로드맵·TCO/SLA' },
   ]
 
@@ -871,7 +880,7 @@ const buildJudgeCriteriaCoverageMap = () => {
 
   elements.push(rect(360, 45, 540, 1246, 74, '#f8fafc', '#94a3b8'))
   elements.push(text(361, 65, 556, 1205, 24,
-    '강조 우선순위: 3번(AI Agent 설계) → 2번(JB 업무 연계) → 4번(MVP 검증) → 5번(리스크·확장) → 1번(문제정의). 동점 규칙의 우선순위와 일치한다.',
+    '강조 우선순위: 3번(AI Agent 설계) → 2번(JB 업무 연계) → 4번(MVP 검증). 간트 G4/G5/G6는 제품 결정·정적 MVP→API 승격·리서치 흡수 증거로 추적한다.',
     13, 'left'))
 
   return elements
@@ -882,10 +891,10 @@ const buildFinalsDemoReadinessMap = () => {
   _id = 0
   const elements = []
   const columns = [
-    { x: 45, title: '직접 시연 필수', color: '#fee2e2', items: ['MVP 또는 결과물 시연 불가 = 심사 제외 가능', '골든패스 1~2개를 시간 내 완주', '발표자 장비에서 실행'] },
-    { x: 315, title: '오프라인 안정성', color: '#fef3c7', items: ['컴퓨팅 리소스 제공 없음', '노트북·충전기·어댑터 준비', '네트워크 차단 상태 테스트'] },
-    { x: 585, title: '산출물 정합', color: '#dbeafe', items: ['예선 기능명세서 기준', '변경 일자·대상·내용·사유 기록', '제안서·명세서·시연 같은 서사'] },
-    { x: 855, title: '리스크 방어', color: '#dcfce7', items: ['PII 비반출·승인 전 행동 차단', '환각·설명가능성·책임소재 언급', '폴백 영상/스크립트 준비'] },
+    { x: 45, title: '직접 시연 필수', color: '#fee2e2', items: ['SME JBG-104 히어로 완주', '피싱 보조·전세 optional', '발표자 장비에서 실행'] },
+    { x: 315, title: '오프라인 안정성', color: '#fef3c7', items: ['정적 MVP도 현장 실행 가능', '노트북·충전기·어댑터 준비', '네트워크 차단 상태 테스트'] },
+    { x: 585, title: '산출물 정합', color: '#dbeafe', items: ['간트·스토리보드·체크리스트 동기화', '변경 일자·대상·내용·사유 기록', '제안서·명세서·시연 같은 서사'] },
+    { x: 855, title: '리스크 방어', color: '#dcfce7', items: ['PII 비반출·승인 전 행동 차단', '정적 MVP→API 승격은 계획/범위 분리', '폴백 영상/스크립트 준비'] },
   ]
 
   elements.push(text(0, 40, 18, 980, 36, '본선 시연 준비도 맵 — 실격 리스크 방어', 22, 'left'))
@@ -904,7 +913,7 @@ const buildFinalsDemoReadinessMap = () => {
   const y = 455
   elements.push(rect(240, 45, y, 1048, 92, '#f8fafc', '#94a3b8'))
   elements.push(text(241, 65, y + 16, 1010, 24,
-    '발표 운영 원칙: 실제 작동 화면을 먼저 보여주고, 실패 대비 폴백은 숨기지 않고 “현장 안정성 설계”로 설명한다.',
+    '발표 운영 원칙: SME 히어로 작동 화면을 먼저 보여주고, 정적 MVP와 API 승격 계획은 구분해 말한다. 폴백은 “현장 안정성 설계”로 설명한다.',
     14, 'left'))
   elements.push(text(242, 65, y + 48, 1010, 20,
     '연결 심사항목: 4.1 산출물 일관성 · 4.2 동작 MVP · 4.5 형식 준수 · 5.5 운영 리스크 관리',
@@ -992,6 +1001,7 @@ const buildTeamContributionRoleRadar = () => {
   elements.push(rect(300, 55, 385, 1090, 95, '#ede9fe', '#7c3aed'))
   elements.push(text(301, 75, 402, 1045, 22, `${emoji.AI} AI Support Layer · Claude / Codex / ChatGPT / Gemini · support weight ${aiWeight}`, 16, 'left', '#312e81'))
   elements.push(text(302, 75, 432, 1045, 22, 'AI는 사람 기여와 경쟁하지 않고 리서치·코딩·검증·시각화 보조층으로 분리 표기한다.', 12, 'left', '#312e81'))
+  elements.push(text(303, 75, 456, 1045, 18, '간트 동기화 기준: 제품 결정은 전원 협업, UX/UI는 김민주 lead, MVP/API는 이승보 lead, PM·문서·툴은 김주용 lead.', 10, 'left', '#312e81'))
   metaBox(elements, 340, 850, 510, 350, 'contribution-ledger.csv, _team-roster, _contribution-stats', '팀원 역할·작업 원장 변경', 'visualization', 'estimate')
 
   return elements
@@ -1005,8 +1015,8 @@ const buildUpdateControlTower = () => {
   const buckets = [
     { x: 55, title: 'Done', color: '#dcfce7', items: phases.filter(p => Number(p.completion_pct) >= 90).map(p => `${p.phase_name} ${p.completion_pct}%`) },
     { x: 345, title: 'In Progress', color: '#dbeafe', items: phases.filter(p => Number(p.completion_pct) > 0 && Number(p.completion_pct) < 90).map(p => `${p.phase_name} ${p.completion_pct}%`) },
-    { x: 635, title: 'Waiting', color: '#fef3c7', items: ['팀원 역할 확정', '전북/광주 은행 선택', '본선 리허설 체크'] },
-    { x: 925, title: 'Risk', color: '#fee2e2', items: ['시연 현장 네트워크', 'TBD 기여율', '렌더 수동 QA 미확인'] },
+    { x: 635, title: 'Waiting', color: '#fef3c7', items: ['은행·로컬·DB 범위 최종 선택', '_canon 히어로 프레이밍 승인', '본선 리허설 체크'] },
+    { x: 925, title: 'Risk', color: '#fee2e2', items: ['정적 MVP/API 승격 혼동', '시연 현장 네트워크', '렌더 수동 QA 미확인'] },
   ]
 
   elements.push(text(0, 40, 18, 1100, 34, 'Update Control Tower — 진행률·대기·리스크 추적판', 22, 'left'))
@@ -1031,19 +1041,19 @@ const buildDemoVideoStoryboard = () => {
   const shots = [
     ['1', '표지', '금융 AI Agent 운영 콘솔', '서비스명·대회명'],
     ['2', '대시보드', '위험 신호를 케이스로 통합', '큐·SLA·KPI'],
-    ['3', '문제', 'RM 혼자 조기대응 어려움', 'SME·전세·피싱'],
+    ['3', '문제', 'RM 혼자 조기대응 어려움', 'SME Hero'],
     ['4', 'SME 진입', 'JBG-104 전주 카페', '?demo=sme'],
     ['5', 'AgentRun', '클릭으로 판단 루프 실행', '타임라인 생성'],
     ['6', '판단/산출물', '정책금융·콜백 초안', 'Evidence chip'],
     ['7', 'PII 거버넌스', '원본 PII 비반출', '토큰화·스캔 PASS'],
     ['8', '승인 게이트', '승인 전 행동 차단', 'Pending→Approved'],
     ['9', '감사 원장', '누가·언제·근거·해시', 'Audit log'],
-    ['10', '전세 Shield', '확장 시나리오', '?demo=jeonse'],
-    ['11', '피싱 차단', '고위험 L4 행동 거부', 'blocked badge'],
-    ['12', '클로징', '챗봇이 아닌 운영체계', 'KPI·E2E'],
+    ['10', '피싱 차단', '고위험 L4 행동 거부', '?demo=phishing'],
+    ['11', '전세 Shield', '잔여시간 optional 확장', '?demo=jeonse'],
+    ['12', '클로징', '챗봇이 아닌 운영체계', 'KPI·E2E·간트 증빙'],
   ]
   elements.push(text(0, 40, 18, 1100, 34, 'Demo Video Storyboard — 시연영상 12컷 제작판', 22, 'left'))
-  elements.push(text(1, 42, 52, 1160, 22, 'SME end-to-end를 중심으로 PII 거버넌스와 승인 게이트를 크게 보여준다.', 12, 'left'))
+  elements.push(text(1, 42, 52, 1160, 22, 'SME JBG-104 히어로를 중심으로 PII 거버넌스와 승인 게이트를 크게 보여주고, 피싱은 보조·전세는 optional로 둔다.', 12, 'left'))
   shots.forEach((s, i) => {
     const col = i % 4
     const row = Math.floor(i / 4)
@@ -1067,8 +1077,10 @@ const buildEvidenceTraceabilityBoard = () => {
   const elements = []
   const rows = [
     ['JB 정합성', 'D3a~D3f / _canon §10', 'JB ecosystem fit', '2.1~2.5'],
+    ['제품 결정', '제품정의·간트 G4', '은행/로컬/DB 범위표', '2.2 · 4.3'],
     ['AI Agent 구조', 'agent-roster / agent-flow', 'AgentRun demo', '3.1~3.5'],
     ['동작 MVP', 'function-spec / live verification', 'SME golden path', '4.1~4.5'],
+    ['API 승격', '간트 G5 / architecture', '정적 MVP→API plan', '3.4 · 4.4'],
     ['PII·승인 리스크', 'D5a/D10/D15 / gov panel', 'PII PASS + Approval', '5.5'],
     ['협업 방법론', 'telemetry / ledgers / Excalidraw', 'AX OS map', '2.5 · 5.4'],
   ]
@@ -1082,12 +1094,12 @@ const buildEvidenceTraceabilityBoard = () => {
   rows.forEach((r, ri) => {
     r.forEach((cell, ci) => {
       const x = 55 + ci * 285
-      const y = 155 + ri * 70
+      const y = 155 + ri * 58
       elements.push(rect(100 + ri * 10 + ci, x, y, 260, 48, ci === 3 ? '#fef3c7' : '#f8fafc', '#94a3b8'))
       elements.push(text(180 + ri * 10 + ci, x + 12, y + 13, 236, 18, cell, 10, 'center'))
     })
   })
-  metaBox(elements, 300, 870, 535, 350, '_canon, D결과, 제출문서, 심사기준', '리서치·제출 문서 변경', 'evidence + visualization', 'mixed')
+  metaBox(elements, 300, 870, 600, 350, '_canon, D결과, 제출문서, 심사기준', '리서치·제출 문서 변경', 'evidence + visualization', 'mixed')
   return elements
 }
 
@@ -1113,9 +1125,9 @@ const buildDemoGoldenPathStateMachine = () => {
     if (i < states.length - 1) elements.push(arrow(120 + i, x + 150, 196, 40, 0))
   })
   const paths = [
-    ['SME', 'JBG-104 → 정책금융·콜백 초안 → RM 승인'],
-    ['전세', '임대차 리스크 → 안전계약 체크리스트 → 상담 연결'],
-    ['피싱', '고위험 L4 → 고객 대상 자동 발송 blocked'],
+    ['SME Hero', 'JBG-104 → 정책금융·콜백 초안 → RM 승인 → Audit'],
+    ['피싱 보조', '고위험 L4 → 고객 대상 자동 발송 blocked'],
+    ['전세 optional', '임대차 리스크 → 안전계약 체크리스트 → 잔여시간 시연'],
   ]
   paths.forEach((p, i) => {
     const y = 330 + i * 62
@@ -1132,10 +1144,11 @@ const buildResearchToProductFunnel = () => {
   _id = 0
   const elements = []
   const stages = [
-    { x: 70, w: 230, title: '27 Deep Research', body: 'D1~D19\nD+a/b\nD3a~f', color: '#dbeafe' },
-    { x: 350, w: 230, title: 'Gap Audit', body: 'D16~D19\n신뢰도·논문·수치\nCodex 5.5 점검', color: '#ede9fe' },
-    { x: 630, w: 230, title: 'Product Decisions', body: 'RM 콘솔\nPII Guard\nApproval First', color: '#dcfce7' },
-    { x: 910, w: 230, title: 'MVP & Pitch', body: 'SME 데모\n발표덱\n심사기준 커버', color: '#fef3c7' },
+    { x: 60, w: 200, title: '27+ Deep Research', body: 'D1~D23\nD+a/b\nD3a~f', color: '#dbeafe' },
+    { x: 310, w: 200, title: 'Gap Audit', body: 'D16~D19\n신뢰도·논문·수치\nCodex 5.5 점검', color: '#ede9fe' },
+    { x: 560, w: 200, title: 'Decision Gate', body: '은행·로컬·DB\nSME Hero\n조직도 UX', color: '#ecfeff' },
+    { x: 810, w: 200, title: 'Product Decisions', body: 'RM 콘솔\nPII Guard\nApproval First', color: '#dcfce7' },
+    { x: 1060, w: 200, title: 'MVP & Pitch', body: 'SME 데모\nAPI 승격계획\n심사기준 커버', color: '#fef3c7' },
   ]
   elements.push(text(0, 40, 18, 1100, 34, 'Research-to-Product Funnel — 리서치가 제품 결정으로 내려온 흐름', 22, 'left'))
   elements.push(text(1, 42, 52, 1160, 22, '많이 조사했다가 아니라, 조사 결과가 기능·시연·발표 문장으로 변환됐다는 것을 보여준다.', 12, 'left'))
@@ -1147,7 +1160,8 @@ const buildResearchToProductFunnel = () => {
   })
   const products = [
     ['JB 정합성', 'D3e/D3f → JB 구조·재무·AX 원년 → ecosystem fit'],
-    ['검증 가능성', 'D13/D16 → KPI·샘플·평가 설계 → MVP 검증 문장'],
+    ['제품 결정', 'D3/D20~D23 → 은행·로컬·DB·SME Hero 결정 게이트'],
+    ['검증 가능성', 'D13/D16 → KPI·샘플·평가 설계 → MVP/API 검증 문장'],
     ['운영 리스크', 'D5a/D10/D15 → PII·승인·감사 → 거버넌스 패널'],
   ]
   products.forEach((p, i) => {
@@ -1156,7 +1170,7 @@ const buildResearchToProductFunnel = () => {
     elements.push(text(230 + i, 115, y + 12, 150, 16, p[0], 12, 'center'))
     elements.push(text(260 + i, 290, y + 12, 790, 16, p[1], 11, 'left'))
   })
-  metaBox(elements, 320, 830, 585, 350, 'D1~D19, D+a/b, 갭감사, 제품정의', '리서치 회수·제품 반영 변경', 'research + visualization', 'mixed')
+  metaBox(elements, 320, 830, 635, 350, 'D1~D23, D+a/b, 갭감사, 제품정의', '리서치 회수·제품 반영 변경', 'research + visualization', 'mixed')
   return elements
 }
 

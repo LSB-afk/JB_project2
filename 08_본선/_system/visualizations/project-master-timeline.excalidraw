@@ -1181,14 +1181,14 @@
       "y": 123,
       "width": 88,
       "height": 18,
-      "text": "MVP",
+      "text": "MVP/Viz",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "MVP",
+      "originalText": "MVP/Viz",
       "lineHeight": 1.25
     },
     {
@@ -1294,14 +1294,14 @@
       "y": 123,
       "width": 88,
       "height": 18,
-      "text": "Deck",
+      "text": "Deck/Sync",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "Deck",
+      "originalText": "Deck/Sync",
       "lineHeight": 1.25
     },
     {
@@ -2144,7 +2144,7 @@
     {
       "id": "viz-59",
       "angle": 0,
-      "strokeColor": "#dc2626",
+      "strokeColor": "#db2777",
       "backgroundColor": "transparent",
       "fillStyle": "solid",
       "strokeWidth": 1,
@@ -2163,7 +2163,7 @@
       "link": null,
       "locked": false,
       "type": "line",
-      "x": 1354,
+      "x": 970,
       "y": 138,
       "width": 0,
       "height": 230,
@@ -2185,7 +2185,7 @@
     {
       "id": "viz-60",
       "angle": 0,
-      "strokeColor": "#dc2626",
+      "strokeColor": "#db2777",
       "backgroundColor": "#ffffff",
       "fillStyle": "solid",
       "strokeWidth": 1,
@@ -2204,7 +2204,7 @@
       "link": null,
       "locked": false,
       "type": "rectangle",
-      "x": 1312,
+      "x": 928,
       "y": 270,
       "width": 98,
       "height": 62
@@ -2231,6 +2231,214 @@
       "link": null,
       "locked": false,
       "type": "text",
+      "x": 935,
+      "y": 282,
+      "width": 84,
+      "height": 34,
+      "text": "간트 수정\n보드 동기화",
+      "fontSize": 10,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "baseline": 13,
+      "containerId": null,
+      "originalText": "간트 수정\n보드 동기화",
+      "lineHeight": 1.25
+    },
+    {
+      "id": "viz-62",
+      "angle": 0,
+      "strokeColor": "#0891b2",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 2085,
+      "version": 1,
+      "versionNonce": 4015,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "type": "line",
+      "x": 1066,
+      "y": 138,
+      "width": 0,
+      "height": 230,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          230
+        ]
+      ],
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": null
+    },
+    {
+      "id": "viz-63",
+      "angle": 0,
+      "strokeColor": "#0891b2",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 2225,
+      "version": 1,
+      "versionNonce": 4275,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "type": "rectangle",
+      "x": 1024,
+      "y": 270,
+      "width": 98,
+      "height": 62
+    },
+    {
+      "id": "viz-64",
+      "angle": 0,
+      "strokeColor": "#0f172a",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 2365,
+      "version": 1,
+      "versionNonce": 4535,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "type": "text",
+      "x": 1031,
+      "y": 282,
+      "width": 84,
+      "height": 34,
+      "text": "정합성·덱\n제출 준비",
+      "fontSize": 10,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "baseline": 13,
+      "containerId": null,
+      "originalText": "정합성·덱\n제출 준비",
+      "lineHeight": 1.25
+    },
+    {
+      "id": "viz-65",
+      "angle": 0,
+      "strokeColor": "#dc2626",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 2092,
+      "version": 1,
+      "versionNonce": 4028,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "type": "line",
+      "x": 1354,
+      "y": 138,
+      "width": 0,
+      "height": 230,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          230
+        ]
+      ],
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": null
+    },
+    {
+      "id": "viz-66",
+      "angle": 0,
+      "strokeColor": "#dc2626",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 2232,
+      "version": 1,
+      "versionNonce": 4288,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "type": "rectangle",
+      "x": 1312,
+      "y": 270,
+      "width": 98,
+      "height": 62
+    },
+    {
+      "id": "viz-67",
+      "angle": 0,
+      "strokeColor": "#0f172a",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 2372,
+      "version": 1,
+      "versionNonce": 4548,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1,
+      "link": null,
+      "locked": false,
+      "type": "text",
       "x": 1319,
       "y": 282,
       "width": 84,
@@ -2246,7 +2454,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-62",
+      "id": "viz-68",
       "angle": 0,
       "strokeColor": "#2563eb",
       "backgroundColor": "#dbeafe",
@@ -2273,7 +2481,7 @@
       "height": 72
     },
     {
-      "id": "viz-63",
+      "id": "viz-69",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2309,7 +2517,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-64",
+      "id": "viz-70",
       "angle": 0,
       "strokeColor": "#1d4ed8",
       "backgroundColor": "transparent",
@@ -2345,7 +2553,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-65",
+      "id": "viz-71",
       "angle": 0,
       "strokeColor": "#7c3aed",
       "backgroundColor": "#ede9fe",
@@ -2372,7 +2580,7 @@
       "height": 72
     },
     {
-      "id": "viz-66",
+      "id": "viz-72",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2408,7 +2616,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-67",
+      "id": "viz-73",
       "angle": 0,
       "strokeColor": "#6d28d9",
       "backgroundColor": "transparent",
@@ -2444,7 +2652,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-68",
+      "id": "viz-74",
       "angle": 0,
       "strokeColor": "#dc2626",
       "backgroundColor": "#fee2e2",
@@ -2471,7 +2679,7 @@
       "height": 72
     },
     {
-      "id": "viz-69",
+      "id": "viz-75",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2496,18 +2704,18 @@
       "y": 194,
       "width": 442,
       "height": 24,
-      "text": "본선 고도화·발표 덱·시연·리허설",
+      "text": "제품 결정·MVP 고도화·보드 동기화·리허설",
       "fontSize": 13,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 16,
       "containerId": null,
-      "originalText": "본선 고도화·발표 덱·시연·리허설",
+      "originalText": "제품 결정·MVP 고도화·보드 동기화·리허설",
       "lineHeight": 1.25
     },
     {
-      "id": "viz-70",
+      "id": "viz-76",
       "angle": 0,
       "strokeColor": "#b91c1c",
       "backgroundColor": "transparent",
@@ -2532,18 +2740,18 @@
       "y": 220,
       "width": 442,
       "height": 18,
-      "text": "4.2 · 4.4 · 5.4 · 5.5 · 직접 시연",
+      "text": "G4/G5/G6 · 4.2 · 4.4 · 5.5 · 직접 시연",
       "fontSize": 10,
       "fontFamily": 1,
       "textAlign": "center",
       "verticalAlign": "top",
       "baseline": 13,
       "containerId": null,
-      "originalText": "4.2 · 4.4 · 5.4 · 5.5 · 직접 시연",
+      "originalText": "G4/G5/G6 · 4.2 · 4.4 · 5.5 · 직접 시연",
       "lineHeight": 1.25
     },
     {
-      "id": "viz-71",
+      "id": "viz-77",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "#dbeafe",
@@ -2570,7 +2778,7 @@
       "height": 104
     },
     {
-      "id": "viz-72",
+      "id": "viz-78",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2606,7 +2814,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-73",
+      "id": "viz-79",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2642,7 +2850,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-74",
+      "id": "viz-80",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "#dcfce7",
@@ -2669,7 +2877,7 @@
       "height": 104
     },
     {
-      "id": "viz-75",
+      "id": "viz-81",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2705,7 +2913,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-76",
+      "id": "viz-82",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2741,7 +2949,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-77",
+      "id": "viz-83",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "#ede9fe",
@@ -2768,7 +2976,7 @@
       "height": 104
     },
     {
-      "id": "viz-78",
+      "id": "viz-84",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2804,7 +3012,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-79",
+      "id": "viz-85",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2840,7 +3048,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-80",
+      "id": "viz-86",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "#fef3c7",
@@ -2867,7 +3075,7 @@
       "height": 104
     },
     {
-      "id": "viz-81",
+      "id": "viz-87",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2903,7 +3111,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-82",
+      "id": "viz-88",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -2939,7 +3147,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-83",
+      "id": "viz-89",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "#fee2e2",
@@ -2966,7 +3174,7 @@
       "height": 104
     },
     {
-      "id": "viz-84",
+      "id": "viz-90",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -3002,7 +3210,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-85",
+      "id": "viz-91",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -3038,7 +3246,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-86",
+      "id": "viz-92",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "#f8fafc",
@@ -3065,7 +3273,7 @@
       "height": 104
     },
     {
-      "id": "viz-87",
+      "id": "viz-93",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -3101,7 +3309,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-88",
+      "id": "viz-94",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -3137,7 +3345,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-89",
+      "id": "viz-95",
       "angle": 0,
       "strokeColor": "#94a3b8",
       "backgroundColor": "#f8fafc",
@@ -3164,7 +3372,7 @@
       "height": 62
     },
     {
-      "id": "viz-90",
+      "id": "viz-96",
       "angle": 0,
       "strokeColor": "#1e293b",
       "backgroundColor": "transparent",
@@ -3189,18 +3397,18 @@
       "y": 520,
       "width": 1215,
       "height": 24,
-      "text": "발표 문장: “우리는 결과물만 만든 것이 아니라, 심사기준 25개를 작업 레인·로그·검증·변경이력으로 추적하며 고도화했습니다.”",
+      "text": "발표 문장: “우리는 결과물만 만든 것이 아니라, 심사기준 25개를 작업 레인·로그·검증·변경이력으로 추적했고, 간트 변경은 관련 보드까지 같이 동기화했습니다.”",
       "fontSize": 14,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 18,
       "containerId": null,
-      "originalText": "발표 문장: “우리는 결과물만 만든 것이 아니라, 심사기준 25개를 작업 레인·로그·검증·변경이력으로 추적하며 고도화했습니다.”",
+      "originalText": "발표 문장: “우리는 결과물만 만든 것이 아니라, 심사기준 25개를 작업 레인·로그·검증·변경이력으로 추적했고, 간트 변경은 관련 보드까지 같이 동기화했습니다.”",
       "lineHeight": 1.25
     },
     {
-      "id": "viz-91",
+      "id": "viz-97",
       "angle": 0,
       "strokeColor": "#94a3b8",
       "backgroundColor": "#f8fafc",
@@ -3227,7 +3435,7 @@
       "height": 88
     },
     {
-      "id": "viz-92",
+      "id": "viz-98",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "transparent",
@@ -3263,7 +3471,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-93",
+      "id": "viz-99",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "transparent",
@@ -3288,18 +3496,18 @@
       "y": 613,
       "width": 306,
       "height": 16,
-      "text": "Last generated: 2026-07-01 KST",
+      "text": "Last generated: 2026-07-02 KST",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "Last generated: 2026-07-01 KST",
+      "originalText": "Last generated: 2026-07-02 KST",
       "lineHeight": 1.25
     },
     {
-      "id": "viz-94",
+      "id": "viz-100",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "transparent",
@@ -3335,7 +3543,7 @@
       "lineHeight": 1.25
     },
     {
-      "id": "viz-95",
+      "id": "viz-101",
       "angle": 0,
       "strokeColor": "#334155",
       "backgroundColor": "transparent",

@@ -53,6 +53,7 @@ up: "[[본선 HOME|본선 HOME]]"
 | 자산 유형 | 경로 |
 |---------|------|
 | Excalidraw 다이어그램 | `assets/excalidraw/` |
+| Excalidraw 공유용 PNG/SVG | `assets/excalidraw/exported-images/` |
 | 스크린샷·시연 캡처 | `assets/screenshots/` |
 | PDF 첨부 | `assets/pdf/` |
 | 제품 소스코드 | `03_제품/app/` |

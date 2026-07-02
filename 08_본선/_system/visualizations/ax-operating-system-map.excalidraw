@@ -2218,14 +2218,14 @@
       "y": 562,
       "width": 1060,
       "height": 18,
-      "text": "현재 기록: AI 세션 10행 · 툴 사용 원장 10행 · 에이전트 레지스트리 기반",
+      "text": "현재 기록: AI 세션 15행 · 툴 사용 원장 10행 · 에이전트 레지스트리 기반",
       "fontSize": 11,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 14,
       "containerId": null,
-      "originalText": "현재 기록: AI 세션 10행 · 툴 사용 원장 10행 · 에이전트 레지스트리 기반",
+      "originalText": "현재 기록: AI 세션 15행 · 툴 사용 원장 10행 · 에이전트 레지스트리 기반",
       "lineHeight": 1.25
     },
     {
@@ -2317,14 +2317,14 @@
       "y": 643,
       "width": 326,
       "height": 16,
-      "text": "Last generated: 2026-07-01 KST",
+      "text": "Last generated: 2026-07-02 KST",
       "fontSize": 9,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 11,
       "containerId": null,
-      "originalText": "Last generated: 2026-07-01 KST",
+      "originalText": "Last generated: 2026-07-02 KST",
       "lineHeight": 1.25
     },
     {

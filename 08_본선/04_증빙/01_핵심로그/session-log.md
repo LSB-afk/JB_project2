@@ -245,3 +245,44 @@ aliases:
 
 ## 2026-07-01 야간 · 리서치 점-점 종합 파이프라인 (Codex gpt-5.5 병렬, A→B→C 완료)
 사용자 취침 중 자율 진행. 40개 독립 결과 → 6 연결노트(Phase A) → 교차 인사이트맵·canon 갱신후보(B) → 본선 논증척추(C). 산출 `_결과/_종합/` 9파일. 가드: 푸시 없음·canon 자동수정 없음(제안만 12건, 승인대기)·휴머나이즈·출처보존. 플랜 [[리서치-점연결-야간종합-플랜]], 기록 R39. 메모리·MEMORY·MOC(02_전략)·회수현황 배선 완료. 함정해결: Bash도구 zsh(→bash 스크립트), 한글 글로브 NFD(→`${code}-*.md`), codex stdin(`< /dev/null`). 병렬 paperclip 레인(R38)과 파일 무충돌. 아침 검토: _인사이트맵→_본선-논증척추→_canon-갱신후보(승인)→커밋·푸시 여부.
+
+### 2026-07-02 · 간트 수정 후 Excalidraw 보드 동기화
+**한 일**
+- [[workflow-gantt-blueprint]] 기준을 갭 감사 권고(G4/G5/G6)에 맞춰 갱신: `제품 결정/범위 확정` 레인 추가, `정적 MVP→백엔드/API 승격` 바 추가, `SME 히어로·조직도 UX`와 `리서치 흡수→제품 결정` 체크포인트 표시.
+- 간트와 함께 움직이는 보드 묶음 정리: [[VISUALIZATION-PLAN]]에 `간트 동기화 묶음` 추가, [[_viz-index]] 설명 갱신.
+- 주변 Excalidraw 보드 의미 동기화: `project-master-timeline`, `urgent-action-map`, `judge-criteria-coverage-map`, `finals-demo-readiness-map`, `team-contribution-role-radar`, `update-control-tower`, `demo-video-storyboard`, `evidence-traceability-board`, `demo-golden-path-state-machine`, `research-to-product-funnel`.
+- [[visualization-cycle]] 검증 스크립트에 `제품 결정`, `API 승격`, `SME`, `Decision Gate` 누락 감지 추가.
+
+**검증**
+- `node 08_본선/_system/skills/visualization-cycle/scripts/run.mjs` 통과 — 20개 `.excalidraw` 재생성·검증.
+- `npm run test` 통과 — `static verification passed`, checked files 34.
+
+**다음**
+- 실제 화면 렌더 수동 QA는 아직 미확인. Obsidian/Excalidraw에서 `workflow-gantt-blueprint`, `research-to-product-funnel`, `evidence-traceability-board` 3개를 우선 시각 확인.
+
+### 2026-07-02 · Excalidraw 공유용 이미지 Export
+**한 일**
+- `08_본선/_system/automation/viz-exporter.mjs` 신설: 원본 Excalidraw 20개를 SVG+PNG로 일괄 export.
+- export 위치: `08_본선/assets/excalidraw/exported-images/20260702/`.
+- 공유 후보 6개를 `_export-index.md`에 표시: `workflow-gantt-blueprint`, `project-master-timeline`, `team-contribution-role-radar`, `research-to-product-funnel`, `evidence-traceability-board`, `demo-video-storyboard`.
+- [[VISUALIZATION-PLAN]], [[_viz-index]], [[SHARE-PACKAGE]]에 export 명령·경로 연결.
+
+**검증**
+- `node 08_본선/_system/automation/viz-exporter.mjs` 통과 — 20개 보드 export.
+- `sips -g pixelWidth -g pixelHeight`로 공유 후보 6개 PNG 해상도 확인.
+- `workflow-gantt-blueprint.png` 직접 시각 확인.
+
+**다음**
+- 발표덱 최종 삽입 전 Obsidian/Excalidraw 네이티브 export와 비교 QA.
+
+### 2026-07-02 · 공유 이미지 손그림풍 재export
+**한 일**
+- `viz-exporter.mjs` 기본 렌더를 깔끔한 SVG 차트풍에서 Excalidraw 손그림풍으로 변경.
+- 사각형·채움 면·선·화살표에 이중 러프 스트로크와 미세 흔들림을 적용.
+- `08_본선/assets/excalidraw/exported-images/20260702/`의 20개 PNG+SVG를 hand-drawn 스타일로 재생성.
+- `_export-index.md`에 `Export style: hand-drawn` 기록.
+
+**검증**
+- `node --check 08_본선/_system/automation/viz-exporter.mjs` 통과.
+- `node 08_본선/_system/automation/viz-exporter.mjs` 통과 — 20개 보드 재export.
+- `workflow-gantt-blueprint.png` 직접 시각 확인.
