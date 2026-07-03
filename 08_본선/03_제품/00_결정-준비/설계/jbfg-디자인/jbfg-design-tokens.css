@@ -1,0 +1,116 @@
+:root {
+  /* Brand */
+  --color-brand-primary: #0A31A8;
+  --color-brand-accent: #1C56FF;
+  --color-brand-deep: #0D2D77;
+  --color-brand-navy: #0B235B;
+  --color-esg-green: #9ECFA9;
+  --color-focus-green: #51E3A4;
+  --color-tech-cyan: #19E4EE;
+
+  /* Background */
+  --color-bg-default: #FFFFFF;
+  --color-bg-subtle: #F8F8F8;
+  --color-bg-muted: #F3F3F3;
+  --color-bg-news: #FCFCFC;
+
+  /* Text */
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-tertiary: #767676;
+  --color-text-inverse: #FFFFFF;
+
+  /* Border and status */
+  --color-border-default: #E5E5E5;
+  --color-status-rise: #D00000;
+  --color-status-fall: #1850FF;
+
+  /* Glass and overlay */
+  --color-glass-dark: rgba(0, 19, 74, 0.48);
+  --color-glass-light: rgba(255, 255, 255, 0.75);
+  --color-overlay-image: rgba(0, 0, 0, 0.4);
+
+  /* Typography */
+  --font-family-base: "SUIT Variable", -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-weight-regular: 500;
+  --font-weight-body: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-number: -0.06em;
+
+  --font-display-1: clamp(56px, 6.67vw, 96px);
+  --line-display-1: 1.1;
+  --font-headline-1: clamp(44px, 4.89vw, 88px);
+  --line-headline-1: 1.1;
+  --font-headline-2: clamp(32px, 3.56vw, 64px);
+  --line-headline-2: 1.25;
+  --font-title-1: clamp(28px, 2.22vw, 40px);
+  --font-title-2: clamp(24px, 1.78vw, 32px);
+  --font-title-3: clamp(20px, 1.33vw, 24px);
+  --font-body-1: clamp(17px, 1.11vw, 20px);
+  --font-body-2: 16px;
+  --font-caption: 14px;
+
+  /* Layout */
+  --layout-page-margin: clamp(21px, 5.6vw, 57px);
+  --layout-content-max-lg: 1564px;
+  --layout-content-max-md: 1328px;
+  --layout-content-max-sm: 1000px;
+  --header-height-desktop: 96px;
+  --header-height-mobile: 62px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-25: 100px;
+  --space-36: 144px;
+  --space-card-gap: clamp(14px, 1.1vw, 24px);
+  --space-grid-gap: clamp(20px, 3.125vw, 32px);
+  --space-section-y: clamp(64px, 7.4vw, 144px);
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-2xl: 40px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  /* Shadow */
+  --shadow-dropdown: 4px 4px 24px rgba(0, 0, 0, 0.1);
+  --shadow-overlay: 0 8px 32px rgba(0, 0, 0, 0.16);
+
+  /* Motion */
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-menu: 280ms;
+  --motion-card: 600ms;
+  --ease-standard: cubic-bezier(.2, 0, 0, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+
+  /* Focus */
+  --focus-ring: 2px solid var(--color-focus-green);
+  --focus-ring-offset: 3px;
+}
+
+@media (max-width: 680px) {
+  :root {
+    --font-body-2: 15px;
+    --font-caption: 13px;
+    --layout-page-margin: 21px;
+  }
+}
+

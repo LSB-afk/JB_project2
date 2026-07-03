@@ -17,6 +17,7 @@ up: "[[_03_제품_MOC]]"
 
 ### 00 Vision
 - [[08_본선/03_제품/00_vision/core-bet|Core Bet]] — 핵심 베팅
+- [[08_본선/03_제품/00_vision/business-model|Business Model (DDBM)]] — 데이터 기반 비즈니스 모델 11블록
 
 ### 01 PRD
 - [[08_본선/03_제품/01_prd/prd|PRD]] — 제품 요구사항

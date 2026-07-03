@@ -12,7 +12,7 @@ mkdir -p "$VENDOR"
 REPOS=(
   "harness-engineering-skills|https://github.com/River-181/harness-engineering-skills.git"
   # "hagent-os|https://github.com/River-181/hagent-os.git"
-  # "JB_project2|https://github.com/LSB-afk/JB_project2.git"
+  "JB_project2|https://github.com/LSB-afk/JB_project2.git"
 )
 
 sync_one() {
