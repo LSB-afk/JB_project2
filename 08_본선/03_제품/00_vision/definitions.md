@@ -1,9 +1,9 @@
 ---
 tags:
   - area/product
-  - type/spec
-  - status/draft
-date: 2026-07-03
+  - type/definitions
+  - status/active
+date: 2026-07-04
 up: "[[INDEX|제품 인덱스]]"
 aliases: [정의서, Definitions, 용어집, Naming Rules]
 ---
@@ -11,8 +11,32 @@ aliases: [정의서, Definitions, 용어집, Naming Rules]
 # Definitions — 정의서 (Canonical Terms & Naming Rules)
 
 > 신뢰마커: **[확정]** = `app.js`/`modules.js`/[[08_본선/03_제품/04_tech/data-model|데이터 모델]]에서 직접 확인. **[조건부]** = 본선 설계 제안(코드 미검증). **(TBD)** = 미정.
+> 근거등급(핵심 주장): **E4** = 데모 실동작으로 보일 수 있음, **E2+** = 1차 자료·코드로 방어됨, **E0** = 가정/미검증. 표기 없으면 E2+로 간주.
 > 목적: 같은 개념이 문서마다 다른 이름으로 불리는 것을 막는다 — PRD·아키텍처·플로우·eval·발표 자료는 아래 **정식 객체명만** 쓴다.
-> SSOT: `_canon.md` §2(에이전트)·§8(운영 계약), [[08_본선/03_제품/04_tech/data-model|데이터 모델]](엔티티 필드·코드 근거), [[08_본선/03_제품/00_결정-준비/설계/승보-프로토타입-반영|승보 프로토타입 반영]](대조 대상).
+> SSOT: `_canon.md` §2(에이전트)·§8(운영 계약), [[08_본선/03_제품/04_tech/data-model|데이터 모델]](엔티티 필드·코드 근거), [[08_본선/03_제품/00_결정-준비/설계/승보-프로토타입-반영|승보 프로토타입 반영]](대조 대상), [[business-model|DDBM]](사용자·데이터·리스크).
+
+---
+
+## A. 업무 용어 사전 (Business Glossary)
+
+> §1의 객체명이 "무엇으로 만들어지는가"의 재료·행위자 정의. 아래 12개 항목은 문서생성 스키마(`04_definitions` 필수 포함 항목)에 대응한다. 각 항목은 §1의 정식 객체 또는 운영 계약으로 귀결된다.
+
+| # | 용어 | 정의 (JB LocalGuard OS 기준) | 귀결 객체 / 근거 |
+|---|---|---|---|
+| A1 | **핵심 사용자 (Primary User)** | 전북은행·JB우리캐피탈의 담당 **직군** — RM·여신심사·사후관리·준법·AML. 로그인 역할에 따라 **역할별 대시보드**가 뜨고, 승인 게이트는 이 중 **RM·준법 2역할**로 라우팅된다(고객이 아니라 직원이 사용자) [E2+, canon §2·키스톤-역할축-검증] | Agent(`isHuman:true`) / ApprovalRecord.approverRole |
+| A2 | **고객 (Customer)** | 지역 금융의 최종 고객 — 소상공인·개인사업자·가계·전세 임차인. **히어로 = 전주 중앙로 카페 개인사업자**(운전자금 케이스). 고객은 콘솔을 직접 쓰지 않으며, 원본 PII는 외부 LLM 비반출 대상 [E4 히어로, canon §1] | Case의 대상 주체 / RISK-PRIVACY-001 |
+| A3 | **파트너 (Partner)** | 준법·컴플라이언스 부서, 데이터 거버넌스팀, 공공데이터 제공기관(law.go.kr·MOLIT·ECOS), CB(NICE/KCB). 데이터·규제 확인의 협력 주체이지 사용자·고객이 아님 [E2+, DDBM Key Partners] | 외부 시스템 / DATA-004 |
+| A4 | **데이터 항목 (Data Item)** | Case를 구성·판단하는 입력 자산. `DATA-001` 전세등기 · `DATA-002` 카드매출/상환 · `DATA-003` 신용정보(CB·심사원장) · `DATA-004` 공공 API. 각 항목은 **PII 등급**을 가지며 등급에 따라 로컬/외부 모델로 라우팅된다 [E2+ 공개항목/E0 내부피드 미확보, DDBM Key Data Inventory] | Signal.sourceTag / Evidence / EvidencePack |
+| A5 | **AI 판단 (AI Decision)** | `computeRiskDecision`이 산출하는 riskScore + Signal[] + 판정. 결론만이 아니라 **근거·불확실성·다음 확인 항목**을 남긴다. 규제상 **보조수단**이며 최종 판단이 아니다(금융분야 AI 가이드라인) [E4, canon §8·D9] | AgentRun.decisionSnapshot |
+| A6 | **추천 (Recommendation)** | AI가 만든 다음 행동 제안 = **RecommendationDraft(행동초안)**. 승인 전까지 고객 대상 실행이 차단된다. 규칙 엔진이 최종 게이트를 맡고 LLM은 초안·설명 계층으로 제한(D9) [E4, §1] | RecommendationDraft (코드명 `Approval.actionDraft`) |
+| A7 | **승인 (Approval)** | 사람이 행동초안의 실행을 허용하는 절차·기록 = **ApprovalRecord**(L0~L4, approverRole RM/준법). 준법 게이트는 **L3~L4**. "승인 게이트 통과" = status가 `approved` [E4, §1·승보-프로토타입] | ApprovalRecord (코드명 `Approval`) / Approval Gate |
+| A8 | **고위험 행동 (High-Risk Action)** | AI가 **자동 실행하면 안 되는** 고객·금융 영향 행동. blockedActions 예: 대출 승인/거절·금리/한도 산정·신용평가·PII 원문 조회/저장/전송·계좌/결제/자동이체 변경·전자약정 체결·FDS 자동종결·법률/규정 확정 판단. 전부 승인/차단 게이트(준법 L3~L4)를 거친다 [E4, 승보-프로토타입 `*_COMMON_BLOCKED_ACTIONS`] | Skill.riskLevel / ApprovalRecord.gateChecks |
+| A9 | **성공 이벤트 (Success Event)** | 근거 100% 연결된 판단이 승인 게이트를 통과해 AuditEvent로 기록되고 triage가 착수되는 것. KPI: Triage 50% 단축 · Evidence traceability 100% · Approval safety 100% [E2+ 목표치, canon §3] | AuditEvent (status→approved) |
+| A10 | **실패 이벤트 (Failure Event)** | 불확실·위반 시 **fail-closed로 차단**되는 것 — 반출 스캔이 PII 원문 반출 차단, 승인 없는 발송 원천 차단, 확정판단 금지(전세사기·피해자결정·대출승인 단정) 위반 감지, 근거 누락. "불확실하면 닫는다"가 기본값 [E4, principles·승보-프로토타입 forbiddenAssertions] | AuditEvent (blocked) / RISK-ACTION-001 |
+| A11 | **MVP** | 운영 계약(Case→…→Audit) 전체를 브라우저에서 재현하는 콘솔. 4개 함수 계약(`computeRiskDecision`·`buildDashboardData`·`auditChainRecords`·`moveCaseToColumn`)이 데모의 뼈대이며 본선 목표는 이를 **서버 API로 1:1 승격** + 실 LLM 연결 [E4 현재/E0 서버승격, canon §8·CLAUDE.md] | 함수 계약 → 서버 API |
+| A12 | **Demo-ready** | 데모에서 실제로 동작함이 보장된 상태. **최소 1개(히어로 전주 카페)는 실 LLM 동작**, 나머지 도메인은 골든패스 실동작 지향. ⚠️ 로컬모델(Ollama)·Claude API는 미연결 상태였고 "3개 실동작"은 완성이 아니라 **개발 목표**로 정직하게 표기한다 [E0→E4 목표, 키스톤-확정 "정직한 전제"] | — (조건부) |
+
+> **정직성 규율**: A11·A12의 "서버 승격"·"3케이스 실동작"·"로컬모델 연결"은 발표·문서에서 **[목표/조건부]**로만 말한다. 완성으로 단정하면 안 됨(키스톤-확정 §정직한 전제). 성공/실패 KPI 수치(A9)는 canon §3 고정값을 그대로 인용한다.
 
 ---
 
@@ -75,7 +99,8 @@ executed by: Agent (isHuman true/false) equipped with Skill[]
 | `F-001` | 기능명세서 기능 단위 | 미부여 — `00_제출` 기능명세서 승격 시 부여 |
 | `GC-001` | Gate Check(승인 관문 개별 체크 항목) | `Approval.gateChecks[]`(data-model §6)에 부여 권고 — MVP는 `{name, status}` 튜플만 있고 안정 ID 없음 [조건부] |
 | `RISK-<도메인>-001` | 심사기준 5.5(개인정보·보안·환각·설명가능성) 대응 리스크 항목 | 예 `RISK-PRIVACY-001`, `RISK-HALLUCINATION-001` — 아직 미도입 |
-| `JBG-104` 형 | 케이스 표시 코드 | [확정, canon §1·data-model §0.4] 전북은행 히어로 케이스 `JBG-104`. **JB우리캐피탈 코드 접두는 (TBD, 미확정)** — 승보 프로토타입은 `<TYPE>-JBWC-<seq>` 별도 규약 사용(예 `CASE-JBWC-0001`), 우리 canon 포맷과 충돌 가능 — 편입 시 조정 필요 |
+| `JBG-104` 형 | 케이스 표시 코드(예선) | [확정, canon §1·data-model §0.4] 예선 히어로 표시코드 `JBG-104`. **본선 콘솔의 히어로 케이스 코드는 `CCL-0001`**(전주 카페 운전자금, 승보 `cclConsole` seed) — **두 코드 병존은 [Open Question]**, 발표·문서 히어로 지칭은 본선 기준 `CCL-0001` 우선, 편입 시 단일화 필요 |
+| `CCL-0001` 형 | 본선 콘솔 케이스 코드(기업여신) | [확정, 승보-프로토타입-반영] 전북은행 기업여신 콘솔 seed. `<CONSOLE>-<seq>` 규약. **JB우리캐피탈 접두는 `<TYPE>-JBWC-<seq>`**(예 `CASE-JBWC-0001`) — canon `JBG-` 포맷과 규약이 달라 편입 시 재매핑 필요 |
 
 ---
 
