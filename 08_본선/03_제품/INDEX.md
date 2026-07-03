@@ -32,9 +32,8 @@ up: "[[_03_제품_MOC]]"
 - [[08_본선/03_제품/02_agent-design/skill-spec|스킬 명세]]
 
 ### 03 UX
-- [[08_본선/03_제품/03_ux/ia-screen-map|IA·화면 맵]]
-- [[08_본선/03_제품/03_ux/user-journeys|사용자 여정]]
 - [[08_본선/03_제품/03_ux/design-system|디자인 시스템]]
+- (미확정 초안 → `_archive/`) [[ia-screen-map]] · [[user-journeys]]
 
 ### 04 Tech
 - [[08_본선/03_제품/04_tech/architecture|기술 아키텍처]]
@@ -59,8 +58,20 @@ up: "[[_03_제품_MOC]]"
 - [[08_본선/03_제품/rules/naming-rules|Naming Rules]] — 파일·ID·필드·API·이벤트 명명(NAM)
 - [[08_본선/03_제품/rules/ui-rules|UI Rules]] — 플로우·상태·리스크 고지·승인 UI·접근성(UIR)
 
-### Evals (평가 · 예정)
-- `evals/` — rubric·golden-cases·failure-modes (7/4 팀 데모케이스 확정 후)
+### Evals (평가 · Score3) ✅
+- [[08_본선/03_제품/evals/eval-plan|Eval Plan]] · [[08_본선/03_제품/evals/rubric|Rubric]] · [[08_본선/03_제품/evals/golden-cases|Golden Cases]] · [[08_본선/03_제품/evals/failure-modes|Failure Modes]]
+
+### Project / Meta (문서세트 잠금)
+- [[08_본선/03_제품/harness.yaml|harness.yaml]] — 문서/규칙/평가/에이전트/게이트 단일 매니페스트
+- [[08_본선/03_제품/validation-report|Validation Report]] — 완료·미실행·리스크·데모/피치 준비도(정직)
+- [[08_본선/03_제품/jb-finai-scorecard|JB Fin:AI Scorecard]] — 5축 자가채점 ≈84/105
+- [[08_본선/03_제품/README|제품 README]] — 실행법·기술스택 · **12_handoff = [[본선 HOME|HANDOFF]] 매핑**
+- [[08_본선/03_제품/00_source-log|Source Log]] · [[08_본선/03_제품/11_change-log|Change Log]]
+
+### 신규 제품 문서 (루트·발표제출)
+- [[08_본선/03_제품/05_domain-model|Domain Model]] · [[08_본선/03_제품/07_architecture|Architecture]] · [[08_본선/03_제품/08_feature-spec|Feature Spec]] · [[08_본선/03_제품/09_flow|Flow]]
+- 발표·제출: [[08_본선/03_제품/07_발표-제출/demo-script|Demo Script]] · [[08_본선/03_제품/07_발표-제출/pitch-outline|Pitch]] · [[08_본선/03_제품/07_발표-제출/judge-qna|Judge Q&A]] · [[08_본선/03_제품/07_발표-제출/submission-checklist|Submission Checklist]] · [[08_본선/03_제품/06_build-roadmap/ssd-implementation|SSD]]
+- Vision 추가: [[08_본선/03_제품/00_vision/business-metrics|Business Metrics]] · [[08_본선/03_제품/00_vision/data-strategy|Data Strategy]] · [[08_본선/03_제품/00_vision/risk-impact-register|Risk Register]] · [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성 메커니즘]]
 
 ---
 
