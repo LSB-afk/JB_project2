@@ -99,7 +99,7 @@ const dataGovernance = {
 const governanceLog = {
   "jeonju-cafe": {
     tokenized: {
-      before: "김민수(900101-1******) 010-1234-5678, 전주시 완산구 중앙로 카페 운전자금 1.8억",
+      before: "홍길동(900101-1******) 010-0000-0000, 전주시 완산구 중앙로 카페 운전자금 1.8억", // 가상 인물·미배정 번호(마스킹 데모 센티널)
       // after 는 tokenizePII 로 렌더 시 생성
     },
     routes: [

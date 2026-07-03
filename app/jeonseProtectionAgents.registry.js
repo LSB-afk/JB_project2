@@ -223,6 +223,19 @@ const jeonseProtectionAgents = [
   }),
 ];
 
+/* Skills — agent가 수행하는 재사용 가능한 업무 단위 (ECC 계층) */
+const jeonseProtectionSkills = [
+  { key: "pre-contract-risk-check", label: "계약 전 위험 점검", agentIds: ["jpo-orchestrator", "jpo-price"], inputs: ["riskSignals", "depositAmountBand"], outputs: ["checklist", "riskBand"] },
+  { key: "price-ratio-check", label: "전세가율·시세 구간 점검", agentIds: ["jpo-price"], inputs: ["depositAmountBand", "propertyRefId"], outputs: ["ratioBand", "checklist"] },
+  { key: "registry-rights-review", label: "권리관계·등기 이슈 분류", agentIds: ["jpo-registry"], inputs: ["propertyRefId", "riskSignals"], outputs: ["issueType", "nextTasks"] },
+  { key: "guarantee-eligibility-checklist", label: "보증 가입요건 체크리스트", agentIds: ["jpo-guarantee"], inputs: ["contractRefId", "depositAmountBand"], outputs: ["checklist", "supportProgramCandidates"] },
+  { key: "victim-support-checklist", label: "피해자 결정 신청 준비 체크리스트", agentIds: ["jpo-victim"], inputs: ["caseId"], outputs: ["checklist", "requiredDocuments"] },
+  { key: "tenant-message-draft", label: "임차인 안내 문안 초안", agentIds: ["jpo-comms"], inputs: ["caseId", "context"], outputs: ["draftText", "approvalRequest"] },
+  { key: "privacy-redaction", label: "개인정보·증빙 마스킹 점검", agentIds: ["jpo-privacy"], inputs: ["text", "attachmentsRef"], outputs: ["violations", "reviewFlag"] },
+  { key: "approval-packet-builder", label: "검토 패킷 구성(익명 Ref)", agentIds: ["jpo-audit"], inputs: ["caseId"], outputs: ["reviewPacket"] },
+  { key: "audit-log-writer", label: "감사 로그 기록", agentIds: ["jpo-audit", "jpo-orchestrator"], inputs: ["action", "targetId"], outputs: ["auditId"] },
+];
+
 const jeonseFraudProtectionHarness = {
   id: "jeonseFraudProtectionHarness",
   name: "전세사기 보호 업무지원 하네스",
@@ -240,6 +253,7 @@ const jeonseFraudProtectionHarness = {
     "법령·지원요건은 변동 가능 — 최신 기준 담당자 확인 필요 표시",
   ],
   agents: jeonseProtectionAgents,
+  skills: jeonseProtectionSkills,
 };
 
 const jeonseProtectionRoutingRules = {

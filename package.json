@@ -8,7 +8,8 @@
     "build": "python3 scripts/verify_static.py",
     "test": "python3 scripts/verify_static.py",
     "test:e2e": "playwright test",
-    "demo:proxy": "node scripts/api-proxy.mjs"
+    "demo:proxy": "node scripts/api-proxy.mjs",
+    "test:smoke": "playwright test tests/e2e/jeonse-smoke.spec.js"
   },
   "devDependencies": {
     "@playwright/test": "1.60.0"

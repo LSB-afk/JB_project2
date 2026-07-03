@@ -38,6 +38,11 @@ app_js_files = [
     "jeonseProtection.view.harness.js",
     "jeonseProtection.sidebar.js",
     "jeonseFraudProtectionHarness.js",
+    "harnessCore.js",
+    "harnessRegistry.js",
+    "harnessVerification.js",
+    "jeonseProtectionRules.js",
+    "jeonseProtection.commands.js",
 ]
 
 required = [
@@ -50,6 +55,10 @@ required = [
     ROOT / "docs/01-시스템-아키텍처.md",
     ROOT / "docs/02-은행-DB-연동-설계.md",
     ROOT / "docs/03-JB우리캐피탈-하네스.md",
+    ROOT / "docs/04-전세보호-역할-하네스.md",
+    ROOT / "app/HARNESS_GUIDE.md",
+    ROOT / "app/ROLE_HARNESS_CONTRACT.md",
+    ROOT / "app/SECURITY_GUARDRAILS.md",
     ROOT / "scripts/api-proxy.mjs",
     ROOT / "tests/e2e/localguard.spec.js",
     ROOT / "tests/e2e/wooricap.spec.js",
@@ -101,6 +110,11 @@ html_needles = [
     "./jeonseProtection.view.harness.js",
     "./jeonseProtection.sidebar.js",
     "./jeonseFraudProtectionHarness.js",
+    "./harnessCore.js",
+    "./harnessRegistry.js",
+    "./harnessVerification.js",
+    "./jeonseProtectionRules.js",
+    "./jeonseProtection.commands.js",
     "./app.js",
 ]
 for needle in html_needles:
@@ -177,6 +191,8 @@ jpo_files = [
     "jeonseProtection.view.harness.js",
     "jeonseProtection.sidebar.js",
     "jeonseFraudProtectionHarness.js",
+    "jeonseProtectionRules.js",
+    "jeonseProtection.commands.js",
 ]
 joined_jpo = "\n".join((ROOT / "app" / name).read_text(encoding="utf-8") for name in jpo_files)
 jpo_needles = [
@@ -201,6 +217,14 @@ jpo_needles = [
     "jpoRepository",
     "JPO_STATUS_LABELS",
     "TENANT-REF-",
+    "jeonseProtectionSkills",
+    "jeonseProtectionCommands",
+    "jeonseProtectionHooks",
+    "jeonseProtectionRules",
+    "/jeonse-run-smoke-test",
+    "beforeCaseCreate",
+    "beforeCustomerMessage",
+    "jpoDecideApproval",
 ]
 for needle in jpo_needles:
     if needle not in joined_jpo:
@@ -220,6 +244,56 @@ for forbidden in [
 if "jeonse-protection-dashboard" in js or "jeonseProtectionDashboardConfig" in js:
     raise SystemExit("label-only jeonse-protection-dashboard resurfaced in app.js")
 
+# ---- ECC 하네스 표준 계층 계약 ----
+harness_core = (ROOT / "app/harnessCore.js").read_text(encoding="utf-8")
+harness_registry = (ROOT / "app/harnessRegistry.js").read_text(encoding="utf-8")
+harness_verify = (ROOT / "app/harnessVerification.js").read_text(encoding="utf-8")
+for needle in [
+    "registerHarness",
+    "harnessRunHooks",
+    "harnessGuardCheckPII",
+    "describeNewHarnessScaffold",
+]:
+    if needle not in harness_core:
+        raise SystemExit(f"harnessCore missing {needle!r}")
+for needle in ['id: "jeonse-protection"', 'id: "jb-woori-capital"', "scopeProbe", "enforceHooks"]:
+    if needle not in harness_registry:
+        raise SystemExit(f"harnessRegistry missing {needle!r}")
+for needle in [
+    "verifyHarnessIntegrity",
+    "verifyRoleHarnessScope",
+    "verifyNoForbiddenRoleResurface",
+    "verifyNoPIILeakage",
+    "verifyAgentRegistryCompleteness",
+    "verifyHookCoverage",
+    "runHarnessSelfTest",
+]:
+    if needle not in harness_verify:
+        raise SystemExit(f"harnessVerification missing {needle!r}")
+
+# ---- 금지 alias/단정 리터럴 + 실PII 패턴 정적 스캔 ----
+import re
+all_app_js = "\n".join((ROOT / "app" / name).read_text(encoding="utf-8") for name in app_js_files)
+scan_target = all_app_js + html
+for forbidden in [
+    "mainHarness",
+    "defaultHarness",
+    "safetyHarness",
+    "전세사기 확정",
+    "피해자 결정 확정",
+    "보증 가능 확정",
+]:
+    if forbidden in scan_target:
+        raise SystemExit(f"forbidden harness/assertion literal found: {forbidden!r}")
+
+pii_scan = scan_target.replace("010-0000-0000", "")  # 마스킹 데모 센티널 제외
+for label, pattern in [
+    ("주민등록번호", r"\d{6}-[1-4]\d{6}"),
+    ("전화번호", r"01[016789]-\d{3,4}-\d{4}"),
+]:
+    if re.search(pattern, pii_scan):
+        raise SystemExit(f"실제 {label} 패턴이 소스에 존재함")
+
 if "border-radius: 8px" not in css:
     raise SystemExit("CSS should keep cards and controls at 8px radius")
 if "Pretendard" not in css:
@@ -234,6 +308,17 @@ for script in app_js_files:
     )
     if node_check.returncode != 0:
         raise SystemExit(node_check.stderr or node_check.stdout)
+
+doc_contracts = {
+    "app/HARNESS_GUIDE.md": ["Agents", "Skills", "Commands", "Hooks", "Rules", "Continuous Learning"],
+    "app/ROLE_HARNESS_CONTRACT.md": ["신규 역할 하네스 추가 절차", "금지", "manifest"],
+    "app/SECURITY_GUARDRAILS.md": ["PII", "자동 종결 금지", "승인"],
+}
+for path, needles in doc_contracts.items():
+    text = (ROOT / path).read_text(encoding="utf-8")
+    for needle in needles:
+        if needle not in text:
+            raise SystemExit(f"{path} missing {needle!r}")
 
 print("static verification passed")
 print(f"checked files: {len(required)}")

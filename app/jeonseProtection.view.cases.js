@@ -27,7 +27,7 @@ const jpoCaseViewRenderers = {
       <li class="jbwc-row" data-jpo-open-approval="${escapeHtml(x.id)}"><span class="jbwc-row-id">${escapeHtml(x.id)}</span>
         <span>${escapeHtml(x.approvalType)}<br><span class="jbwc-row-note">${escapeHtml(x.caseId || "-")}</span></span>
         <span>${escapeHtml(jpoUserName(x.requestedById))} → ${escapeHtml(jpoUserName(x.approverId))}</span>
-        <span>${jpoStatusPill(x.status)}</span></li>`))
+        <span>${jpoStatusPill(x.status)} <button class="secondary-button" type="button" data-jpo-approve="${escapeHtml(x.id)}">승인</button></span></li>`))
       + `<p class="jbwc-guard">고객 안내문·지원기관 연계·위험등급 변경은 담당자 승인 없이는 실행되지 않습니다.</p>` + jpoMockNote();
   },
   "audit-logs"() {

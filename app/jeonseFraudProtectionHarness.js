@@ -34,7 +34,7 @@ function jpoContextMarkup() {
     <div class="property-row"><span>전세보호 건</span><strong>${escapeHtml(counts.cases)}</strong></div>
     <div class="property-row"><span>긴급 위험 경보</span><strong>${escapeHtml(counts.urgentAlerts)}</strong></div>
     <div class="property-row"><span>사람 검토</span><strong>피해자 결정·법률·보증·안내문 필수</strong></div>
-    <p class="jbwc-guard">전세사기 여부 확정, 피해자 결정 확정, 보증 가입 확정, 법률 자문, 신청 대행, 개인정보 원문 저장/출력은 금지됩니다.</p>
+    <p class="jbwc-guard">전세사기 여부·피해자 결정·보증 가입·법률 자문에 대한 확정 판단, 신청 대행, 개인정보 원문 저장/출력은 금지됩니다.</p>
   </div>`;
 }
 
@@ -85,7 +85,15 @@ function bindJpoActions() {
     });
     jpoTakeoverSidebar();
     jpoEnsureCounts();
+    if (!jpoState.roleEntered) {
+      jpoState.roleEntered = true;
+      if (typeof harnessRunHooks === "function") {
+        const enterGuard = harnessRunHooks("jeonse-protection", "onRoleEnter", {});
+        if (!enterGuard.ok && typeof notify === "function") notify(`하네스 진입 점검 경고: ${enterGuard.violations.join(" / ")}`);
+      }
+    }
   } else {
+    jpoState.roleEntered = false;
     document.querySelectorAll('[data-role-filter="전세보호 담당자"]').forEach((entry) => {
       entry.classList.remove("is-active");
     });
@@ -96,6 +104,25 @@ function bindJpoActions() {
     button.addEventListener("click", () => jpoGo(button.dataset.jpoView));
   });
   jpoBindHarnessSamples();
+  document.querySelectorAll("[data-jpo-command]").forEach((button) => {
+    button.addEventListener("click", () => {
+      jpoRunCommand(button.dataset.jpoCommand);
+      render();
+    });
+  });
+  document.querySelectorAll("[data-jpo-approve]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const result = jpoDecideApproval(button.dataset.jpoApprove, "approve");
+      if (result && result.blocked) {
+        if (typeof notify === "function") notify(`승인 차단: ${result.violations.join(" / ")}`);
+        return;
+      }
+      if (result && typeof notify === "function") notify(`${result.approval.approvalType} 승인 완료 (사람 결정)`);
+      jpoInvalidateCounts();
+      render();
+    });
+  });
   document.querySelectorAll("[data-jpo-reset-db]").forEach((button) => {
     button.addEventListener("click", () => {
       jpoResetDb();

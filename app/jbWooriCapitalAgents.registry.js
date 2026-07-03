@@ -267,6 +267,16 @@ const jbWooriCapitalAgents = [
   }),
 ];
 
+/* Skills — manifest 표준 계층용 업무 단위 (역할 하네스와 구조만 공유, 내용 독립) */
+const jbWooriCapitalSkills = [
+  { key: "ops-triage", label: "운영 건 분류·라우팅", agentIds: ["jbwc-orchestrator"], inputs: ["domain", "riskLevel"], outputs: ["recommendedAgent", "initialStatus"] },
+  { key: "document-status-check", label: "문서·전자약정 상태 점검", agentIds: ["jbwc-doc"], inputs: ["caseId"], outputs: ["pendingDocuments"] },
+  { key: "vehicle-task-runner", label: "차량 태스크 생성·추적", agentIds: ["jbwc-vehicle", "jbwc-auto"], inputs: ["vehicleRefId"], outputs: ["taskId"] },
+  { key: "fds-escalation", label: "FDS 고위험 에스컬레이션", agentIds: ["jbwc-fds"], inputs: ["alertType", "severity"], outputs: ["escalation", "approvalRequest"] },
+  { key: "consumer-right-review", label: "소비자 권리 검토 플로우", agentIds: ["jbwc-protect"], inputs: ["reviewType"], outputs: ["checklist", "reviewFlag"] },
+  { key: "ops-audit-writer", label: "운영 감사 기록", agentIds: ["jbwc-compliance"], inputs: ["action", "targetId"], outputs: ["auditId"] },
+];
+
 const jbWooriCapitalOpsHarness = {
   id: "jbWooriCapitalOpsHarness",
   name: "JB우리캐피탈 운영 에이전트 하네스",
@@ -282,6 +292,7 @@ const jbWooriCapitalOpsHarness = {
     "모든 AI output은 내부 운영 참고용",
   ],
   agents: jbWooriCapitalAgents,
+  skills: jbWooriCapitalSkills,
 };
 
 const jbWooriCapitalRoutingRules = {

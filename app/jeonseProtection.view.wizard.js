@@ -142,6 +142,12 @@ function jpoBindCaseWizardForm() {
       return;
     }
     const created = createJeonseProtectionCase(jpoCaseWizard);
+    if (created && created.blocked) {
+      if (typeof notify === "function") notify(`접수 차단(보안 훅): ${created.violations.join(" / ")}`);
+      jpoInvalidateCounts();
+      render();
+      return;
+    }
     jpoInvalidateCounts();
     jpoCaseWizard = jpoDefaultCaseWizard();
     if (typeof notify === "function") notify(`${created.case.caseNo} 전세보호 건 접수 완료 — 감사 기록·에이전트 큐 저장 (모의)`);

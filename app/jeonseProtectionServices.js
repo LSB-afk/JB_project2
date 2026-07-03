@@ -125,6 +125,17 @@ function previewJeonseProtectionTriage(form) {
   });
 }
 
+function jpoRunHook(hookName, payload) {
+  if (typeof harnessRunHooks !== "function") return { ok: true, violations: [] };
+  return harnessRunHooks("jeonse-protection", hookName, payload);
+}
+
+function jpoWriteAudit(row) {
+  const audit = jpoScopedRow(row);
+  jpoRunHook("onAuditWrite", { audit });
+  return jpoInsert("audit_logs", audit);
+}
+
 function jpoActorForTeam(team, fallback) {
   const found = jpoTable("users", JPO_ROLE_KEY).find((user) => user.team === team && user.status === "active");
   return found ? found.id : fallback || "USR-JPO-RISK-01";
@@ -145,6 +156,21 @@ function jpoApprovalTypeForTriage(taskType, triage) {
 
 function createJeonseProtectionCase(form) {
   const now = new Date().toISOString().slice(0, 10);
+  const guard = jpoRunHook("beforeCaseCreate", form);
+  if (!guard.ok) {
+    jpoWriteAudit({
+      id: jpoNextId("AUD-JPO", "audit_logs"),
+      actorId: form.assignedToId || "USR-JPO-RISK-01",
+      action: "JPO_HOOK_BLOCKED_CASE_CREATE",
+      targetType: "hook",
+      targetId: "beforeCaseCreate",
+      riskLevel: "medium",
+      reviewRequired: true,
+      note: guard.violations.join(" / "),
+      createdAt: now,
+    });
+    return { blocked: true, violations: guard.violations };
+  }
   const triage = previewJeonseProtectionTriage(form);
   const id = jpoNextId("JEONSE-CASE", "jeonse_cases");
   const taxonomy = JPO_TASK_TAXONOMY[form.taskType] || JPO_TASK_TAXONOMY.preContractRisk;
@@ -181,6 +207,7 @@ function createJeonseProtectionCase(form) {
   });
 
   jpoInsert("jeonse_cases", jeonseCase);
+  jpoRunHook("afterCaseCreate", { caseRow: jeonseCase });
   triage.nextTasks.forEach((title) => {
     jpoInsert("jeonse_tasks", jpoScopedRow({
       id: jpoNextId("JEONSE-TASK", "jeonse_tasks"),
@@ -191,7 +218,7 @@ function createJeonseProtectionCase(form) {
       ownerId: assignedToId,
     }));
   });
-  jpoInsert("audit_logs", jpoScopedRow({
+  jpoWriteAudit({
     id: jpoNextId("AUD-JPO", "audit_logs"),
     actorId: assignedToId,
     action: "JPO_CASE_CREATED",
@@ -200,7 +227,7 @@ function createJeonseProtectionCase(form) {
     riskLevel: jeonseCase.riskLevel,
     reviewRequired: jeonseCase.requiresHumanReview,
     createdAt: now,
-  }));
+  });
   jpoInsert("ai_analysis_requests", jpoScopedRow({
     id: jpoNextId("AIR-JPO", "ai_analysis_requests"),
     caseId: id,
@@ -310,6 +337,16 @@ function createJeonseProtectionCase(form) {
 
 function recordJeonseProtectionAgentRun(run) {
   const today = new Date().toISOString().slice(0, 10);
+  const beforeGuard = jpoRunHook("beforeAgentRun", {
+    agentId: run.agentId,
+    riskLevel: run.riskLevel || "low",
+    status: run.status || "completed",
+    inputSummary: run.inputSummary,
+  });
+  if (!beforeGuard.ok) {
+    // 자동 종결 시도 등은 실패시키지 않고 안전 상태로 강등 + 감사 기록 (defense-in-depth)
+    run = { ...run, status: "needsReview" };
+  }
   const row = jpoScopedRow({
     id: jpoNextId("JEONSE-RUN", "agent_runs"),
     agentId: run.agentId,
@@ -322,6 +359,20 @@ function recordJeonseProtectionAgentRun(run) {
     createdAt: today,
   });
   jpoInsert("agent_runs", row);
+  const afterGuard = jpoRunHook("afterAgentRun", { run: row });
+  if (!beforeGuard.ok || !afterGuard.ok) {
+    jpoWriteAudit({
+      id: jpoNextId("AUD-JPO", "audit_logs"),
+      actorId: run.agentId,
+      action: "JPO_HOOK_VIOLATION_AGENT_RUN",
+      targetType: "agent_run",
+      targetId: row.id,
+      riskLevel: "medium",
+      reviewRequired: true,
+      note: beforeGuard.violations.concat(afterGuard.violations).join(" / "),
+      createdAt: today,
+    });
+  }
   (run.handoffs || []).forEach((handoff) => {
     jpoInsert("agent_handoffs", jpoScopedRow({
       id: jpoNextId("HND-JPO", "agent_handoffs"),
@@ -333,7 +384,7 @@ function recordJeonseProtectionAgentRun(run) {
       createdAt: today,
     }));
   });
-  jpoInsert("audit_logs", jpoScopedRow({
+  jpoWriteAudit({
     id: jpoNextId("AUD-JPO", "audit_logs"),
     actorId: run.agentId,
     action: "JPO_AGENT_RUN",
@@ -342,7 +393,7 @@ function recordJeonseProtectionAgentRun(run) {
     riskLevel: row.riskLevel,
     reviewRequired: Boolean(run.requiresHumanEscalation) || ["needsReview", "pendingApproval"].includes(row.status),
     createdAt: today,
-  }));
+  });
   return row;
 }
 
@@ -371,6 +422,15 @@ function runJeonseProtectionSampleRequest(key) {
     handoffs: triage.handoffs,
   });
   if (sample.commsDraft) {
+    const draftText = `[초안] ${sample.text} — 임차인(TENANT-REF) 대상 안내 후보, 발송은 담당자 승인 후 진행됩니다.`;
+    const msgGuard = jpoRunHook("beforeCustomerMessage", {
+      draftText,
+      customerFacing: true,
+      approvalStatus: "pending",
+    });
+    if (!msgGuard.ok) {
+      return { sample, triage, agent, run, blocked: true, violations: msgGuard.violations };
+    }
     jpoInsert("approvals", jpoScopedRow({
       id: jpoNextId("APR-JPO", "approvals"),
       caseId: sample.caseId || null,
@@ -382,6 +442,31 @@ function runJeonseProtectionSampleRequest(key) {
     }));
   }
   return { sample, triage, agent, run };
+}
+
+function jpoDecideApproval(approvalId, decision, decidedBy) {
+  const db = jpoRepository.snapshot();
+  const approval = (db.approvals || []).find((row) => row.id === approvalId && row.roleKey === JPO_ROLE_KEY);
+  if (!approval || approval.status !== "pending") return null;
+  const actor = decidedBy || jpoActorForTeam("내부통제팀", "USR-JPO-AUD-01");
+  const guard = jpoRunHook("afterApprovalDecision", { approval, decidedBy: actor, decision });
+  if (!guard.ok) return { blocked: true, violations: guard.violations };
+  approval.status = decision === "reject" ? "rejected" : "approved";
+  approval.decidedById = actor;
+  approval.decidedAt = new Date().toISOString().slice(0, 10);
+  jpoSaveDb();
+  jpoWriteAudit({
+    id: jpoNextId("AUD-JPO", "audit_logs"),
+    actorId: actor,
+    action: "JPO_APPROVAL_DECIDED",
+    targetType: "approval",
+    targetId: approval.id,
+    riskLevel: "low",
+    reviewRequired: false,
+    note: `${approval.approvalType} — ${approval.status}`,
+    createdAt: approval.decidedAt,
+  });
+  return { approval };
 }
 
 function getJeonseProtectionDashboardKpis() {
