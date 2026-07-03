@@ -51,6 +51,17 @@ up: "[[_03_제품_MOC]]"
 - [[08_본선/03_제품/05_diagrams/99_comprehensive-architecture|종합 아키텍처]]
 - [[_빌드-로드맵-MOC|빌드 로드맵]]
 
+### Rules (거버넌스 규칙 · Score3)
+- [[08_본선/03_제품/rules/agent-rules|Agent Rules]] — 에이전트 행동 경계(AGT-01~25, E4 코드인용)
+- [[08_본선/03_제품/rules/compliance-rules|Compliance Rules]] — 규제·PII·감사·보존(CMP, 신뢰마커 [확정]/[미검증])
+- [[08_본선/03_제품/rules/data-rules|Data Rules]] — 데이터 출처·적법근거·민감등급·비식별(DAT)
+- [[08_본선/03_제품/rules/import-export-rules|Import/Export Rules]] — 입출력 포맷·스키마(IOX, 감사 export 실코드 검증)
+- [[08_본선/03_제품/rules/naming-rules|Naming Rules]] — 파일·ID·필드·API·이벤트 명명(NAM)
+- [[08_본선/03_제품/rules/ui-rules|UI Rules]] — 플로우·상태·리스크 고지·승인 UI·접근성(UIR)
+
+### Evals (평가 · 예정)
+- `evals/` — rubric·golden-cases·failure-modes (7/4 팀 데모케이스 확정 후)
+
 ---
 
 ## 개발 폴더
