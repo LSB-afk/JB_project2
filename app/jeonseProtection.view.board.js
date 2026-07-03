@@ -14,11 +14,12 @@ function jpoBoardCard(item) {
     ? "계약일 미정"
     : contractDays >= 0 ? `계약 예정 D-${contractDays}` : `만기 경과 D+${Math.abs(contractDays)}`;
   return `<article class="jpo-card jbwc-card" data-jpo-open-case="${escapeHtml(item.id)}" role="button" tabindex="0">
-    <header><strong>${escapeHtml(item.caseNo)}</strong>${jpoRiskPill(item.riskLevel)}</header>
-    <p class="jbwc-meta">${escapeHtml(item.customerRefId)} · ${escapeHtml(jpoHousingTypeLabel(item.housingType))}</p>
+    <header><strong>${escapeHtml(jpoCaseNoLabel(item.caseNo))}</strong>${jpoRiskPill(item.riskLevel)}</header>
+    <p class="jbwc-meta">${escapeHtml(jpoCustomerLabel(item.customerRefId))} · ${escapeHtml(jpoHousingTypeLabel(item.housingType))}</p>
     <p class="jbwc-meta">${escapeHtml(item.addressMasked)}</p>
     <p class="jbwc-meta">보증금 ${escapeHtml(jpoWon(item.depositAmount))} · ${escapeHtml(contractLine)}</p>
     ${topSignals.length ? `<p class="jbwc-guard">${topSignals.map((signal) => escapeHtml(signal.title)).join(" · ")}</p>` : ""}
+    ${item.requiresHumanReview ? `<p class="jbwc-guard">담당자 검토 필요</p>` : ""}
     <p class="jbwc-meta">${escapeHtml(jpoUserName(item.assignedToId))} · SLA ${escapeHtml(item.dueAt || "-")} ${jpoSourceModePill(item.sourceMode)}</p>
   </article>`;
 }
@@ -38,7 +39,7 @@ function jpoDashboardView() {
     ["담당자 검토 필요", cases.filter((c) => c.status === "humanReview").length],
     ["데이터 보강 필요", counts.priceEnrich],
     ["승인 대기", counts.approvals],
-  ].map(([label, value]) => `<article class="jbwc-kpi"><p class="jbwc-kpi-value">${escapeHtml(String(value == null ? "…" : value))}</p><p class="jbwc-kpi-label">${escapeHtml(label)}</p><p class="jbwc-kpi-note">role scope 집계</p></article>`).join("");
+  ].map(([label, value]) => `<article class="jbwc-kpi"><p class="jbwc-kpi-value">${escapeHtml(String(value == null ? "…" : value))}</p><p class="jbwc-kpi-label">${escapeHtml(label)}</p><p class="jbwc-kpi-note">전세보호 업무 기준 집계</p></article>`).join("");
   return `<section class="jbwc-hero jpo-hero-slim">
       <p class="eyebrow">역할 전용 업무 하네스 · 시세·권리·보증·피해지원</p>
       <h2>전세사기 보호 업무지원 포털</h2>

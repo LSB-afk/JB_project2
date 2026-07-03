@@ -29,7 +29,7 @@ test("스모크: 진입→보드→검색→접수(고위험)→기록→승인 
   // 5~6. 익명 ref 검색 → 클릭
   await page.locator("#sidebar-search").fill("CUST-JS-0005");
   await page.locator("#jpo-search-results .jbwc-search-hit").first().click();
-  await expect(page.locator(".jbwc-detail-panel")).toContainText("JEONSE-0005");
+  await expect(page.locator(".jbwc-detail-panel")).toContainText("전세위험-0005");
   // 7~10. 위저드 → high risk(보증금 반환 지연) → triage preview → 저장
   await page.locator("#new-case-button").click();
   await expect(page.locator("#jpo-new-case-form")).toBeVisible();
@@ -42,7 +42,7 @@ test("스모크: 진입→보드→검색→접수(고위험)→기록→승인 
   await page.locator('#jpo-new-case-form button[type="submit"]').click();
   await expect(page).toHaveURL(/\/roles\/jeonse-protection\/cases\/JEONSE-\d+/);
   const newCaseId = decodeURIComponent(page.url().split("/").pop());
-  await expect(page.locator(".jbwc-detail-panel")).toContainText(newCaseId);
+  await expect(page.locator(".jbwc-detail-panel")).toContainText(newCaseId.replace("JEONSE-", "전세위험-"));
   // 11~12. case/snapshot/signal/audit/analysis/approval + 자동 종결 금지
   const created = await page.evaluate(([key, id]) => {
     const db = JSON.parse(window.localStorage.getItem(key));

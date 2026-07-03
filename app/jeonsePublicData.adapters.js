@@ -74,7 +74,7 @@ function jpoMarketSnapshotSync(housingType, lawdCode) {
   }
   return {
     sourceMode: "snapshot",
-    source: "공공데이터 스냅샷(모의)",
+    source: "공공데이터 저장 기준(모의)",
     region: region.region,
     saleMedian: values.saleMedian,
     jeonseMedian: values.jeonseMedian,

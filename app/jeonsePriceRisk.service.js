@@ -49,7 +49,7 @@ function computeJeonseRiskAssessment(input) {
   if (market.jeonseMedian > 0 && deposit >= market.jeonseMedian * 1.2) {
     const ratio = deposit / market.jeonseMedian;
     addSignal("ABOVE_NEIGHBORHOOD_MEDIAN", ratio >= 1.4 ? "high" : "medium",
-      `주변 전세 중앙값(${Math.round(market.jeonseMedian / 10000)}만원) 대비 ${(ratio * 100).toFixed(0)}%`);
+      `인근 전세 거래 기준가(${Math.round(market.jeonseMedian / 10000)}만원) 대비 ${(ratio * 100).toFixed(0)}%`);
   }
   const comparableTotal = Number(market.comparableTradeCount || 0) + Number(market.comparableRentCount || 0);
   if (comparableTotal < 5) {

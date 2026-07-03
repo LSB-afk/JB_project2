@@ -22,8 +22,8 @@ registerHarness({
   verification: {
     enforceHooks: true,
     requiredHooks: ["beforeCaseCreate", "beforeAgentRun", "beforeCustomerMessage"],
-    requiredAgents: 10,
-    requiredCommands: 6,
+    requiredAgents: 11,
+    requiredCommands: 7,
     scopeProbe() {
       try { jpoTable("jeonse_cases"); return "scope 미지정 조회가 허용됨"; }
       catch (error) { return String(error.message).includes("role scope is required") ? null : `예외 계약 불일치: ${error.message}`; }

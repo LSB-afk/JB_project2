@@ -15,6 +15,9 @@ let jpoState = {
   roleEntered: false,
   enrich: { status: "idle", caseId: null, message: "" },
   search: { q: "", loading: false, error: false, blocked: null, results: null },
+  caseTab: "overview",
+  evidenceCheck: null,
+  loop: { selectedCaseId: null, lastUpdated: null, dataConnectionStatus: null, agentRunStatus: null, evaluatorStatus: null, pendingHumanReviewCount: null },
 };
 
 let jpoCaseWizard = jpoDefaultCaseWizard();
@@ -104,6 +107,31 @@ function jpoStatusPill(status) {
   return `<span class="status-pill ${cls}" data-status="${escapeHtml(status || "-")}">${escapeHtml(jpoStatusLabel(status))}</span>`;
 }
 
+/* ---- 담당자 업무 언어 표시 함수 — 내부 id는 저장/URL용으로 유지, 화면 표시만 변환 ---- */
+function jpoCaseNoLabel(caseNo) {
+  const text = String(caseNo || "");
+  if (text.startsWith("JEONSE-")) return `전세위험-${text.slice("JEONSE-".length)}`;
+  return text || "-";
+}
+function jpoCustomerLabel(ref) {
+  const text = String(ref || "");
+  if (text.startsWith("CUST-JS-")) return `익명 고객 ${text.slice("CUST-JS-".length)}`;
+  return text || "-";
+}
+function jpoSnapshotLabel(id) {
+  const text = String(id || "");
+  if (text.startsWith("JEONSE-SNAP-")) return `시세 비교 기록 ${text.slice("JEONSE-SNAP-".length)}`;
+  return text || "-";
+}
+function jpoRecordLabel(id) {
+  const text = String(id || "");
+  if (text.startsWith("JEONSE-SNAP-")) return jpoSnapshotLabel(text);
+  if (text.startsWith("JEONSE-SIG-")) return `위험 신호 기록 ${text.slice("JEONSE-SIG-".length)}`;
+  if (text.startsWith("JEONSE-")) return jpoCaseNoLabel(text);
+  if (text.startsWith("CUST-JS-")) return jpoCustomerLabel(text);
+  return text || "-";
+}
+
 function jpoSourceModePill(sourceMode) {
   const cls = sourceMode === "live_api" ? "status-approved"
     : sourceMode === "snapshot" ? "status-pending"
@@ -138,8 +166,8 @@ function jpoDetailSource(kind) {
 
 function jpoDetailTitle(kind, row) {
   if (!row) return "상세";
-  if (kind === "case") return `${row.caseNo} · ${row.addressMasked}`;
-  if (kind === "snapshot") return `${row.id} · 시세 스냅샷(${row.lawdCode})`;
+  if (kind === "case") return `${jpoCaseNoLabel(row.caseNo)} · ${row.addressMasked}`;
+  if (kind === "snapshot") return `${jpoSnapshotLabel(row.id)} (${row.lawdCode})`;
   if (kind === "signal") return `${row.id} · ${row.title}`;
   if (kind === "registry") return `${row.id} · ${row.checkType}`;
   if (kind === "guarantee") return `${row.id} · ${row.provider}`;
@@ -174,6 +202,7 @@ function jpoDetailPanel() {
         <button class="secondary-button" type="button" data-jpo-reset-db>데모 데이터 다시 채우기</button></div>
     </section>`;
   }
+  if (jpoState.detail.kind === "case") return jpoCaseSummaryPanel(row);
   const fields = Object.entries(row)
     .filter(([key]) => !["roleKey", "workspaceId"].includes(key))
     .map(([key, value]) => {
@@ -190,6 +219,103 @@ function jpoDetailPanel() {
     </header>
     <div class="jbwc-detail-grid">${fields}</div>
     <p class="jbwc-guard">실명·주민번호·전화·계좌·주소 원문 없이 익명 Ref(CUST-JS-*)와 마스킹 주소만 표시합니다.</p>
+  </section>`;
+}
+
+/* ---- 케이스 6섹션 요약 패널: 기본 식별 → 분석 결과 → 담당 AI 업무지원 → 검토/승인 정책 → 근거 피드 → 감사 로그 ---- */
+const JPO_AUDIT_ACTION_LABELS = {
+  CASE_CREATED: "접수됨",
+  CASE_SELECTED: "케이스 선택",
+  DATA_FETCHED: "데이터 조회",
+  DATA_ENRICHED: "데이터 보강 실행",
+  DATA_FETCH_FAILED: "데이터 조회 실패 — 대체 기준 사용",
+  RISK_SIGNAL_CREATED: "위험 신호 산출",
+  RISK_UPDATED: "위험 신호 업데이트",
+  AGENT_RUN_CREATED: "AI 실행 기록",
+  EVALUATOR_CHECKED: "루프 검증 수행",
+  HUMAN_REVIEW_REQUIRED: "담당자 검토 필요 기록",
+  STATUS_CHANGED: "상태 변경",
+  SUPPORT_REFERRAL_CREATED: "지원 연계 생성",
+  JPO_APPROVAL_REQUESTED: "승인 요청",
+  JPO_APPROVAL_DECIDED: "승인 결정(사람)",
+  JPO_HOOK_BLOCKED_CASE_CREATE: "접수 차단(보안 훅)",
+  JPO_HOOK_VIOLATION_AGENT_RUN: "자동 완료 차단(보안 훅)",
+  JPO_REVIEW_PACKET_EXPORTED: "검토 패킷 내보내기",
+};
+
+function jpoPanelSection(title, bodyHtml) {
+  return `<section class="jpo-panel-section"><h4>${escapeHtml(title)}</h4>${bodyHtml}</section>`;
+}
+
+function jpoCaseSummaryPanel(row) {
+  const signals = jpoTable("jeonse_risk_signals", JPO_ROLE_KEY).filter((item) => item.caseId === row.id);
+  const evidence = jpoTable("jeonse_evidence", JPO_ROLE_KEY).filter((item) => item.caseId === row.id).slice(0, 5);
+  const audits = jpoTable("jeonse_audit_logs", JPO_ROLE_KEY)
+    .filter((item) => item.caseId === row.id || item.targetId === row.id).slice(0, 6);
+  const runsByAgent = {};
+  jpoTable("jeonse_agent_runs", JPO_ROLE_KEY).forEach((run) => {
+    if (run.caseId === row.id && !runsByAgent[run.agentId]) runsByAgent[run.agentId] = run;
+  });
+  const supportAgents = [
+    ["jpo-price", "시세 비교 Agent"],
+    ["jpo-registry", "권리관계 체크 Agent"],
+    ["jpo-guarantee", "보증/HUG 체크 Agent"],
+    ["jpo-victim", "피해지원 안내 Agent"],
+    ["jpo-evaluator", "검증 Agent"],
+  ];
+  const reviewReasons = [];
+  if (["high", "critical"].includes(row.riskLevel)) reviewReasons.push("고위험 건 — 담당자 검토 필수");
+  signals.filter((item) => item.requiresHumanReview).slice(0, 2).forEach((item) => reviewReasons.push(item.title));
+  if (["fallback", "snapshot"].includes(row.sourceMode)) reviewReasons.push(JPO_SOURCE_MODE_HINTS[row.sourceMode]);
+  const identify = [
+    ["사건번호", jpoCaseNoLabel(row.caseNo)],
+    ["익명 고객 ID", jpoCustomerLabel(row.customerRefId)],
+    ["주택 유형", jpoHousingTypeLabel(row.housingType)],
+    ["주소 일부", row.addressMasked],
+    ["보증금/월세", `${jpoWon(row.depositAmount)} / ${Number(row.monthlyRentAmount || 0) > 0 ? jpoWon(row.monthlyRentAmount) : "월세 없음"}`],
+    ["계약 예정/만기일", row.contractEndDate || "미정"],
+    ["담당자", jpoUserName(row.assignedToId)],
+  ].map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(String(value ?? "-"))}</strong></div>`).join("");
+  return `<section class="workspace-panel jbwc-detail-panel jpo-case-panel" aria-label="전세 위험 케이스 상세 정보">
+    <header>
+      <div><p class="eyebrow">상세 정보</p>
+        <h3>${escapeHtml(jpoCaseNoLabel(row.caseNo))} · ${escapeHtml(row.addressMasked)} ${escapeHtml(jpoHousingTypeLabel(row.housingType))}</h3>
+        <p class="jbwc-meta">${jpoRiskPill(row.riskLevel)} ${jpoStatusPill(row.status)} ${jpoSourceModePill(row.sourceMode)}</p></div>
+      <div class="jpo-panel-actions">
+        <button class="primary-button" type="button" data-jpo-open-full="${escapeHtml(row.id)}">상세 페이지 열기</button>
+        <button class="secondary-button" type="button" data-jpo-clear-detail>닫기</button>
+      </div>
+    </header>
+    ${jpoPanelSection("1. 기본 식별", `<div class="jbwc-detail-grid">${identify}</div>`)}
+    ${jpoPanelSection("2. 분석 결과", `
+      <div class="jbwc-detail-grid">
+        <div><span>위험도</span><strong>${escapeHtml(JPO_RISK_LABELS[row.riskLevel] || row.riskLevel)}</strong></div>
+        <div><span>데이터 연계 상태</span><strong>${escapeHtml(JPO_SOURCE_MODES[row.sourceMode] || row.sourceMode)}</strong></div>
+      </div>
+      <p class="jbwc-meta">담당자 검토 필요 사유: ${escapeHtml(reviewReasons.join(" · ") || "일반 검토 절차")}</p>
+      <ul class="jbwc-list">${signals.slice(0, 3).map((item) => `<li class="jbwc-row"><span>${jpoRiskPill(item.severity)} ${escapeHtml(item.title)}</span><span class="jbwc-row-note">${escapeHtml(item.evidence || "")}</span></li>`).join("") || '<li class="jbwc-row"><span>표시할 위험 신호 없음</span></li>'}</ul>
+      <p class="jbwc-guard">위 결과는 위험 "신호"이며 전세사기 여부에 대한 확정 판정이 아닙니다.</p>`)}
+    ${jpoPanelSection("3. 담당 AI 업무지원", `<ul class="jbwc-list">${supportAgents.map(([agentId, label]) => {
+      const run = runsByAgent[agentId];
+      return `<li class="jbwc-row"><span>${escapeHtml(label)}</span>
+        <span>${run ? jpoStatusPill(run.status) : '<span class="status-pill status-new">대기</span>'}</span>
+        <span class="jbwc-row-note">${escapeHtml(run ? run.outputSummary : "실행 이력 없음")}</span><span></span></li>`;
+    }).join("")}</ul>`)}
+    ${jpoPanelSection("4. 검토/승인 정책", `<ul class="jbwc-list">
+      <li class="jbwc-row"><span>법률 판단에 대한 확정 금지</span></li>
+      <li class="jbwc-row"><span>보증 가능 여부에 대한 확정 금지</span></li>
+      <li class="jbwc-row"><span>피해자 결정 여부에 대한 확정 금지</span></li>
+      <li class="jbwc-row"><span>high/critical 자동 종결 금지</span></li>
+      <li class="jbwc-row"><span>담당자 검토 필수 · 모든 AI output은 내부 운영 참고용</span></li></ul>`)}
+    ${jpoPanelSection("5. 근거 피드", `<ul class="jbwc-list">${evidence.map((item) => `
+      <li class="jbwc-row"><span class="jbwc-row-id">${escapeHtml(item.createdAt)}</span>
+        <span>${escapeHtml(item.title)}<br><span class="jbwc-row-note">${escapeHtml(item.detail || "")}</span></span>
+        <span class="jbwc-row-note">${escapeHtml(item.source || "-")}</span><span></span></li>`).join("") || '<li class="jbwc-row"><span>근거 기록 없음 — 데이터 보강 실행 필요</span></li>'}</ul>`)}
+    ${jpoPanelSection("6. 감사 로그", `<ul class="jbwc-list">${audits.map((item) => `
+      <li class="jbwc-row"><span class="jbwc-row-id">${escapeHtml(item.createdAt)}</span>
+        <span>${escapeHtml(JPO_AUDIT_ACTION_LABELS[item.action] || item.action)}</span>
+        <span>${item.reviewRequired ? '<span class="status-pill status-escalated">검토 필요</span>' : '<span class="status-pill status-approved">기록됨</span>'}</span><span></span></li>`).join("") || '<li class="jbwc-row"><span>감사 기록 없음</span></li>'}</ul>`)}
+    <p class="jbwc-guard">실명·주민번호·전화·계좌·주소 원문 없이 익명 표시명과 마스킹 주소만 표시합니다.</p>
   </section>`;
 }
 
@@ -243,7 +369,7 @@ function jpoHeaderBar() {
     : `데이터 기준 ${escapeHtml(at)}`;
   const liveState = (typeof isLive === "function" && isLive())
     ? `<span class="status-pill status-approved">실거래 API 모드</span>`
-    : `<span class="status-pill status-pending">샘플/스냅샷 기준</span>`;
+    : `<span class="status-pill status-pending">실시간 API 미연결 · 저장 기준 사용</span>`;
   return `<nav class="jbwc-breadcrumb" aria-label="전세사기 보호 업무지원 포털 위치">
     <button class="secondary-button" type="button" data-jpo-back>← 전체로 돌아가기</button>
     <span>역할 &gt; <strong>전세사기 보호 업무지원 포털</strong> &gt; ${escapeHtml(JPO_VIEWS[jpoState.view] || "")}</span>

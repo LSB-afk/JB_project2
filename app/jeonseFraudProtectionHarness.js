@@ -23,7 +23,7 @@ function jpoOpsPage() {
   } catch (error) {
     body = `<div class="jbwc-error">데이터를 불러오지 못했습니다. <button class="secondary-button" type="button" data-jpo-reset-db>데모 데이터 초기화</button></div>`;
   }
-  return `<div class="jbwc-shell jpo-shell">${jpoHeaderBar()}${jpoDetailPanel()}${body}</div>`;
+  return `<div class="jbwc-shell jpo-shell">${jpoHeaderBar()}${jpoState.view === "case-full" ? "" : jpoDetailPanel()}${body}</div>`;
 }
 
 function jpoContextMarkup() {
@@ -42,7 +42,9 @@ function jpoContextMarkup() {
 function jpoGo(view, detail) {
   jpoState.view = view;
   jpoState.detail = detail || null;
-  const next = detail && detail.kind === "case" ? jpoHashForView("cases", detail.id) : jpoHashForView(view);
+  const next = view === "case-full" && detail && detail.id
+    ? jpoHashForView("case-full", detail.id)
+    : detail && detail.kind === "case" ? jpoHashForView("cases", detail.id) : jpoHashForView(view);
   if (window.location.hash !== next) window.location.hash = next;
   else if (typeof render === "function") render();
 }
@@ -139,7 +141,13 @@ function bindJpoActions() {
     row.addEventListener("click", () => {
       const found = jpoTable("jeonse_cases", JPO_ROLE_KEY).find((item) => item.id === row.dataset.jpoOpenCase);
       if (found) {
-        if (typeof notify === "function") notify(`${found.caseNo} · ${found.title} — ${jpoStatusLabel(found.status)} · 담당 ${jpoUserName(found.assignedToId)} (모의)`);
+        if (typeof notify === "function") notify(`${jpoCaseNoLabel(found.caseNo)} · ${found.title} — ${jpoStatusLabel(found.status)} · 담당 ${jpoUserName(found.assignedToId)} (모의)`);
+        // 좁은 화면에서는 패널 대신 상세 페이지로 이동
+        if (window.matchMedia && window.matchMedia("(max-width: 1180px)").matches) {
+          jpoRecordCaseSelected(found.id);
+          jpoGo("case-full", { kind: "case", id: found.id });
+          return;
+        }
         jpoGo("cases", { kind: "case", id: found.id });
       }
     });
@@ -157,6 +165,41 @@ function bindJpoActions() {
   });
   document.querySelectorAll("[data-jpo-clear-detail]").forEach((button) => {
     button.addEventListener("click", () => { jpoState.detail = null; render(); });
+  });
+  document.querySelectorAll("[data-jpo-open-full]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const id = button.dataset.jpoOpenFull;
+      jpoRecordCaseSelected(id);
+      jpoState.caseTab = "overview";
+      jpoGo("case-full", { kind: "case", id });
+    });
+  });
+  document.querySelectorAll("[data-jpo-case-tab]").forEach((button) => {
+    button.addEventListener("click", () => { jpoState.caseTab = button.dataset.jpoCaseTab; render(); });
+  });
+  document.querySelectorAll("[data-jpo-go-view]").forEach((button) => {
+    button.addEventListener("click", () => jpoGo(button.dataset.jpoGoView));
+  });
+  document.querySelectorAll("[data-jpo-verify-evidence]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const caseId = button.dataset.jpoVerifyEvidence;
+      const evidence = jpoTable("jeonse_evidence", JPO_ROLE_KEY).filter((item) => item.caseId === caseId);
+      const tables = ["jeonse_price_snapshots", "jeonse_risk_signals", "jeonse_registry_checks", "jeonse_guarantee_checks", "jeonse_support_referrals", "jeonse_agent_runs", "external_connectors", "jeonse_audit_logs"];
+      let ok = 0, missing = 0, manual = 0;
+      evidence.forEach((item) => {
+        if (!item.refId) { manual += 1; return; }
+        const exists = tables.some((table) => jpoTable(table, JPO_ROLE_KEY).some((rowItem) => rowItem.id === item.refId));
+        if (exists) ok += 1; else missing += 1;
+      });
+      jpoState.evidenceCheck = {
+        caseId,
+        message: missing === 0
+          ? `무결성 확인 완료 — 참조 ${ok}건 일치 · 수동 근거 ${manual}건`
+          : `참조 불일치 ${missing}건 — 담당자 확인 필요 (일치 ${ok} · 수동 ${manual})`,
+      };
+      render();
+    });
   });
   document.querySelectorAll("[data-jpo-list-filter]").forEach((input) => {
     input.addEventListener("change", () => {
@@ -189,14 +232,14 @@ function bindJpoActions() {
       const target = jpoTable("jeonse_cases", JPO_ROLE_KEY).find((c) => c.status === "enriching" || c.sourceMode === "fallback")
         || jpoTable("jeonse_cases", JPO_ROLE_KEY)[0];
       if (!target) return;
-      jpoState.enrich = { status: "loading", caseId: target.id, message: `${target.caseNo} 실거래 조회 중...` };
+      jpoState.enrich = { status: "loading", caseId: target.id, message: `${jpoCaseNoLabel(target.caseNo)} 실거래 조회 중...` };
       render();
       enrichJeonseCase(target.id)
         .then((result) => {
           jpoState.enrich = {
             status: result.market.sourceMode,
             caseId: target.id,
-            message: `${target.caseNo} 보강 완료 — ${JPO_SOURCE_MODES[result.market.sourceMode]} · 위험도 ${JPO_RISK_LABELS[result.assessment.riskLevel] || result.assessment.riskLevel}`,
+            message: `${jpoCaseNoLabel(target.caseNo)} 보강 완료 — ${JPO_SOURCE_MODES[result.market.sourceMode]} · 위험도 ${JPO_RISK_LABELS[result.assessment.riskLevel] || result.assessment.riskLevel}`,
           };
           jpoInvalidateCounts();
         })

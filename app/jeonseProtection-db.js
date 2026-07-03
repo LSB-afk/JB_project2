@@ -134,7 +134,7 @@ function jpoSeedData() {
   };
 
   return {
-    version: 2,
+    version: 3,
     seededAt: new Date().toISOString(),
     role_workspaces: [
       { id: W, roleKey: R, displayName: JPO_DISPLAY_NAME, harnessId: "jeonseFraudProtectionHarness", status: "active" },
@@ -155,10 +155,10 @@ function jpoSeedData() {
       snapshotRow("JEONSE-SNAP-0006", "JEONSE-0006", "apartment", "26350"),
     ],
     jeonse_risk_signals: [
-      scope({ id: "JEONSE-SIG-0001", caseId: "JEONSE-0001", signalType: "JEONSE_RATIO_HIGH", severity: "high", title: JPO_SIGNAL_TYPES.JEONSE_RATIO_HIGH, evidence: "보증금 2.6억 / 다세대 매매 중앙값 2.85억 (91%)", requiresHumanReview: true, createdAt: plus(-1) }),
+      scope({ id: "JEONSE-SIG-0001", caseId: "JEONSE-0001", signalType: "JEONSE_RATIO_HIGH", severity: "high", title: JPO_SIGNAL_TYPES.JEONSE_RATIO_HIGH, evidence: "보증금 2.6억 / 인근 다세대 매매 기준가 2.85억 (91%)", requiresHumanReview: true, createdAt: plus(-1) }),
       scope({ id: "JEONSE-SIG-0002", caseId: "JEONSE-0001", signalType: "REGISTRY_RIGHTS_UNKNOWN", severity: "medium", title: JPO_SIGNAL_TYPES.REGISTRY_RIGHTS_UNKNOWN, evidence: "선순위 근저당 확인 전", requiresHumanReview: true, createdAt: plus(-1) }),
       scope({ id: "JEONSE-SIG-0003", caseId: "JEONSE-0002", signalType: "GUARANTEE_STATUS_UNKNOWN", severity: "medium", title: JPO_SIGNAL_TYPES.GUARANTEE_STATUS_UNKNOWN, evidence: "보증보험 가입 여부 미확인", requiresHumanReview: true, createdAt: plus(-2) }),
-      scope({ id: "JEONSE-SIG-0004", caseId: "JEONSE-0003", signalType: "ABOVE_NEIGHBORHOOD_MEDIAN", severity: "medium", title: JPO_SIGNAL_TYPES.ABOVE_NEIGHBORHOOD_MEDIAN, evidence: "보증금 4.6억 / 주변 전세 중앙값 3.8억 (121%)", requiresHumanReview: false, createdAt: plus(0) }),
+      scope({ id: "JEONSE-SIG-0004", caseId: "JEONSE-0003", signalType: "ABOVE_NEIGHBORHOOD_MEDIAN", severity: "medium", title: JPO_SIGNAL_TYPES.ABOVE_NEIGHBORHOOD_MEDIAN, evidence: "보증금 4.6억 / 인근 전세 거래 기준가 3.8억 (121%)", requiresHumanReview: false, createdAt: plus(0) }),
       scope({ id: "JEONSE-SIG-0005", caseId: "JEONSE-0004", signalType: "AUCTION_OR_FORECLOSURE_DEADLINE", severity: "critical", title: JPO_SIGNAL_TYPES.AUCTION_OR_FORECLOSURE_DEADLINE, evidence: `경매 기일 D-9 (${plus(9)})`, requiresHumanReview: true, createdAt: plus(-3) }),
       scope({ id: "JEONSE-SIG-0006", caseId: "JEONSE-0004", signalType: "LOW_COMPARABLE_COUNT", severity: "low", title: JPO_SIGNAL_TYPES.LOW_COMPARABLE_COUNT, evidence: "실거래 API 미연결 — 표본 0건", requiresHumanReview: true, createdAt: plus(-3) }),
       scope({ id: "JEONSE-SIG-0007", caseId: "JEONSE-0005", signalType: "LANDLORD_RISK_MANUAL_REQUIRED", severity: "high", title: JPO_SIGNAL_TYPES.LANDLORD_RISK_MANUAL_REQUIRED, evidence: "보증금 반환 지연 — 임대인/보증사고 이력 외부기관 확인 필요", requiresHumanReview: true, createdAt: plus(-5) }),
@@ -188,7 +188,16 @@ function jpoSeedData() {
       scope({ id: "APR-JPO-0002", caseId: "JEONSE-0005", approvalType: "피해자 신청 검토 승인", status: "pending", requestedById: "USR-JPO-SUP-02", approverId: "USR-JPO-AUD-01", requestedAt: plus(-1) }),
       scope({ id: "APR-JPO-0003", caseId: "JEONSE-0001", approvalType: "위험등급 변경 승인", status: "approved", requestedById: "USR-JPO-RISK-01", approverId: "USR-JPO-AUD-01", requestedAt: plus(-1) }),
     ],
+    jeonse_evidence: [
+      scope({ id: "EVD-0001", caseId: "JEONSE-0001", kind: "price", title: "인근 거래 기준가 대비 보증금 91%", detail: "국토부 실거래(저장 기준) — 시세 비교 기록 참조", refId: "JEONSE-SNAP-0001", source: "국토부 연립다세대 매매/전월세", createdAt: plus(0) }),
+      scope({ id: "EVD-0002", caseId: "JEONSE-0001", kind: "registry", title: "등기부 선순위 확인 필요 항목", detail: "선순위 근저당·압류·신탁 여부 수동 확인 전", refId: null, source: "등기부 체크리스트(수동)", createdAt: plus(0) }),
+      scope({ id: "EVD-0003", caseId: "JEONSE-0002", kind: "guarantee", title: "HUG 보증 확인 필요 항목", detail: "가입 가능 여부는 확정하지 않음 — 확인 필요 항목만 기록", refId: null, source: "HUG 수동 확인", createdAt: plus(-1) }),
+      scope({ id: "EVD-0004", caseId: "JEONSE-0004", kind: "dataSource", title: "실거래 API 확인 필요 — 대체 기준 사용", detail: "커넥터 중단으로 대체 기준 사용, 위험도 하향 금지", refId: "CON-0004", source: "데이터 연계 상태", createdAt: plus(0) }),
+      scope({ id: "EVD-0005", caseId: "JEONSE-0003", kind: "comparable", title: "유사 전월세 거래 표본 확인", detail: "인근 거래 기준가 산출 표본 — 시세 비교 기록 참조", refId: "JEONSE-SNAP-0003", source: "국토부 아파트 전월세", createdAt: plus(-1) }),
+      scope({ id: "EVD-0006", caseId: "JEONSE-0005", kind: "referral", title: "법률지원 연계 근거", detail: "보증금 반환 지연 — 임대인/보증사고 이력 외부기관 확인 필요", refId: null, source: "피해지원 연계", createdAt: plus(-1) }),
+    ],
     jeonse_audit_logs: [
+      scope({ id: "AUD-EVAL-0001", caseId: "JEONSE-0002", actorId: "jpo-evaluator", action: "EVALUATOR_CHECKED", targetType: "case", targetId: "JEONSE-0002", riskLevel: "medium", reviewRequired: true, note: "보증 확인 필요 — 담당자 확인 필요", createdAt: plus(0) }),
       scope({ id: "AUD-JPO-0001", caseId: "JEONSE-0006", actorId: "USR-JPO-RISK-01", action: "CASE_CREATED", targetType: "jeonse_case", targetId: "JEONSE-0006", riskLevel: "medium", reviewRequired: false, createdAt: plus(0) }),
       scope({ id: "AUD-JPO-0002", caseId: "JEONSE-0003", actorId: "jpo-price", action: "DATA_FETCHED", targetType: "price_snapshot", targetId: "JEONSE-SNAP-0003", riskLevel: "low", reviewRequired: false, createdAt: plus(0) }),
       scope({ id: "AUD-JPO-0003", caseId: "JEONSE-0001", actorId: "jpo-price", action: "RISK_UPDATED", targetType: "risk_signal", targetId: "JEONSE-SIG-0001", riskLevel: "high", reviewRequired: true, createdAt: plus(-1) }),
@@ -251,7 +260,7 @@ function jpoLoadDb() {
     const raw = window.localStorage.getItem(JPO_DB_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed && parsed.version === 2) {
+      if (parsed && parsed.version === 3) {
         jpoDbCache = parsed;
         jpoSyncHarnessAgents(jpoDbCache);
         jpoSaveDb();

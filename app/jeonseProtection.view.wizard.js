@@ -45,21 +45,21 @@ function jpoWizardPreviewMarkup(preview) {
     : '<li class="jbwc-row"><span>표시할 위험 신호 없음 — 담당자 확인 항목만 유지</span></li>';
   return `
     <div class="jbwc-preview-grid">
-      <div><span>데이터 연계 상태 · sourceMode</span><strong>${escapeHtml(JPO_SOURCE_MODES[market.sourceMode] || market.sourceMode)}</strong></div>
+      <div><span>데이터 연계 상태</span><strong>${escapeHtml(JPO_SOURCE_MODES[market.sourceMode] || market.sourceMode)}</strong></div>
       <div><span>유사 매매 실거래 수</span><strong>${escapeHtml(String(market.comparableTradeCount ?? 0))}건</strong></div>
       <div><span>유사 전월세 실거래 수</span><strong>${escapeHtml(String(market.comparableRentCount ?? 0))}건</strong></div>
-      <div><span>주변 전세 중앙값</span><strong>${escapeHtml(jpoWon(market.jeonseMedian))}</strong></div>
+      <div><span>인근 전세 거래 기준가</span><strong>${escapeHtml(jpoWon(market.jeonseMedian))}</strong></div>
       <div><span>보증금/추정 매매가</span><strong>${assessment.jeonseRatio != null ? escapeHtml(String(Math.round(assessment.jeonseRatio * 100))) + "%" : "산출 불가"}</strong></div>
       <div><span>보증금/추정 공시가격</span><strong>${assessment.officialPriceEst ? escapeHtml(String(Math.round((Number(jpoCaseWizard.depositAmount) / assessment.officialPriceEst) * 100))) + "%" : "산출 불가"}</strong></div>
       <div><span>위험도 · riskLevel</span><strong>${escapeHtml(JPO_RISK_LABELS[assessment.riskLevel] || assessment.riskLevel)}</strong></div>
-      <div><span>데이터 신뢰도 · confidence</span><strong>${escapeHtml(assessment.confidence)}</strong></div>
-      <div><span>담당자 검토 필요 · requiresHumanReview</span><strong>${assessment.requiresHumanReview ? "예" : "아니요"}</strong></div>
+      <div><span>데이터 신뢰도</span><strong>${escapeHtml({ high: "높음", medium: "보통", low: "낮음 — 담당자 확인 필요" }[assessment.confidence] || assessment.confidence)}</strong></div>
+      <div><span>담당자 검토 필요</span><strong>${assessment.requiresHumanReview ? "예" : "아니요"}</strong></div>
       <div><span>추천 에이전트</span><strong>${escapeHtml(jpoAgentDisplayName(preview.recommendedAgent))}</strong></div>
       <div><span>초기 상태</span><strong>${escapeHtml(jpoStatusLabel(preview.initialStatus))}</strong></div>
       <div><span>추천 다음 작업</span><strong>${escapeHtml(assessment.nextActions.slice(0, 2).join(" / ") || "-")}</strong></div>
     </div>
     <ul class="jbwc-list">${signalList}</ul>
-    ${market.sourceMode !== "live_api" ? `<p class="jbwc-guard" data-live-note="off">실거래 API 미연결 — 샘플/스냅샷 기준입니다. 위험도를 낮게 확정하지 않고 담당자 확인 필요로 처리합니다.</p>` : `<p class="jbwc-guard" data-live-note="on">실거래 API(live_api) 기준으로 계산되었습니다.</p>`}`;
+    ${market.sourceMode !== "live_api" ? `<p class="jbwc-guard" data-live-note="off">실시간 API 미연결 · 저장 기준 사용 — 위험도를 낮게 확정하지 않고 담당자 확인 필요로 처리합니다.</p>` : `<p class="jbwc-guard" data-live-note="on">실시간 API 기준으로 계산되었습니다.</p>`}`;
 }
 
 function jpoCaseCreationView() {
@@ -193,7 +193,7 @@ function jpoBindCaseWizardForm() {
     }
     jpoInvalidateCounts();
     jpoCaseWizard = jpoDefaultCaseWizard();
-    if (typeof notify === "function") notify(`${created.case.caseNo} 접수 완료 — 스냅샷·위험 신호·감사 기록 저장 (모의)`);
+    if (typeof notify === "function") notify(`${jpoCaseNoLabel(created.case.caseNo)} 접수 완료 — 시세 비교·위험 신호·감사 기록 저장 (모의)`);
     jpoGo("cases", { kind: "case", id: created.case.id });
   });
 }

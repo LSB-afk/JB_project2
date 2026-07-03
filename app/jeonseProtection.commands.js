@@ -128,6 +128,16 @@ const jeonseProtectionCommands = [
     },
   },
   {
+    key: "/jeonse-daily-triage",
+    label: "일일 분류 점검(준비)",
+    description: "미처리·기한임박·시세 갱신 필요·검증 실패 건을 감지만 한다(자동 종결/승인 없음).",
+    run() {
+      const queue = jpoDetectAutomationQueue();
+      const summary = `신규 ${queue.dailyTriage.length} · 장기 미처리 ${queue.staleCases.length} · SLA 임박 ${queue.slaDue.length} · 시세 갱신 필요 ${queue.dataRefresh.length} · 검증 실패 ${queue.evaluatorFailed.length}`;
+      return { ok: true, message: `일일 분류 점검(감지 전용) — ${summary}` };
+    },
+  },
+  {
     key: "/jeonse-run-smoke-test",
     label: "하네스 자체 검증 실행",
     description: "manifest·scope·PII·agent·hook 커버리지를 즉석 검증한다.",

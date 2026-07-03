@@ -16,6 +16,7 @@ function jpoHarnessView() {
       ${jpoState.lastRun ? `<div class="jbwc-lastrun">
         <p><strong>오케스트레이터 분류</strong> → ${escapeHtml(jpoState.lastRun.agent)} ${jpoRiskPill(jpoState.lastRun.risk)} <span class="status-pill status-new">SLA ${escapeHtml(jpoState.lastRun.sla)}</span></p>
         <p>${escapeHtml(jpoState.lastRun.result)}</p>
+        ${jpoState.lastRun.evaluator ? `<p class="jbwc-guard">루프 검증(분리 실행): <strong>${escapeHtml(jpoState.lastRun.evaluator)}</strong></p>` : ""}
         <p class="jbwc-mock-note">※ 내부 운영 참고용 모의 응답 — 실제 판단·발송 아님${jpoState.lastRun.human ? " · 사람 검토 대기" : ""}${jpoState.lastRun.approvalPending ? " · 발송 승인 대기" : ""}</p>
       </div>` : ""}`)
     + jpoPanel("운영 명령 (Commands)", `
@@ -61,7 +62,18 @@ function jpoHarnessView() {
     + jpoPanel(`핸드오프 (agent_handoffs · ${handoffs.length})`, jpoTableView(["핸드오프", "경로", "사유", "상태"], handoffs, (handoff) => `
       <li class="jbwc-row"><span class="jbwc-row-id">${escapeHtml(handoff.id)}</span>
         <span>${escapeHtml((registry[handoff.fromAgentId] || {}).displayName || handoff.fromAgentId)} → ${escapeHtml((registry[handoff.toAgentId] || {}).displayName || handoff.toAgentId)}</span>
-        <span>${escapeHtml(handoff.reason)}</span><span>${jpoStatusPill(handoff.status)}</span></li>`)) + jpoMockNote();
+        <span>${escapeHtml(handoff.reason)}</span><span>${jpoStatusPill(handoff.status)}</span></li>`))
+    + (() => {
+      const queue = jpoDetectAutomationQueue();
+      const countOf = { dailyTriage: queue.dailyTriage.length, staleCases: queue.staleCases.length, slaDue: queue.slaDue.length, dataRefresh: queue.dataRefresh.length, evaluatorFailed: queue.evaluatorFailed.length };
+      return jpoPanel("루프 자동화 준비 (Automation — 감지 전용)", `
+        <ul class="jbwc-list">${JPO_AUTOMATION_RULES.map((rule) => `
+          <li class="jbwc-row"><span class="jbwc-row-id">${escapeHtml(rule.label)}</span>
+            <span class="jbwc-row-note">${escapeHtml(rule.description)}</span>
+            <span><span class="status-pill status-pending">자동 실행 준비됨</span></span>
+            <span class="nav-count">${escapeHtml(String(countOf[rule.key] ?? 0))}</span></li>`).join("")}</ul>
+        <p class="jbwc-guard">감지만 수행합니다 — 자동 종결·자동 승인은 금지이며, 처리(Human Inbox)는 담당자 검토 필요 큐에서 진행합니다.</p>`);
+    })() + jpoMockNote();
 }
 
 function jpoBindHarnessSamples() {
@@ -76,6 +88,7 @@ function jpoBindHarnessSamples() {
         result: result.run.outputSummary,
         human: result.triage.requiresHumanReview,
         approvalPending: result.run.status === "pendingApproval",
+        evaluator: result.evaluator ? result.evaluator.verdictLabel : null,
       };
       jpoState.detail = { kind: "agentRun", id: result.run.id };
       jpoInvalidateCounts();

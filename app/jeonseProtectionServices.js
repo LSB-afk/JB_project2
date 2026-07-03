@@ -80,14 +80,14 @@ function searchJeonseProtectionRecords(query) {
     if (hit(c.caseNo) || hit(c.customerRefId) || hit(c.addressMasked) || hit(c.buildingName)
       || hit(c.lawdCode) || hit(c.housingType) || hit((JPO_HOUSING_TYPES[c.housingType] || {}).label)
       || (c.tags || []).some(hit) || hit(userName(c.assignedToId))) {
-      out.push({ kind: "case", view: "cases", id: c.id, label: `${c.caseNo} · ${c.addressMasked}`, sub: `${(JPO_HOUSING_TYPES[c.housingType] || {}).label || c.housingType} · ${JPO_STATUS_LABELS[c.status] || c.status}` });
+      out.push({ kind: "case", view: "cases", id: c.id, label: `${jpoCaseNoLabel(c.caseNo)} · ${c.addressMasked}`, sub: `${(JPO_HOUSING_TYPES[c.housingType] || {}).label || c.housingType} · ${JPO_STATUS_LABELS[c.status] || c.status}` });
     }
   });
   jpoTable("jeonse_risk_signals", JPO_ROLE_KEY).forEach((x) => {
     if (hit(x.title) || hit(x.signalType) || hit(x.id)) out.push({ kind: "signal", view: "price-risk", id: x.id, label: `${x.id} · ${x.title}`, sub: `위험 신호 · ${JPO_RISK_LABELS[x.severity] || x.severity}` });
   });
   jpoTable("jeonse_price_snapshots", JPO_ROLE_KEY).forEach((x) => {
-    if (hit(x.id) || hit(x.lawdCode) || hit(x.source)) out.push({ kind: "snapshot", view: "price-enrich", id: x.id, label: `${x.id} · ${x.lawdCode}`, sub: `시세 스냅샷 · ${JPO_STATUS_LABELS[x.sourceMode] || x.sourceMode}` });
+    if (hit(x.id) || hit(x.lawdCode) || hit(x.source)) out.push({ kind: "snapshot", view: "price-enrich", id: x.id, label: `${jpoSnapshotLabel(x.id)} · ${x.lawdCode}`, sub: `시세 비교 기록 · ${JPO_STATUS_LABELS[x.sourceMode] || x.sourceMode}` });
   });
   jpoTable("jeonse_registry_checks", JPO_ROLE_KEY).forEach((x) => {
     if (hit(x.checkType) || hit(x.id)) out.push({ kind: "registry", view: "registry-check", id: x.id, label: `${x.id} · ${x.checkType}`, sub: `권리관계 · ${JPO_STATUS_LABELS[x.status] || x.status}` });
@@ -481,7 +481,7 @@ function recordJeonseProtectionAgentRun(run) {
   jpoWriteAudit({
     id: jpoNextId("AUD-JPO", "jeonse_audit_logs"),
     actorId: run.agentId,
-    action: "JPO_AGENT_RUN",
+    action: "AGENT_RUN_CREATED",
     targetType: "agent_run",
     targetId: row.id,
     riskLevel: row.riskLevel,
@@ -567,4 +567,233 @@ function runJeonseProtectionSampleRequest(key) {
     }));
   }
   return { sample, triage, agent, run };
+}
+
+/* ================= 루프 엔지니어링 계층 =================
+   Automation(감지만) · Skill(위험 점검 규칙) · Agent(생성) · Evaluator(검증, 분리)
+   State(jpoState.loop) · Human Inbox(humanReview 큐). 자동 종결/자동 승인 없음. */
+
+function jpoWriteEvidence(row) {
+  return jpoInsert("jeonse_evidence", jpoScopedRow({
+    id: jpoNextId("EVD", "jeonse_evidence"),
+    createdAt: new Date().toISOString().slice(0, 10),
+    ...row,
+  }));
+}
+
+const JPO_EVALUATOR_VERDICT_LABELS = {
+  pass: "검증 통과",
+  humanReviewRequired: "담당자 확인 필요",
+  forbiddenExpression: "금지 표현 수정 필요",
+  insufficientEvidence: "근거 부족",
+  piiBlocked: "개인정보 노출 차단",
+};
+
+/* 검증 전담 — 생성 함수(recordJeonseProtectionAgentRun 등)와 분리된 별도 함수 */
+function runJeonseLoopEvaluator(caseId, context = {}) {
+  const row = caseId ? jpoTable("jeonse_cases", JPO_ROLE_KEY).find((item) => item.id === caseId) : null;
+  const evidence = caseId ? jpoTable("jeonse_evidence", JPO_ROLE_KEY).filter((item) => item.caseId === caseId) : [];
+  const signals = caseId ? jpoTable("jeonse_risk_signals", JPO_ROLE_KEY).filter((item) => item.caseId === caseId) : [];
+  const textPool = [context.outputSummary, context.inputSummary, ...signals.map((item) => item.title)].filter(Boolean).join(" ");
+  const notes = [];
+  let verdict = "pass";
+  const raise = (next, note) => {
+    const order = ["pass", "humanReviewRequired", "insufficientEvidence", "forbiddenExpression", "piiBlocked"];
+    if (order.indexOf(next) > order.indexOf(verdict)) verdict = next;
+    if (note) notes.push(note);
+  };
+  const pii = typeof harnessGuardCheckPII === "function" ? harnessGuardCheckPII(textPool) : null;
+  if (pii) raise("piiBlocked", pii);
+  const forbidden = typeof harnessGuardCheckAssertions === "function" ? harnessGuardCheckAssertions(textPool, JPO_FORBIDDEN_ASSERTIONS) : null;
+  if (forbidden) raise("forbiddenExpression", forbidden);
+  if (caseId && evidence.length < 2) raise("insufficientEvidence", `근거 기록 ${evidence.length}건 — 최소 2건 필요`);
+  const sourceMode = context.sourceMode || (row && row.sourceMode);
+  if (["fallback", "snapshot", "manualRequired"].includes(sourceMode)) {
+    raise("humanReviewRequired", `데이터 연계 상태 '${JPO_SOURCE_MODES[sourceMode] || sourceMode}' — 담당자 확인 필요`);
+  }
+  const riskLevel = context.riskLevel || (row && row.riskLevel) || "low";
+  if (["high", "critical"].includes(riskLevel) && ["completed", "closed"].includes(context.status || "")) {
+    raise("humanReviewRequired", "high/critical 자동 완료 차단 — 종결은 담당자만");
+  }
+  if (["high", "critical"].includes(riskLevel)) raise("humanReviewRequired", "고위험 건 — 담당자 검토 필수");
+
+  const verdictLabel = JPO_EVALUATOR_VERDICT_LABELS[verdict];
+  const today = new Date().toISOString().slice(0, 10);
+  const evaluatorRun = jpoInsert("jeonse_agent_runs", jpoScopedRow({
+    id: jpoNextId("JEONSE-RUN", "jeonse_agent_runs"),
+    agentId: "jpo-evaluator",
+    caseId: caseId || null,
+    inputSummary: `검증 대상: ${context.targetLabel || (row ? jpoCaseNoLabel(row.caseNo) : "실행 결과")}`,
+    outputSummary: `${verdictLabel}${notes.length ? " — " + notes[0] : ""}`,
+    status: verdict === "pass" ? "completed" : "needsReview",
+    riskLevel: verdict === "pass" ? "low" : "medium",
+    requiresHumanReview: verdict !== "pass",
+    createdAt: today,
+  }));
+  jpoWriteAudit({
+    id: jpoNextId("AUD-JPO", "jeonse_audit_logs"),
+    caseId: caseId || null,
+    actorId: "jpo-evaluator",
+    action: "EVALUATOR_CHECKED",
+    targetType: context.targetType || "case",
+    targetId: context.targetId || caseId || evaluatorRun.id,
+    riskLevel: verdict === "pass" ? "low" : "medium",
+    reviewRequired: verdict !== "pass",
+    note: verdictLabel,
+    createdAt: today,
+  });
+  if (caseId) {
+    jpoWriteEvidence({ caseId, kind: "evaluator", title: `루프 검증 결과: ${verdictLabel}`, detail: notes.join(" / ") || "이상 없음", refId: evaluatorRun.id, source: "루프 검증 에이전트" });
+  }
+  jpoState.loop.evaluatorStatus = verdictLabel;
+  return { verdict, verdictLabel, notes, runId: evaluatorRun.id, requiresHumanReview: verdict !== "pass" };
+}
+
+/* 생성 흐름 래핑 — 원본은 생성만, 검증·근거·감사 확장은 여기서 */
+const jpoEnrichBase = enrichJeonseCase;
+enrichJeonseCase = async function (caseId) {
+  const result = await jpoEnrichBase(caseId);
+  const today = new Date().toISOString().slice(0, 10);
+  jpoWriteEvidence({
+    caseId,
+    kind: "price",
+    title: `시세 데이터 보강 — ${JPO_SOURCE_MODES[result.market.sourceMode] || result.market.sourceMode}`,
+    detail: `인근 거래 기준가(매매 ${jpoWon(result.market.saleMedian)} · 전세 ${jpoWon(result.market.jeonseMedian)})`,
+    refId: (jpoTable("jeonse_price_snapshots", JPO_ROLE_KEY).find((item) => item.caseId === caseId) || {}).id || null,
+    source: JPO_SOURCE_MODE_HINTS[result.market.sourceMode] || "공공데이터 연계",
+  });
+  jpoWriteAudit({
+    id: jpoNextId("AUD-JPO", "jeonse_audit_logs"),
+    caseId,
+    actorId: "jpo-price",
+    action: "DATA_ENRICHED",
+    targetType: "case",
+    targetId: caseId,
+    riskLevel: result.assessment.riskLevel,
+    reviewRequired: result.assessment.requiresHumanReview,
+    createdAt: today,
+  });
+  result.evaluator = runJeonseLoopEvaluator(caseId, { sourceMode: result.market.sourceMode, riskLevel: result.assessment.riskLevel, targetType: "enrichment", targetId: caseId });
+  jpoState.loop.dataConnectionStatus = JPO_SOURCE_MODES[result.market.sourceMode] || result.market.sourceMode;
+  jpoState.loop.lastUpdated = new Date().toISOString();
+  return result;
+};
+
+const jpoCreateCaseBase = createJeonseProtectionCase;
+createJeonseProtectionCase = function (form) {
+  const result = jpoCreateCaseBase(form);
+  if (!result || result.blocked || !result.case) return result;
+  const caseRow = result.case;
+  const today = new Date().toISOString().slice(0, 10);
+  jpoWriteAudit({
+    id: jpoNextId("AUD-JPO", "jeonse_audit_logs"), caseId: caseRow.id, actorId: "jpo-intake",
+    action: "RISK_SIGNAL_CREATED", targetType: "case", targetId: caseRow.id,
+    riskLevel: caseRow.riskLevel, reviewRequired: caseRow.requiresHumanReview,
+    note: `위험 신호 ${(result.assessment ? result.assessment.signals.length : 0)}건 산출`, createdAt: today,
+  });
+  const createdReferral = jpoTable("jeonse_support_referrals", JPO_ROLE_KEY).find((item) => item.caseId === caseRow.id);
+  if (createdReferral) {
+    jpoWriteAudit({
+      id: jpoNextId("AUD-JPO", "jeonse_audit_logs"), caseId: caseRow.id, actorId: "jpo-victim",
+      action: "SUPPORT_REFERRAL_CREATED", targetType: "referral", targetId: createdReferral.id,
+      riskLevel: caseRow.riskLevel, reviewRequired: false, createdAt: today,
+    });
+  }
+  jpoWriteEvidence({
+    caseId: caseRow.id, kind: "dataSource",
+    title: `접수 시 데이터 연계 상태 — ${JPO_SOURCE_MODES[caseRow.sourceMode] || caseRow.sourceMode}`,
+    detail: JPO_SOURCE_MODE_HINTS[caseRow.sourceMode] || "-",
+    refId: (jpoTable("jeonse_price_snapshots", JPO_ROLE_KEY).find((item) => item.caseId === caseRow.id) || {}).id || null, source: "접수 위저드",
+  });
+  if (result.assessment && result.assessment.signals.length) {
+    jpoWriteEvidence({
+      caseId: caseRow.id, kind: "price",
+      title: `핵심 위험 신호 ${result.assessment.signals.length}건`,
+      detail: result.assessment.signals.slice(0, 3).map((signal) => signal.title).join(" · "),
+      refId: null, source: "전세 위험 점검 규칙(Skill)",
+    });
+  }
+  result.evaluator = runJeonseLoopEvaluator(caseRow.id, { sourceMode: caseRow.sourceMode, riskLevel: caseRow.riskLevel, targetType: "case", targetId: caseRow.id });
+  return result;
+};
+
+const jpoRunSampleBase = runJeonseProtectionSampleRequest;
+runJeonseProtectionSampleRequest = function (key) {
+  const result = jpoRunSampleBase(key);
+  if (!result || !result.run) return result;
+  result.evaluator = runJeonseLoopEvaluator(result.run.caseId, {
+    outputSummary: result.run.outputSummary,
+    inputSummary: result.run.inputSummary,
+    status: result.run.status,
+    riskLevel: result.run.riskLevel,
+    targetType: "agentRun",
+    targetId: result.run.id,
+    targetLabel: result.run.id,
+  });
+  jpoState.loop.agentRunStatus = JPO_STATUS_LABELS[result.run.status] || result.run.status;
+  return result;
+};
+
+/* 케이스 선택(상세 페이지 열기) 감사 — §9 CASE_SELECTED */
+function jpoRecordCaseSelected(caseId) {
+  jpoState.loop.selectedCaseId = caseId;
+  jpoWriteAudit({
+    id: jpoNextId("AUD-JPO", "jeonse_audit_logs"), caseId, actorId: "USR-JPO-OPS-01",
+    action: "CASE_SELECTED", targetType: "case", targetId: caseId,
+    riskLevel: "low", reviewRequired: false, createdAt: new Date().toISOString().slice(0, 10),
+  });
+}
+
+/* 상태 전이 — alias 수용 + STATUS_CHANGED 감사. 자동 종결 금지: guidanceDone은 사람만 */
+function jpoChangeCaseStatus(caseId, nextStatusAlias, actorId) {
+  const status = JPO_STATUS_CANONICAL[nextStatusAlias] || nextStatusAlias;
+  if (!JPO_BOARD_COLUMNS.some(([key]) => key === status)) return { blocked: true, violations: [`알 수 없는 상태: ${nextStatusAlias}`] };
+  const db = jpoRepository.snapshot();
+  const row = (db.jeonse_cases || []).find((item) => item.id === caseId && item.roleKey === JPO_ROLE_KEY);
+  if (!row) return null;
+  if (status === "guidanceDone" && !String(actorId || "").startsWith("USR-")) {
+    return { blocked: true, violations: ["지원 안내 완료 처리는 담당자만 가능"] };
+  }
+  const prev = row.status;
+  row.status = status;
+  row.updatedAt = new Date().toISOString().slice(0, 10);
+  jpoSaveDb();
+  jpoWriteAudit({
+    id: jpoNextId("AUD-JPO", "jeonse_audit_logs"), caseId, actorId: actorId || "USR-JPO-OPS-01",
+    action: "STATUS_CHANGED", targetType: "case", targetId: caseId,
+    riskLevel: row.riskLevel, reviewRequired: ["humanReview"].includes(status),
+    note: `${JPO_STATUS_LABELS[prev] || prev} → ${JPO_STATUS_LABELS[status] || status}`,
+    createdAt: row.updatedAt,
+  });
+  return { case: row };
+}
+
+/* Automation 준비 — 감지 전용(read-only). 자동 종결/자동 승인 없음. */
+function jpoDetectAutomationQueue() {
+  const today = Date.now();
+  const cases = jpoTable("jeonse_cases", JPO_ROLE_KEY).filter((row) => JPO_ACTIVE_CASE_STATUSES.includes(row.status));
+  const days = (text) => {
+    const time = new Date(text || "").getTime();
+    return Number.isNaN(time) ? null : Math.ceil((time - today) / 86400000);
+  };
+  const staleDays = (text) => {
+    const time = new Date(text || "").getTime();
+    return Number.isNaN(time) ? null : Math.floor((today - time) / 86400000);
+  };
+  const evaluatorFailed = jpoTable("jeonse_agent_runs", JPO_ROLE_KEY)
+    .filter((run) => run.agentId === "jpo-evaluator" && run.status === "needsReview");
+  return {
+    generatedAt: new Date().toISOString(),
+    dailyTriage: cases.filter((row) => row.status === "received"),
+    staleCases: cases.filter((row) => (staleDays(row.updatedAt) ?? 0) >= 7),
+    slaDue: cases.filter((row) => { const d = days(row.dueAt); return d != null && d <= 1; }),
+    dataRefresh: cases.filter((row) => row.sourceMode === "fallback" || row.status === "enriching"),
+    evaluatorFailed,
+  };
+}
+
+function jpoRefreshLoopState(counts) {
+  jpoState.loop.pendingHumanReviewCount = counts ? counts.board && jpoTable("jeonse_cases", JPO_ROLE_KEY).filter((row) => row.status === "humanReview").length : jpoState.loop.pendingHumanReviewCount;
+  jpoState.loop.currentRoute = window.location.hash;
+  jpoState.loop.lastUpdated = new Date().toISOString();
 }
