@@ -181,7 +181,7 @@ const cclViewRenderers = {
       <p class="jbwc-meta">${escapeHtml(agent.description)}</p></article>`;
     return cclPanel(`${cclConsoleHarness.name} — 전용 라우팅`, `<p class="jbwc-guard">정책: ${cclConsoleHarness.policy.map(escapeHtml).join(" · ")}</p>`)
       + cclPanel("샘플 요청 실행 (모의)", `<div class="jbwc-samples">${cclSampleRequests.map((sample) => `<button class="secondary-button" type="button" data-ccl-sample="${escapeHtml(sample.key)}">${escapeHtml(sample.text)}</button>`).join("")}</div>
-        ${cclState.lastRun ? `<div class="jbwc-lastrun"><p><strong>실행 결과</strong> → ${escapeHtml(cclState.lastRun.agent)} ${cclStatusPill(cclState.lastRun.status)}</p><p>${escapeHtml(cclState.lastRun.result)}</p><p class="jbwc-mock-note">※ 내부 운영 참고용${cclState.lastRun.human ? " · 사람 검토 대기" : ""}${cclState.lastRun.approvalPending ? " · 승인 대기" : ""}</p></div>` : ""}`)
+        ${cclState.lastRun ? `<div class="jbwc-lastrun"><p><strong>실행 결과</strong> <span class="status-pill ${cclState.lastRun.live ? "status-approved" : "status-new"}">${cclState.lastRun.live ? "실행·LLM" : "모의"}</span> → ${escapeHtml(cclState.lastRun.agent)} ${cclStatusPill(cclState.lastRun.status)}</p><p>${escapeHtml(cclState.lastRun.result)}${cclState.lastRun.pending ? ` <span class="jbwc-meta">(로컬 모델 생성 중...)</span>` : ""}</p><p class="jbwc-mock-note">※ 내부 운영 참고용${cclState.lastRun.human ? " · 사람 검토 대기" : ""}${cclState.lastRun.approvalPending ? " · 승인 대기" : ""}</p></div>` : ""}`)
       + cclPanel(`표면 에이전트 (${surface.length})`, `<div class="jbwc-grid">${surface.map(card).join("")}</div>`)
       + cclPanel(`내부 전문 조직 (${internal.length})`, `<details><summary class="jbwc-meta">내부 에이전트 펼치기</summary><div class="jbwc-grid">${internal.map(card).join("")}</div></details>`)
       + cclPanel(`최근 실행 (${runs.length})`, cclList(["실행", "에이전트", "입력→결과", "상태"], runs, (run) => `
@@ -333,6 +333,54 @@ function cclActivateFromHash() {
   } else if (route.view && cclState.detail) { cclState.detail = null; changed = true; }
   return changed;
 }
+// ?live=1 라이브 에이전트 전용 — CCL-0001 재무 요약 프롬프트(익명 구간지표만, PII 원문 없음).
+function cclFinancialPrompt(caseId) {
+  const c = cclTable("ccl_cases", CCL_ROLE_KEY).find((row) => row.id === caseId) || {};
+  const notes = cclTable("ccl_review_notes", CCL_ROLE_KEY).filter((n) => n.caseId === caseId && n.kind === "financial");
+  const docs = cclTable("ccl_doc_checks", CCL_ROLE_KEY).filter((d) => d.caseId === caseId);
+  return [
+    "당신은 지역은행 기업여신 담당자를 돕는 내부 보조 AI입니다.",
+    "아래 익명 구간지표만 근거로 재무 검토 요약을 한국어 3문장으로 작성하세요.",
+    "규칙: 개인정보·실명·전화·계좌번호 언급 금지. 대출 승인/거절·금리·한도·신용등급을 단정하지 말 것. 마지막 문장은 '담당자 검토 필요'로 끝낼 것.",
+    `업종/지역 구간: ${c.segment || "-"}`,
+    `여신 유형: ${(CCL_LOAN_TYPES[c.loanType] || {}).label || c.loanType || "-"}`,
+    `신청 금액 구간: ${c.amountBand || "-"}`,
+    `상환 부담 구간: ${c.repaymentBand || "-"}`,
+    `서류 상태: ${c.docsStatus || "-"} · 위험 구간: ${c.riskLevel || "-"}`,
+    `재무 검토 노트: ${notes.map((n) => `${n.title} — ${n.summary}`).join(" / ") || "없음"}`,
+    `서류 점검: ${docs.map((d) => `${d.docName}(${d.status})`).join(", ") || "없음"}`,
+  ].join("\n");
+}
+
+// 모의 run을 실제 로컬 LLM 출력으로 승격한다. 실 output도 PII·단정 guardrail을 통과해야 하며,
+// 위반·실패 시 모의 문자열로 fallback하고 사람 검토로 전환한다. 감사 로그로 승격/폴백 사실을 남긴다.
+async function cclUpgradeFinancialRun(result) {
+  const run = result.run; // recordCorporateCreditAgentRun가 반환한, DB에 저장된 그 row 참조
+  const mock = run.outputSummary;
+  cclState.lastRun.live = true;
+  cclState.lastRun.pending = true;
+  render();
+  let llmText = null;
+  try { llmText = await llmGenerate(cclFinancialPrompt(result.sample.caseId)); } catch (error) { llmText = null; }
+  const violation = llmText
+    ? (harnessGuardCheckPII(llmText) || harnessGuardCheckAssertions(llmText, CCL_FORBIDDEN_ASSERTIONS))
+    : null;
+  const finalText = llmPickText(mock, llmText, violation);
+  const usedLive = finalText !== mock;
+  run.outputSummary = finalText;
+  if (violation) run.status = "needsReview";
+  cclSaveDb();
+  cclWriteAudit({
+    id: cclNextId("AUD-CCL", "ccl_audit_logs"), caseId: run.caseId || null, actorId: run.agentId,
+    action: usedLive ? "CCL_AGENT_LIVE_OUTPUT" : "CCL_AGENT_LIVE_FALLBACK", targetType: "agent_run", targetId: run.id,
+    riskLevel: run.riskLevel, reviewRequired: true, note: violation || "", createdAt: new Date().toISOString().slice(0, 10),
+  });
+  cclState.lastRun = { ...cclState.lastRun, pending: false, live: usedLive, result: finalText, status: run.status };
+  if (violation && typeof notify === "function") notify("실 output guardrail 플래그 — 사람 검토로 전환");
+  cclInvalidateCounts();
+  render();
+}
+
 function bindCclActions() {
   if (cclActivateFromHash()) { render(); return; }
   if (cclModeActive()) {
@@ -355,6 +403,11 @@ function bindCclActions() {
       : { agent: cclAgentName(result.run.agentId), status: result.run.status, result: result.run.outputSummary, human: result.run.requiresHumanReview, approvalPending: result.run.status === "pendingApproval" };
     cclInvalidateCounts();
     render();
+    // 라이브 에이전트 opt-in(?live=1): ccl-financial 경로만 실제 로컬 LLM으로 출력을 생성한다.
+    // 비활성(기본)·오프라인·실패 시 위 모의 결과가 그대로 유지된다(오프라인 데모 무회귀).
+    if (!result.blocked && result.sample.agentId === "ccl-financial" && typeof llmAgentsEnabled === "function" && llmAgentsEnabled()) {
+      cclUpgradeFinancialRun(result);
+    }
   }));
   document.querySelectorAll("[data-ccl-approve]").forEach((el) => el.addEventListener("click", (event) => {
     event.stopPropagation();
