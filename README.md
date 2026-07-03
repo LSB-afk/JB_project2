@@ -18,7 +18,7 @@ npm run dev          # http://127.0.0.1:8000/index.html
 | GP-2 보이스피싱 (Hero 실동작) | `?demo=phishing` 또는 첫 화면 CTA | 이상거래 탐지·차단 운영지원 — high/critical 자동 종결 금지, human escalation 유지 |
 | GP-3 전세 보호 (확장 로드맵) | `?demo=jeonse` | 로드맵 미리보기 — Hero 실동작 범위 아님 |
 | JB우리캐피탈 포털 (그룹 확장성 증명) | `#/jb-woori-capital/board` | 동일 운영 패턴을 계열사 전용 독립 하네스로 확장 |
-| 전세사기 보호 담당자 하네스 (역할=독립 하네스) | 역할 레일 → 전세보호 담당자 또는 `#/roles/jeonse-protection/board` | 역할 전용 메뉴 21종·에이전트 10종·승인/감사 흐름을 가진 별도 운영 콘솔 |
+| 전세사기 보호 업무지원 포털 (역할=독립 하네스) | 역할 레일 → 전세보호 담당자 또는 `#/roles/jeonse-protection/board` | lifecycle 보드·공공데이터 시세 엔진·위험 신호 스코어링·피해지원 연계를 가진 별도 운영 콘솔 |
 
 ### 실데이터 라이브 데모 (선택, `?live=1`)
 
@@ -26,7 +26,8 @@ npm run dev          # http://127.0.0.1:8000/index.html
 "실데이터 증명"을 켜려면:
 
 ```bash
-DATA_GO_KR_KEY=<data.go.kr Decoding 인증키> npm run demo:proxy   # 로컬 프록시 :8020
+# 국토부 실거래 7종 + 서울 열린데이터 — dataset별 키 또는 공용 키 체인 (모두 환경변수로만)
+MOLIT_SERVICE_KEY=<국토부 Decoding 키> SEOUL_OPEN_API_KEY=<서울 키> npm run demo:proxy   # 로컬 프록시 :8020
 # 브라우저에서 ?live=1 붙여 접속 → 전세 사전 점검의 "주변 매매가"에 실거래가 평균 적용
 open "http://127.0.0.1:8000/index.html?live=1#jeonse"
 ```
@@ -34,6 +35,11 @@ open "http://127.0.0.1:8000/index.html?live=1#jeonse"
 - 프록시/키가 없으면 자동으로 **시뮬레이션 기본값 fallback**으로 완주합니다 (모델·API 없이도 데모 보장).
 - 감사 로그에 시세 출처(`공공데이터` vs `시뮬레이션 입력`)가 기록됩니다.
 - `?model=0`으로 로컬모델 플래그만 끌 수 있습니다 (`window.RUNTIME_CONFIG`).
+- 전세보호 포털의 시세 보강도 동일 프록시를 사용합니다: 지원 키 —
+  `MOLIT_SERVICE_KEY`/`MOLIT_API_KEY`/`PUBLIC_DATA_API_KEY`/`DATA_GO_KR_KEY`,
+  dataset별 `MOLIT_APT_TRADE_KEY`·`MOLIT_APT_RENT_KEY`·`MOLIT_ROW_HOUSE_TRADE_KEY`·`MOLIT_ROW_HOUSE_RENT_KEY`·
+  `MOLIT_DETACHED_HOUSE_TRADE_KEY`·`MOLIT_DETACHED_HOUSE_RENT_KEY`·`MOLIT_OFFICETEL_RENT_KEY`,
+  서울 `SEOUL_OPEN_API_KEY`/`SEOUL_API_KEY`/`MOVEVALUE_SEOUL_OPEN_API_KEY`. 키 없으면 스냅샷/샘플 fallback.
 
 ## 검증
 

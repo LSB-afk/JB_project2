@@ -15,6 +15,7 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => window.localStorage.removeItem("jb-finance-support-state-v4"));
   await page.addInitScript(() => window.localStorage.removeItem("jbwc-ops-db-v2"));
   await page.addInitScript(() => window.localStorage.removeItem("jbwc-ops-db-v3"));
+  await page.addInitScript(() => window.localStorage.removeItem("jpo-ops-db-v2"));
 });
 
 test("home and dashboard render without console errors", async ({ page }) => {

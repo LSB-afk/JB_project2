@@ -21,6 +21,7 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => window.localStorage.removeItem("jb-finance-support-state-v4"));
   await page.addInitScript(() => window.localStorage.removeItem("jbwc-ops-db-v2"));
   await page.addInitScript(() => window.localStorage.removeItem("jbwc-ops-db-v3"));
+  await page.addInitScript(() => window.localStorage.removeItem("jpo-ops-db-v2"));
 });
 
 async function createCaseViaWizard(page, { domain, productType, title, riskLevel }) {

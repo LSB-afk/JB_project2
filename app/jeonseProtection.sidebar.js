@@ -22,14 +22,14 @@ function jpoTakeoverSidebar() {
   if (brand && !brand.dataset.jpoMode) {
     brand.dataset.jpoMode = "1";
     brand.innerHTML = `<p class="eyebrow">역할 전용 하네스</p>
-      <h1>전세사기 보호 업무지원 하네스</h1>
-      <span>계약 전 위험 신호·피해자 지원·담당자 검토를 돕는 AI 운영지원</span>`;
+      <h1>전세사기 보호 업무지원 포털</h1>
+      <span>시세·권리·보증·피해지원 검토를 돕는 AI 업무지원</span>`;
   }
   const curCta = document.getElementById("new-case-button");
   if (curCta && !curCta.dataset.jpoMode) {
     const mine = curCta.cloneNode(true);
     mine.dataset.jpoMode = "1";
-    mine.innerHTML = `<span aria-hidden="true">＋</span> 신규 전세보호 건 접수`;
+    mine.innerHTML = `<span aria-hidden="true">＋</span> 전세 위험/피해 의심 건 접수`;
     mine.addEventListener("click", () => {
       jpoCaseWizard = jpoDefaultCaseWizard();
       jpoGo("cases-new");
@@ -42,7 +42,7 @@ function jpoTakeoverSidebar() {
     const mine = curSearch.cloneNode(false);
     mine.dataset.jpoMode = "1";
     mine.value = jpoState.search.q;
-    mine.placeholder = "관리 건, 임대차 계약, 피해자 Ref, 주소 Ref, 임대인 Ref, 보증/경매, 담당자...";
+    mine.placeholder = "사건번호, 익명 고객 ID, 주소 일부, 단지명, 위험 신호, 담당자...";
     let timer = null;
     mine.addEventListener("input", (event) => {
       const q = event.target.value;

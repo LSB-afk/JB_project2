@@ -1,5 +1,5 @@
-/* 전세사기 보호 담당자 역할 하네스 — 신규 전세보호 건 접수 위저드.
-   저장은 createJeonseProtectionCase(서비스 레이어)만 사용한다. */
+/* 전세사기 보호 하네스 — 신규 전세 위험/피해 의심 건 접수 위저드 (v2).
+   Step4에서 공공데이터 adapter를 호출해 저장 전 위험 신호를 미리 계산한다. */
 
 function jpoWizardOptions(options, selected) {
   return options.map(([value, label]) => `<option value="${escapeHtml(value)}" ${selected === value ? "selected" : ""}>${escapeHtml(label)}</option>`).join("");
@@ -8,104 +8,139 @@ function jpoWizardOptions(options, selected) {
 function jpoCollectCaseWizard(form) {
   const fd = new FormData(form);
   return {
-    taskType: String(fd.get("taskType") || "preContractRisk"),
-    title: String(fd.get("title") || ""),
-    description: String(fd.get("description") || ""),
-    tenantRefId: String(fd.get("tenantRefId") || ""),
-    contractRefId: String(fd.get("contractRefId") || ""),
-    propertyRefId: String(fd.get("propertyRefId") || ""),
-    landlordRefId: String(fd.get("landlordRefId") || ""),
-    addressRefId: String(fd.get("addressRefId") || ""),
-    depositAmountBand: String(fd.get("depositAmountBand") || "확인 필요"),
-    leaseStartDate: String(fd.get("leaseStartDate") || ""),
-    leaseEndDate: String(fd.get("leaseEndDate") || ""),
-    assignedTeam: String(fd.get("assignedTeam") || ""),
-    assignedToId: String(fd.get("assignedToId") || ""),
+    intakeType: String(fd.get("intakeType") || "preContract"),
+    housingType: String(fd.get("housingType") || "rowHouse"),
+    contractType: String(fd.get("contractType") || "jeonse"),
+    lawdCode: String(fd.get("lawdCode") || JPO_REGION_PRESETS[0].lawdCode),
+    addressMasked: String(fd.get("addressMasked") || ""),
+    buildingName: String(fd.get("buildingName") || ""),
+    areaSize: String(fd.get("areaSize") || ""),
+    floor: String(fd.get("floor") || ""),
+    builtYear: String(fd.get("builtYear") || ""),
+    contractStartDate: String(fd.get("contractStartDate") || ""),
+    contractEndDate: String(fd.get("contractEndDate") || ""),
+    depositAmount: String(fd.get("depositAmount") || "0"),
+    monthlyRentAmount: String(fd.get("monthlyRentAmount") || "0"),
+    customerRefId: String(fd.get("customerRefId") || ""),
+    registryStatus: String(fd.get("registryStatus") || "unknown"),
+    guaranteeStatus: String(fd.get("guaranteeStatus") || "unknown"),
+    buildingCheckStatus: String(fd.get("buildingCheckStatus") || "unknown"),
+    seniorLienEntered: Boolean(fd.get("seniorLienEntered")),
+    auctionNoticed: Boolean(fd.get("auctionNoticed")),
+    auctionDeadline: String(fd.get("auctionDeadline") || ""),
+    docsReady: Boolean(fd.get("docsReady")),
     priority: String(fd.get("priority") || "normal"),
-    riskLevel: String(fd.get("riskLevel") || "medium"),
     dueAt: String(fd.get("dueAt") || ""),
     sourceChannel: String(fd.get("sourceChannel") || "opsPortal"),
-    requiresHumanReview: Boolean(fd.get("requiresHumanReview")),
-    attachmentsExist: Boolean(fd.get("attachmentsExist")),
     tags: String(fd.get("tags") || ""),
-    riskSignals: fd.getAll("riskSignals").map(String),
+    enrichedMarket: jpoCaseWizard.enrichedMarket,
+    enrichStatus: jpoCaseWizard.enrichStatus,
   };
 }
 
+function jpoWizardPreviewMarkup(preview) {
+  const { market, assessment } = preview;
+  const signalList = assessment.signals.length
+    ? assessment.signals.map((signal) => `<li class="jbwc-row"><span>${jpoRiskPill(signal.severity)} ${escapeHtml(signal.title)}</span><span class="jbwc-row-note">${escapeHtml(signal.evidence || "")}</span></li>`).join("")
+    : '<li class="jbwc-row"><span>표시할 위험 신호 없음 — 담당자 확인 항목만 유지</span></li>';
+  return `
+    <div class="jbwc-preview-grid">
+      <div><span>데이터 연계 상태 · sourceMode</span><strong>${escapeHtml(JPO_SOURCE_MODES[market.sourceMode] || market.sourceMode)}</strong></div>
+      <div><span>유사 매매 실거래 수</span><strong>${escapeHtml(String(market.comparableTradeCount ?? 0))}건</strong></div>
+      <div><span>유사 전월세 실거래 수</span><strong>${escapeHtml(String(market.comparableRentCount ?? 0))}건</strong></div>
+      <div><span>주변 전세 중앙값</span><strong>${escapeHtml(jpoWon(market.jeonseMedian))}</strong></div>
+      <div><span>보증금/추정 매매가</span><strong>${assessment.jeonseRatio != null ? escapeHtml(String(Math.round(assessment.jeonseRatio * 100))) + "%" : "산출 불가"}</strong></div>
+      <div><span>보증금/추정 공시가격</span><strong>${assessment.officialPriceEst ? escapeHtml(String(Math.round((Number(jpoCaseWizard.depositAmount) / assessment.officialPriceEst) * 100))) + "%" : "산출 불가"}</strong></div>
+      <div><span>위험도 · riskLevel</span><strong>${escapeHtml(JPO_RISK_LABELS[assessment.riskLevel] || assessment.riskLevel)}</strong></div>
+      <div><span>데이터 신뢰도 · confidence</span><strong>${escapeHtml(assessment.confidence)}</strong></div>
+      <div><span>담당자 검토 필요 · requiresHumanReview</span><strong>${assessment.requiresHumanReview ? "예" : "아니요"}</strong></div>
+      <div><span>추천 에이전트</span><strong>${escapeHtml(jpoAgentDisplayName(preview.recommendedAgent))}</strong></div>
+      <div><span>초기 상태</span><strong>${escapeHtml(jpoStatusLabel(preview.initialStatus))}</strong></div>
+      <div><span>추천 다음 작업</span><strong>${escapeHtml(assessment.nextActions.slice(0, 2).join(" / ") || "-")}</strong></div>
+    </div>
+    <ul class="jbwc-list">${signalList}</ul>
+    ${market.sourceMode !== "live_api" ? `<p class="jbwc-guard" data-live-note="off">실거래 API 미연결 — 샘플/스냅샷 기준입니다. 위험도를 낮게 확정하지 않고 담당자 확인 필요로 처리합니다.</p>` : `<p class="jbwc-guard" data-live-note="on">실거래 API(live_api) 기준으로 계산되었습니다.</p>`}`;
+}
+
 function jpoCaseCreationView() {
-  const taskTypes = Object.entries(JPO_TASK_TAXONOMY).map(([value, cfg]) => [value, cfg.label]);
-  const taxonomy = JPO_TASK_TAXONOMY[jpoCaseWizard.taskType] || JPO_TASK_TAXONOMY.preContractRisk;
-  const users = jpoTable("users", JPO_ROLE_KEY);
-  const teams = [...new Set(Object.values(JPO_TASK_TAXONOMY).map((cfg) => cfg.team).concat(users.map((u) => u.team)))].filter(Boolean);
+  const intakeOptions = Object.entries(JPO_INTAKE_TYPES).map(([value, cfg]) => [value, cfg.label]);
+  const housingOptions = Object.entries(JPO_HOUSING_TYPES).map(([value, cfg]) => [value, cfg.label]);
+  const contractOptions = Object.entries(JPO_CONTRACT_TYPES);
+  const regionOptions = JPO_REGION_PRESETS.map((preset) => [preset.lawdCode, `${preset.label} (${preset.lawdCode})`]);
   const preview = previewJeonseProtectionTriage(jpoCaseWizard);
-  const bands = ["1억 미만", "1억~2억", "2억~3억", "3억 이상", "확인 필요"];
   const priorityOptions = Object.entries(JPO_PRIORITY_LABELS)
     .map(([value, label]) => `<option value="${value}" ${jpoCaseWizard.priority === value ? "selected" : ""}>${escapeHtml(label)}</option>`).join("");
-  const riskOptions = Object.entries(JPO_RISK_LABELS)
-    .map(([value, label]) => `<option value="${value}" ${jpoCaseWizard.riskLevel === value ? "selected" : ""}>${escapeHtml(label)}</option>`).join("");
-  const signalChecks = Object.entries(JPO_RISK_SIGNALS).map(([key, label]) => `
-    <label class="jbwc-check"><input type="checkbox" name="riskSignals" value="${escapeHtml(key)}" data-jpo-wizard-signal ${jpoCaseWizard.riskSignals.includes(key) ? "checked" : ""} /> ${escapeHtml(label)}</label>`).join("");
-  return jpoPanel("신규 전세보호 운영 건 접수", `
+  const triState = (name, current) => ["verified", "unknown"].map((value) => `<option value="${value}" ${current === value ? "selected" : ""}>${value === "verified" ? "확인 완료" : "확인 필요"}</option>`).join("");
+  return jpoPanel("신규 전세 위험/피해 의심 건 접수", `
     <form id="jpo-new-case-form" class="jbwc-wizard">
       <section class="jbwc-step">
-        <h3>1단계. 업무 유형 선택</h3>
-        <label>업무 유형
-          <select id="jpo-case-taskType" name="taskType" data-jpo-wizard-field>${jpoWizardOptions(taskTypes, jpoCaseWizard.taskType)}</select>
+        <h3>1단계. 유형 선택</h3>
+        <label>접수 유형
+          <select id="jpo-case-intakeType" name="intakeType" data-jpo-wizard-field>${jpoWizardOptions(intakeOptions, jpoCaseWizard.intakeType)}</select>
         </label>
-        <p class="jbwc-guard">담당팀 기본값: ${escapeHtml(taxonomy.team)}${taxonomy.requiresHumanReview ? " · 이 유형은 사람 검토가 필수입니다" : ""}</p>
+        <p class="jbwc-guard">담당팀 기본값: <span data-jpo-team-hint>${escapeHtml((JPO_INTAKE_TYPES[jpoCaseWizard.intakeType] || {}).team || "위험분석팀")}</span></p>
       </section>
       <section class="jbwc-step">
-        <h3>2단계. 케이스 정보 입력</h3>
+        <h3>2단계. 주택 정보</h3>
         <div class="jbwc-form-grid">
-          <label class="jbwc-wide">제목<input name="title" value="${escapeHtml(jpoCaseWizard.title)}" placeholder="전세보호 운영 건 제목" required /></label>
-          <label class="jbwc-wide">설명<textarea name="description" rows="3" placeholder="내부 운영 설명 (개인정보 원문 입력 금지)">${escapeHtml(jpoCaseWizard.description)}</textarea></label>
-          <label>임차인 참조 ID<input name="tenantRefId" value="${escapeHtml(jpoCaseWizard.tenantRefId)}" placeholder="TENANT-REF-0000" /></label>
-          <label>계약 참조 ID<input name="contractRefId" value="${escapeHtml(jpoCaseWizard.contractRefId)}" placeholder="CONTRACT-REF-0000" /></label>
-          <label>물건 참조 ID<input name="propertyRefId" value="${escapeHtml(jpoCaseWizard.propertyRefId)}" placeholder="PROPERTY-REF-0000" /></label>
-          <label>임대인 참조 ID<input name="landlordRefId" value="${escapeHtml(jpoCaseWizard.landlordRefId)}" placeholder="LANDLORD-REF-0000" /></label>
-          <label>주소 참조 ID<input name="addressRefId" value="${escapeHtml(jpoCaseWizard.addressRefId)}" placeholder="ADDRESS-REF-0000" /></label>
-          <label>보증금 구간<select name="depositAmountBand">${bands.map((band) => `<option value="${escapeHtml(band)}" ${jpoCaseWizard.depositAmountBand === band ? "selected" : ""}>${escapeHtml(band)}</option>`).join("")}</select></label>
-          <label>임대차 시작일<input name="leaseStartDate" type="date" value="${escapeHtml(jpoCaseWizard.leaseStartDate)}" /></label>
-          <label>임대차 종료일<input name="leaseEndDate" type="date" value="${escapeHtml(jpoCaseWizard.leaseEndDate)}" /></label>
-          <label>담당팀<select name="assignedTeam">${teams.map((team) => `<option value="${escapeHtml(team)}" ${jpoCaseWizard.assignedTeam === team ? "selected" : ""}>${escapeHtml(team)}</option>`).join("")}</select></label>
-          <label>담당자<select name="assignedToId"><option value="">담당팀 기본 배정</option>${users.map((u) => `<option value="${escapeHtml(u.id)}" ${jpoCaseWizard.assignedToId === u.id ? "selected" : ""}>${escapeHtml(u.name)} · ${escapeHtml(u.team)}</option>`).join("")}</select></label>
+          <label>주택 유형<select name="housingType" data-jpo-wizard-field>${jpoWizardOptions(housingOptions, jpoCaseWizard.housingType)}</select></label>
+          <label>시/도·시/군/구·법정동<select name="lawdCode" data-jpo-wizard-field>${jpoWizardOptions(regionOptions, jpoCaseWizard.lawdCode)}</select></label>
+          <label>주소 일부(마스킹)<input name="addressMasked" value="${escapeHtml(jpoCaseWizard.addressMasked)}" placeholder="예: 서울 강서구 화곡동 ***" /></label>
+          <label>단지/건물명<input name="buildingName" value="${escapeHtml(jpoCaseWizard.buildingName)}" placeholder="예: ○○빌라 (실명·상세주소 입력 금지)" /></label>
+          <label>전용면적(㎡)<input name="areaSize" inputmode="numeric" value="${escapeHtml(jpoCaseWizard.areaSize)}" /></label>
+          <label>층<input name="floor" inputmode="numeric" value="${escapeHtml(jpoCaseWizard.floor)}" /></label>
+          <label>준공연도<input name="builtYear" inputmode="numeric" value="${escapeHtml(jpoCaseWizard.builtYear)}" /></label>
+          <label>계약 예정일/만기일<input name="contractEndDate" type="date" value="${escapeHtml(jpoCaseWizard.contractEndDate)}" data-jpo-wizard-field /></label>
+        </div>
+      </section>
+      <section class="jbwc-step">
+        <h3>3단계. 계약 정보</h3>
+        <div class="jbwc-form-grid">
+          <label>보증금(원)<input name="depositAmount" inputmode="numeric" value="${escapeHtml(jpoCaseWizard.depositAmount)}" data-jpo-wizard-field /></label>
+          <label>월세(원)<input name="monthlyRentAmount" inputmode="numeric" value="${escapeHtml(jpoCaseWizard.monthlyRentAmount)}" /></label>
+          <label>임대차 유형<select name="contractType">${jpoWizardOptions(contractOptions, jpoCaseWizard.contractType)}</select></label>
+          <label>계약 시작일<input name="contractStartDate" type="date" value="${escapeHtml(jpoCaseWizard.contractStartDate)}" /></label>
+          <label>익명 고객 ID<input name="customerRefId" value="${escapeHtml(jpoCaseWizard.customerRefId)}" placeholder="CUST-JS-0000" /></label>
+          <label>보증보험 가입 여부<select name="guaranteeStatus" data-jpo-wizard-field>
+            <option value="enrolled" ${jpoCaseWizard.guaranteeStatus === "enrolled" ? "selected" : ""}>가입 확인</option>
+            <option value="none" ${jpoCaseWizard.guaranteeStatus === "none" ? "selected" : ""}>미가입</option>
+            <option value="unknown" ${jpoCaseWizard.guaranteeStatus === "unknown" ? "selected" : ""}>확인 필요</option>
+          </select></label>
+          <label>등기부 확인 여부<select name="registryStatus" data-jpo-wizard-field>${triState("registryStatus", jpoCaseWizard.registryStatus)}</select></label>
+          <label>건축물 확인 여부<select name="buildingCheckStatus" data-jpo-wizard-field>${triState("buildingCheckStatus", jpoCaseWizard.buildingCheckStatus)}</select></label>
+          <label class="jbwc-check"><input type="checkbox" name="seniorLienEntered" ${jpoCaseWizard.seniorLienEntered ? "checked" : ""} /> 선순위 권리 입력됨</label>
+          <label class="jbwc-check"><input type="checkbox" name="auctionNoticed" data-jpo-wizard-field ${jpoCaseWizard.auctionNoticed ? "checked" : ""} /> 경·공매 통지 받음</label>
+          <label>경·공매 기한<input name="auctionDeadline" type="date" value="${escapeHtml(jpoCaseWizard.auctionDeadline)}" data-jpo-wizard-field /></label>
+          <label class="jbwc-check"><input type="checkbox" name="docsReady" ${jpoCaseWizard.docsReady ? "checked" : ""} /> 제출서류 보유</label>
           <label>우선순위<select name="priority">${priorityOptions}</select></label>
-          <label>위험도<select name="riskLevel">${riskOptions}</select></label>
           <label>처리 기한<input name="dueAt" type="date" value="${escapeHtml(jpoCaseWizard.dueAt)}" /></label>
-          <label>접수 채널<input name="sourceChannel" value="${escapeHtml(jpoCaseWizard.sourceChannel)}" /></label>
-          <label class="jbwc-check"><input type="checkbox" name="requiresHumanReview" ${jpoCaseWizard.requiresHumanReview ? "checked" : ""} /> 사람 검토 필요</label>
-          <label class="jbwc-check"><input type="checkbox" name="attachmentsExist" ${jpoCaseWizard.attachmentsExist ? "checked" : ""} /> 관련 문서 있음</label>
           <label class="jbwc-wide">태그<input name="tags" value="${escapeHtml(jpoCaseWizard.tags)}" placeholder="쉼표로 구분" /></label>
         </div>
       </section>
-      <section class="jbwc-step">
-        <h3>3단계. 위험 신호 입력</h3>
-        <div class="jbwc-form-grid">${signalChecks}</div>
-      </section>
       <section class="jbwc-step jbwc-preview">
-        <h3>4단계. AI 전세보호 오케스트레이터 미리보기</h3>
-        <div class="jbwc-preview-grid">
-          <div><span>추천 에이전트 · recommendedAgent</span><strong>${escapeHtml(jpoAgentDisplayName(preview.recommendedAgent))}</strong></div>
-          <div><span>추천 담당팀 · recommendedTeam</span><strong>${escapeHtml(preview.recommendedTeam)}</strong></div>
-          <div><span>초기 상태 · initialStatus</span><strong>${escapeHtml(jpoStatusLabel(preview.initialStatus))}</strong></div>
-          <div><span>위험도 보정 · riskOverride</span><strong>${escapeHtml(JPO_RISK_LABELS[preview.riskOverride] || preview.riskOverride)}</strong></div>
-          <div><span>SLA 기한 · slaDueAt</span><strong>${escapeHtml(preview.slaDueAt)}</strong></div>
-          <div><span>사람 검토 필요 · requiresHumanReview</span><strong>${preview.requiresHumanReview ? "예" : "아니요"}</strong></div>
-          <div><span>에스컬레이션 필요 · escalationRequired</span><strong>${preview.escalationRequired ? "예" : "아니요"}</strong></div>
-          <div><span>핸드오프 · handoffs</span><strong>${escapeHtml(preview.handoffs.map((item) => jpoAgentDisplayName(item.toAgentId)).join(", ") || "-")}</strong></div>
-          <div><span>필요 서류 · requiredDocuments</span><strong>${escapeHtml(preview.requiredDocuments.join(", ") || "-")}</strong></div>
-          <div><span>지원 프로그램 후보 · supportProgramCandidates</span><strong>${escapeHtml(preview.supportProgramCandidates.join(", ") || "-")}</strong></div>
-          <div class="jbwc-wide"><span>외부 참고 링크 · externalReferenceLinks</span><strong>${escapeHtml(preview.externalReferenceLinks.join(" · ") || "-")}</strong></div>
-        </div>
-        <p class="jbwc-guard">체크리스트: ${escapeHtml(preview.checklist.join(" · "))}</p>
-        <p class="jbwc-guard">외부 링크·지원기관 안내는 "신청 대행"이 아니라 "안내 후보"입니다 — 최신 기준 담당자 확인 필요.</p>
+        <h3>4단계. API 데이터 보강 미리보기</h3>
+        <footer>
+          <button class="secondary-button" type="button" data-jpo-enrich-preview>${jpoCaseWizard.enrichStatus === "loading" ? "실거래 조회 중..." : "API 데이터 보강 실행"}</button>
+          <button class="secondary-button" type="button" data-jpo-preview-refresh>미리보기 갱신</button>
+        </footer>
+        <div data-jpo-preview-body>${jpoWizardPreviewMarkup(preview)}</div>
       </section>
       <section class="jbwc-step">
         <h3>5단계. 저장</h3>
-        <p class="jbwc-guard">jeonse_cases, jeonse_tasks, audit_logs, ai_analysis_requests/agent_runs와 업무 유형별 상세 테이블에 모의 운영 기록을 저장합니다.</p>
-        <footer><button class="secondary-button" type="button" data-jpo-preview-refresh>미리보기 갱신</button><button class="primary-button" type="submit">전세보호 운영 건 접수</button></footer>
+        <p class="jbwc-guard">jeonse_cases · jeonse_price_snapshots · jeonse_risk_signals · 권리/보증 체크 · jeonse_audit_logs(CASE_CREATED) · jeonse_agent_runs에 모의 기록을 저장합니다.</p>
+        <footer><button class="primary-button" type="submit">전세 위험/피해 의심 건 접수</button></footer>
       </section>
     </form>`) + jpoMockNote();
+}
+
+function jpoUpdateWizardPreviewInPlace(wizard) {
+  // 폼 DOM을 유지한 채 미리보기만 갱신 — 전체 re-render는 진행 중인 클릭/포커스를 삼킨다.
+  const body = wizard.querySelector("[data-jpo-preview-body]");
+  if (body) body.innerHTML = jpoWizardPreviewMarkup(previewJeonseProtectionTriage(jpoCaseWizard));
+  const teamHint = wizard.querySelector("[data-jpo-team-hint]");
+  if (teamHint) teamHint.textContent = (JPO_INTAKE_TYPES[jpoCaseWizard.intakeType] || {}).team || "위험분석팀";
+  const enrichButton = wizard.querySelector("[data-jpo-enrich-preview]");
+  if (enrichButton) enrichButton.textContent = jpoCaseWizard.enrichStatus === "loading" ? "실거래 조회 중..." : "API 데이터 보강 실행";
 }
 
 function jpoBindCaseWizardForm() {
@@ -114,31 +149,39 @@ function jpoBindCaseWizardForm() {
   wizard.querySelectorAll("[data-jpo-wizard-field]").forEach((field) => {
     field.addEventListener("change", () => {
       jpoCaseWizard = { ...jpoCaseWizard, ...jpoCollectCaseWizard(wizard) };
-      if (field.name === "taskType") {
-        const cfg = JPO_TASK_TAXONOMY[jpoCaseWizard.taskType] || JPO_TASK_TAXONOMY.preContractRisk;
-        jpoCaseWizard.assignedTeam = cfg.team;
+      if (["housingType", "lawdCode"].includes(field.name)) {
+        jpoCaseWizard.enrichedMarket = null; // 지역/유형 변경 시 보강 결과 무효화
+        jpoCaseWizard.enrichStatus = "idle";
       }
-      render();
-    });
-  });
-  wizard.querySelectorAll("[data-jpo-wizard-signal]").forEach((box) => {
-    box.addEventListener("change", () => {
-      jpoCaseWizard = { ...jpoCaseWizard, ...jpoCollectCaseWizard(wizard) };
-      render();
+      jpoUpdateWizardPreviewInPlace(wizard);
     });
   });
   const refresh = wizard.querySelector("[data-jpo-preview-refresh]");
   if (refresh) {
     refresh.addEventListener("click", () => {
       jpoCaseWizard = { ...jpoCaseWizard, ...jpoCollectCaseWizard(wizard) };
-      render();
+      jpoUpdateWizardPreviewInPlace(wizard);
+    });
+  }
+  const enrich = wizard.querySelector("[data-jpo-enrich-preview]");
+  if (enrich) {
+    enrich.addEventListener("click", () => {
+      jpoCaseWizard = { ...jpoCaseWizard, ...jpoCollectCaseWizard(wizard), enrichStatus: "loading" };
+      jpoUpdateWizardPreviewInPlace(wizard);
+      fetchJeonseMarketData({ housingType: jpoCaseWizard.housingType, lawdCode: jpoCaseWizard.lawdCode, dealYm: "202605" })
+        .then((market) => {
+          jpoCaseWizard.enrichedMarket = market;
+          jpoCaseWizard.enrichStatus = market.sourceMode;
+        })
+        .catch(() => { jpoCaseWizard.enrichStatus = "fallback"; })
+        .then(() => jpoUpdateWizardPreviewInPlace(wizard));
     });
   }
   wizard.addEventListener("submit", (event) => {
     event.preventDefault();
     jpoCaseWizard = { ...jpoCaseWizard, ...jpoCollectCaseWizard(wizard) };
-    if (!jpoCaseWizard.title.trim()) {
-      if (typeof notify === "function") notify("전세보호 운영 건 제목을 입력해 주세요.");
+    if (!Number(jpoCaseWizard.depositAmount)) {
+      if (typeof notify === "function") notify("보증금을 입력해 주세요.");
       return;
     }
     const created = createJeonseProtectionCase(jpoCaseWizard);
@@ -150,7 +193,7 @@ function jpoBindCaseWizardForm() {
     }
     jpoInvalidateCounts();
     jpoCaseWizard = jpoDefaultCaseWizard();
-    if (typeof notify === "function") notify(`${created.case.caseNo} 전세보호 건 접수 완료 — 감사 기록·에이전트 큐 저장 (모의)`);
+    if (typeof notify === "function") notify(`${created.case.caseNo} 접수 완료 — 스냅샷·위험 신호·감사 기록 저장 (모의)`);
     jpoGo("cases", { kind: "case", id: created.case.id });
   });
 }

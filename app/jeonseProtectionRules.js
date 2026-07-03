@@ -50,8 +50,8 @@ const jeonseProtectionHooks = {
     () => (typeof getJeonseProtectionSidebarCounts === "function" ? null : "count service 미탑재"),
   ],
   beforeCaseCreate: [
-    (payload) => harnessGuardCheckPII(`${payload.title || ""} ${payload.description || ""} ${payload.tags || ""}`),
-    (payload) => harnessGuardCheckAssertions(`${payload.title || ""} ${payload.description || ""}`, JPO_FORBIDDEN_ASSERTIONS),
+    (payload) => harnessGuardCheckPII([payload.title, payload.description, payload.buildingName, payload.addressMasked, payload.customerRefId, payload.tags].filter(Boolean).join(" ")),
+    (payload) => harnessGuardCheckAssertions([payload.title, payload.description, payload.buildingName, payload.addressMasked].filter(Boolean).join(" "), JPO_FORBIDDEN_ASSERTIONS),
   ],
   afterCaseCreate: [
     (payload) => harnessGuardCheckScope(payload.caseRow, "roleKey", JPO_ROLE_KEY),

@@ -1,4 +1,4 @@
-/* 전세사기 보호 담당자 역할 하네스 — 공용 상태/렌더 헬퍼.
+/* 전세사기 보호 하네스 — 공용 상태/렌더 헬퍼 (v2).
    presentation은 공통 CSS 토큰(jbwc-* 클래스)을 재사용하고,
    상태·데이터 접근은 전부 JPO 전용(config/db/services)만 사용한다. */
 
@@ -11,35 +11,43 @@ let jpoState = {
   countsLoading: false,
   countsError: false,
   countsAt: null,
+  selfTest: null,
+  roleEntered: false,
+  enrich: { status: "idle", caseId: null, message: "" },
   search: { q: "", loading: false, error: false, blocked: null, results: null },
 };
 
 let jpoCaseWizard = jpoDefaultCaseWizard();
 
 function jpoDefaultCaseWizard() {
-  const taskType = "preContractRisk";
   return {
-    taskType,
-    title: "",
-    description: "",
-    tenantRefId: "TENANT-REF-DEMO",
-    contractRefId: "CONTRACT-REF-DEMO",
-    propertyRefId: "PROPERTY-REF-DEMO",
-    landlordRefId: "LANDLORD-REF-DEMO",
-    addressRefId: "ADDRESS-REF-DEMO",
-    depositAmountBand: "1억~2억",
-    leaseStartDate: "",
-    leaseEndDate: "",
-    assignedTeam: JPO_TASK_TAXONOMY[taskType].team,
-    assignedToId: "",
+    intakeType: "preContract",
+    housingType: "rowHouse",
+    contractType: "jeonse",
+    lawdCode: JPO_REGION_PRESETS[0].lawdCode,
+    addressMasked: "",
+    buildingName: "",
+    areaSize: "",
+    floor: "",
+    builtYear: "",
+    contractStartDate: "",
+    contractEndDate: "",
+    depositAmount: "230000000",
+    monthlyRentAmount: "0",
+    customerRefId: "CUST-JS-DEMO",
+    registryStatus: "unknown",
+    guaranteeStatus: "unknown",
+    buildingCheckStatus: "unknown",
+    seniorLienEntered: false,
+    auctionNoticed: false,
+    auctionDeadline: "",
+    docsReady: false,
     priority: "normal",
-    riskLevel: "medium",
     dueAt: "",
     sourceChannel: "opsPortal",
-    requiresHumanReview: false,
-    attachmentsExist: false,
     tags: "",
-    riskSignals: [],
+    enrichedMarket: null,
+    enrichStatus: "idle",
   };
 }
 
@@ -47,12 +55,26 @@ function jpoModeActive() {
   return typeof activeView !== "undefined" && activeView === "jeonse-protection-harness";
 }
 
-function jpoTaskTypeLabel(taskType) {
-  return (JPO_TASK_TAXONOMY[taskType] || {}).label || taskType || "-";
+function jpoIntakeTypeLabel(intakeType) {
+  return (JPO_INTAKE_TYPES[intakeType] || {}).label || intakeType || "-";
+}
+
+function jpoHousingTypeLabel(housingType) {
+  return (JPO_HOUSING_TYPES[housingType] || {}).label || housingType || "-";
 }
 
 function jpoStatusLabel(status) {
   return JPO_STATUS_LABELS[status] || status || "-";
+}
+
+function jpoWon(amount) {
+  const value = Number(amount || 0);
+  if (!value) return "-";
+  if (value >= 100000000) {
+    const eok = value / 100000000;
+    return `${eok % 1 === 0 ? eok : eok.toFixed(1)}억`;
+  }
+  return `${Math.round(value / 10000).toLocaleString("ko-KR")}만원`;
 }
 
 function jpoRiskPill(risk) {
@@ -70,21 +92,27 @@ function jpoRiskPill(risk) {
 
 function jpoStatusPill(status) {
   const pending = [
-    "received", "triaged", "assigned", "inReview", "pendingApproval",
-    "pendingVictimReview", "pendingGuaranteeReview", "waitingExternalData",
+    "received", "enriching", "riskReview", "onHold", "unknown", "manualRequired",
     "open", "inProgress", "pending", "queued", "running", "needsReview",
-    "investigating", "upcoming", "degraded",
+    "pendingApproval", "investigating", "upcoming", "degraded", "notified", "snapshot",
   ];
-  const danger = ["escalated", "overdue", "down", "error", "rejected", "critical"];
-  const ok = ["completed", "closed", "resolved", "active", "enabled", "healthy", "approved"];
+  const danger = ["humanReview", "overdue", "down", "error", "rejected", "critical", "fallback"];
+  const ok = ["externalLinked", "guidanceDone", "verified", "linked", "guided", "completed", "closed", "resolved", "active", "healthy", "approved", "enrolled", "live_api"];
   const cls = danger.includes(status) ? "status-escalated"
     : ok.includes(status) ? "status-approved"
       : pending.includes(status) ? "status-pending" : "status-new";
   return `<span class="status-pill ${cls}" data-status="${escapeHtml(status || "-")}">${escapeHtml(jpoStatusLabel(status))}</span>`;
 }
 
+function jpoSourceModePill(sourceMode) {
+  const cls = sourceMode === "live_api" ? "status-approved"
+    : sourceMode === "snapshot" ? "status-pending"
+      : "status-escalated";
+  return `<span class="status-pill ${cls}" data-source-mode="${escapeHtml(sourceMode || "-")}">${escapeHtml(JPO_SOURCE_MODES[sourceMode] || sourceMode || "-")}</span>`;
+}
+
 function jpoMockNote() {
-  return `<p class="jbwc-mock-note">※ 내부 운영 참고용 모의(mock) 데이터 — 실제 신청·법률 판단·고객 안내 아님 · 담당자 검토 필요</p>`;
+  return `<p class="jbwc-mock-note">※ 내부 운영 참고용 모의(mock) 데이터 — 위험 "신호"만 표시하며 전세사기 여부·법률·보증·피해자 결정을 확정하지 않습니다 · 담당자 검토 필요</p>`;
 }
 
 function jpoPanel(title, bodyHtml, metaHtml = "") {
@@ -95,33 +123,31 @@ function jpoPanel(title, bodyHtml, metaHtml = "") {
 function jpoDetailSource(kind) {
   return {
     case: "jeonse_cases",
-    task: "jeonse_tasks",
-    risk: "jeonse_risk_assessments",
+    snapshot: "jeonse_price_snapshots",
+    signal: "jeonse_risk_signals",
     registry: "jeonse_registry_checks",
-    price: "jeonse_price_ratio_checks",
-    guarantee: "jeonse_guarantee_reviews",
-    victim: "jeonse_victim_support_reviews",
-    referral: "jeonse_referrals",
-    alert: "jeonse_alerts",
+    guarantee: "jeonse_guarantee_checks",
+    referral: "jeonse_support_referrals",
     approval: "approvals",
-    agentRun: "agent_runs",
+    agentRun: "jeonse_agent_runs",
     handoff: "agent_handoffs",
     recommendation: "ai_recommendations",
+    connector: "external_connectors",
   }[kind] || null;
 }
 
 function jpoDetailTitle(kind, row) {
   if (!row) return "상세";
-  if (kind === "case") return `${row.caseNo} · ${row.title}`;
-  if (kind === "task") return `${row.id} · ${row.title}`;
-  if (kind === "guarantee" || kind === "victim") return `${row.id} · ${row.reviewType}`;
-  if (kind === "registry") return `${row.id} · ${row.issueType}`;
-  if (kind === "price") return `${row.id} · ${row.checkType}`;
-  if (kind === "referral") return `${row.id} · ${row.referralType}`;
-  if (kind === "alert") return `${row.id} · ${row.alertType}`;
+  if (kind === "case") return `${row.caseNo} · ${row.addressMasked}`;
+  if (kind === "snapshot") return `${row.id} · 시세 스냅샷(${row.lawdCode})`;
+  if (kind === "signal") return `${row.id} · ${row.title}`;
+  if (kind === "registry") return `${row.id} · ${row.checkType}`;
+  if (kind === "guarantee") return `${row.id} · ${row.provider}`;
+  if (kind === "referral") return `${row.id} · ${row.targetAgency}`;
   if (kind === "approval") return `${row.id} · ${row.approvalType}`;
   if (kind === "agentRun") return `${row.id} · ${row.agentId}`;
   if (kind === "handoff") return `${row.id} · ${row.fromAgentId} → ${row.toAgentId}`;
+  if (kind === "connector") return `${row.id} · ${row.name}`;
   if (kind === "recommendation") return row.title;
   return row.id || "상세";
 }
@@ -145,14 +171,15 @@ function jpoDetailPanel() {
         <button class="secondary-button" type="button" data-jpo-clear-detail>닫기</button>
       </header>
       <div class="jbwc-empty">요청한 기록(${escapeHtml(jpoState.detail.id || "-")})이 현재 데모 DB에 없습니다.
-        데모 데이터가 초기화되었거나 잘못된 링크일 수 있습니다.
         <button class="secondary-button" type="button" data-jpo-reset-db>데모 데이터 다시 채우기</button></div>
     </section>`;
   }
   const fields = Object.entries(row)
     .filter(([key]) => !["roleKey", "workspaceId"].includes(key))
     .map(([key, value]) => {
-      const normalized = Array.isArray(value) ? value.join(", ") : value == null ? "-" : String(value);
+      const normalized = Array.isArray(value)
+        ? value.map((item) => (Array.isArray(item) ? item.join(": ") : String(item))).join(", ")
+        : value == null ? "-" : String(value);
       return `<div><span>${escapeHtml(jpoFieldLabel(key))}</span><strong>${escapeHtml(normalized)}</strong></div>`;
     })
     .join("");
@@ -162,7 +189,7 @@ function jpoDetailPanel() {
       <button class="secondary-button" type="button" data-jpo-clear-detail>닫기</button>
     </header>
     <div class="jbwc-detail-grid">${fields}</div>
-    <p class="jbwc-guard">실명·주민번호·상세주소·계좌 원문 없이 익명 참조 ID(TENANT-REF-* 등)와 운영 상태만 표시합니다.</p>
+    <p class="jbwc-guard">실명·주민번호·전화·계좌·주소 원문 없이 익명 Ref(CUST-JS-*)와 마스킹 주소만 표시합니다.</p>
   </section>`;
 }
 
@@ -214,10 +241,13 @@ function jpoHeaderBar() {
   const dataState = jpoState.countsError
     ? `<span class="jbwc-badge-warn">데이터 갱신 실패</span>`
     : `데이터 기준 ${escapeHtml(at)}`;
-  return `<nav class="jbwc-breadcrumb" aria-label="전세사기 보호 담당자 하네스 위치">
+  const liveState = (typeof isLive === "function" && isLive())
+    ? `<span class="status-pill status-approved">실거래 API 모드</span>`
+    : `<span class="status-pill status-pending">샘플/스냅샷 기준</span>`;
+  return `<nav class="jbwc-breadcrumb" aria-label="전세사기 보호 업무지원 포털 위치">
     <button class="secondary-button" type="button" data-jpo-back>← 전체로 돌아가기</button>
-    <span>역할 &gt; <strong>전세사기 보호 담당자 하네스</strong> &gt; ${escapeHtml(JPO_VIEWS[jpoState.view] || "")}</span>
-    <span class="jbwc-updated">${dataState} <button class="secondary-button jbwc-refresh" type="button" data-jpo-refresh>새로고침</button></span>
+    <span>역할 &gt; <strong>전세사기 보호 업무지원 포털</strong> &gt; ${escapeHtml(JPO_VIEWS[jpoState.view] || "")}</span>
+    <span class="jbwc-updated">${liveState} ${dataState} <button class="secondary-button jbwc-refresh" type="button" data-jpo-refresh>새로고침</button></span>
   </nav>`;
 }
 

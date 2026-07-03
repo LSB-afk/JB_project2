@@ -8,6 +8,7 @@
 - 모든 app/*.js 문법 검사(node --check)
 """
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -43,6 +44,8 @@ app_js_files = [
     "harnessVerification.js",
     "jeonseProtectionRules.js",
     "jeonseProtection.commands.js",
+    "jeonsePublicData.adapters.js",
+    "jeonsePriceRisk.service.js",
 ]
 
 required = [
@@ -115,6 +118,8 @@ html_needles = [
     "./harnessVerification.js",
     "./jeonseProtectionRules.js",
     "./jeonseProtection.commands.js",
+    "./jeonsePublicData.adapters.js",
+    "./jeonsePriceRisk.service.js",
     "./app.js",
 ]
 for needle in html_needles:
@@ -193,6 +198,8 @@ jpo_files = [
     "jeonseFraudProtectionHarness.js",
     "jeonseProtectionRules.js",
     "jeonseProtection.commands.js",
+    "jeonsePublicData.adapters.js",
+    "jeonsePriceRisk.service.js",
 ]
 joined_jpo = "\n".join((ROOT / "app" / name).read_text(encoding="utf-8") for name in jpo_files)
 jpo_needles = [
@@ -204,19 +211,26 @@ jpo_needles = [
     "createJeonseProtectionCase",
     "recordJeonseProtectionAgentRun",
     "jeonseFraudProtectionHarness",
-    "routeJeonseProtectionCase",
+    "computeJeonseRiskAssessment",
+    "fetchJeonseMarketData",
     "/roles/jeonse-protection",
     "전세사기 보호 업무지원 하네스",
-    "신규 전세보호 운영 건 접수",
-    "피해자 결정 신청 보조",
+    "신규 전세 위험/피해 의심 건 접수",
+    "전세사기 보호 업무지원 포털",
+    "피해지원 신청 검토",
+    "위험 접수 보드",
     "내부 운영 참고용",
     "담당자 검토 필요",
     "최신 기준 담당자 확인 필요",
-    "JEONSE-CASE-0001",
+    "JEONSE-0001",
+    "jeonse_price_snapshots",
+    "JEONSE_RATIO_HIGH",
+    "sourceMode",
     "JEONSE-RUN-0001",
     "jpoRepository",
     "JPO_STATUS_LABELS",
-    "TENANT-REF-",
+    "CUST-JS-",
+    "JPO_MARKET_SNAPSHOT",
     "jeonseProtectionSkills",
     "jeonseProtectionCommands",
     "jeonseProtectionHooks",
@@ -271,8 +285,23 @@ for needle in [
     if needle not in harness_verify:
         raise SystemExit(f"harnessVerification missing {needle!r}")
 
+# ---- 공공데이터 프록시 계약 (키는 환경변수로만) ----
+proxy_src = (ROOT / "scripts/api-proxy.mjs").read_text(encoding="utf-8")
+for needle in [
+    "MOLIT_SERVICE_KEY",
+    "SEOUL_OPEN_API_KEY",
+    "MOVEVALUE_SEOUL_OPEN_API_KEY",
+    "MOLIT_APT_TRADE_KEY",
+    "MOLIT_OFFICETEL_RENT_KEY",
+    "/jeonse/market",
+    "process.env",
+]:
+    if needle not in proxy_src:
+        raise SystemExit(f"api-proxy missing {needle!r}")
+if re.search(r"serviceKey\s*[:=]\s*[\"'][A-Za-z0-9+/=%]{20,}", proxy_src):
+    raise SystemExit("api-proxy에 하드코딩된 키가 있는 것으로 보임")
+
 # ---- 금지 alias/단정 리터럴 + 실PII 패턴 정적 스캔 ----
-import re
 all_app_js = "\n".join((ROOT / "app" / name).read_text(encoding="utf-8") for name in app_js_files)
 scan_target = all_app_js + html
 for forbidden in [

@@ -32,7 +32,8 @@ function jpoContextMarkup() {
     <div class="property-row"><span>전용 하네스</span><strong>${escapeHtml(jeonseFraudProtectionHarness.id)}</strong></div>
     <div class="property-row"><span>데이터 범위(roleKey)</span><strong>${escapeHtml(JPO_ROLE_KEY)}</strong></div>
     <div class="property-row"><span>전세보호 건</span><strong>${escapeHtml(counts.cases)}</strong></div>
-    <div class="property-row"><span>긴급 위험 경보</span><strong>${escapeHtml(counts.urgentAlerts)}</strong></div>
+    <div class="property-row"><span>긴급 경·공매</span><strong>${escapeHtml(counts.urgentAuction)}</strong></div>
+    <div class="property-row"><span>데이터 연계</span><strong>${(typeof isLive === "function" && isLive()) ? "실거래 API 모드" : "샘플/스냅샷 기준"}</strong></div>
     <div class="property-row"><span>사람 검토</span><strong>피해자 결정·법률·보증·안내문 필수</strong></div>
     <p class="jbwc-guard">전세사기 여부·피해자 결정·보증 가입·법률 자문에 대한 확정 판단, 신청 대행, 개인정보 원문 저장/출력은 금지됩니다.</p>
   </div>`;
@@ -182,6 +183,27 @@ function bindJpoActions() {
   });
 
   jpoBindCaseWizardForm();
+
+  document.querySelectorAll("[data-jpo-enrich-latest]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = jpoTable("jeonse_cases", JPO_ROLE_KEY).find((c) => c.status === "enriching" || c.sourceMode === "fallback")
+        || jpoTable("jeonse_cases", JPO_ROLE_KEY)[0];
+      if (!target) return;
+      jpoState.enrich = { status: "loading", caseId: target.id, message: `${target.caseNo} 실거래 조회 중...` };
+      render();
+      enrichJeonseCase(target.id)
+        .then((result) => {
+          jpoState.enrich = {
+            status: result.market.sourceMode,
+            caseId: target.id,
+            message: `${target.caseNo} 보강 완료 — ${JPO_SOURCE_MODES[result.market.sourceMode]} · 위험도 ${JPO_RISK_LABELS[result.assessment.riskLevel] || result.assessment.riskLevel}`,
+          };
+          jpoInvalidateCounts();
+        })
+        .catch(() => { jpoState.enrich = { status: "fallback", caseId: target.id, message: "보강 실패 — 담당자 확인 필요" }; })
+        .then(() => render());
+    });
+  });
 
   const back = document.querySelector("[data-jpo-back]");
   if (back) {

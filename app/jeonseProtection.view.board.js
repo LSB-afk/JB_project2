@@ -1,47 +1,43 @@
-/* 전세사기 보호 담당자 역할 하네스 — 업무 보드 view. */
+/* 전세사기 보호 하네스 — 위험 접수 보드 (lifecycle 칸반). */
+
+function jpoBoardCard(item) {
+  const topSignals = jpoTable("jeonse_risk_signals", JPO_ROLE_KEY)
+    .filter((signal) => signal.caseId === item.id)
+    .slice(0, 3);
+  const contractLine = item.contractEndDate ? `계약/만기 ${item.contractEndDate}` : "계약일 미정";
+  return `<article class="jpo-card jbwc-card" data-jpo-open-case="${escapeHtml(item.id)}" role="button" tabindex="0">
+    <header><strong>${escapeHtml(item.caseNo)}</strong>${jpoRiskPill(item.riskLevel)}</header>
+    <p class="jbwc-meta">${escapeHtml(item.customerRefId)} · ${escapeHtml(jpoHousingTypeLabel(item.housingType))}</p>
+    <p class="jbwc-meta">${escapeHtml(item.addressMasked)}</p>
+    <p class="jbwc-meta">보증금 ${escapeHtml(jpoWon(item.depositAmount))} · ${escapeHtml(contractLine)}</p>
+    ${topSignals.length ? `<p class="jbwc-guard">${topSignals.map((signal) => escapeHtml(signal.title)).join(" · ")}</p>` : ""}
+    <p class="jbwc-meta">${escapeHtml(jpoUserName(item.assignedToId))} · SLA ${escapeHtml(item.dueAt || "-")} ${jpoSourceModePill(item.sourceMode)}</p>
+  </article>`;
+}
 
 function jpoDashboardView() {
+  const cases = jpoTable("jeonse_cases", JPO_ROLE_KEY);
   const counts = jpoState.counts || {};
-  const kpis = getJeonseProtectionDashboardKpis();
-  const tasks = jpoTable("jeonse_tasks", JPO_ROLE_KEY)
-    .filter((item) => ["open", "inProgress", "overdue"].includes(item.status) || item.dueAt === new Date().toISOString().slice(0, 10));
-  const cases = jpoTable("jeonse_cases", JPO_ROLE_KEY).filter(jpoActiveCase);
-  const menuCountKey = {
-    preContractRisk: "preContractRisk",
-    priceRatio: "priceRatio",
-    registryRights: "registryRights",
-    guaranteeHug: "guaranteeHug",
-    auctionSupport: "auctionSupport",
-    legalReferral: "supportReferrals",
-    careReferral: "supportReferrals",
-    victimDecision: "victimDecision",
-    vulnerableTenant: "vulnerableTenants",
-    urgentAlert: "urgentAlerts",
-  };
-  const typeCards = Object.entries(JPO_TASK_TAXONOMY).map(([taskType, cfg]) => {
-    const value = counts[menuCountKey[taskType]];
-    return `<button class="jbwc-card jbwc-domain-card" type="button" data-jpo-view="${escapeHtml(cfg.routeView)}">
-      <header><strong>${escapeHtml(cfg.label)}</strong><span class="status-pill status-new">${escapeHtml(value == null ? "…" : String(value))}</span></header>
-      <p class="jbwc-meta">담당 ${escapeHtml(cfg.team)}${cfg.requiresHumanReview ? " · 사람 검토 필수" : ""}</p>
-      <p class="jbwc-guard">데이터 범위 roleKey=${escapeHtml(JPO_ROLE_KEY)}</p>
-    </button>`;
+  const columns = JPO_BOARD_COLUMNS.map(([status, label]) => {
+    const items = cases.filter((item) => item.status === status);
+    return `<section class="jpo-board-column" data-board-column="${escapeHtml(status)}">
+      <header class="jpo-board-head"><strong>${escapeHtml(label)}</strong><span class="nav-count">${items.length}</span></header>
+      <div class="jpo-board-cards">${items.map(jpoBoardCard).join("") || '<div class="jbwc-empty">해당 단계 케이스 없음</div>'}</div>
+    </section>`;
   }).join("");
-  return `<section class="jbwc-hero">
-      <p class="eyebrow">역할 전용 업무 하네스 · 화면 필터가 아닌 독립 운영 콘솔</p>
-      <h2>전세사기 보호 담당자 하네스</h2>
-      <p>계약 전 위험 신호 점검부터 피해자 지원 연계까지, 전세보호 업무를 전용 데이터·에이전트·승인·감사 흐름으로 처리합니다.
-      AI는 점검 항목과 안내 후보만 제안하고, 법률 판단·피해자 결정·보증 가능 여부·고객 발송은 항상 담당자가 결정합니다.</p>
-      <div class="jbwc-kpis">${kpis.map(([label, value, note]) => `
-        <article class="jbwc-kpi"><p class="jbwc-kpi-value">${escapeHtml(value)}</p>
-        <p class="jbwc-kpi-label">${escapeHtml(label)}</p><p class="jbwc-kpi-note">${escapeHtml(note)}</p></article>`).join("")}</div>
+  const strip = [
+    ["긴급 경·공매", counts.urgentAuction],
+    ["담당자 검토 필요", cases.filter((c) => c.status === "humanReview").length],
+    ["데이터 보강 필요", counts.priceEnrich],
+    ["승인 대기", counts.approvals],
+  ].map(([label, value]) => `<article class="jbwc-kpi"><p class="jbwc-kpi-value">${escapeHtml(String(value == null ? "…" : value))}</p><p class="jbwc-kpi-label">${escapeHtml(label)}</p><p class="jbwc-kpi-note">role scope 집계</p></article>`).join("");
+  return `<section class="jbwc-hero jpo-hero-slim">
+      <p class="eyebrow">역할 전용 업무 하네스 · 시세·권리·보증·피해지원</p>
+      <h2>전세사기 보호 업무지원 포털</h2>
+      <p>AI는 위험 "신호"와 확인 항목만 제안하고, 전세사기 여부·법률·보증·피해자 결정은 항상 담당자가 판단합니다.</p>
+      <div class="jbwc-kpis">${strip}</div>
     </section>
-    ${jpoPanel("업무 유형 카드", `<div class="jbwc-grid">${typeCards}</div>`)}
-    ${jpoPanel(`오늘 처리할 태스크 (${tasks.length})`, jpoTableView(["태스크", "관련 건", "담당", "상태"], tasks, (x) => `
-      <li class="jbwc-row"><span class="jbwc-row-id">${escapeHtml(x.id)}</span>
-        <span>${escapeHtml(x.title)}<br><span class="jbwc-row-note">${escapeHtml(x.caseId || "-")}</span></span>
-        <span>${escapeHtml(jpoUserName(x.ownerId))} · 기한 ${escapeHtml(x.dueAt || "-")}</span>
-        <span>${jpoStatusPill(x.status)}</span></li>`))}
-    ${jpoPanel(`진행 중 전세보호 건 (${cases.length})`, jpoCaseListMarkup(cases))}
+    ${jpoPanel(`위험 접수 보드 (활성 ${cases.filter(jpoActiveCase).length}건)`, `<div class="jpo-board">${columns}</div>`)}
     ${jpoOfficialRefNote()}
     ${jpoMockNote()}`;
 }

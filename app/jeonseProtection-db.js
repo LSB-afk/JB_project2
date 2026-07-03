@@ -1,17 +1,9 @@
-/* 전세사기 보호 담당자 역할 하네스 — 전용 mock DB/repository.
-   실제 개인정보(실명·주민번호·전화·계좌·주소 원문·등기 원문)는 어떤 필드에도 저장하지 않는다.
-   모든 개체는 익명화 Ref(TENANT-REF-*, PROPERTY-REF-*, LANDLORD-REF-*, ADDRESS-REF-*)로만 표현한다. */
+/* 전세사기 보호 하네스 — 전용 mock DB/repository (v2).
+   실명·주민번호·전화·계좌·주소 원문·임대인 신용정보는 어떤 필드에도 저장하지 않는다.
+   식별자는 익명 Ref(CUST-JS-*)와 마스킹 주소("서울 강서구 화곡동 ***")만 사용한다. */
 
-const JPO_DB_KEY = "jpo-ops-db-v1";
-const JPO_SEED_EXAMPLE_IDS = [
-  "JEONSE-CASE-0001",
-  "JEONSE-RISK-0001",
-  "JEONSE-REG-0001",
-  "JEONSE-HUG-0001",
-  "JEONSE-VICTIM-0001",
-  "JEONSE-ALERT-0001",
-  "JEONSE-RUN-0001",
-];
+const JPO_DB_KEY = "jpo-ops-db-v2";
+const JPO_SEED_EXAMPLE_IDS = ["JEONSE-0001", "JEONSE-0002", "JEONSE-0003", "JEONSE-0004", "JEONSE-0005", "JEONSE-0006"];
 
 function jpoSeedData() {
   const R = JPO_ROLE_KEY;
@@ -22,209 +14,219 @@ function jpoSeedData() {
   const scope = (row) => ({ roleKey: R, workspaceId: W, ...row });
 
   const users = [
-    ["USR-JPO-RISK-01", "위험분석 김OO", "analyst", "전세위험분석팀"],
-    ["USR-JPO-RISK-02", "위험분석 이OO", "analyst", "전세위험분석팀"],
-    ["USR-JPO-REG-01", "권리분석 박OO", "review", "권리분석팀"],
-    ["USR-JPO-GRT-01", "보증연계 정OO", "review", "보증연계팀"],
+    ["USR-JPO-RISK-01", "위험분석 김OO", "analyst", "위험분석팀"],
+    ["USR-JPO-RISK-02", "위험분석 이OO", "analyst", "위험분석팀"],
     ["USR-JPO-SUP-01", "피해지원 최OO", "support", "피해지원팀"],
     ["USR-JPO-SUP-02", "피해지원 한OO", "support", "피해지원팀"],
-    ["USR-JPO-CARE-01", "고객보호 윤OO", "care", "고객보호팀"],
-    ["USR-JPO-AUD-01", "내부통제 배OO", "compliance", "내부통제팀"],
+    ["USR-JPO-GRT-01", "보증연계 정OO", "review", "보증연계팀"],
+    ["USR-JPO-AUD-01", "감독검토 배OO", "supervisor", "내부통제팀"],
   ].map(([id, name, role, team]) => ({ id, name, role, team, status: "active", roleKeys: [R] }));
 
-  const ownerByTeam = {
-    전세위험분석팀: "USR-JPO-RISK-01",
-    권리분석팀: "USR-JPO-REG-01",
-    보증연계팀: "USR-JPO-GRT-01",
-    피해지원팀: "USR-JPO-SUP-01",
-    고객보호팀: "USR-JPO-CARE-01",
-    내부통제팀: "USR-JPO-AUD-01",
-  };
-  const bands = ["1억 미만", "1억~2억", "2억~3억", "3억 이상"];
-
-  const caseSpecs = [
-    ["preContractRisk", "신축 빌라 계약 전 위험 점검", "inReview", "normal", "medium", ["ratioHigh"]],
-    ["preContractRisk", "재계약 전 위험 신호 재점검", "received", "normal", "medium", ["clauseMissing"]],
-    ["priceRatio", "전세가율 90% 초과 의심 점검", "inReview", "high", "high", ["ratioHigh", "depositOverMarket"]],
-    ["priceRatio", "주변 시세 대비 보증금 과다 검토", "triaged", "normal", "medium", ["depositOverMarket"]],
-    ["registryRights", "근저당 설정 의심 등기 점검", "waitingExternalData", "high", "high", ["lienSuspect"]],
-    ["registryRights", "신탁등기 의심 물건 점검", "waitingExternalData", "normal", "medium", ["trustRegistry"]],
-    ["guaranteeHug", "보증보험 가입요건 검토", "pendingGuaranteeReview", "normal", "medium", ["guaranteeUncertain"]],
-    ["guaranteeHug", "HUG 지원 프로그램 연계 검토", "pendingGuaranteeReview", "high", "medium", ["guaranteeUncertain"]],
-    ["auctionSupport", "임차 주택 경매 개시 대응", "escalated", "urgent", "high", ["auctionRisk"]],
-    ["auctionSupport", "공매 공고 확인 지원", "inReview", "high", "high", ["auctionRisk"]],
-    ["victimDecision", "피해자 결정 신청 서류 준비", "pendingVictimReview", "high", "high", ["landlordMultiHome"]],
-    ["victimDecision", "결정 신청 요건 사전 점검", "pendingVictimReview", "normal", "medium", ["landlordMultiHome"]],
-    ["legalReferral", "법률상담 연계 요청", "inReview", "normal", "medium", ["infoMismatch"]],
-    ["careReferral", "긴급주거 지원 연계 요청", "inReview", "normal", "medium", []],
-    ["careReferral", "심리상담 연계 요청", "assigned", "low", "low", []],
-    ["vulnerableTenant", "고령 임차인 우선 보호 검토", "inReview", "high", "medium", ["vulnerableTenant"]],
-    ["vulnerableTenant", "청년 1인 가구 보호 검토", "inReview", "normal", "medium", ["vulnerableTenant"]],
-    ["urgentAlert", "임대인 연락 두절 긴급 신호", "escalated", "urgent", "critical", ["landlordMultiHome", "auctionRisk"]],
-    ["urgentAlert", "보증금 미반환 임박 신호", "escalated", "urgent", "high", ["ratioHigh"]],
-    ["preContractRisk", "중개사 정보 불일치 점검", "inReview", "normal", "medium", ["infoMismatch"]],
+  /* §12 필수 seed 6건 — 케이스 lifecycle 보드 컬럼에 분산 배치 */
+  const jeonse_cases = [
+    scope({
+      id: "JEONSE-0001", caseNo: "JEONSE-0001", customerRefId: "CUST-JS-0001",
+      intakeType: "preContract", housingType: "rowHouse", contractType: "jeonse",
+      addressMasked: "서울 강서구 화곡동 ***", lawdCode: "11500", buildingName: "화곡 ○○빌라",
+      areaSize: 42, floor: 3, builtYear: 2016,
+      depositAmount: 260000000, monthlyRentAmount: 0,
+      contractStartDate: "", contractEndDate: plus(21),
+      status: "riskReview", priority: "high", riskLevel: "high", requiresHumanReview: true,
+      registryStatus: "unknown", guaranteeStatus: "unknown", buildingCheckStatus: "unknown",
+      seniorLienEntered: false, auctionNoticed: false, auctionDeadline: "", docsReady: true,
+      docChecklist: [["임대차계약서(초안)", "보유"], ["등기부등본", "확인 필요"]],
+      sourceMode: "snapshot", sourceChannel: "branch", tags: ["전세가율", "다세대"],
+      assignedTeam: "위험분석팀", assignedToId: "USR-JPO-RISK-01",
+      dueAt: plus(2), createdAt: plus(-1), updatedAt: plus(0),
+    }),
+    scope({
+      id: "JEONSE-0002", caseNo: "JEONSE-0002", customerRefId: "CUST-JS-0002",
+      intakeType: "guaranteeInquiry", housingType: "officetel", contractType: "semiJeonse",
+      addressMasked: "서울 관악구 신림동 ***", lawdCode: "11620", buildingName: "신림 ○○오피스텔",
+      areaSize: 23, floor: 8, builtYear: 2019,
+      depositAmount: 160000000, monthlyRentAmount: 200000,
+      contractStartDate: plus(-200), contractEndDate: plus(160),
+      status: "humanReview", priority: "normal", riskLevel: "medium", requiresHumanReview: true,
+      registryStatus: "verified", guaranteeStatus: "unknown", buildingCheckStatus: "verified",
+      seniorLienEntered: true, auctionNoticed: false, auctionDeadline: "", docsReady: true,
+      docChecklist: [["임대차계약서", "보유"], ["보증보험 증권", "확인 필요"]],
+      sourceMode: "snapshot", sourceChannel: "contactCenter", tags: ["보증보험", "오피스텔"],
+      assignedTeam: "보증연계팀", assignedToId: "USR-JPO-GRT-01",
+      dueAt: plus(3), createdAt: plus(-2), updatedAt: plus(0),
+    }),
+    scope({
+      id: "JEONSE-0003", caseNo: "JEONSE-0003", customerRefId: "CUST-JS-0003",
+      intakeType: "preContract", housingType: "apartment", contractType: "jeonse",
+      addressMasked: "서울 구로구 개봉동 ***", lawdCode: "11530", buildingName: "개봉 ○○아파트",
+      areaSize: 59, floor: 12, builtYear: 2008,
+      depositAmount: 460000000, monthlyRentAmount: 0,
+      contractStartDate: "", contractEndDate: plus(45),
+      status: "enriching", priority: "normal", riskLevel: "medium", requiresHumanReview: false,
+      registryStatus: "verified", guaranteeStatus: "enrolled", buildingCheckStatus: "verified",
+      seniorLienEntered: true, auctionNoticed: false, auctionDeadline: "", docsReady: true,
+      docChecklist: [["임대차계약서(초안)", "보유"]],
+      sourceMode: "snapshot", sourceChannel: "opsPortal", tags: ["유사거래", "아파트"],
+      assignedTeam: "위험분석팀", assignedToId: "USR-JPO-RISK-02",
+      dueAt: plus(4), createdAt: plus(0), updatedAt: plus(0),
+    }),
+    scope({
+      id: "JEONSE-0004", caseNo: "JEONSE-0004", customerRefId: "CUST-JS-0004",
+      intakeType: "auctionNotice", housingType: "multiHousehold", contractType: "jeonse",
+      addressMasked: "인천 미추홀구 주안동 ***", lawdCode: "28177", buildingName: "주안 ○○주택",
+      areaSize: 38, floor: 2, builtYear: 2004,
+      depositAmount: 120000000, monthlyRentAmount: 0,
+      contractStartDate: plus(-560), contractEndDate: plus(-20),
+      status: "humanReview", priority: "urgent", riskLevel: "critical", requiresHumanReview: true,
+      registryStatus: "unknown", guaranteeStatus: "none", buildingCheckStatus: "unknown",
+      seniorLienEntered: false, auctionNoticed: true, auctionDeadline: plus(9), docsReady: false,
+      docChecklist: [["경매 통지서", "보유"], ["임대차계약서", "보유"], ["배당요구 서류", "누락"]],
+      sourceMode: "fallback", sourceChannel: "contactCenter", tags: ["경공매", "다가구"],
+      assignedTeam: "피해지원팀", assignedToId: "USR-JPO-SUP-01",
+      dueAt: plus(1), createdAt: plus(-3), updatedAt: plus(0),
+    }),
+    scope({
+      id: "JEONSE-0005", caseNo: "JEONSE-0005", customerRefId: "CUST-JS-0005",
+      intakeType: "depositDelay", housingType: "rowHouse", contractType: "jeonse",
+      addressMasked: "대전 서구 둔산동 ***", lawdCode: "30170", buildingName: "둔산 ○○빌",
+      areaSize: 46, floor: 4, builtYear: 2012,
+      depositAmount: 145000000, monthlyRentAmount: 0,
+      contractStartDate: plus(-740), contractEndDate: plus(-30),
+      status: "externalLinked", priority: "high", riskLevel: "high", requiresHumanReview: true,
+      registryStatus: "verified", guaranteeStatus: "none", buildingCheckStatus: "verified",
+      seniorLienEntered: true, auctionNoticed: false, auctionDeadline: "", docsReady: true,
+      docChecklist: [["임대차계약서", "보유"], ["내용증명 발송본", "누락"], ["등기부등본", "보유"]],
+      sourceMode: "snapshot", sourceChannel: "branch", tags: ["반환지연", "피해지원"],
+      assignedTeam: "피해지원팀", assignedToId: "USR-JPO-SUP-02",
+      dueAt: plus(2), createdAt: plus(-6), updatedAt: plus(-1),
+    }),
+    scope({
+      id: "JEONSE-0006", caseNo: "JEONSE-0006", customerRefId: "CUST-JS-0006",
+      intakeType: "urgentPreContract", housingType: "apartment", contractType: "jeonse",
+      addressMasked: "부산 수영구 광안동 ***", lawdCode: "26350", buildingName: "광안 ○○아파트",
+      areaSize: 74, floor: 15, builtYear: 2015,
+      depositAmount: 340000000, monthlyRentAmount: 0,
+      contractStartDate: "", contractEndDate: plus(10),
+      status: "received", priority: "urgent", riskLevel: "medium", requiresHumanReview: false,
+      registryStatus: "unknown", guaranteeStatus: "unknown", buildingCheckStatus: "verified",
+      seniorLienEntered: false, auctionNoticed: false, auctionDeadline: "", docsReady: false,
+      docChecklist: [["임대차계약서(초안)", "확인 필요"]],
+      sourceMode: "snapshot", sourceChannel: "contactCenter", tags: ["계약 전", "긴급"],
+      assignedTeam: "위험분석팀", assignedToId: "USR-JPO-RISK-01",
+      dueAt: plus(1), createdAt: plus(0), updatedAt: plus(0),
+    }),
+    // 타 역할 스코프 격리 검증용 seed — 전세보호 count/search/list 어디에도 노출 금지
+    { roleKey: "fds-officer", workspaceId: "fds", id: "JEONSE-OTHER-0001", caseNo: "JEONSE-OTHER-0001", customerRefId: "CUST-OTHER-0001", intakeType: "preContract", housingType: "apartment", contractType: "jeonse", addressMasked: "타 역할 스코프 검증용 ***", lawdCode: "11500", buildingName: "격리 검증", areaSize: 0, floor: 0, builtYear: 2000, depositAmount: 1, monthlyRentAmount: 0, contractStartDate: "", contractEndDate: "", status: "received", priority: "urgent", riskLevel: "critical", requiresHumanReview: true, registryStatus: "unknown", guaranteeStatus: "unknown", buildingCheckStatus: "unknown", seniorLienEntered: false, auctionNoticed: false, auctionDeadline: "", docsReady: false, docChecklist: [], sourceMode: "fallback", sourceChannel: "test", tags: ["exclude"], assignedTeam: "타 역할", assignedToId: "USR-JPO-RISK-01", dueAt: plus(0), createdAt: plus(0), updatedAt: plus(0) },
   ];
 
-  const jeonse_cases = caseSpecs.map(([taskType, title, status, priority, riskLevel, riskSignals], index) => {
-    const n = String(index + 1).padStart(4, "0");
-    const taxonomy = JPO_TASK_TAXONOMY[taskType] || {};
+  const snapshotRow = (id, caseId, housingType, lawdCode, override = {}) => {
+    const market = jpoMarketSnapshotSync(housingType, lawdCode);
     return scope({
-      id: `JEONSE-CASE-${n}`,
-      caseNo: `JEONSE-CASE-${n}`,
-      taskType,
-      title,
-      description: `${taxonomy.label || taskType} 내부 운영 모의 케이스`,
-      status,
-      priority,
-      riskLevel,
-      riskSignals,
-      assignedTeam: taxonomy.team || "전세위험분석팀",
-      assignedToId: ownerByTeam[taxonomy.team] || "USR-JPO-RISK-01",
-      tenantRefId: `TENANT-REF-${n}`,
-      contractRefId: `CONTRACT-REF-${n}`,
-      propertyRefId: `PROPERTY-REF-${n}`,
-      landlordRefId: `LANDLORD-REF-${n}`,
-      addressRefId: `ADDRESS-REF-${n}`,
-      depositAmountBand: bands[index % bands.length],
-      leaseStartDate: plus(-360 + index * 7),
-      leaseEndDate: plus(360 - index * 5),
-      sourceChannel: index % 3 === 0 ? "contactCenter" : index % 3 === 1 ? "branch" : "opsPortal",
-      tags: [taskType].concat(riskSignals),
-      requiresHumanReview: Boolean(taxonomy.requiresHumanReview) || ["high", "critical"].includes(riskLevel),
-      attachmentsExist: ["registryRights", "victimDecision", "guaranteeHug"].includes(taskType),
-      vulnerableTenant: riskSignals.includes("vulnerableTenant"),
-      dueAt: plus((index % 5) - 1),
-      createdAt: plus(index < 4 ? 0 : -Math.min(index, 14)),
-      updatedAt: plus(index % 4 === 0 ? 0 : -1),
+      id, caseId, source: market.source, sourceMode: market.sourceMode,
+      lawdCode, dealYm: "202605",
+      saleMedian: market.saleMedian, jeonseMedian: market.jeonseMedian, rentMedian: market.jeonseMedian,
+      jeonseRatio: market.saleMedian > 0 ? Number(((jeonse_cases.find((c) => c.id === caseId) || {}).depositAmount / market.saleMedian).toFixed(2)) : null,
+      comparableCount: market.comparableTradeCount + market.comparableRentCount,
+      comparableTradeCount: market.comparableTradeCount, comparableRentCount: market.comparableRentCount,
+      officialPriceEst: jpoEstimateOfficialPrice(market.saleMedian),
+      fetchedAt: plus(0),
+      ...override,
     });
-  });
-
-  const activeCases = jeonse_cases.filter((c) => JPO_ACTIVE_CASE_STATUSES.includes(c.status));
-  const caseByType = (taskType, nth = 0) => jeonse_cases.filter((c) => c.taskType === taskType)[nth]?.id || null;
+  };
 
   return {
-    version: 1,
+    version: 2,
     seededAt: new Date().toISOString(),
     role_workspaces: [
       { id: W, roleKey: R, displayName: JPO_DISPLAY_NAME, harnessId: "jeonseFraudProtectionHarness", status: "active" },
-      { id: "fds", roleKey: "fds-officer", displayName: "보이스피싱/FDS 담당자", harnessId: "roadmap", status: "roadmap" },
     ],
     users,
-    jeonse_cases: jeonse_cases.concat([
-      // 타 역할 스코프 검증용 seed — 전세보호 하네스 count/search/list 어디에도 노출되면 안 된다.
-      { roleKey: "fds-officer", workspaceId: "fds", id: "JEONSE-OTHER-0001", caseNo: "JEONSE-OTHER-0001", taskType: "preContractRisk", title: "타 역할 스코프 제외 검증용", description: "role scope 격리 테스트 전용", status: "received", priority: "urgent", riskLevel: "critical", riskSignals: [], assignedTeam: "타 역할", assignedToId: "USR-JPO-RISK-01", tenantRefId: "TENANT-REF-9999", contractRefId: "CONTRACT-REF-9999", propertyRefId: "PROPERTY-REF-9999", landlordRefId: "LANDLORD-REF-9999", addressRefId: "ADDRESS-REF-9999", depositAmountBand: "1억~2억", leaseStartDate: plus(-30), leaseEndDate: plus(300), sourceChannel: "test", tags: ["exclude"], requiresHumanReview: true, attachmentsExist: false, vulnerableTenant: false, dueAt: plus(0), createdAt: plus(0), updatedAt: plus(0) },
-    ]),
-    jeonse_tasks: activeCases.slice(0, 12).map((c, index) => scope({
-      id: `JEONSE-TASK-${String(index + 1).padStart(4, "0")}`,
-      caseId: c.id,
-      title: `${JPO_TASK_TAXONOMY[c.taskType]?.label || c.taskType} 확인`,
-      status: index % 4 === 0 ? "inProgress" : index % 5 === 0 ? "overdue" : "open",
-      dueAt: c.dueAt,
-      ownerId: c.assignedToId,
-    })),
-    jeonse_risk_assessments: [
-      scope({ id: "JEONSE-RISK-0001", caseId: caseByType("preContractRisk", 0), kind: "preContract", ratioBand: "80~90%", status: "open", riskLevel: "medium", checklist: ["전세가율 구간 확인", "특약 문구 점검"] }),
-      scope({ id: "JEONSE-RISK-0002", caseId: caseByType("preContractRisk", 1), kind: "preContract", ratioBand: "70~80%", status: "inReview", riskLevel: "medium", checklist: ["재계약 조건 비교"] }),
-      scope({ id: "JEONSE-RISK-0003", caseId: caseByType("preContractRisk", 2), kind: "preContract", ratioBand: "확인 필요", status: "open", riskLevel: "medium", checklist: ["중개사 정보 대조"] }),
-      scope({ id: "JEONSE-RISK-0004", caseId: caseByType("priceRatio", 0), kind: "preContract", ratioBand: "90% 이상", status: "inReview", riskLevel: "high", checklist: ["시세 재확인"] }),
-      scope({ id: "JEONSE-RISK-0005", caseId: caseByType("vulnerableTenant", 0), kind: "vulnerableTenant", ratioBand: "-", status: "open", riskLevel: "medium", checklist: ["고령 임차인 우선 연락 순서"] }),
-      scope({ id: "JEONSE-RISK-0006", caseId: caseByType("vulnerableTenant", 1), kind: "vulnerableTenant", ratioBand: "-", status: "inReview", riskLevel: "medium", checklist: ["청년 1인 가구 안내 채널"] }),
-      scope({ id: "JEONSE-RISK-0007", caseId: caseByType("urgentAlert", 0), kind: "vulnerableTenant", ratioBand: "-", status: "open", riskLevel: "high", checklist: ["긴급 보호 검토"] }),
+    jeonse_cases,
+    jeonse_price_snapshots: [
+      snapshotRow("JEONSE-SNAP-0001", "JEONSE-0001", "rowHouse", "11500"),
+      snapshotRow("JEONSE-SNAP-0002", "JEONSE-0002", "officetel", "11620"),
+      snapshotRow("JEONSE-SNAP-0003", "JEONSE-0003", "apartment", "11530"),
+      // §12: external API fallback 1개 — 호출 실패 시나리오 기록
+      snapshotRow("JEONSE-SNAP-0004", "JEONSE-0004", "multiHousehold", "28177", {
+        sourceMode: "fallback", source: "실거래 API 호출 실패 — 담당자 확인 필요",
+        saleMedian: 0, jeonseMedian: 0, rentMedian: 0, jeonseRatio: null,
+        comparableCount: 0, comparableTradeCount: 0, comparableRentCount: 0, officialPriceEst: 0,
+      }),
+      snapshotRow("JEONSE-SNAP-0005", "JEONSE-0005", "rowHouse", "30170"),
+      snapshotRow("JEONSE-SNAP-0006", "JEONSE-0006", "apartment", "26350"),
     ],
-    jeonse_price_ratio_checks: [
-      scope({ id: "JEONSE-PRICE-0001", caseId: caseByType("priceRatio", 0), ratioBand: "90% 이상", status: "open", riskLevel: "high", checkType: "전세가율 구간 점검" }),
-      scope({ id: "JEONSE-PRICE-0002", caseId: caseByType("priceRatio", 1), ratioBand: "80~90%", status: "inReview", riskLevel: "medium", checkType: "시세 대비 보증금 점검" }),
-      scope({ id: "JEONSE-PRICE-0003", caseId: caseByType("preContractRisk", 0), ratioBand: "80~90%", status: "open", riskLevel: "medium", checkType: "계약 전 구간 점검" }),
-      scope({ id: "JEONSE-PRICE-0004", caseId: caseByType("urgentAlert", 1), ratioBand: "90% 이상", status: "open", riskLevel: "critical", checkType: "미반환 위험 구간 점검" }),
+    jeonse_risk_signals: [
+      scope({ id: "JEONSE-SIG-0001", caseId: "JEONSE-0001", signalType: "JEONSE_RATIO_HIGH", severity: "high", title: JPO_SIGNAL_TYPES.JEONSE_RATIO_HIGH, evidence: "보증금 2.6억 / 다세대 매매 중앙값 2.85억 (91%)", requiresHumanReview: true, createdAt: plus(-1) }),
+      scope({ id: "JEONSE-SIG-0002", caseId: "JEONSE-0001", signalType: "REGISTRY_RIGHTS_UNKNOWN", severity: "medium", title: JPO_SIGNAL_TYPES.REGISTRY_RIGHTS_UNKNOWN, evidence: "선순위 근저당 확인 전", requiresHumanReview: true, createdAt: plus(-1) }),
+      scope({ id: "JEONSE-SIG-0003", caseId: "JEONSE-0002", signalType: "GUARANTEE_STATUS_UNKNOWN", severity: "medium", title: JPO_SIGNAL_TYPES.GUARANTEE_STATUS_UNKNOWN, evidence: "보증보험 가입 여부 미확인", requiresHumanReview: true, createdAt: plus(-2) }),
+      scope({ id: "JEONSE-SIG-0004", caseId: "JEONSE-0003", signalType: "ABOVE_NEIGHBORHOOD_MEDIAN", severity: "medium", title: JPO_SIGNAL_TYPES.ABOVE_NEIGHBORHOOD_MEDIAN, evidence: "보증금 4.6억 / 주변 전세 중앙값 3.8억 (121%)", requiresHumanReview: false, createdAt: plus(0) }),
+      scope({ id: "JEONSE-SIG-0005", caseId: "JEONSE-0004", signalType: "AUCTION_OR_FORECLOSURE_DEADLINE", severity: "critical", title: JPO_SIGNAL_TYPES.AUCTION_OR_FORECLOSURE_DEADLINE, evidence: `경매 기일 D-9 (${plus(9)})`, requiresHumanReview: true, createdAt: plus(-3) }),
+      scope({ id: "JEONSE-SIG-0006", caseId: "JEONSE-0004", signalType: "LOW_COMPARABLE_COUNT", severity: "low", title: JPO_SIGNAL_TYPES.LOW_COMPARABLE_COUNT, evidence: "실거래 API 미연결 — 표본 0건", requiresHumanReview: true, createdAt: plus(-3) }),
+      scope({ id: "JEONSE-SIG-0007", caseId: "JEONSE-0005", signalType: "LANDLORD_RISK_MANUAL_REQUIRED", severity: "high", title: JPO_SIGNAL_TYPES.LANDLORD_RISK_MANUAL_REQUIRED, evidence: "보증금 반환 지연 — 임대인/보증사고 이력 외부기관 확인 필요", requiresHumanReview: true, createdAt: plus(-5) }),
+      scope({ id: "JEONSE-SIG-0008", caseId: "JEONSE-0006", signalType: "CONTRACT_DATE_URGENT", severity: "medium", title: JPO_SIGNAL_TYPES.CONTRACT_DATE_URGENT, evidence: "계약 예정 D-10", requiresHumanReview: false, createdAt: plus(0) }),
+      scope({ id: "JEONSE-SIG-0009", caseId: "JEONSE-0001", signalType: "ILLEGAL_BUILDING_MANUAL_REQUIRED", severity: "medium", title: JPO_SIGNAL_TYPES.ILLEGAL_BUILDING_MANUAL_REQUIRED, evidence: "다세대 — 건축물대장/위반건축물 수동 확인 필요", requiresHumanReview: true, createdAt: plus(-1) }),
     ],
     jeonse_registry_checks: [
-      scope({ id: "JEONSE-REG-0001", caseId: caseByType("registryRights", 0), issueType: "근저당 의심", status: "open", riskLevel: "high" }),
-      scope({ id: "JEONSE-REG-0002", caseId: caseByType("registryRights", 1), issueType: "신탁등기 의심", status: "waitingExternalData", riskLevel: "medium" }),
-      scope({ id: "JEONSE-REG-0003", caseId: caseByType("auctionSupport", 0), issueType: "압류/가압류 의심", status: "inReview", riskLevel: "high" }),
-      scope({ id: "JEONSE-REG-0004", caseId: caseByType("victimDecision", 0), issueType: "소유권 이전 이력", status: "open", riskLevel: "medium" }),
+      scope({ id: "JEONSE-REG-0001", caseId: "JEONSE-0001", checkType: "선순위 근저당 확인", status: "unknown", evidenceSummary: "등기부 열람 결과 요약 대기(원문 저장 금지)", manualRequired: true, dueAt: plus(2) }),
+      scope({ id: "JEONSE-REG-0002", caseId: "JEONSE-0004", checkType: "압류/가압류 확인", status: "unknown", evidenceSummary: "경매 개시 결정 — 권리분석 수동 확인 필요", manualRequired: true, dueAt: plus(1) }),
+      scope({ id: "JEONSE-REG-0003", caseId: "JEONSE-0001", checkType: "건축물대장/위반건축물", status: "unknown", evidenceSummary: "위반건축물 여부 확인 필요", manualRequired: true, dueAt: plus(3) }),
+      scope({ id: "JEONSE-REG-0004", caseId: "JEONSE-0003", checkType: "선순위 근저당 확인", status: "verified", evidenceSummary: "선순위 없음(요약)", manualRequired: false, dueAt: plus(0) }),
     ],
-    jeonse_guarantee_reviews: [
-      scope({ id: "JEONSE-HUG-0001", caseId: caseByType("guaranteeHug", 0), reviewType: "가입요건 검토", guaranteeProgram: "전세보증금 반환보증(안내 후보)", status: "open", requiresHumanReview: true }),
-      scope({ id: "JEONSE-HUG-0002", caseId: caseByType("guaranteeHug", 1), reviewType: "HUG 프로그램 연계", guaranteeProgram: "전세피해지원 프로그램(안내 후보)", status: "needsReview", requiresHumanReview: true }),
-      scope({ id: "JEONSE-HUG-0003", caseId: caseByType("auctionSupport", 1), reviewType: "보증사고 여부 확인", guaranteeProgram: "확인 필요", status: "open", requiresHumanReview: true }),
+    jeonse_guarantee_checks: [
+      scope({ id: "JEONSE-HUG-0001", caseId: "JEONSE-0002", provider: "HUG", status: "unknown", evidenceSummary: "가입요건 항목 확인 필요 — 가입 가능 여부 확정 금지", manualRequired: true, checkedAt: "" }),
+      scope({ id: "JEONSE-HUG-0002", caseId: "JEONSE-0005", provider: "HUG", status: "none", evidenceSummary: "미가입 — 피해지원 프로그램 안내 후보 검토", manualRequired: true, checkedAt: plus(-4) }),
+      scope({ id: "JEONSE-HUG-0003", caseId: "JEONSE-0003", provider: "SGI", status: "enrolled", evidenceSummary: "가입 확인(요약)", manualRequired: false, checkedAt: plus(-1) }),
     ],
-    jeonse_victim_support_reviews: [
-      scope({ id: "JEONSE-VICTIM-0001", caseId: caseByType("victimDecision", 0), reviewType: "결정 신청 체크리스트", status: "open", requiresHumanReview: true, checklist: ["임대차계약 참조 확인", "피해 정황 요약(익명)", "신청 서류 목록 준비"] }),
-      scope({ id: "JEONSE-VICTIM-0002", caseId: caseByType("victimDecision", 1), reviewType: "요건 사전 점검", status: "needsReview", requiresHumanReview: true, checklist: ["특별법 요건 항목 대조"] }),
-      scope({ id: "JEONSE-VICTIM-0003", caseId: caseByType("auctionSupport", 0), reviewType: "경매 병행 결정 검토", status: "open", requiresHumanReview: true, checklist: ["경매 일정 확인", "우선매수 안내 후보"] }),
-    ],
-    jeonse_referrals: [
-      scope({ id: "JEONSE-REF-0001", caseId: caseByType("auctionSupport", 0), category: "auction", referralType: "경공매 지원 안내", supportProgram: "우선매수·퇴거 유예(안내 후보)", status: "pending", requiresHumanReview: true }),
-      scope({ id: "JEONSE-REF-0002", caseId: caseByType("auctionSupport", 1), category: "auction", referralType: "공매 대응 안내", supportProgram: "공매 절차 안내(안내 후보)", status: "open", requiresHumanReview: true }),
-      scope({ id: "JEONSE-REF-0003", caseId: caseByType("legalReferral", 0), category: "legal", referralType: "법률상담 연계", supportProgram: "법률구조 상담(안내 후보)", status: "pending", requiresHumanReview: true }),
-      scope({ id: "JEONSE-REF-0004", caseId: caseByType("victimDecision", 0), category: "legal", referralType: "법률상담 연계", supportProgram: "특별법 상담(안내 후보)", status: "open", requiresHumanReview: true }),
-      scope({ id: "JEONSE-REF-0005", caseId: caseByType("careReferral", 0), category: "care", referralType: "긴급주거 지원 연계", supportProgram: "긴급주거 지원(안내 후보)", status: "pending", requiresHumanReview: false }),
-      scope({ id: "JEONSE-REF-0006", caseId: caseByType("careReferral", 1), category: "care", referralType: "심리상담 연계", supportProgram: "심리상담 연계(안내 후보)", status: "open", requiresHumanReview: false }),
-    ],
-    jeonse_alerts: [
-      scope({ id: "JEONSE-ALERT-0001", caseId: caseByType("urgentAlert", 0), alertType: "임대인 연락 두절", severity: "critical", status: "open", requiresHumanEscalation: true }),
-      scope({ id: "JEONSE-ALERT-0002", caseId: caseByType("urgentAlert", 1), alertType: "보증금 미반환 임박", severity: "high", status: "open", requiresHumanEscalation: true }),
-      scope({ id: "JEONSE-ALERT-0003", caseId: caseByType("auctionSupport", 0), alertType: "경매 개시 결정", severity: "high", status: "investigating", requiresHumanEscalation: true }),
+    jeonse_support_referrals: [
+      scope({ id: "JEONSE-REF-0001", caseId: "JEONSE-0005", referralType: "legal", targetAgency: "법률구조 상담(안내 후보)", status: "linked", notes: "임대인 반환 지연 관련 상담 연계", createdAt: plus(-4) }),
+      scope({ id: "JEONSE-REF-0002", caseId: "JEONSE-0005", referralType: "financeHousing", targetAgency: "금융·주거지원 프로그램(안내 후보)", status: "pending", notes: "최신 기준 담당자 확인 필요", createdAt: plus(-2) }),
+      scope({ id: "JEONSE-REF-0003", caseId: "JEONSE-0005", referralType: "care", targetAgency: "심리상담 센터(안내 후보)", status: "pending", notes: "", createdAt: plus(-2) }),
+      scope({ id: "JEONSE-REF-0004", caseId: "JEONSE-0005", referralType: "victimApplication", targetAgency: "전세사기피해자 지원관리시스템(참고)", status: "open", notes: "결정 신청 준비 보조 — 신청 대행 아님", createdAt: plus(-1) }),
+      scope({ id: "JEONSE-REF-0005", caseId: "JEONSE-0004", referralType: "victimApplication", targetAgency: "전세사기피해자 지원관리시스템(참고)", status: "open", notes: "경매 병행 — 요건 확인 필요", createdAt: plus(0) }),
     ],
     approvals: [
-      scope({ id: "APR-JPO-0001", caseId: caseByType("careReferral", 0), approvalType: "고객 안내문 발송 승인", status: "pending", requestedById: "USR-JPO-SUP-01", approverId: "USR-JPO-AUD-01", requestedAt: plus(0) }),
-      scope({ id: "APR-JPO-0002", caseId: caseByType("auctionSupport", 0), approvalType: "경공매 지원 안내 승인", status: "pending", requestedById: "USR-JPO-SUP-01", approverId: "USR-JPO-AUD-01", requestedAt: plus(0) }),
-      scope({ id: "APR-JPO-0003", caseId: caseByType("legalReferral", 0), approvalType: "법률상담 연계 승인", status: "pending", requestedById: "USR-JPO-SUP-02", approverId: "USR-JPO-AUD-01", requestedAt: plus(-1) }),
-      scope({ id: "APR-JPO-0004", caseId: caseByType("priceRatio", 0), approvalType: "위험등급 변경 승인", status: "approved", requestedById: "USR-JPO-RISK-01", approverId: "USR-JPO-AUD-01", requestedAt: plus(-2) }),
+      scope({ id: "APR-JPO-0001", caseId: "JEONSE-0006", approvalType: "고객 안내문 발송 승인", status: "pending", requestedById: "jpo-comms", approverId: "USR-JPO-AUD-01", requestedAt: plus(0) }),
+      scope({ id: "APR-JPO-0002", caseId: "JEONSE-0005", approvalType: "피해자 신청 검토 승인", status: "pending", requestedById: "USR-JPO-SUP-02", approverId: "USR-JPO-AUD-01", requestedAt: plus(-1) }),
+      scope({ id: "APR-JPO-0003", caseId: "JEONSE-0001", approvalType: "위험등급 변경 승인", status: "approved", requestedById: "USR-JPO-RISK-01", approverId: "USR-JPO-AUD-01", requestedAt: plus(-1) }),
     ],
-    audit_logs: [
-      scope({ id: "AUD-JPO-0001", actorId: "USR-JPO-RISK-01", action: "RISK_SCORE_CHANGED", targetType: "case", targetId: caseByType("priceRatio", 0), riskLevel: "high", reviewRequired: true, createdAt: plus(0) }),
-      scope({ id: "AUD-JPO-0002", actorId: "USR-JPO-SUP-01", action: "SUPPORT_REFERRAL_LINKED", targetType: "referral", targetId: "JEONSE-REF-0001", riskLevel: "medium", reviewRequired: true, createdAt: plus(0) }),
-      scope({ id: "AUD-JPO-0003", actorId: "jpo-registry", action: "EXTERNAL_DATA_QUERIED", targetType: "registry", targetId: "JEONSE-REG-0001", riskLevel: "medium", reviewRequired: true, createdAt: plus(-1) }),
-      scope({ id: "AUD-JPO-0004", actorId: "jpo-comms", action: "TENANT_NOTICE_DRAFTED", targetType: "approval", targetId: "APR-JPO-0001", riskLevel: "medium", reviewRequired: true, createdAt: plus(-1) }),
-      scope({ id: "AUD-JPO-0005", actorId: "jpo-privacy", action: "REDACTION_CHECK_FLAGGED", targetType: "privacy", targetId: "PRV-JPO-0001", riskLevel: "medium", reviewRequired: true, createdAt: plus(-2) }),
-      scope({ id: "AUD-JPO-0006", actorId: "USR-JPO-AUD-01", action: "APPROVAL_DECIDED", targetType: "approval", targetId: "APR-JPO-0004", riskLevel: "low", reviewRequired: false, createdAt: plus(-2) }),
-    ],
-    privacy_permission_checks: [
-      scope({ id: "PRV-JPO-0001", policyArea: "실명·주민번호·상세주소 원문 저장 금지", status: "open", riskLevel: "high", ownerId: "USR-JPO-AUD-01", dueAt: plus(1) }),
-      scope({ id: "PRV-JPO-0002", policyArea: "증빙 자료 마스킹 점검", status: "needsReview", riskLevel: "medium", ownerId: "USR-JPO-AUD-01", dueAt: plus(2) }),
-      scope({ id: "PRV-JPO-0003", policyArea: "외부반출 승인 절차 점검", status: "open", riskLevel: "medium", ownerId: "USR-JPO-AUD-01", dueAt: plus(6) }),
-    ],
-    external_connectors: [
-      scope({ id: "CON-JPO-0001", name: "HUG 전세피해지원센터 연계(모의)", category: "guarantee", status: "active", lastSyncAt: plus(0), health: "healthy", externalRef: "khug.or.kr" }),
-      scope({ id: "CON-JPO-0002", name: "국토부 피해자 지원관리시스템 연계(모의)", category: "victimSupport", status: "active", lastSyncAt: plus(0), health: "healthy", externalRef: "molit.go.kr" }),
-      scope({ id: "CON-JPO-0003", name: "등기 이슈 조회(모의)", category: "registry", status: "active", lastSyncAt: plus(-1), health: "degraded", externalRef: "iros.go.kr" }),
-      scope({ id: "CON-JPO-0004", name: "시세 비교 피드(모의)", category: "price", status: "active", lastSyncAt: plus(0), health: "healthy", externalRef: "molit.go.kr" }),
-      scope({ id: "CON-JPO-0005", name: "보증요건 점검 피드(모의)", category: "guarantee", status: "error", lastSyncAt: plus(-3), health: "down", externalRef: "khug.or.kr" }),
+    jeonse_audit_logs: [
+      scope({ id: "AUD-JPO-0001", caseId: "JEONSE-0006", actorId: "USR-JPO-RISK-01", action: "CASE_CREATED", targetType: "jeonse_case", targetId: "JEONSE-0006", riskLevel: "medium", reviewRequired: false, createdAt: plus(0) }),
+      scope({ id: "AUD-JPO-0002", caseId: "JEONSE-0003", actorId: "jpo-price", action: "DATA_FETCHED", targetType: "price_snapshot", targetId: "JEONSE-SNAP-0003", riskLevel: "low", reviewRequired: false, createdAt: plus(0) }),
+      scope({ id: "AUD-JPO-0003", caseId: "JEONSE-0001", actorId: "jpo-price", action: "RISK_UPDATED", targetType: "risk_signal", targetId: "JEONSE-SIG-0001", riskLevel: "high", reviewRequired: true, createdAt: plus(-1) }),
+      scope({ id: "AUD-JPO-0004", caseId: "JEONSE-0004", actorId: "jpo-auction", action: "HUMAN_REVIEW_REQUIRED", targetType: "jeonse_case", targetId: "JEONSE-0004", riskLevel: "critical", reviewRequired: true, createdAt: plus(-3) }),
+      scope({ id: "AUD-JPO-0005", caseId: "JEONSE-0004", actorId: "jpo-dataquality", action: "DATA_FETCH_FAILED", targetType: "price_snapshot", targetId: "JEONSE-SNAP-0004", riskLevel: "medium", reviewRequired: true, createdAt: plus(-3) }),
+      scope({ id: "AUD-JPO-0006", caseId: "JEONSE-0005", actorId: "USR-JPO-SUP-02", action: "SUPPORT_REFERRAL_LINKED", targetType: "referral", targetId: "JEONSE-REF-0001", riskLevel: "medium", reviewRequired: true, createdAt: plus(-4) }),
+      scope({ id: "AUD-JPO-0007", caseId: "JEONSE-0006", actorId: "jpo-comms", action: "TENANT_SUMMARY_DRAFTED", targetType: "approval", targetId: "APR-JPO-0001", riskLevel: "medium", reviewRequired: true, createdAt: plus(0) }),
+      scope({ id: "AUD-JPO-0008", caseId: "JEONSE-0002", actorId: "jpo-guarantee", action: "GUARANTEE_CHECK_OPENED", targetType: "guarantee_check", targetId: "JEONSE-HUG-0001", riskLevel: "medium", reviewRequired: true, createdAt: plus(-2) }),
     ],
     ai_analysis_requests: [
-      scope({ id: "AIR-JPO-0001", caseId: caseByType("priceRatio", 0), requestType: "전세가율 구간 분석", status: "running", requestedById: "USR-JPO-RISK-01", createdAt: plus(0) }),
-      scope({ id: "AIR-JPO-0002", caseId: caseByType("registryRights", 0), requestType: "등기 이슈 분류", status: "queued", requestedById: "USR-JPO-REG-01", createdAt: plus(0) }),
-      scope({ id: "AIR-JPO-0003", caseId: caseByType("victimDecision", 0), requestType: "결정 신청 체크리스트 초안", status: "running", requestedById: "USR-JPO-SUP-01", createdAt: plus(-1) }),
+      scope({ id: "AIR-JPO-0001", caseId: "JEONSE-0003", requestType: "유사 전월세 비교 분석", status: "running", requestedById: "USR-JPO-RISK-02", createdAt: plus(0) }),
+      scope({ id: "AIR-JPO-0002", caseId: "JEONSE-0001", requestType: "전세가율 신호 재계산", status: "queued", requestedById: "USR-JPO-RISK-01", createdAt: plus(0) }),
     ],
     ai_recommendations: [
-      scope({ id: "REC-JPO-0001", caseId: caseByType("priceRatio", 0), agentId: "jpo-price", title: "전세가율 구간 재검토 체크리스트", status: "active", confidence: "high", createdAt: plus(0) }),
-      scope({ id: "REC-JPO-0002", caseId: caseByType("registryRights", 0), agentId: "jpo-registry", title: "근저당 이슈 확인 순서 제안", status: "proposed", confidence: "medium", createdAt: plus(0) }),
-      scope({ id: "REC-JPO-0003", caseId: caseByType("guaranteeHug", 0), agentId: "jpo-guarantee", title: "가입요건 검토 항목 정리", status: "active", confidence: "high", createdAt: plus(-1) }),
-      scope({ id: "REC-JPO-0004", caseId: caseByType("victimDecision", 0), agentId: "jpo-victim", title: "결정 신청 서류 준비 순서", status: "active", confidence: "high", createdAt: plus(0) }),
-      scope({ id: "REC-JPO-0005", caseId: caseByType("careReferral", 0), agentId: "jpo-comms", title: "임차인 안내 문자 초안(승인 대기)", status: "proposed", confidence: "medium", createdAt: plus(0) }),
+      scope({ id: "REC-JPO-0001", kind: "consultSummary", caseId: "JEONSE-0006", agentId: "jpo-comms", title: "계약 전 긴급 점검 상담 요약(승인 대기)", status: "pendingApproval", confidence: "medium", createdAt: plus(0) }),
+      scope({ id: "REC-JPO-0002", kind: "consultSummary", caseId: "JEONSE-0005", agentId: "jpo-comms", title: "반환 지연 상담 요약 — 지원기관 안내 후보 포함", status: "proposed", confidence: "high", createdAt: plus(-2) }),
+      scope({ id: "REC-JPO-0003", kind: "riskNote", caseId: "JEONSE-0001", agentId: "jpo-price", title: "전세가율 재검토 체크리스트", status: "active", confidence: "high", createdAt: plus(-1) }),
     ],
     harness_agents: [],
-    agent_runs: [
-      scope({ id: "JEONSE-RUN-0001", agentId: "jpo-price", caseId: caseByType("priceRatio", 0), inputSummary: "전세가율 구간 점검", outputSummary: "90% 이상 구간 — 검토 필요", status: "needsReview", riskLevel: "high", requiresHumanEscalation: false, createdAt: plus(0) }),
-      scope({ id: "JEONSE-RUN-0002", agentId: "jpo-registry", caseId: caseByType("registryRights", 0), inputSummary: "근저당 의심 분류", outputSummary: "외부자료 대기 등록", status: "running", riskLevel: "medium", requiresHumanEscalation: false, createdAt: plus(0) }),
-      scope({ id: "JEONSE-RUN-0003", agentId: "jpo-auction", caseId: caseByType("auctionSupport", 0), inputSummary: "경매 개시 신호", outputSummary: "사람 에스컬레이션 + 지원 안내 후보", status: "needsReview", riskLevel: "high", requiresHumanEscalation: true, createdAt: plus(0) }),
-      scope({ id: "JEONSE-RUN-0004", agentId: "jpo-victim", caseId: caseByType("victimDecision", 0), inputSummary: "결정 신청 체크리스트", outputSummary: "담당자 검토 필요", status: "needsReview", riskLevel: "medium", requiresHumanEscalation: false, createdAt: plus(-1) }),
-      scope({ id: "JEONSE-RUN-0005", agentId: "jpo-comms", caseId: caseByType("careReferral", 0), inputSummary: "임차인 안내 문자 초안", outputSummary: "발송 승인 대기 등록", status: "pendingApproval", riskLevel: "medium", requiresHumanEscalation: false, createdAt: plus(0) }),
-      scope({ id: "JEONSE-RUN-0006", agentId: "jpo-referral", caseId: caseByType("careReferral", 1), inputSummary: "심리상담 연계 후보", outputSummary: "연계 후보 정리 완료", status: "completed", riskLevel: "low", requiresHumanEscalation: false, createdAt: plus(-1) }),
+    jeonse_agent_runs: [
+      scope({ id: "JEONSE-RUN-0001", agentId: "jpo-price", caseId: "JEONSE-0001", inputSummary: "화곡동 다세대 시세 보강", outputSummary: "전세가율 91% — 위험 신호 검토 필요", status: "needsReview", riskLevel: "high", requiresHumanReview: true, createdAt: plus(-1) }),
+      scope({ id: "JEONSE-RUN-0002", agentId: "jpo-auction", caseId: "JEONSE-0004", inputSummary: "경매 기일 감시", outputSummary: "D-9 임박 — 사람 에스컬레이션", status: "needsReview", riskLevel: "critical", requiresHumanReview: true, createdAt: plus(-3) }),
+      scope({ id: "JEONSE-RUN-0003", agentId: "jpo-comms", caseId: "JEONSE-0006", inputSummary: "상담 요약·안내 초안", outputSummary: "발송 승인 대기 등록", status: "pendingApproval", riskLevel: "medium", requiresHumanReview: true, createdAt: plus(0) }),
+      scope({ id: "JEONSE-RUN-0004", agentId: "jpo-dataquality", caseId: "JEONSE-0004", inputSummary: "sourceMode 점검", outputSummary: "fallback — 데이터 부족으로 담당자 확인 필요", status: "completed", riskLevel: "medium", requiresHumanReview: true, createdAt: plus(-3) }),
     ],
     agent_handoffs: [
-      scope({ id: "HND-JPO-0001", fromAgentId: "jpo-orchestrator", toAgentId: "jpo-auction", caseId: caseByType("auctionSupport", 0), reason: "경매 개시 고위험 — 사람 검토 필수", status: "escalated", createdAt: plus(0) }),
-      scope({ id: "HND-JPO-0002", fromAgentId: "jpo-price", toAgentId: "jpo-registry", caseId: caseByType("priceRatio", 0), reason: "권리관계 동반 점검", status: "open", createdAt: plus(0) }),
-      scope({ id: "HND-JPO-0003", fromAgentId: "jpo-comms", toAgentId: "jpo-audit", caseId: caseByType("careReferral", 0), reason: "안내문 발송 승인 추적", status: "open", createdAt: plus(-1) }),
+      scope({ id: "HND-JPO-0001", fromAgentId: "jpo-intake", toAgentId: "jpo-price", caseId: "JEONSE-0001", reason: "시세 데이터 보강", status: "open", createdAt: plus(-1) }),
+      scope({ id: "HND-JPO-0002", fromAgentId: "jpo-auction", toAgentId: "jpo-supervisor", caseId: "JEONSE-0004", reason: "경·공매 임박 — 사람 검토 필수", status: "escalated", createdAt: plus(-3) }),
+      scope({ id: "HND-JPO-0003", fromAgentId: "jpo-comms", toAgentId: "jpo-supervisor", caseId: "JEONSE-0006", reason: "안내문 발송 승인 추적", status: "open", createdAt: plus(0) }),
     ],
-    business_capabilities: (typeof jeonseProtectionAgents !== "undefined" ? jeonseProtectionAgents : []).map((agent, index) => scope({
-      id: `CAP-JPO-${String(index + 1).padStart(4, "0")}`,
-      name: `${agent.displayName} 운영 체크`,
-      domain: agent.domain,
-      status: index % 3 === 0 ? "proposed" : "enabled",
-      proposedByAgentId: agent.id,
-    })),
+    external_connectors: [
+      scope({ id: "CON-JPO-0001", name: JPO_DATASET_LABELS.seoulRent, category: "seoul", status: "active", lastSyncAt: plus(0), health: "healthy", externalRef: "data.seoul.go.kr", sourceMode: "snapshot" }),
+      scope({ id: "CON-JPO-0002", name: JPO_DATASET_LABELS.aptTrade, category: "molit", status: "active", lastSyncAt: plus(0), health: "healthy", externalRef: "data.go.kr", sourceMode: "snapshot" }),
+      scope({ id: "CON-JPO-0003", name: JPO_DATASET_LABELS.rhTrade, category: "molit", status: "active", lastSyncAt: plus(-1), health: "degraded", externalRef: "data.go.kr", sourceMode: "snapshot" }),
+      scope({ id: "CON-JPO-0004", name: JPO_DATASET_LABELS.shRent, category: "molit", status: "error", lastSyncAt: plus(-3), health: "down", externalRef: "data.go.kr", sourceMode: "fallback" }),
+      scope({ id: "CON-JPO-0005", name: "HUG 보증사고/지원 확인(수동)", category: "hug", status: "manualRequired", lastSyncAt: "", health: "manualRequired", externalRef: "khug.or.kr", sourceMode: "manualRequired" }),
+      scope({ id: "CON-JPO-0006", name: "등기부 열람(수동)", category: "registry", status: "manualRequired", lastSyncAt: "", health: "manualRequired", externalRef: "iros.go.kr", sourceMode: "manualRequired" }),
+    ],
     role_assignments: users.map((user, index) => scope({
       id: `ROL-JPO-${String(index + 1).padStart(4, "0")}`,
       userId: user.id,
@@ -234,9 +236,9 @@ function jpoSeedData() {
       reviewRequired: index % 4 === 0,
     })),
     inspection_schedules: [
-      scope({ id: "INS-JPO-0001", inspectionType: "개인정보 접근권한 정기점검", status: "upcoming", dueAt: plus(4), ownerId: "USR-JPO-AUD-01" }),
-      scope({ id: "INS-JPO-0002", inspectionType: "등기 이슈 커넥터 재점검", status: "overdue", dueAt: plus(-2), ownerId: "USR-JPO-REG-01" }),
-      scope({ id: "INS-JPO-0003", inspectionType: "보증 연계 상태 점검", status: "upcoming", dueAt: plus(6), ownerId: "USR-JPO-GRT-01" }),
+      scope({ id: "INS-JPO-0001", inspectionType: "개인정보·마스킹 정기점검", status: "upcoming", dueAt: plus(4), ownerId: "USR-JPO-AUD-01" }),
+      scope({ id: "INS-JPO-0002", inspectionType: "실거래 커넥터 상태 점검", status: "overdue", dueAt: plus(-2), ownerId: "USR-JPO-RISK-02" }),
+      scope({ id: "INS-JPO-0003", inspectionType: "경·공매 기한 감시 점검", status: "upcoming", dueAt: plus(3), ownerId: "USR-JPO-SUP-01" }),
     ],
   };
 }
@@ -249,7 +251,7 @@ function jpoLoadDb() {
     const raw = window.localStorage.getItem(JPO_DB_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed && parsed.version === 1) {
+      if (parsed && parsed.version === 2) {
         jpoDbCache = parsed;
         jpoSyncHarnessAgents(jpoDbCache);
         jpoSaveDb();
@@ -309,9 +311,8 @@ function jpoNextId(prefix, table) {
   return `${prefix}-${String(count).padStart(4, "0")}`;
 }
 
-/* Repository interface — 운영 DB 전환 시 이 5개 진입점만 서버 구현으로 교체한다.
-   계약: table(name, roleKey)은 roleKey 필수(미지정 시 예외), insert는 roleKey/workspaceId가
-   채워진 row만, nextId는 데모용 순번(운영 전환 시 시퀀스/UUID), reset/snapshot은 데모 전용. */
+/* Repository interface — 운영 DB 전환 시 이 5개 진입점만 교체.
+   계약: table(name, roleKey)은 scope 필수(미지정 시 예외), insert는 roleKey/workspaceId 채워진 row만. */
 const jpoRepository = {
   table: jpoTable,
   insert: jpoInsert,

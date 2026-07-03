@@ -18,7 +18,7 @@ const jeonseProtectionCommands = [
     label: "분류 오케스트레이터 실행",
     description: "샘플 요청으로 오케스트레이터 라우팅을 실행하고 agent_runs에 기록한다.",
     run() {
-      const result = runJeonseProtectionSampleRequest("ratio-check");
+      const result = runJeonseProtectionSampleRequest("enrich-price");
       if (!result) return { ok: false, message: "샘플을 찾지 못함" };
       jpoState.lastRun = {
         agent: result.agent ? result.agent.displayName : result.triage.recommendedAgent,
@@ -51,7 +51,7 @@ const jeonseProtectionCommands = [
         requestedAt: new Date().toISOString().slice(0, 10),
       });
       jpoWriteAudit({
-        id: jpoNextId("AUD-JPO", "audit_logs"),
+        id: jpoNextId("AUD-JPO", "jeonse_audit_logs"),
         actorId: latest.assignedToId,
         action: "JPO_APPROVAL_REQUESTED",
         targetType: "case",
@@ -70,14 +70,14 @@ const jeonseProtectionCommands = [
     description: "개인정보·증빙 마스킹 에이전트를 실행해 점검 리포트를 기록한다.",
     run() {
       const run = recordJeonseProtectionAgentRun({
-        agentId: "jpo-privacy",
+        agentId: "jpo-dataquality",
         caseId: (jpoTable("jeonse_cases", JPO_ROLE_KEY)[0] || {}).id || null,
         inputSummary: "증빙·화면·로그 마스킹 점검 요청",
         outputSummary: "익명 Ref 원칙 점검 완료 — 위반 의심 시 reviewRequired 기록",
         status: "needsReview",
         riskLevel: "medium",
         requiresHumanEscalation: false,
-        handoffs: [{ toAgentId: "jpo-audit", reason: "마스킹 점검 결과 감사 추적" }],
+        handoffs: [{ toAgentId: "jpo-supervisor", reason: "마스킹 점검 결과 감사 추적" }],
       });
       jpoInvalidateCounts();
       return { ok: true, message: `마스킹 점검 기록 ${run.id}` };
@@ -93,14 +93,15 @@ const jeonseProtectionCommands = [
       const packet = {
         exportedAt: new Date().toISOString(),
         notice: "내부 운영 참고용 · 담당자 검토 필요 · 개인정보 원문 미포함",
-        caseRef: { caseNo: latest.caseNo, taskType: latest.taskType, status: latest.status, riskLevel: latest.riskLevel },
+        caseRef: { caseNo: latest.caseNo, intakeType: latest.intakeType, status: latest.status, riskLevel: latest.riskLevel },
         refs: {
-          tenantRefId: latest.tenantRefId,
-          contractRefId: latest.contractRefId,
-          propertyRefId: latest.propertyRefId,
+          customerRefId: latest.customerRefId,
+          addressMasked: latest.addressMasked,
+          lawdCode: latest.lawdCode,
         },
-        checklist: (jpoTable("jeonse_tasks", JPO_ROLE_KEY).filter((t) => t.caseId === latest.id).map((t) => t.title)),
-        auditRefs: jpoTable("audit_logs", JPO_ROLE_KEY).filter((a) => a.targetId === latest.id).map((a) => a.id),
+        riskSignals: jpoTable("jeonse_risk_signals", JPO_ROLE_KEY).filter((x) => x.caseId === latest.id).map((x) => x.title),
+        docChecklist: latest.docChecklist || [],
+        auditRefs: jpoTable("jeonse_audit_logs", JPO_ROLE_KEY).filter((a) => a.targetId === latest.id || a.caseId === latest.id).map((a) => a.id),
       };
       const serialized = JSON.stringify(packet, null, 2);
       const guard = jpoRunHook("beforeExternalReferenceOpen", { serialized });
@@ -114,7 +115,7 @@ const jeonseProtectionCommands = [
         URL.revokeObjectURL(link.href);
       } catch (error) { /* headless 환경 등에서는 다운로드 생략 */ }
       jpoWriteAudit({
-        id: jpoNextId("AUD-JPO", "audit_logs"),
+        id: jpoNextId("AUD-JPO", "jeonse_audit_logs"),
         actorId: "jpo-audit",
         action: "JPO_REVIEW_PACKET_EXPORTED",
         targetType: "case",

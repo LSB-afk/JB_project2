@@ -8656,3 +8656,30 @@ textarea {
 }
 .live-data-note.is-live { color: #0b6b3a; }
 .live-data-note.is-fallback { color: #8a5a00; }
+
+/* 전세보호 lifecycle 칸반 보드 */
+.jpo-board {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(210px, 1fr));
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.jpo-board-column {
+  min-width: 0;
+  border: 1px solid var(--jbwc-line, #e5e5e5);
+  border-radius: 16px;
+  background: #f8faff;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.jpo-board-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; }
+.jpo-board-cards { display: flex; flex-direction: column; gap: 8px; }
+.jpo-card { cursor: pointer; min-height: 0; padding: 12px; border-radius: 14px; }
+.jpo-card:hover { border-color: #c8d8ff; background: #f3f7ff; }
+.jpo-hero-slim { min-height: 0 !important; padding: 26px 30px !important; }
+.jpo-hero-slim h2 { font-size: 30px !important; line-height: 38px !important; }
+@media (max-width: 1280px) { .jpo-board { grid-template-columns: repeat(7, minmax(200px, 240px)); } }
+@media (max-width: 820px) { .jpo-board { grid-template-columns: repeat(7, 220px); } }
