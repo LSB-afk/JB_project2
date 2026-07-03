@@ -1560,6 +1560,7 @@ function defaultDetailForView(view) {
     "settings",
     "rm-dashboard",
     "corporate-credit-dashboard",
+    "corporate-credit-harness",
     "jeonse-protection-harness",
     "fds-dashboard",
     "jb-woori-capital-dashboard",
@@ -1768,6 +1769,7 @@ function renderWorkbench() {
     plugins: pluginsPage,
     "rm-dashboard": rmDashboardPage,
     "corporate-credit-dashboard": corporateCreditDashboardPage,
+    "corporate-credit-harness": corporateCreditHarnessPage,
     "jeonse-protection-harness": jeonseProtectionHarnessPage,
     "fds-dashboard": fdsDashboardPage,
     "jb-woori-capital-dashboard": jbWooriCapitalDashboardPage,
@@ -3749,6 +3751,7 @@ function renderProperties() {
     settings: settingsContextMarkup,
     "rm-dashboard": rmDashboardContextMarkup,
     "corporate-credit-dashboard": corporateCreditDashboardContextMarkup,
+    "corporate-credit-harness": corporateCreditHarnessContextMarkup,
     "jeonse-protection-harness": jeonseProtectionHarnessContextMarkup,
     "fds-dashboard": fdsDashboardContextMarkup,
     "jb-woori-capital-dashboard": jbWooriCapitalDashboardContextMarkup,
@@ -5549,13 +5552,18 @@ function bindActions() {
         return;
       }
       if (selectedRailRole === "기업여신 담당자") {
-        activeView = "corporate-credit-dashboard";
+        const ccrHash = typeof ccrHashForView === "function" ? ccrHashForView("board") : "#/roles/corporate-credit/board";
+        activeView = "corporate-credit-harness";
         activeDetailType = defaultDetailForView(activeView);
-        if (window.location.hash !== "#corporate-credit-dashboard") {
-          window.location.hash = "corporate-credit-dashboard";
+        if (typeof ccrState !== "undefined") {
+          ccrState.view = "board";
+          ccrState.detail = null;
+        }
+        if (window.location.hash !== ccrHash) {
+          window.location.hash = ccrHash;
         }
         render();
-        notify("기업여신 담당자 대시보드로 이동했습니다.");
+        notify("기업여신 담당자 하네스로 이동했습니다.");
         return;
       }
       if (selectedRailRole === "전세보호 담당자") {
@@ -5721,6 +5729,16 @@ function applyHashRoute() {
     if (typeof jpoState !== "undefined") {
       jpoState.view = jpoRoute.view || "board";
       jpoState.detail = jpoRoute.caseId ? { kind: "case", id: jpoRoute.caseId } : null;
+    }
+    return;
+  }
+  const ccrRoute = typeof ccrRouteFromHash === "function" ? ccrRouteFromHash(window.location.hash) : null;
+  if (ccrRoute) {
+    activeView = "corporate-credit-harness";
+    activeDetailType = defaultDetailForView(activeView);
+    if (typeof ccrState !== "undefined") {
+      ccrState.view = ccrRoute.view || "board";
+      ccrState.detail = ccrRoute.caseId ? { kind: "case", id: ccrRoute.caseId } : null;
     }
     return;
   }

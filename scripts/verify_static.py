@@ -46,6 +46,22 @@ app_js_files = [
     "jeonseProtection.commands.js",
     "jeonsePublicData.adapters.js",
     "jeonsePriceRisk.service.js",
+    "corporateCredit.config.js",
+    "corporateCreditAgents.registry.js",
+    "corporateCreditRules.js",
+    "corporateCreditFinancialData.adapters.js",
+    "corporateCreditRisk.service.js",
+    "corporateCredit-db.js",
+    "corporateCreditServices.js",
+    "corporateCreditEvidence.service.js",
+    "corporateCredit.helpers.js",
+    "corporateCredit.view.board.js",
+    "corporateCredit.view.cases.js",
+    "corporateCredit.view.wizard.js",
+    "corporateCredit.view.harness.js",
+    "corporateCredit.commands.js",
+    "corporateCredit.sidebar.js",
+    "corporateCreditHarness.js",
 ]
 
 required = [
@@ -65,6 +81,7 @@ required = [
     ROOT / "scripts/api-proxy.mjs",
     ROOT / "tests/e2e/localguard.spec.js",
     ROOT / "tests/e2e/wooricap.spec.js",
+    ROOT / "tests/e2e/corporate-credit-smoke.spec.js",
 ] + [ROOT / "app" / name for name in app_js_files]
 
 missing = [path for path in required if not path.exists()]
@@ -120,6 +137,22 @@ html_needles = [
     "./jeonseProtection.commands.js",
     "./jeonsePublicData.adapters.js",
     "./jeonsePriceRisk.service.js",
+    "./corporateCredit.config.js",
+    "./corporateCreditAgents.registry.js",
+    "./corporateCreditRules.js",
+    "./corporateCreditFinancialData.adapters.js",
+    "./corporateCreditRisk.service.js",
+    "./corporateCredit-db.js",
+    "./corporateCreditServices.js",
+    "./corporateCreditEvidence.service.js",
+    "./corporateCredit.helpers.js",
+    "./corporateCredit.view.board.js",
+    "./corporateCredit.view.cases.js",
+    "./corporateCredit.view.wizard.js",
+    "./corporateCredit.view.harness.js",
+    "./corporateCredit.commands.js",
+    "./corporateCredit.sidebar.js",
+    "./corporateCreditHarness.js",
     "./app.js",
 ]
 for needle in html_needles:
@@ -257,6 +290,80 @@ for forbidden in [
 
 if "jeonse-protection-dashboard" in js or "jeonseProtectionDashboardConfig" in js:
     raise SystemExit("label-only jeonse-protection-dashboard resurfaced in app.js")
+
+# 기업여신 담당자 role harness 계약 — 전세/계열사 하네스 복제 금지, role scope 강제
+ccr_files = [
+    "corporateCredit.config.js",
+    "corporateCreditAgents.registry.js",
+    "corporateCreditRules.js",
+    "corporateCreditFinancialData.adapters.js",
+    "corporateCreditRisk.service.js",
+    "corporateCredit-db.js",
+    "corporateCreditServices.js",
+    "corporateCreditEvidence.service.js",
+    "corporateCredit.helpers.js",
+    "corporateCredit.view.board.js",
+    "corporateCredit.view.cases.js",
+    "corporateCredit.view.wizard.js",
+    "corporateCredit.view.harness.js",
+    "corporateCredit.commands.js",
+    "corporateCredit.sidebar.js",
+    "corporateCreditHarness.js",
+]
+joined_ccr = "\n".join((ROOT / "app" / name).read_text(encoding="utf-8") for name in ccr_files)
+ccr_needles = [
+    "CCR_ROLE_KEY",
+    "corporate-credit",
+    "role scope is required",
+    "getCorporateCreditSidebarCounts",
+    "searchCorporateCreditRecordsAsync",
+    "createCorporateCreditCase",
+    "recordCorporateCreditAgentRun",
+    "corporateCreditOfficerHarness",
+    "previewCorporateCreditTriage",
+    "computeCorporateCreditRiskSignals",
+    "/roles/corporate-credit",
+    "기업여신 업무지원 포털",
+    "신규 기업여신 운영 건 접수",
+    "운전자금",
+    "PF·구조화 금융",
+    "조기경보/EWS",
+    "여신메모 초안",
+    "실제 대출 승인/거절 금지",
+    "실제 금리/한도 산정 금지",
+    "내부 운영 참고용",
+    "담당자 검토 필요",
+    "corporate_credit_cases",
+    "corporate_credit_agent_runs",
+    "corporate_credit_agent_handoffs",
+    "corporate_credit_audit_logs",
+    "ccrRepository",
+    "corporateCreditHooks",
+    "Compliance Guardrail Evaluator Agent",
+]
+for needle in ccr_needles:
+    if needle not in joined_ccr:
+        raise SystemExit(f"기업여신 role harness missing {needle!r}")
+
+for forbidden in [
+    "jpoTable(",
+    "JPO_ROLE_KEY",
+    "jeonseProtectionAgents",
+    "jeonseFraudProtectionHarness",
+    "jbwcTable(",
+    "jbWooriCapitalOpsHarness",
+    "전세 안심 점검",
+    "전세사기",
+    "임대인",
+    "보증금",
+]:
+    if forbidden in joined_ccr:
+        raise SystemExit(f"기업여신 role harness should not contain {forbidden!r}")
+
+ccr_harness_registry = (ROOT / "app/harnessRegistry.js").read_text(encoding="utf-8")
+for needle in ['id: "corporate-credit"', "corporateCreditOfficerHarness", "scopeProbe"]:
+    if needle not in ccr_harness_registry:
+        raise SystemExit(f"harnessRegistry missing 기업여신 계약 {needle!r}")
 
 # ---- ECC 하네스 표준 계층 계약 ----
 harness_core = (ROOT / "app/harnessCore.js").read_text(encoding="utf-8")

@@ -3,6 +3,47 @@
    main/default/safety harness alias는 존재하지 않는다 — 하네스는 여기 등록된 것이 전부다. */
 
 registerHarness({
+  id: "corporate-credit",
+  kind: "role",
+  scopeKey: "roleKey",
+  scopeValue: CCR_ROLE_KEY,
+  displayName: CCR_DISPLAY_NAME,
+  routeBase: CCR_ROUTE_BASE,
+  sidebarConfig: ccrNavigation,
+  countService: getCorporateCreditSidebarCounts,
+  searchService: searchCorporateCreditRecords,
+  caseCreationFlow: { view: "cases-new", wizardFormId: "ccr-new-case-form", create: createCorporateCreditCase },
+  agents: corporateCreditAgents,
+  skills: corporateCreditSkills,
+  commands: corporateCreditCommands,
+  hooks: corporateCreditHooks,
+  rules: corporateCreditRules,
+  guardrails: corporateCreditOfficerHarness.policy,
+  verification: {
+    enforceHooks: true,
+    requiredHooks: ["beforeCaseCreate", "beforeAgentRun", "beforeMemoDraft", "beforeCustomerMessage"],
+    requiredAgents: 15,
+    requiredCommands: 3,
+    scopeProbe() {
+      try { ccrTable("corporate_credit_cases"); return "scope 미지정 조회가 허용됨"; }
+      catch (error) { return String(error.message).includes("role scope is required") ? null : `예외 계약 불일치: ${error.message}`; }
+    },
+    piiScan() {
+      const raw = window.localStorage.getItem(CCR_DB_KEY) || "";
+      return harnessGuardCheckPII(raw);
+    },
+    forbiddenResurface() {
+      const issues = [];
+      if (document.querySelector('[data-affiliate="광주은행"]')) issues.push("광주은행 레일 재유입");
+      const text = document.body ? document.body.textContent : "";
+      if (text.includes("소비자보호 담당자")) issues.push("삭제된 소비자보호 담당자 재유입");
+      if (text.includes("내부 준법감사 담당자")) issues.push("삭제된 내부 준법감사 담당자 재유입");
+      return issues.length ? issues.join(" / ") : null;
+    },
+  },
+});
+
+registerHarness({
   id: "jeonse-protection",
   kind: "role",
   scopeKey: "roleKey",
