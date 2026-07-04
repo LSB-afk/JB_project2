@@ -191,13 +191,22 @@ function rmoViewContextModel() {
     if (c) return { kind: "case", row: c };
   }
   if (rmoState.view === "agent-queue") {
-    const row = rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).find((x) => ["pendingApproval", "running"].includes(x.status)) || rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY)[0];
+    const assignmentRows = rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY);
+    const row = pickContextRow("assignment", assignmentRows, assignmentRows.find((x) => ["pendingApproval", "running"].includes(x.status)));
     const agent = row ? rmOfficerAgents.find((a) => a.id === row.agentId) : null;
+    const c = row ? findCase(row.caseId) : null;
+    const audits = c ? rmoAuditsForCase(c.id) : [];
     return { kind: "generic", title: "에이전트 실행 큐 요약", rows: [
-      ["배정 ID", row && row.id], ["에이전트", row && rmoAgentDisplayName(row.agentId)], ["소속/도메인", agent ? `${agent.org} · ${agent.domain}` : "-"],
+      ["배정 ID", row && row.id], ["연결 케이스", c ? `${c.caseNo} · ${c.theme}` : row && row.caseId],
+      ["고객/상담/도메인", c ? `${c.customerAlias} · ${rmoCaseTypeLabel(c.caseType)} · ${c.bank}` : "-"],
+      ["에이전트", row && rmoAgentDisplayName(row.agentId)], ["소속/도메인", agent ? `${agent.org} · ${agent.domain}` : "-"],
       ["사용 데이터", row && (row.inputData || []).join(" · ")], ["예상 산출물", row && (row.outputMdPath || row.expectedOutput)],
       ["현재 상태", row && rmoNodeStatusLabel(row.status)], ["다음 액션", row && rmoNodeStatus(row.status) === "ready" ? "Enter로 승인·실행" : "상태 확인"],
-    ], chips: row ? [rmoNodeStatusLabel(row.status), row.requiresApproval ? "사람 승인 필요" : "내부 실행"] : [] };
+      ["담당자 승인", row && row.requiresApproval ? "필요" : "내부 실행"],
+    ], chips: row ? [rmoNodeStatusLabel(row.status), row.requiresApproval ? "사람 승인 필요" : "내부 실행"] : [], sections: [
+      c ? rmoContextList("케이스 내용", [[c.situation, c.priorityReason], ["처리 목표", c.goal || "담당자 검토용 산출물 준비"]]) : "",
+      rmoContextList("관련 감사 로그", audits.map((a) => [a.action, a.createdAt])),
+    ] };
   }
   if (rmoState.view === "agent-harness") {
     const agent = rmoTable("rm_officer_harness_agents", RMO_ROLE_KEY)[0];
@@ -208,21 +217,37 @@ function rmoViewContextModel() {
     ], chips: agent ? [agent.domain, agent.status, "하네스 실행"] : [] };
   }
   if (rmoState.view === "capabilities") {
-    const cap = (rmoCapabilityFilter && rmoCapabilityFilter !== "all" ? RMO_CAPABILITIES.filter((c) => c.category === rmoCapabilityFilter) : RMO_CAPABILITIES)[0];
-    return { kind: "generic", title: "업무 기능 저장소 요약", rows: [
-      ["기능명", cap && cap.name], ["입력값", cap && cap.data.join(" · ")], ["출력값", cap && cap.output],
+    const capRows = rmoCapabilityFilter && rmoCapabilityFilter !== "all" ? RMO_CAPABILITIES.filter((c) => c.category === rmoCapabilityFilter) : RMO_CAPABILITIES;
+    const cap = pickContextRow("capability", capRows, capRows[0]);
+    const risk = cap ? rmoCapabilityRisk(cap) : null;
+    const connectedCases = cap ? caseRows.filter((c) => (c.agentPlan || []).some((agentId) => (cap.agentIds || []).includes(agentId))).slice(0, 5) : [];
+    return { kind: "generic", title: cap ? `${cap.name} 기술 상세` : "업무 기능 기술 요약", rows: [
+      ["기능명", cap && cap.name], ["기능 목적", cap && cap.summary], ["입력값", cap && cap.data.join(" · ")], ["출력값", cap && cap.output],
       ["연결 에이전트", cap && rmoCapabilityAgentNames(cap).join(" · ") || "서비스 레이어"], ["사용 도메인", cap && cap.category],
-      ["위험도", cap && rmoCapabilityRisk(cap).label], ["담당자 확인", cap && rmoCapabilityRisk(cap).review],
-    ], chips: cap ? [cap.category, RMO_CAPABILITY_STATUS_LABELS[cap.status] || cap.status, rmoCapabilityRisk(cap).label] : [] };
+      ["위험도", risk && risk.label], ["담당자 확인", risk && risk.review],
+      ["사용 시나리오", cap && `${cap.category} 화면에서 선택 항목의 입력값을 읽고 ${cap.output} 산출물을 만듭니다.`],
+      ["감사 기록 연결", cap && (cap.id.includes("audit") || cap.category.includes("감사") ? "직접 연결" : "에이전트 실행/산출물 이벤트로 간접 연결")],
+    ], chips: cap ? [cap.category, RMO_CAPABILITY_STATUS_LABELS[cap.status] || cap.status, risk.label] : [], sections: [
+      rmoContextList("적용 케이스", connectedCases.map((c) => [c.caseNo, `${c.theme} · ${rmoNextActionText(c)}`])),
+      rmoContextList("생성 산출물 예시", cap ? [[cap.output, cap.summary], [cap.serviceRef || "service", "구현/서비스 참조"]] : []),
+    ] };
   }
   if (rmoState.view === "data-connectors") {
     const connectorRows = rmoTable("rm_officer_external_connectors", RMO_ROLE_KEY);
     const row = pickContextRow("connector", connectorRows, connectorRows.find((x) => x.health !== "healthy"));
+    const affectedCases = row ? caseRows.filter((c) => String(c.caseType || "").toLowerCase().includes(String(row.category || "").toLowerCase()) || (c.prioritySources || []).some((s) => String(s.label || "").includes((row.name || "").split("·")[0]))).slice(0, 5) : [];
+    const relatedCaps = row ? RMO_CAPABILITIES.filter((cap) => cap.data.some((d) => String(d).includes(row.category) || String(row.name).includes(String(d).split("(")[0])) || (row.agentIds || []).some((id) => (cap.agentIds || []).includes(id))).slice(0, 5) : [];
     return { kind: "generic", title: "데이터 연결 요약", rows: [
-      ["커넥터", row && row.name], ["분류", row && row.category], ["상태", row && `${RMO_STATUS_LABELS[row.health] || row.health} · ${RMO_STATUS_LABELS[row.dataMode] || row.dataMode}`],
+      ["커넥터 ID", row && row.id], ["데이터 출처", row && row.name], ["공개/샘플/내부", row && (RMO_STATUS_LABELS[row.dataMode] || row.dataMode)],
+      ["분류", row && row.category], ["상태", row && `${RMO_STATUS_LABELS[row.health] || row.health} · ${RMO_STATUS_LABELS[row.dataMode] || row.dataMode}`],
       ["최근 동기화", row && (row.lastSyncAt || "담당자 확인 필요")], ["실패 이유", row && (row.failureReason || "없음")],
       ["다음 액션", row && (row.nextAction || (row.health === "healthy" ? "정상 연결 상태 유지" : "수동 확인 후 샘플 데이터 갱신"))],
-    ], chips: row ? [row.category, row.health, row.dataMode] : [], sections: row ? [rmoContextList("연결 에이전트", (row.agentIds || []).map((id) => [rmoAgentDisplayName(id), "이 커넥터를 입력 데이터로 사용"]))] : [] };
+      ["담당자 확인", row && (row.dataMode === "manualRequired" || row.health !== "healthy" ? "필요" : "일반 모니터링")],
+    ], chips: row ? [row.category, row.health, row.dataMode] : [], sections: row ? [
+      rmoContextList("연결 에이전트", (row.agentIds || []).map((id) => [rmoAgentDisplayName(id), "이 커넥터를 입력 데이터로 사용"])),
+      rmoContextList("영향받는 케이스", affectedCases.map((c) => [c.caseNo, `${c.theme} · ${rmoNextActionText(c)}`])),
+      rmoContextList("사용되는 업무 기능", relatedCaps.map((cap) => [cap.name, cap.output])),
+    ] : [] };
   }
   if (rmoState.view === "roles") {
     const userRows = rmoTable("rm_officer_users", RMO_ROLE_KEY);
@@ -239,10 +264,14 @@ function rmoViewContextModel() {
   if (rmoState.view === "audit-logs") {
     const auditRows = rmoTable("rm_officer_audit_logs", RMO_ROLE_KEY);
     const row = pickContextRow("audit", auditRows);
+    const c = row ? findCase(row.caseId) : null;
     return { kind: "generic", title: "감사 기록 요약", rows: [
       ["기록 ID", row && row.id], ["행위", row && row.action], ["대상", row && `${row.targetType} ${row.targetId || ""}`],
+      ["관련 케이스", c ? `${c.caseNo} · ${c.theme}` : row && row.caseId],
       ["위험도", row && (RMO_RISK_LABELS[row.riskLevel] || row.riskLevel)], ["검토 필요", row && row.reviewRequired ? "필요" : "기록 완료"],
-    ], chips: row ? [row.action, row.riskLevel] : [] };
+    ], chips: row ? [row.action, row.riskLevel] : [], sections: [
+      row ? `<section class="rmo-context-section rmo-context-document"><h4>감사 문서</h4><div class="rmo-md-body">${rmoRenderMarkdownSections(rmoAuditDocumentBody(row, c))}</div></section>` : "",
+    ] };
   }
   return null;
 }
