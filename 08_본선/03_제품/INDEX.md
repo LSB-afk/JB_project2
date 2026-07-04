@@ -69,6 +69,7 @@ up: "[[_03_제품_MOC]]"
 - [[08_본선/03_제품/00_source-log|Source Log]] · [[08_본선/03_제품/11_change-log|Change Log]]
 
 ### 신규 제품 문서 (루트·발표제출)
+- **제출 정본**: [[08_본선/03_제품/07_발표-제출/MVP제안서|MVP제안서(7섹션)]] · [[08_본선/03_제품/07_발표-제출/기능명세서|기능명세서(6파트+변경이력)]] · [[08_본선/03_제품/00_vision/나선형-성장-구조|나선형 성장 구조]] · [[08_본선/03_제품/00_결정-준비/casesops-분기/07-policy-engine|Policy Engine]]
 - [[08_본선/03_제품/05_domain-model|Domain Model]] · [[08_본선/03_제품/07_architecture|Architecture]] · [[08_본선/03_제품/08_feature-spec|Feature Spec]] · [[08_본선/03_제품/09_flow|Flow]]
 - 발표·제출: [[08_본선/03_제품/07_발표-제출/demo-script|Demo Script]] · [[08_본선/03_제품/07_발표-제출/pitch-outline|Pitch]] · [[08_본선/03_제품/07_발표-제출/judge-qna|Judge Q&A]] · [[08_본선/03_제품/07_발표-제출/submission-checklist|Submission Checklist]] · [[08_본선/03_제품/06_build-roadmap/ssd-implementation|SSD]]
 - Vision 추가: [[08_본선/03_제품/00_vision/business-metrics|Business Metrics]] · [[08_본선/03_제품/00_vision/data-strategy|Data Strategy]] · [[08_본선/03_제품/00_vision/risk-impact-register|Risk Register]] · [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성 메커니즘]]

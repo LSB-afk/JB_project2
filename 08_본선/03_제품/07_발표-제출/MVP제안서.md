@@ -62,7 +62,7 @@ aliases: [MVP제안서, MVP 제안서, MVP Proposal]
 **운영 메커니즘**: `Case → AgentRun → Agent → Skill → Evidence → Approval → Audit`(canon §8). 콘솔 축 = 계열사 × 담당 직군이며, 도메인(여신·전세보호·피싱·사후관리)은 그 직군이 처리하는 케이스다(키스톤-확정).
 
 - 14+ 전문 에이전트가 신호 수집 → 위험 분류 → 행동 초안 → 검증을 수행하되, **고객 대상 행동은 승인 레벨 L0~L4 통과 전까지 자동 실행되지 않는다**(RM·준법 2역할 승인자, canon §2·§8, [E4]). 히어로 콘솔 실측 = corporate-credit **8 에이전트**(표면 5: intake·financial·repayment·doc·memo / +policy·reply·supervisor), 케이스당 활성 3~5(승보-프로토타입-반영 §7.5).
-- **PII 4중 방어**로 원본 고객 PII를 외부 프런티어 LLM에 반출하지 않는다. 하이브리드 라우팅: **웹 = 정책/승인 UI + Claude/Codex API(비민감)**, **로컬(EXAONE 3.5 7.8B 데모, Qwen2.5 실배포 권고) = PII 포함 업무**(결정-현황-종합, [E2]). 코드에는 콘솔별 `verifyNoPIILeakage` 등 harnessVerification 24체크가 실재한다(E4).
+- **PII 4중 방어**로 원본 고객 PII를 외부 프런티어 LLM에 반출하지 않는다. 하이브리드 라우팅: **웹 = 정책/승인 UI + Claude/Codex API(비민감)**, **로컬(EXAONE 3.5 7.8B 데모, Qwen2.5 실배포 권고) = PII 포함 업무**(결정-현황-종합, [E2]). **제출 코드 정본 JB_project2**(`app/harnessVerification.js`, 이승보 프로토타입)에 콘솔별 `verifyNoPIILeakage` 등 24체크가 실재한다(E4). *(예선 `02_제품/app`엔 미이식 — 심사 시 제출 repo=JB_project2 기준.)*
 - **계열사별 모듈화**: 전북은행 = 여신(corporate-credit)·전세보호·피싱, JB우리캐피탈 = 여신·사후관리(EWS). 공통 뼈대(운영계약 + PII 4중방어)는 한 번만 만들고 직군별 에이전트셋·화면·데이터만 스왑한다(키스톤-확정 "하이브리드", [E4]).
 
 **Non-goals(하지 않는 것)**: 승인 없는 자동 고객 접촉·발송 없음 · 원본 PII 외부 LLM 반출 없음 · 신용평가·대출 승인·금리/한도 확정을 AI가 대신하지 않음(AI는 권고, 심사역이 실무책임, 센터장이 최종책임 — AI기본법 §34, 금융위 2026 가이드라인 RACI) · 로컬모델 명분을 "비용 절감"으로 세우지 않음(실제 근거 = 원본 PII 비반출·규제 준수)(core-bet §Non-goals, [E2/E4]).
