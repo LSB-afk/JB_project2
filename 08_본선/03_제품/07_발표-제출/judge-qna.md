@@ -110,7 +110,7 @@ aliases: [judge-qna, 심사위원-예상질문]
 
 **Q9-1. 결국 승인 버튼 붙인 대시보드 아닌가? 뭐가 다른가?**
 - **Short answer**: 차별성은 UI가 아니라 **관점 전환**이다 — 업무를 '경험'으로 재해석해 역할 기반 AI Agent 게이트로 묶고, 직원·조직·그룹·고객 4관점을 하나의 운영계약으로 잇는다. "AI는 직원이 사람답게 판단할 여유를 만든다." [E2]
-- **Evidence**: 운영계약 `Case→AgentRun→Agent→Skill→Evidence→Approval→Audit`이 코드로 작동(app.js) [E4]. 승인 게이트는 Approve/Reject로 끝내지 않고 모델출력·입력스냅샷·규칙/프롬프트/모델버전·데이터출처·정책충돌을 한 화면에 [E3 D15].
+- **Evidence**: 운영계약 `Case→AgentRun→Agent→Skill→Evidence→Approval→Audit`이 코드로 작동(app.js) [E4]. 승인 게이트는 Approve/Reject로 끝내지 않고 모델출력·입력스냅샷·규칙/프롬프트/모델버전·데이터출처·정책충돌을 한 화면에 [E3 D15]. 무엇보다 '대시보드'와 갈리는 지점은 **판단·행동·검증이 코드 실체**라는 것이다 — 4함수 계약(`computeRiskDecision`·`buildDashboardData`·`auditChainRecords`·`moveCaseToColumn`)이 실코드로 동작하고 [E4], 하네스 가드레일 5종(PII·스코프·승인·자동종결·발송)과 런타임 셀프테스트(`runHarnessSelfTest`)가 실코드로 pass하며 [E4], 3계층(고객·에이전트·직원) 메모리 증류가 사람 결정만 규칙화해 실 LLM 게이트웨이 입력으로 배선되는 폐루프를 구성한다 [E4, PR#4]. 승인 버튼 뒤가 빈 대시보드가 아니라, 판단·초안·검증·가드레일·감사·메모리가 모두 실행되는 운영 커널이라는 것이 UI 이상의 반박 근거다.
 - **Limitation**: ⚠️ **TX⊃UX·EX·CX·PX / AX 중 PX·AX·"자동화=경험"은 우리 팀의 실행원칙(조어)이다** — 학계 정립이론처럼 주장하지 않고 선제 고지한다. [E0 조어명시]
 - **Next step**: 4관점 각각에 "AI 전/후" 화면 1컷씩으로 관점 전환을 데모에서 체감시킴.
 
