@@ -14,6 +14,81 @@ aliases:
 > ⚠️ 대외비 — 6/29 공식발표 전 비공개.
 > 형식: `### YYYY-MM-DD HH:MM · 세션 요약` → 한 일 / 결과물 / 다음. 새 세션은 맨 아래 추가.
 
+<!-- TOC:AUTO -->
+## 목차 (자동생성 — 직접 편집 금지, `log-toc`가 재실행 시 덮어씀)
+
+  - [[#2026-06-26 · 본선 준비 부트스트랩 세션]]
+  - [[#2026-06-27 · 제품 정의 브레인스토밍 + 운영 하네스 구축]]
+  - [[#2026-06-27 · 리서치 Orchestrator 실행 — 딥프롬프트 19종 산출]]
+  - [[#2026-06-27 05:52 · 야간 라우팅 점검·개선 + 구현전 토큰 작업맵 + 팀 이력 (S13)]]
+  - [[#2026-06-27 15:10 · 서드파티 도구 선별 설치 + 팀 동기화 레지스트리 (S14)]]
+  - [[#2026-06-27 15:34 · 디자인/개발 플러그인 project scope 동기화 (S15)]]
+  - [[#2026-06-29 17:10 · 회의 준비 팩 + AX 메타 하네스 가동 (S16)]]
+  - [[#2026-06-29 18:00 · 회의 결과 기록 + 수정필요 파일 도출 + AI 인덱스 자동반영 (S17)]]
+  - [[#2026-06-30 · 아이디어 회의 기록 + 제품 정의 팀 합의]]
+  - [[#2026-06-30 · 텔레메트리 누적 중복 버그 수정 + 하네스 견고성 보강 (Codex)]]
+  - [[#2026-06-30 · 리서치 딥프롬프트 사이클 (실행 → 마감)]]
+  - [[#2026-06-30 (후속) · D3e 최종 회수 — JB 총정리본 결과 수령]]
+  - [[#2026-07-01 · 볼트 태그·부모(up) 전면 정합화]]
+  - [[#2026-07-01 · 운영 자동화 스킬화 (AI 자가인지·자가전파)]]
+  - [[#2026-07-01 · 도구셋 확장 리서치 + 문서화]]
+  - [[#2026-07-01 · 도구셋 확장 적용 + 자체 스킬 2종 신설]]
+  - [[#2026-07-01 · 시각화 스킬 맵·메모리 갱신]]
+  - [[#2026-07-01 · session-boot 스킬 신설 (세션 오리엔테이션)]]
+  - [[#2026-07-01 · 야간 자율 — 리서치 종합·적대검증·정합감사 (오프라인)]]
+  - [[#2026-07-01 · 야간 자율 2 — 11블록 채움 + 빌드 WBS + 거시 동기화 (Codex 최대화)]]
+  - [[#2026-07-02 · 백업 위험·협업 인프라 정비 + 회의4/5 준비 + 데일리 시스템 + AI 프로토콜]]
+- [[#2026-07-01 야간 · 리서치 점-점 종합 파이프라인 (Codex gpt-5.5 병렬, A→B→C 완료)]]
+  - [[#2026-07-02 · 간트 수정 후 Excalidraw 보드 동기화]]
+  - [[#2026-07-02 · Excalidraw 공유용 이미지 Export]]
+  - [[#2026-07-02 · 공유 이미지 손그림풍 재export]]
+  - [[#2026-07-02 · GitHub 미리보기용 이미지 README]]
+  - [[#2026-07-02 · 팀 역할/발표 PPT 전략 갱신]]
+- [[#2026-07-02 · JB 도입시나리오 설득패키지(PPT 백본) 착수]]
+  - [[#2026-07-02 · paperclip fork 시각검증 실험 (Codex 병렬)]]
+  - [[#2026-07-02 · JB 콘솔 프로토타입 착수 (fork를 우리 예선 설계+JB디자인으로)]]
+  - [[#2026-07-02 · JB 콘솔 심화: 실 은행 워크플로 3종 + 14 canon 에이전트 + JB 아이콘 (커밋 jb-console `389e5ca`)]]
+- [[#2026-07-02 · 리서치 시각화 — 리서치 지도(mermaid) + Obsidian 임베드]]
+- [[#2026-07-02 · 리서치 운영문서 정합성 감사 (Codex 4병렬 위임)]]
+- [[#2026-07-02 · 빌드 플랜 초안(히어로 실동작 데모)]]
+- [[#2026-07-02 · 빌드 Phase 0 실행 완료 (RUNTIME_CONFIG seam)]]
+  - [[#2026-07-02 · JB 콘솔 케이스 중심 재구현 P0~P4 ("디자인 티 제거→실사용 UX", Codex 구현)]]
+  - [[#2026-07-03 · JB우리캐피탈 도메인 하네스 신설 (wooricap.com 전수 분석)]]
+  - [[#2026-07-03 · D30 TAM 방식 A 분모 취약 발견 → D30b 재조사 프롬프트 신설]]
+  - [[#2026-07-03 · D30b 즉시 해결 (Sonnet 직접 리서치 + IDC 원문 회수)]]
+  - [[#2026-07-03 · D31 신설 — 타겟모수 RM·인접직군 헤드카운트 센서스]]
+  - [[#2026-07-03 · D31 결과 회수 — RM·인접직군 seat 모수 확정]]
+  - [[#2026-07-03 · 7/1~7/3 회의 결정 실행판 시각화]]
+  - [[#2026-07-03 · Capture-by-default 거버넌스 무결성 점검]]
+  - [[#2026-07-03 · 공개 라이브 데모 URL + 온라인 DB 배포 스택 리서치]]
+  - [[#2026-07-03 · 마일스톤 — 리서치·앱설계 초안 → 바텀업 결정준비 배치 피벗 (Codex 오버나이트 Workflow 2라운드)]]
+  - [[#2026-07-03 · 팀 공유용 오전 결정 브리핑 보드 생성]]
+  - [[#2026-07-03 · 배포 AI-실행성 교정 + deploy-public-demo.sh 신설]]
+  - [[#2026-07-03 · 로그·통계·로우데이터 관리 세션 (Codex)]]
+  - [[#2026-07-03 · plugin-sync 스킬 신설 + 배포-준비도 점검]]
+  - [[#2026-07-03 · Codex CLI 토큰 백필 통계 신설]]
+  - [[#2026-07-03 · 문서 통합 + 유튜브 디자인툴 6종 리뷰]]
+  - [[#2026-07-03 · 팀원용 스킬·플러그인 목록 통합 + 본선 HOME 링크]]
+  - [[#2026-07-03 · 스프린트 전 축(하네스) 점검 + 레포-지도 SSOT]]
+  - [[#2026-07-03 · 각종 로그 진행 — telemetry 최신화]]
+  - [[#2026-07-03 · 서사 학술·규제 근거팩 + 최영욱 4보고서 정합 + 7/1 타임라인 문서 + feynman]]
+  - [[#2026-07-03 · feynman deepresearch 회수 — 국내 AI규제 HITL 백본(검증됨)]]
+  - [[#2026-07-03 저녁 · 맥락압축·ultracode 후 재개 — harness 방법론 도입 + 문서생성 마스터플랜]]
+  - [[#2026-07-03 밤 · P0 문서 6종 생성·검수·정정·커밋(origin 푸시)]]
+  - [[#2026-07-04 · 서사 정합(맥락감사) + 승보 역할축 v2 + 제출 정본 레포 확정]]
+  - [[#2026-07-03 밤 · 로그들 업데이트 — telemetry S40]]
+  - [[#2026-07-04 00:02 KST · 로그들 업데이트 — 7/4 데일리 시작·telemetry S41]]
+  - [[#2026-07-04 · 문서하네스 안착 + 실동작 에이전트 슬라이스 PR]]
+  - [[#2026-07-04 (세션 "JB금융-디자인") · 디자인 토큰 업그레이드 — design-system.md 개정 + tokens 폴더 신설]]
+  - [[#2026-07-04 · 문서세트 22종 + paperclip 벤더링 + 디자이너 핸드오프]]
+  - [[#2026-07-04 03:20 KST · 문서 대량 변경 후 로그 업데이트 — telemetry S42]]
+  - [[#2026-07-04 · CaseOps 확장 분기(Codex 6문서) + 디자인 잠금 해제]]
+  - [[#2026-07-04 · 매니징 갱신 + 문서계약 100% 확인]]
+  - [[#2026-07-04 · 종합 감사 6축 + 후속수정(2 워크플로)]]
+- [[#2026-07-04 · Fable — /llm 게이트웨이 구현 + Q13~Q15 심사방어 3축 (예선 MVP 레포)]]
+
+<!-- /TOC:AUTO -->
+
 ### 2026-06-26 · 본선 준비 부트스트랩 세션
 **한 일**
 - 본선 안내(이메일·DAKER) 기록, 대회 안내 정본 통합([[JB금융그룹 Fin AI Challenge — 대회 안내 정본 (공식 전문)]]), 본선 문서 분리([[본선-안내]]·[[본선-준비-계획]]).
@@ -477,3 +552,143 @@ aliases:
 
 ### 2026-07-03 · 문서 통합 + 유튜브 디자인툴 6종 리뷰
 플러그인/스킬 관리문서 중복 제거 — [[registry-plugins]]=목록 SSOT(11→12종, humanize-korean 누락 정정)·plugin-sync=동기화 기전 전용·`_tools-index`→registry-skills SSOT 선언. canon-moc-sync dry-run 죽은링크 0·도달성 ✓. 이어서 유튜브 공유 디자인툴 6종 검토 — Impeccable(pbakaus, Apache-2.0)만 지금-추가 후보(SkillSpector 스캔+승인 대기)로 [[도구-확장-리서치-20260701]]에 반영, 나머지는 보류/스킵. taste-skill(Leonxlnx) 개인-전역 기설치 확인, 팀 승격은 미결정.
+
+### 2026-07-03 · 팀원용 스킬·플러그인 목록 통합 + 본선 HOME 링크
+팀원 동기화용 스킬/플러그인 목록화 — [[registry-skills]](12종, 동기화법 배너) · [[registry-plugins]](18종, humanize-korean 정정) · **본선 HOME "도구·스킬 목록"** 링크(3종 포인터). _tools-index·메모리 12종 정합. canon-moc-sync 클린.
+
+### 2026-07-03 · 스프린트 전 축(하네스) 점검 + 레포-지도 SSOT
+- **레포 구분 SSOT 신설** [[레포-지도]](_system, Codex 초안): JB-Fin-AI-Challenge(모노레포·origin·대외비, main이 로컬보다 105앞)/River-181 fork/JB_project2(이승보 공개제출 후보·앱전용)/smart-agri-ai-2026(무관·오배치 회수)/hagent-os·paperclip(참고) 검증 기록. 미결=제출 정본 repo(이승보).
+- **부팅/계약 문서 키스톤 드리프트 정정**: HANDOFF(부팅문서)·PLAN·PROGRESS의 "도메인 택1"→**하이브리드 확정**, 에이전트 14 확정, UX→Enter Flow, git 스냅샷 정정(origin 11미푸시 오기→105앞·push=fork). AGENTS 11역할→14(data-steward 추가)·2-B 슬롯 실팀 실명 매핑(김주용/이승보/김민주/최영욱). 루트 CLAUDE.md·대시보드(D-1) 정합.
+- **실행 체크리스트 배선**: 차트(간트)는 보기용, 실제 추적은 [[PROGRESS]] §48h 스프린트(오너별 레인 A~E + 블로커 4). 사용자 지시 반영.
+- **점검 방식**: Explore(Sonnet) 거버넌스 스윕 21파일 → 🔴6·🟡10·⚪7 발견, 부팅문서 최우선 정정. Codex read-only로 레포-지도 초안(토큰 절약). canon-moc-sync 죽은링크 0·도달성 100%.
+- **커밋** d4b4cf4 (7파일 명시경로, PROGRESS는 병렬 스테이징 트랩으로 제외). 잔여 저순위(architect/finance 광주 게이트·registry Opus4.5·compliance 4중/5중·designer/builder Enter Flow 명시)는 사용자 판단 대기.
+
+### 2026-07-03 · 각종 로그 진행 — telemetry 최신화
+- **부팅/재집계**: `node 08_본선/_system/skills/session-boot/boot.mjs`로 부팅 후 `codex-cli-telemetry.mjs --write`와 `telemetry-aggregator/aggregate.mjs`를 `CLAUDE_PROJECT_DIR=/Users/river/project/active/JBproject` 앵커로 실행.
+- **Codex CLI 백필 최신값**: [[codex-cli-usage-stats]] 기준 thread **133건**, `tokens_used` **106,943,300**. `tokens_used`는 입력/출력 분리값이 아니므로 [[ai-usage-stats]]의 Claude 입력/출력 토큰과 합산하지 않는다.
+- **AI 사용 통계 최신값**: [[ai-usage-stats]] 기준 총 세션 **20건**, 입력 토큰 **55,711,428**, 출력 토큰 **15,775,478**. 이번 Codex 로그 진행 세션은 `tokens_in/out=—`, 산정 방식 `estimate`로 [[ai-session-intake]]에 S39 행을 추가.
+- **검증**: `canon-moc-sync` dry-run 죽은링크 0·도달성 100%, `npm run test` 통과(34 files). 대상 로그/텔레메트리 파일 기준 `git diff --check` 통과. 전체 `git diff --check`는 기존 수정 파일 [[registry-plugins]] EOF 공백 1건으로 실패해 이번 범위에서는 미수정.
+- **주의**: 기존 worktree에 병렬 세션 변경이 많아 rename/삭제/staging/push 없이 로그·통계 파일만 append/update.
+
+### 2026-07-03 · 서사 학술·규제 근거팩 + 최영욱 4보고서 정합 + 7/1 타임라인 문서 + feynman
+- **병렬 오케스트레이션**: 하위 에이전트 6종(최영욱 4docx→요약3 + 근거 심화 리서치 3테마) + Codex 타임라인 문서. feynman CLI(Pi 기반 리서치 셸) 인증 후 deepresearch 착수(국내 금융권 인간승인 게이트).
+- **[[서사-학술규제-근거팩]] 신설**: 경험레이어/AX 서사의 학술·규제 백본 — Prediction Machines(예측/판단 분업)·Fuster(모기지20%↑무부실)·Brynjolfsson(신입34%)·Noy&Zhang(Science 40%↓)·BCG jagged frontier·Sweller·Mark·Hochschild·SERVQUAL·Service-Profit Chain·Gartner TX·EU AI Act§14·SR11-7·MHC 전부 [검증됨 웹]. **적대검증**: KLM"49%"=최약점(설계근거로만)·"23분15초"=오귀속(금지)·CMR2025 AI생산성신화 반증 + §8 쓰지말것 + §10 GPT딥리서치 큐9.
+- **[[스프린트-타임라인-7월1일-제출]] 신설(Codex)**: 7/1→7/5 10:30 회고(커밋해시 근거)+전망(오너·상태)+§5 그림생성용 정규화표. Excalidraw는 문서 확정 후 파생 예정.
+- **최영욱 4보고서 정합 감사**: 킬러=피싱2025 1조1,330억(canon✓)·여신안심차단255만명·할부금융→캐피탈확장근거·KB연1,720억예방·HUG보증사고5,790억→8조2,677억. ⚠️전세 39,121(canon)vs35,909(보고서2025말)·ROI1,416% 전부 가정시뮬·HUG보증사고≠피해액·report1 수치다수공란/각주2과잉/캐피탈부재/에이전트명 canon14 상이·광주은행 다수언급.
+- **파일**: [[레포-지도]] SSoT + PLAN/PROGRESS/HANDOFF/AGENTS 키스톤 드리프트 정정(택1→하이브리드·14에이전트·Enter Flow·실팀슬롯·git스냅샷) 커밋 d4b4cf4. 메모리 신설 [[본선-차별성-경험레이어-서사]]·[[본선-레포-토폴로지]].
+
+### 2026-07-03 · feynman deepresearch 회수 — 국내 AI규제 HITL 백본(검증됨)
+- feynman deepresearch(승인게이트 "yes" 후 4서브에이전트) 완료 → [[국내-AI규제-HITL-딥리서치]] 볼트 보존. feynman이 실제 FSC PDF 파싱·인용, **핵심인용 로컬원문 직접 검증**(RACI·보조수단성·Override·Kill switch).
+- **킬러**: 금융위 2026 「금융분야 AI 가이드라인」 보조수단성(최종책임=임직원)·**RACI(AI=권고/여신심사역=실무책임/지점장=최종책임)**·Override 근거입력 의무·감사로그·Kill switch = 우리 승인게이트·auditChainRecords와 정확히 일치. AI기본법 대출심사=고영향(§34 사람관리·감독)·신정법 §36조의2 자동화평가 이의제기권. → [[서사-학술규제-근거팩]] §6 국내 백본 편입.
+
+### 2026-07-03 저녁 · 맥락압축·ultracode 후 재개 — harness 방법론 도입 + 문서생성 마스터플랜
+- **커밋 beb6c02**(내 5파일 명시경로): 벤더링 배선([[레포-지도]] harness행+벤더링섹션·`vendor-sync.sh`·`.gitignore _vendor/`) + 국내규제 브리프 + 근거팩§6. 병렬세션 인덱스(수백 파일 스테이징) 무접촉.
+- **푸시 보류**: HANDOFF 가드레일(fork만·a/b 개인정보/내부전략 보류) vs 사용자 'push' 지시 상충 → AskUserQuestion(origin권장/fork/로컬) 제시, 사용자 AFK → 안전기본=미푸시, 질문 오픈. 3커밋 대기(d4b4cf4·ea68060·beb6c02).
+- **조사 워크플로 `wf_0ad356ae`**(Sonnet 4병렬): harness 노멀폼 규격 × 볼트 현황 × 방법론 스킬 × SSOT. 발견 — 이미 solid=`00_결정-준비`·`06_build-roadmap`, 커스텀 차별=`02_agent-design`(stub), 갭=`01_business-model`·`10_eval-plan`+`evals/`·`rules/`·scorecard, 병렬소유=`03_ux`·`04_tech`·`07_계열사`.
+- **[[_문서생성-마스터플랜]] 신설**(`03_제품/`): 크로스워크(노멀폼13→우리폴더)+갭매트릭스+P0~P2 순서(오너/스킬/정지조건)+데모→영상→스크립트→시각화 파이프라인. PRD/유저플로우 이미지=06_prd/09_flow 원재료. **P0 착수는 사용자 승인 대기.**
+
+### 2026-07-03 밤 · P0 문서 6종 생성·검수·정정·커밋(origin 푸시)
+- **푸시 origin 확정**(사용자 승인) + **PR #15** 오픈(→main, 본선문서 34커밋). JB_project2 벤더(`_vendor/JB_project2` 우리캐피탈+전세 2도메인) · JBFG 디자인 볼트 임포트([[_JBFG-디자인-레퍼런스]] #0A31A8·SUIT).
+- **워크플로 wd7enhxke**(13에이전트): JB_project2 정밀매핑→[[승보-프로토타입-반영]] + P0 6문서 생성(core-bet=02_cps·business-model=DDBM·definitions·agent-roster/orchestrator/skill-spec·principles·prd)→6검수.
+- **검수**: definitions·principles·business-model=**Score3 위반0**. roster·prd=B+ 사실오류 정정(Sonnet): ROI **보수 0.83억** 라벨정합(기준7.66·공격31.42 병기)·승인레벨 준법 **L3부터**(app.js approvalLevelMatrix)·오케스트레이터명 **canon§2 표시명 정합**(코드명 별개 [미결/데모전정합])·깨진링크 제거·기능군3 3.3헤더.
+- **커밋 38438cf**(15파일 1772+) origin 푸시. 프롬프트 원문복구 V-1~6 별건(공유로그 미커밋).
+- **⚠️ 7/4 팀 결정(프로토타입 vs canon 충돌)**: ①14에이전트(전북Hero) vs 승보 23(JBWC13+전세10) → 발표 레이어구분 ②전세=여신도메인(키스톤 교정) vs 승보코드=독립 `kind:role` 하네스 ③캐피탈 사후관리/EWS는 JBWC 11도메인에 미구현 ④에이전트명 3단(코드raw/NAME_MAP/canon) 이승보 정합 ⑤business-model DATA-002/003 소스 최영욱.
+
+### 2026-07-04 · 서사 정합(맥락감사) + 승보 역할축 v2 + 제출 정본 레포 확정
+- 사용자 "V-1 경험레이어 서사 잘 지키는가" 감사 → **정직: 미흡**(P0문서 서사어휘 ~0, EX=EXAONE 오탐). 수정: **[[차별성-경험레이어-서사]] 정본 신설**(V-1 정본화 = 발표척추 SSOT) + core-bet 척추주입. **커밋 a827389** origin.
+- 결정 반영: #1 패스 / #2 전세=독립 role콘솔 확정 / #3 대기 / #4 이름정합 / #5 ok.
+- 승보 **역할축 v2**([[승보-프로토타입-반영]] §7·§8): 4콘솔(기업여신 CCL-0001·전세·FDS=role·캐피탈=affiliate)·ECC 6계층·24체크·이름3단(3/17·`agentNameLabels`→canon 권고). 서사↔코드 수렴.
+- **🔑 사용자 확정(7/4): `LSB-afk/JB_project2` = 올바른(제출/제품 정본) 레포.** → 제품·데모·코드 SSOT = JB_project2(역할축 콘솔). 예선 `02_제품/app`은 레거시. 히어로=CCL-0001 유력(JBG-104 아님). [[레포-지도]] 미결 해소. P0 문서 코드근거 재정렬 필요(예선앱→JB_project2).
+
+### 2026-07-03 밤 · 로그들 업데이트 — telemetry S40
+- **부팅/백필/집계**: `session-boot` 재실행 후 `codex-cli-telemetry.mjs --write`, `telemetry-aggregator/aggregate.mjs`를 `CLAUDE_PROJECT_DIR=/Users/river/project/active/JBproject` 앵커로 실행.
+- **AI 사용 통계 최신값**: [[ai-usage-stats]] 기준 총 세션 **21건**, 입력 토큰 **61,923,186**, 출력 토큰 **17,323,214**. S40 `로그들 업데이트` 행은 `tokens_in/out=—`, 산정 방식 `estimate`.
+- **Codex CLI 백필 최신값**: [[codex-cli-usage-stats]] 기준 thread **135건**, `tokens_used` **108,138,886**. `tokens_used`는 입력/출력 분리값이 아니므로 Claude intake 총량과 합산하지 않는다.
+- **검증**: `canon-moc-sync` dry-run 죽은링크 0·MOC 누락 0. 단, 병렬 세션 산출물 기준 frontmatter 누락 4건·도달성 누락 2건 경고 유지. `npm run test` 통과(34 files). `git diff --check`는 [[프롬프트-로그]] V-section 기존 원문복구 구간 trailing whitespace로 실패해 원문 보존 우선으로 미수정.
+- **주의**: 기존 병렬 세션 변경을 존중해 rename/삭제/staging/push 없이 로그·통계 파일만 append/update.
+
+### 2026-07-04 00:02 KST · 로그들 업데이트 — 7/4 데일리 시작·telemetry S41
+- **부팅/데일리**: `session-boot` 재실행 후 [[2026-07-04]] 데일리 노트를 생성하고 [[_daily-INDEX]]에 연결.
+- **텔레메트리**: `codex-cli-telemetry.mjs --write`와 `telemetry-aggregator/aggregate.mjs`를 `CLAUDE_PROJECT_DIR=/Users/river/project/active/JBproject` 앵커로 실행. aggregator 결과는 총 **22행 처리**, 신규 telemetry **1행**.
+- **AI 사용 통계 최신값**: [[ai-usage-stats]] 기준 총 세션 **22건**, 입력 토큰 **62,057,620**, 출력 토큰 **17,418,187**. S41 `로그들 업데이트(7/4 데일리 시작)` 행은 `tokens_in/out=—`, 산정 방식 `estimate`.
+- **Codex CLI 백필 최신값**: [[codex-cli-usage-stats]] 기준 thread **135건**, `tokens_used` **109,427,945**. `tokens_used`는 입력/출력 분리값이 아니므로 Claude intake 총량과 합산하지 않는다.
+- **커밋/푸시 통계**: [[_contribution-stats]]의 `EVIDENCE:UNPUSHED-STATS` 갱신. origin 기준 미푸시 0커밋(HEAD `a827389` 일치), fork 기준 미푸시 5커밋(28 files, +2,440/-157, River-181). worktree 변경 128건.
+- **로우데이터 보호**: `_원문` gitignore 보호 유지, `git ls-files 08_본선/04_증빙/04_회의록/_원문` 추적 유입 0건.
+- **검증**: `canon-moc-sync` dry-run 죽은링크 0·MOC 누락 0. 기존 경고 유지(frontmatter 누락 4건, 도달성 누락 2건). `npm run test` 통과(34 files). 대상 파일 `git diff --check` 통과.
+- **주의**: 기존 병렬 세션 변경을 존중해 rename/삭제/staging/push 없이 로그·통계 파일만 append/update.
+
+### 2026-07-04 · 문서하네스 안착 + 실동작 에이전트 슬라이스 PR
+- **방법 SSOT 안착**: `03_제품/_문서생성-스킬-DDBM-Harness-SDD.md`(21문서 계약) 볼트 tracked, `_vendor/harness-engineering-skills` 최신 로컬본 미러링, JBFG 디자인 자산(token-data·screens) 색인. 커밋 `83374bb`.
+- **혼란 문서 소거(비삭제)**: `_archive/`로 스프린트-타임라인 stub·오버나이트-완료계획 이관. 마스터플랜 stale 정정(business-model=완료). 커밋 `7c6c87b`.
+- **🎯 실동작 에이전트 슬라이스**: JB_project2 감사 결과 = 파이프라인 실재·에이전트 출력만 목업. `ccl-financial`(CCL-0001) 1경로를 실 LLM(Ollama/Anthropic)로 승격 + 오프라인 목업 무회귀 + 실 output 가드레일(harnessGuardCheckPII/Assertions) 재검. River-181 fork 경유 **PR LSB-afk/JB_project2#1** 오픈(브랜치 `feat/live-agent-ccl-financial`). 라이브 실행: `ollama serve & ollama pull exaone3.5:7.8b` → `?live=1`.
+- **rules/ 6종**: 실 가드레일 코드 인용(E4) Score3. 커밋 `f1ba337`.
+- **레포 토폴로지 변화**: `River-181/JB_project2` fork 신설(푸시용). 정본은 여전히 LSB-afk.
+- **다음**: 데모 척추(CCL-0001 골든패스 09_flow+14_demo-script) · evals(7/4 팀 데모케이스 후) · cps/principles/definitions 정식화+CCL-0001 재정렬.
+
+### 2026-07-04 (세션 "JB금융-디자인") · 디자인 토큰 업그레이드 — design-system.md 개정 + tokens 폴더 신설
+- **조사**: JBFG 원본 토큰(`_vendor/jbfg-site-archive`)·design-system.md 기존 [확정]·Figma 팀파일 "망상궤도" LocalGuard OS Foundations/Components(5프레임) 3원 비교 → [[디자인-토큰-업그레이드-설계안]] 신설(`08_본선/03_제품/00_결정-준비/설계/`).
+- **실 대시보드 비교**: Figma "케이스 대시보드"(Kanban) vs `_vendor/JB_project2/app/`을 로컬 8000포트로 구동해 촬영한 실제 화면(Playwright, 3열 셸+글래스KPI+context-panel 실증) — 3열 셸 유지 + page-content 기본뷰=Kanban/테이블로 사용자 확정.
+- **design-system.md 개정**(`08_본선/03_제품/03_ux/`): 밀도 원칙(§1-6, "직원용 업무 프로그램, 예쁠 필요 없음" 사용자 직접지시) 신설, 3열 셸 [확정], spacing 축소 스케일(§4), 카드 radius xl→lg, Case FSM/Approval/AgentRun 상태색(§8·§9)·PII UI규칙(§10)·인터랙션 계약(§11) 신규 절, 리스크축 2분리(승인단계 L0~L4 vs 심각도 Critical~Low) 도입(L3 violet `#6D28D9` [제안]).
+- **tokens 폴더 신설**: `08_본선/03_제품/03_ux/tokens/jb-console-tokens.css`·`.json` — JB 원본(`--jb-*`)+콘솔 파생(`--console-*`) 통합 SSOT, fork(`paperclip-jb-fork`) `jb-tokens-sync.mjs --src` 연결 가능.
+- **미해결**: 폰트(SUIT Variable 유지 vs Figma Noto Sans KR) — 김민주 확인 대기. 케이스 상세·전체 IA·뷰 목록 확장은 PRD/기능명세서 확정 후 별도 라운드로 명시적 유보(사용자 지시).
+- **프롬프트 기록**: [[프롬프트-로그]] V-10.
+
+### 2026-07-04 · 문서세트 22종 + paperclip 벤더링 + 디자이너 핸드오프
+- **문서세트 22종 생성**(워크플로 wf6k8zpf1, 3-wave, 0에러): source-log·definitions·principles·cps·domain-model·data-strategy·metrics·risk / prd·feature-spec·architecture·flow·eval-plan·evals3 / ssd·demo-script·pitch·qna·checklist·change-log. 제품 SSOT 백본 + 37요약 근거층. 커밋 `a27ad9f`.
+- **paperclip 벤더링**: `_vendor/paperclip-master`(원본 3267)·`_vendor/paperclip-installed`(설치 1972) + 기존 `project/active/paperclip-jb-fork` 참조.
+- **디자이너 핸드오프** `03_제품/_디자이너-핸드오프.md` 커밋 — 'JB금융-디자인' 세션이 뷰/계층 착수 가능(SSOT 지도). 경계: 문서=나, 디자인=디자이너, 핑퐁.
+- **백그라운드 분석 2건**: 무제폴더-핵심이해(사용자 반복강조 미이해분 추출) + paperclip-통합-블루프린트(구조 재사용·디자인 분리·이식전략).
+- **다음**: meta 2종(validation-report·scorecard), 2분석 회수·정합, 문서 잠금 후 dev-artifact 추출 + paperclip 빌드(Codex 위임).
+
+### 2026-07-04 03:20 KST · 문서 대량 변경 후 로그 업데이트 — telemetry S42
+- **부팅/백필/집계**: `session-boot` 재실행 후 `codex-cli-telemetry.mjs --write`, `telemetry-aggregator/aggregate.mjs`를 `CLAUDE_PROJECT_DIR=/Users/river/project/active/JBproject` 앵커로 실행. aggregator 결과는 총 **26행 처리**, 신규 telemetry **1행**.
+- **AI 사용 통계 최신값**: [[ai-usage-stats]] 기준 총 세션 **26건**, 입력 토큰 **77,325,347**, 출력 토큰 **20,479,308**. S42 `문서 대량 변경 후 로그 업데이트` 행은 `tokens_in/out=—`, 산정 방식 `estimate`.
+- **Codex CLI 백필 최신값**: [[codex-cli-usage-stats]] 기준 thread **144건**, `tokens_used` **121,993,380**. `tokens_used`는 입력/출력 분리값이 아니므로 Claude intake 총량과 합산하지 않는다.
+- **커밋/푸시 통계**: [[_contribution-stats]]의 `EVIDENCE:UNPUSHED-STATS` 갱신. HEAD `dd841c2`, origin 기준 미푸시 **12커밋**(50 files, +9,599/-114), fork 기준 미푸시 **17커밋**(69 files, +11,956/-188), 작성자 River-181.
+- **워크트리 스냅샷**: `git status --short` 기준 변경 **225건**(modified 112, added 66, deleted 5, renamed 2, untracked 46, conflicted 0). 이번 로그 세션에서는 rename/delete/staging/push 미수행.
+- **로우데이터 보호**: `_원문` gitignore 보호 유지, `git ls-files 08_본선/04_증빙/04_회의록/_원문` 추적 유입 0건.
+- **검증**: `canon-moc-sync` dry-run 결과 MOC 누락 0, 죽은 링크 3건(`04_definitions`, `15_pitch-outline`, `16_judge-qna`)·frontmatter 누락 5건·도달성 누락 2건 경고. `npm run test` 통과(34 files), 대상 로그/통계 파일 `git diff --check` 통과.
+
+### 2026-07-04 · CaseOps 확장 분기(Codex 6문서) + 디자인 잠금 해제
+- **ChatGPT 원문 보존**(CaseOps 대화) + 분기 스캐폴드 `casesops-분기/`. 커밋 1b0a531.
+- **Codex 6문서**(~200KB, task-mr59qgce/r5jl/rk5u/rv7d): 01 메모리거버넌스·02 CaseOps엔진7알고리즘·03 119사고대응·04 은행DB연결/특화모델·05 9파이프라인/저장소·06 정보체계뷰스펙. 리서치 근거(D2·D5·D6·D7·D9·D11·D14·D15·D17·D25·B1) 주입, vanilla 무빌드 정합(monorepo 개념차용), [분기/미확정] 태깅. 커밋 ab1879d.
+- **디자인 잠금 살짝 해제**: 06 = 도메인엔티티↔CCL 실코드↔뷰↔데이터바인딩 매핑 + 전 뷰 카탈로그(S-00~S-17) + ViewModel 7종 → [[_디자이너-핸드오프]] 연결. 'JB금융-디자인' 세션이 뷰 확정 착수 가능.
+- **승급 규칙**: 팀 확정분만 정본(domain-model·architecture·agent-design·pitch)으로 이관. 결정 5: 메모리거버넌스 범위·CaseOps 브랜딩·119 승격·특화모델 데모·저장소구조.
+
+### 2026-07-04 · 매니징 갱신 + 문서계약 100% 확인
+- **워크플로 현황**: DDBM-Harness-SDD 스킬 계약 문서 **전부 존재(누락 0)** — 핵심13+확장8+rules6+evals3+project + 커스텀 + 메타(harness.yaml·validation-report·scorecard). 03_제품 135 md.
+- **V프롬프트 V-1~V-12 전부 반영** 확인(서사·P0·방법SSOT·paperclip·stale/business-model/회의록). 7/1~7/4 회의 정리본 존재.
+- **PROGRESS.md 상단에 "현재 스냅샷(2026-07-04)" 매니징 진입점 추가** — 준비도≈88%, 개발 게이트3(/llm 프록시·PR#1 머지·히어로ID). ⚠️PROGRESS는 공유 로그라 미커밋.
+- **런타임 정정**: Ollama 아님 → **claude/codex CLI 라우팅**(paperclip式, api-proxy.mjs에 /llm 라우트 빌드 예정). claude 2.1.198·codex 0.142.5 설치 확인.
+- **디자인 토큰**: JB_project2 styles.css(118토큰·481컴포넌트)=MAIN 확정.
+- 메모리 갱신: [[jb-project2-리얼리티]](런타임=CLI프록시)·[[본선-문서생성-방법론]](계약 100%).
+
+### 2026-07-04 · 종합 감사 6축 + 후속수정(2 워크플로)
+- **감사 6축**(wz643geb4): 매니징단일화·심사부합·승보갭/토큰·UX뷰명세·7/4회의요구·CaseOps구현전환. file:line 근거.
+- **수정 5종**(whvpiojlj) 커밋:
+  - c6d8f34 **제출 조립본** MVP제안서(7섹션)·기능명세서(6파트+변경이력) = 하드리스크 "필수제출물 누락" 해소.
+  - f75f20f 히어로ID CCL-0001 단일화(8파일·Open Question 종결)·05_domain §10 FDS/전세v3/JBWC 콘솔확장·02_case-lifecycle 119 FSM분기·06뷰(에이전트 탭 드릴인·조직도·단일run·Ctrl1-5/Tab)·CaseOps _INDEX 3구간(MVP/아키/로드맵)·07-policy-engine 신설(12규칙)·FR-08(md케이스)/FR-09(코멘트·case_comments).
+  - c8cef68 HANDOFF SSoT 위계 · d7a8181 디자이너 토큰정합 수정요청.
+- **병렬소유 무접촉**: 04_tech(스테이징)·03_ux 토큰(디자이너)·_MOC(워크트리) → 요구만 전달.
+- **그 외 놓친 것(후속)**: 안내문 정본 원문→rubric 25세부 대조 / FR-14 초등학생 눈높이 발표 / 나선형 축·수치 / e2e·라이브 리허설 / MD→PDF 제출본 / **/llm 프록시 빌드(개발 게이트)**.
+
+## 2026-07-04 · Fable — /llm 게이트웨이 구현 + Q13~Q15 심사방어 3축 (예선 MVP 레포)
+- **개발 게이트 1 해소(예선 앱 측)**: `02_제품/scripts/api-proxy.mjs`에 `POST /llm`(claude/codex CLI 라우팅, paperclip式)·`GET /llm/usage` 구현. 폴백 사다리(요청 엔진→반대 엔진→사람 큐 escalated) + 시도별 JSONL 구조화 로그(`llm-runs.jsonl`, gitignored). 스폰 cwd=tmp 중립화(볼트 대외비 컨텍스트 유입 차단). 스모크: claude 실호출 2.9s·$0.115·"2" 정상.
+- **Q13(비용)**: modules.js 토큰 패널에 실측 블록(`liveLlmBlock`, ?live=1) — 케이스 단가·티어별·RM 1인 월 환산(일20케이스×21일 [가정]).
+- **Q15(감사)**: app.js `auditPurpose()` — 감사 레코드에 소비자 용도 태그(당국 증적/분쟁 재생/운영 점검/원가 정산), "소비자 없는 로그는 남기지 않는다" 원칙의 화면 증적.
+- **문서 3건**: 질문/Q13-토큰비용-유닛이코노믹스 · Q14-오류로깅-폴백사다리 · Q15-감사로그-실효성 (각 예상질문+30초답변+근거+MVP물증). _결정준비-MOC 색인 Q1~Q15로 갱신.
+- **게이트**: verify_static 34파일 통과 · node --check 3파일 통과. 미커밋(팀 조율 후 경로 명시 커밋).
+- **(추가) 운영 3축 에이전트 설계도 3건**: casesops-분기 08-Cost-Sentinel(Q13)·09-119-라우팅관측-확장(Q14, 기존 119 관할 편입)·10-Ledger-Curator(Q15, 3계층 메모리 격리 집행). 각각 paperclip式 파일셋(agent.yaml·SOUL.md 프롬프트 원문·tools.json E4/설계 구분·memory.md Hermes式 증류 규칙) 포함. _INDEX 8~10행·Q13~15 상호링크 갱신.
+
+### 2026-07-04 · main 통합 + 설계도 5종 신설 + JB_project2 구현현황 인벤토리
+**한 일**
+- **main 통합**: `ui-density-improvements` 브랜치를 main으로 fast-forward(a9cd1b5→240f444→32eb22f), fork 푸시 완료(병렬 Haiku 담당).
+- **설계도 5종 신설** — `08_본선/03_제품/설계도/` 하에 개발 와이어프레임 빌드용 청사진: ① 메인 업무보드(Figma 예시 기반) ② 케이스 상세뷰 ③ 에이전트 실행뷰 ④ 승인 인터페이스 ⑤ 통계추적 + `_설계도-INDEX` 신규. "설계도만 봐도 와이어프레임 제작 가능" 수준(병렬 Sonnet 3 담당).
+- **JB_project2 구현현황 인벤토리** — `구현현황-JB_project2.md` 신설, 코드 SSOT 실측: 6진입·91뷰·40에이전트·28스킬·121토큰·537컴포넌트. **갭 발견**: 감사체인(base앱만)·실LLM(전세 live 2건뿐)·케이스(JS객체, 파일아님)·콘솔축(불일치 남음).
+- **통계 기능 확인** — Q13/14/15(비용·오류로깅·감사) 이미 구현(Fable). /llm 게이트웨이·liveLlmBlock·auditChainRecords 기존 구현 활용→설계도 05로 청사진화.
+- **커밋**: 240f444(전략회의2 기반 요구사항·메인 대시보드 스펙) + 32eb22f(설계도 5종·구현현황 인벤토리 추가).
+
+**결과물**: `03_제품/설계도/` 5MD + INDEX, `구현현황-JB_project2.md`(SSOT 6항목).
+
+**다음**: 스펙 정합(기능명세서·PRD·feature-spec, Sonnet 병렬 진행 중) → 개발 착수 게이트 / 설계도는 김민주 피그마 착수 기준자료 전달.
+- **(추가) 기획 정본 반영(사용자 ㄱㄱ 승인)**: 07_architecture(§5 데모 LLM 게이트웨이 E4·§8 LLM 원장+용도 태그·§9 관측 행+운영 에이전트 링크·§11 폴백 사다리 행) / 08_feature-spec(기능군7 운영 관측 3건 ✅ → 요약 15/8/6, 총29) / evals/failure-modes(FM-D4 LLM 라우팅 실패 방치) / agent-roster(부록 A 운영 에이전트 3종 — 콘솔 숫자 비합산 명시) / 11_change-log(F-10 운영 관측 신규, E4). verify_static 통과.

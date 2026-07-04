@@ -120,6 +120,7 @@ aliases:
 | **제품정의·MVP범위·시나리오 변경 / 제출물 갱신 전** | [[submission-consistency-check]] | 제출·발표 문서 간 히어로 시나리오·범위·검증기준·제품정의 불일치 교차 감사(보고만, 제출은 사람 승인). |
 | **문서·원장 변경이 보드에 영향 / 시각화 가독성 피드백** | [[visualization-cycle]] | VISUALIZATION-PLAN 선행 갱신 후 Excalidraw 재생성·간트 갭·5초 가독성·사람/AI/기여 레이어 검증. |
 | **로그·산출물에 PII 유입 우려** | [[pii-governance-validator]] / `pii-scan.mjs`(Stop훅) | 한국 PII 패턴 스캔·마스킹 경고. |
+| **핵심로그(session-log/decision-log/프롬프트-로그)에 새 항목 append** | [[log-toc]] | `<!-- TOC:AUTO -->` 목차 블록 재생성 — 매번 전체를 안 읽어도 항목 탐색 가능. harness-sync 7단계에도 포함. |
 
 **핵심 규칙(부모-자식 정합)**: 새로 생성되는 **모든** 파일은 부모(up)와 자식이 잘 연결되어 **조상(본선 HOME)에서부터 타고 내려갈 수 있어야** 한다. 작업 끝에 `canon-moc-sync`의 `[5/5] 도달성`이 ✓인지 확인한다(고아=`✗`로 표시됨).
 

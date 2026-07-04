@@ -62,6 +62,13 @@ const STEPS = [
     args: [],
     // [자동] 대외비·PII 위반 탐지 (경고만, 블로킹 없음) — Stop 훅과 동일 스크립트 재사용(pii-governance-validator/validate.mjs는 미구현)
   },
+  {
+    id: 7,
+    name: '핵심로그 목차(TOC) 갱신',
+    script: resolve(SKILLS_DIR, 'log-toc', 'generate.mjs'),
+    args: DRY_RUN ? ['--dry-run'] : [],
+    // [자동] session-log/decision-log/프롬프트-로그에 TOC:AUTO 블록 재생성
+  },
 ]
 
 /** 단계 실행 결과 */
@@ -125,7 +132,7 @@ console.log(`\n[harness-sync] 자동 단계 완료 (${elapsed}s)`)
 if (failed.length) {
   console.log(`  ⚠ 경고 ${failed.length}건: ${failed.map(r => r.name).join(', ')}`)
 }
-console.log(`  에이전트 판단 단계(1·7·8)는 Claude가 별도 수행.`)
+console.log(`  에이전트 판단 단계(1·8·9)는 Claude가 별도 수행.`)
 if (DRY_RUN) {
   console.log(`  [dry-run] 실제 파일은 변경되지 않았습니다.`)
 }

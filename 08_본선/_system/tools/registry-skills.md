@@ -14,6 +14,8 @@ aliases:
 > Claude Code 스킬 레지스트리 — 보유 스킬(글로벌·프로젝트) + 자체 구축 스킬.
 > 자체 구축 스킬은 `08_본선/_system/skills/` 하위에 버전 관리되며 bootstrap.sh로 배포.
 
+> **팀 전체 스킬 목록 = 이 문서.** 동기화 방법 — 자체 구축 스킬 = bootstrap.sh(`.claude/skills/`), 표준 스킬 = `~/.claude/skills/`, 플러그인 번들 스킬 = plugin-sync/[[registry-plugins]].
+
 ---
 
 ## 스킬 레지스트리
@@ -22,12 +24,15 @@ aliases:
 |------|------|-------------|---------|------|-----------|------------------|
 | `notion-publish` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | Notion 페이지 발행 자동화 | Claude |
 | `perplexity-web-mcp` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | Perplexity 세션 | 활성 | 웹 검색·AI 모델 쿼리 (pplx_*) | Claude |
-| `verify` | 보유 스킬 (`/verify`) | 내장 슬래시 커맨드 | 없음 | 활성 | 코드 변경 실제 동작 검증 | Claude |
+| `verify-implementation` | 보유 스킬 (`/verify`) | 내장 슬래시 커맨드 | 없음 | 활성 | 코드 변경 실제 동작 검증 | Claude |
 | `web-demo-video` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | 시연 영상 자동 녹화 | Claude |
-| `token-efficient-ops` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | 컨텍스트 절약·배치 최적화 | Claude |
+| `token-efficient-ops` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | 토큰 절약 배치 최적화 | Claude |
 | `manage-skills` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | 스킬 목록·활성화 관리 | Claude |
 | `deep-research` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | 멀티소스 팩트체크 리서치 | Claude |
 | `humanize-korean` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | AI 문체 → 자연스러운 한국어 윤문 | Claude |
+| `humanize` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | 윤문 진입 명령 | Claude |
+| `humanize-redo` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | 2차 재윤문 | Claude |
+| `mac-storage-cleanup` | 보유 스킬 | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | macOS 저장공간 정리 | Claude |
 | `superpowers:*` | 보유 스킬 (묶음) | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | 브레인스토밍·병렬에이전트·TDD·코드리뷰 등 | Claude |
 | `obsidian:*` | 보유 스킬 (묶음) | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | 옵시디언 Bases·Canvas·CLI·Markdown 관리 | Claude |
 | `codex:*` | 보유 스킬 (묶음) | `~/.claude/skills/` 전역 등록 | 없음 | 활성 | Codex CLI 런타임·결과 핸들링·GPT-5.4 프롬프트 | Codex |
@@ -44,6 +49,15 @@ aliases:
 | **`session-boot`** | **자체 구축 스킬** | `_system/skills/session-boot/` → bootstrap → `.claude/skills/` | 없음 | **활성** | 새 세션 오리엔테이션 — 진입점·현재상태(미커밋·미해결·다음)·자동스킬·게이트 한 번에 로드(boot.mjs 스냅샷). CLAUDE.md가 본선 작업 시작 시 자동 호출 | Claude/Codex |
 | **`submission-consistency-check`** | **자체 구축 스킬** | `_system/skills/submission-consistency-check/` → bootstrap → `.claude/skills/` | 없음 | **활성** | 제출·발표 문서 간 히어로 시나리오·MVP 범위·검증기준·제품정의 **내용 불일치** 교차 감사(예선 SME↔본선 2계열사 충돌 등) | Claude |
 | **`plugin-sync`** | **자체 구축 스킬** | `_system/skills/plugin-sync/` → bootstrap → `.claude/skills/` | 없음 | **활성(bootstrap SKILL_DIRS 등록 승인대기)** | 커밋 settings.json(팀 세트)에서 플러그인 마켓플레이스+세트 재설치·동기화(설치가이드=--dry-run). harness-sync의 plugin-inventory와 방향 반대(오염없는 재현) | Claude/Codex |
+| **`local-model`** | **자체 구축 스킬** | `_system/skills/local-model/` → bootstrap → `.claude/skills/` | 없음 | **활성** | Ollama로 EXAONE 3.5 / Qwen2.5 로컬 추론, PII 포함 요청 안전 처리 | Claude |
+| **`log-toc`** | **자체 구축 스킬** | `_system/skills/log-toc/` → bootstrap → `.claude/skills/` | 없음 | **활성** | 핵심로그 3종(session-log·decision-log·프롬프트-로그)에 `<!-- TOC:AUTO -->` 목차 블록 삽입·갱신 — harness-sync 7단계로 자동 편입 | Claude |
+| **`harness-audit`** | **자체 구축 스킬(Workflow형)** | `_system/skills/harness-audit/workflow.js` — `node` 단독 실행 불가, Claude Code `Workflow` 툴로만 호출 | 없음 | **활성** | 9차원(파이프라인·데드파일·층위·정본/레퍼런스·git·기타·역할registry·CC서브에이전트·에이전트토큰registry) 병렬 감사 + 교차검증. 자동 시행 대상 아님(사용자 요청 시만) | Claude |
+
+---
+
+## 플러그인 제공 스킬
+
+> 설치된 플러그인은 각각 번들 스킬을 제공한다. 상세 목록·동기화는 [[registry-plugins]] 참조. 팀 세트(12종): `frontend-design` · `ui-ux-pro-max` · `figma` · `obsidian` · `superpowers` · `code-simplifier` · `context7` · `skill-creator` · `codex` · `code-review` · `example-skills` · `humanize-korean`. 개인 전역(3종): `ponytail` · `taste-skill` · `agent-sdk-dev`.
 
 ---
 
