@@ -53,7 +53,7 @@ aliases: [Demo Script, 데모 대본, CCL-0001 시연 대본, 14_demo-script]
 
 ## 3. Step-by-step script — 분단위 표 (데모 세그먼트 ≈ 6분)
 
-> 전체 결선 발표 15분 중 **라이브 데모 6분**을 이 대본이 차지한다(나머지 = 문제·모델·근거·확장·Q&A, [[15_pitch-outline]] 참조) [E3, canon 발표시간].
+> 전체 결선 발표 15분 중 **라이브 데모 6분**을 이 대본이 차지한다(나머지 = 문제·모델·근거·확장·Q&A, [[08_본선/03_제품/07_발표-제출/pitch-outline|15_pitch-outline]] 참조) [E3, canon 발표시간].
 > **Screen(S-xx)** = design-system 3열 셸, **상태/훅** = domain-model §3·§5 기준.
 
 | Time | Screen / Action | Speaker Script | Evidence Shown | Risk |
@@ -126,7 +126,7 @@ aliases: [Demo Script, 데모 대본, CCL-0001 시연 대본, 14_demo-script]
 | └ 감사 봉인 | 0:30 | 이벤트 카운트·provenance |
 | 예비(버퍼) | +0:30 | 역할 전환·질문 반응 흡수 |
 
-> 결선 발표 **총 15분**(예선 5분) 기준, 데모는 그중 6분. 문제제기·모델·근거·확장·Q&A는 [[15_pitch-outline]] · [[16_judge-qna]] 분담 [E3, canon].
+> 결선 발표 **총 15분**(예선 5분) 기준, 데모는 그중 6분. 문제제기·모델·근거·확장·Q&A는 [[08_본선/03_제품/07_발표-제출/pitch-outline|15_pitch-outline]] · [[08_본선/03_제품/07_발표-제출/judge-qna|16_judge-qna]] 분담 [E3, canon].
 > **리허설 게이트**: 데모는 **최소 2회 무결 리허설**(1회는 폴백 경로) 후 발표 확정. 초 단위 표는 리허설 실측으로 보정 [Open Question — 실측 타이밍 미확정].
 
 ---
@@ -155,8 +155,8 @@ aliases: [Demo Script, 데모 대본, CCL-0001 시연 대본, 14_demo-script]
 ## 연결
 
 - [[08_본선/03_제품/09_flow|09_flow — 골든패스 9스텝·시퀀스]]
-- [[08_본선/03_제품/07_발표-제출/15_pitch-outline|15_pitch-outline — 발표 구조]]
-- [[08_본선/03_제품/07_발표-제출/16_judge-qna|16_judge-qna — 예상 질의]]
+- [[08_본선/03_제품/07_발표-제출/pitch-outline|15_pitch-outline — 발표 구조]]
+- [[08_본선/03_제품/07_발표-제출/judge-qna|16_judge-qna — 예상 질의]]
 - [[08_본선/03_제품/evals/golden-cases|evals/golden-cases — 히어로 케이스·?live=1]]
 - [[08_본선/03_제품/evals/failure-modes|evals/failure-modes — FM-DEMO1 폴백]]
 - [[08_본선/03_제품/00_vision/차별성-경험레이어-서사|차별성 경험레이어 서사]]

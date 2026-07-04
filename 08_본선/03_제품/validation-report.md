@@ -22,7 +22,7 @@ aliases:
 - **메타 3**: harness.yaml·validation-report(본문)·jb-finai-scorecard ✅
 
 ## 2. Missing / mapped (정직)
-- `12_handoff` = 신규 미작성, `08_본선/HANDOFF.md`(부팅 정본)에 **매핑**. 제품 run/demo는 [[README]]·[[07_발표-제출/demo-script|demo-script]]가 커버.
+- `12_handoff` = 신규 미작성, `08_본선/HANDOFF.md`(부팅 정본)에 **매핑**. 제품 run/demo는 [[08_본선/04_증빙/02_분석자료/리서치/리서치-인덱스|리서치 인덱스]]·[[07_발표-제출/demo-script|demo-script]]가 커버.
 - `01_meeting-log`·`01_business-model` = 기존 문서 매핑(신규 아님).
 - **README** = 이번 갱신 완료(기존 플레이스홀더 대체).
 

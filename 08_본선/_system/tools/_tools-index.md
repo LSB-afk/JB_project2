@@ -9,7 +9,7 @@ aliases:
   - 도구인덱스
   - tools-index
 ---
-# _tools-index
+# 도구·스킬·CLI 마스터 인덱스
 
 > 이 볼트에서 사용 가능한 모든 도구·플러그인·스킬·MCP·CLI·슬래시 커맨드를 5개 레지스트리로 분류한 마스터 인덱스.
 > 신규 도구 추가 시 해당 레지스트리에만 행을 추가하면 된다. MOC 파일은 건드리지 않는다.
@@ -68,7 +68,7 @@ bash 08_본선/_system/tools/bootstrap.sh              # 실제 적용
 ## 자랑 포인트 TOP 5
 
 1. **Capture-by-default** — Stop 훅 + telemetry-aggregator 스킬이 세션 종료 시 툴/토큰/시간을 자동 기록. 사용자가 아무것도 안 해도 기록됨.
-2. **자체 구축 스킬 11종** — `harness-sync`(9단계 동기화 오케스트레이터) · `canon-moc-sync`(MOC·부모·태그·죽은링크·5/5 도달성 검증) · `prompt-capture`·`tool-intake`(프롬프트·도구 도입 자동 시행) · `submission-consistency-check`(제출물 내용 정합 감사) · `session-boot`(새 세션 부팅) · `plugin-sync`(플러그인 동기화) 등이 `_system/skills/`에 버전 관리·bootstrap 배포. **전체 목록·최신 수·상태 = [[registry-skills]](SSOT)** — 이 쇼케이스는 하이라이트만 두고 새 스킬 추가/개수 갱신은 레지스트리에만 반영(3중 관리 방지). 후보 2종(`workflow-gap-audit`·`demo-readiness-audit`)은 트리거 대기.
+2. **자체 구축 스킬 12종** — `harness-sync`(9단계 동기화 오케스트레이터) · `canon-moc-sync`(MOC·부모·태그·죽은링크·5/5 도달성 검증) · `prompt-capture`·`tool-intake`(프롬프트·도구 도입 자동 시행) · `submission-consistency-check`(제출물 내용 정합 감사) · `session-boot`(새 세션 부팅) · `plugin-sync`(플러그인 동기화) · `local-model`(오프라인 로컬 추론) 등이 `_system/skills/`에 버전 관리·bootstrap 배포. **전체 목록·최신 수·상태 = [[registry-skills]](SSOT)** — 이 쇼케이스는 하이라이트만 두고 새 스킬 추가/개수 갱신은 레지스트리에만 반영(3중 관리 방지). 후보 2종(`workflow-gap-audit`·`demo-readiness-audit`)은 트리거 대기.
 3. **에이전트 레지스트리 + 텔레메트리 연동** — 676,932+ 토큰 누적 집계, 에이전트별 산출물 추적. [[_agent-registry]] 참조.
 4. **MCP 풀 스택** — chrome · perplexity · figma · notion · google-calendar · google-drive · excalidraw · hwp-mcp 8종 세션 연동. 인증 정보 없이 `claude mcp add` echo만 bootstrap에 포함(보안 원칙).
 5. **웹 추천 → 검증 후 승격 파이프라인** — GitHub MCP / Obsidian MCP / Notion MCP은 상태="검증 후 사용"으로 레지스트리에 등록, 검증 완료 시 `상태=활성`으로 승격.

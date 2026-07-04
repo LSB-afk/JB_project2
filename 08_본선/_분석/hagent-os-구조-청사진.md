@@ -265,7 +265,7 @@ JBproject/
 
 ```markdown
 ## 먼저 볼 문서
-- [[08_본선/03_제품/README|제품 개요]]
+- [[08_본선/04_증빙/02_분석자료/리서치/리서치-인덱스|제품 개요]]
 - [[08_본선/03_제품/01_prd/prd|PRD]]
 - [[08_본선/03_제품/05_diagrams/99_comprehensive-architecture|종합 구조도]]
 - [[08_본선/05_제출/live-final-verification|라이브 최종 검증]]
@@ -281,9 +281,8 @@ JBproject/
 - [[08_본선/03_제품/04_tech/rag-rule-engine|RAG + Rule Engine]]
 
 ## UX / 디자인
-- [[08_본선/03_제품/03_ux/ia-screen-map|IA 화면 지도]]
-- [[08_본선/03_제품/03_ux/user-journeys|사용자 여정]]
 - [[08_본선/03_제품/03_ux/design-system|디자인 시스템]]
+- [[ia-screen-map|IA 화면 지도]] · [[user-journeys|사용자 여정]](미확정 초안, `_archive/`)
 
 ## 다이어그램
 - [[08_본선/03_제품/05_diagrams/00_system-context|시스템 컨텍스트]]
@@ -420,7 +419,7 @@ aliases: [본선HOME, 본선홈]
 ### 4-5. 중복명 충돌 예방 체크리스트
 
 - [ ] 볼트 전체에서 동일 파일명이 두 개 이상 존재하지 않는지 확인
-- [ ] 중복 위험이 있는 범용 이름(`README.md`, `index.md`)은 폴더명을 경로에 포함해 위키링크 작성: `[[08_본선/03_제품/README|제품 README]]`
+- [ ] 중복 위험이 있는 범용 이름(`README.md`, `index.md`)은 폴더명을 경로에 포함해 위키링크 작성: `[[08_본선/04_증빙/02_분석자료/리서치/리서치-인덱스|리서치 인덱스]]`
 - [ ] 예선 파일과 본선 파일이 동일한 `aliases`를 가지지 않도록 본선 파일엔 `본선` 접두어를 alias에 추가
 - [ ] 새 노트 생성 후 `tags`, `date`, `up` 필드 누락 여부 확인
 - [ ] `up:` 체인이 루트(HOME 또는 _MOC_HOME)까지 연결되는지 확인
