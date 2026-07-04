@@ -52,6 +52,21 @@ app_js_files = [
     "fdrConsole.core.js",
     "fdrConsole.data.js",
     "fdrConsole.app.js",
+    "rmOfficer.config.js",
+    "rmOfficerAgents.registry.js",
+    "rmOfficerRules.js",
+    "rmOfficerPriority.service.js",
+    "rmOfficerDeliverable.service.js",
+    "rmOfficer-db.js",
+    "rmOfficerServices.js",
+    "rmOfficer.helpers.js",
+    "rmOfficer.view.board.js",
+    "rmOfficer.view.cases.js",
+    "rmOfficer.view.wizard.js",
+    "rmOfficer.view.harness.js",
+    "rmOfficer.commands.js",
+    "rmOfficer.sidebar.js",
+    "rmOfficerHarness.js",
 ]
 
 required = [
@@ -65,12 +80,15 @@ required = [
     ROOT / "docs/02-은행-DB-연동-설계.md",
     ROOT / "docs/03-JB우리캐피탈-하네스.md",
     ROOT / "docs/04-전세보호-역할-하네스.md",
+    ROOT / "docs/05-RM-하네스.md",
     ROOT / "app/HARNESS_GUIDE.md",
     ROOT / "app/ROLE_HARNESS_CONTRACT.md",
     ROOT / "app/SECURITY_GUARDRAILS.md",
     ROOT / "scripts/api-proxy.mjs",
     ROOT / "tests/e2e/localguard.spec.js",
     ROOT / "tests/e2e/wooricap.spec.js",
+    ROOT / "tests/e2e/rm-officer.spec.js",
+    ROOT / "tests/e2e/rm-officer-smoke.spec.js",
 ] + [ROOT / "app" / name for name in app_js_files]
 
 missing = [path for path in required if not path.exists()]
@@ -128,6 +146,21 @@ html_needles = [
     "./jeonsePriceRisk.service.js",
     "./cclConsole.core.js",
     "./fdrConsole.app.js",
+    "./rmOfficer.config.js",
+    "./rmOfficerAgents.registry.js",
+    "./rmOfficerRules.js",
+    "./rmOfficerPriority.service.js",
+    "./rmOfficerDeliverable.service.js",
+    "./rmOfficer-db.js",
+    "./rmOfficerServices.js",
+    "./rmOfficer.helpers.js",
+    "./rmOfficer.view.board.js",
+    "./rmOfficer.view.cases.js",
+    "./rmOfficer.view.wizard.js",
+    "./rmOfficer.view.harness.js",
+    "./rmOfficer.commands.js",
+    "./rmOfficer.sidebar.js",
+    "./rmOfficerHarness.js",
     "./app.js",
 ]
 for needle in html_needles:
@@ -326,6 +359,98 @@ for needle in ["#corporate-credit-dashboard", "#fds-dashboard"]:
 for needle in ["corporate-credit-harness", "fds-response-harness", "/roles/corporate-credit/board", "/roles/fds-response/board"]:
     if needle not in app_src:
         raise SystemExit(f"app.js console wiring missing {needle!r}")
+
+# ---- RM(관계관리 담당자) role harness 계약 — jbwc/jpo/ccl/fdr 하네스 복제 금지, role scope 강제.
+#      페르소나 이름은 needle에 넣지 않는다 — 제목·버튼·에이전트명 등 안정 라벨만 검증. ----
+rmo_files = [
+    "rmOfficer.config.js",
+    "rmOfficerAgents.registry.js",
+    "rmOfficerRules.js",
+    "rmOfficerPriority.service.js",
+    "rmOfficerDeliverable.service.js",
+    "rmOfficer-db.js",
+    "rmOfficerServices.js",
+    "rmOfficer.helpers.js",
+    "rmOfficer.view.board.js",
+    "rmOfficer.view.cases.js",
+    "rmOfficer.view.wizard.js",
+    "rmOfficer.view.harness.js",
+    "rmOfficer.commands.js",
+    "rmOfficer.sidebar.js",
+    "rmOfficerHarness.js",
+]
+joined_rmo = "\n".join((ROOT / "app" / name).read_text(encoding="utf-8") for name in rmo_files)
+rmo_needles = [
+    "RMO_ROLE_KEY",
+    "rm-officer",
+    "role scope is required",
+    "getRmOfficerSidebarCounts",
+    "searchRmOfficerRecordsAsync",
+    "createRmOfficerCase",
+    "recordRmOfficerAgentRun",
+    "approveRmOfficerAssignment",
+    "rmOfficerHarness",
+    "previewRmOfficerPriority",
+    "computeRmOfficerPriority",
+    "/roles/rm-officer",
+    "RM 업무지원 포털",
+    "신규 여신 상담 건 접수",
+    "업무보드",
+    "여신 상담 큐",
+    "정책금융 체크리스트",
+    "승인 라우팅",
+    "통합 리포트",
+    "우선순위 근거",
+    "내부 업무 참고용",
+    "담당자 검토 필요",
+    "rm_officer_cases",
+    "rm_officer_agent_runs",
+    "rm_officer_agent_handoffs",
+    "rm_officer_audit_logs",
+    "rmoRepository",
+    "rmOfficerHooks",
+    "rmOfficerCommands",
+    "RMO_STAGE_BY_STATUS",
+    "Marine Risk Agent",
+    "Action Agent",
+    "Compliance Guardrail Evaluator Agent",
+    "양식장 재해위험 대응",
+    "전주 중앙로 카페 여신 상담",
+    "조금만 기다려주세요",
+    "Enter를 눌러 승인해주세요",
+    "runRmOfficerOllamaSampleRequest",
+    "/rm-run-smoke-test",
+]
+for needle in rmo_needles:
+    if needle not in joined_rmo:
+        raise SystemExit(f"RM role harness missing {needle!r}")
+
+for forbidden in [
+    "jpoTable(",
+    "JPO_ROLE_KEY",
+    "jeonseProtectionAgents",
+    "jeonseFraudProtectionHarness",
+    "jbwcTable(",
+    "jbWooriCapitalOpsHarness",
+    "cclTable(",
+    "CCL_ROLE_KEY",
+    "cclConsoleHarness",
+    "fdrTable(",
+    "FDR_ROLE_KEY",
+    "fdrConsoleHarness",
+    "roleDashboardPage(",
+    "전세사기",
+]:
+    if forbidden in joined_rmo:
+        raise SystemExit(f"RM role harness should not contain {forbidden!r}")
+
+rmo_harness_registry = (ROOT / "app/harnessRegistry.js").read_text(encoding="utf-8")
+for needle in ['id: "rm-officer"', "rmOfficerHarness", "getRmOfficerSidebarCounts"]:
+    if needle not in rmo_harness_registry:
+        raise SystemExit(f"harnessRegistry missing RM 계약 {needle!r}")
+for needle in ["rm-officer-harness", "/roles/rm-officer"]:
+    if needle not in app_src:
+        raise SystemExit(f"app.js RM wiring missing {needle!r}")
 
 # ---- 공공데이터 프록시 계약 (키는 환경변수로만) ----
 proxy_src = (ROOT / "scripts/api-proxy.mjs").read_text(encoding="utf-8")

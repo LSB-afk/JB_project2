@@ -80,6 +80,25 @@
     <div id="toast-root" aria-live="polite"></div>
     <script src="./modules.js?v=jb-uxwriting-20260702-v1"></script>
     <script src="./harnessCore.js?v=harness-20260703-v1"></script>
+    <!-- RM은 jbwc/jpo/ccl/fdr 콘솔보다 먼저 로드한다: 그 네 콘솔은 rmOfficer를 모르므로(ccl/fdr은 수정 금지 파일),
+         RM의 bindModuleActions 체인 링크가 항상 먼저 실행되어야 사이드바 점유 중재(occupancy arbitration)가
+         양방향으로 안전하다 — RM 자신의 takeover/restore가 매 렌더 사이클에서 다른 콘솔보다 먼저 실행되므로
+         RM↔각 콘솔 전환 모두 잔여 data-rmo-mode 마커로 인한 사이드바 덮어쓰기 사고가 발생하지 않는다. -->
+    <script src="./rmOfficer.config.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficerAgents.registry.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficerRules.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficerPriority.service.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficerDeliverable.service.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficer-db.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficerServices.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficer.helpers.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficer.view.board.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficer.view.cases.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficer.view.wizard.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficer.view.harness.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficer.commands.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficer.sidebar.js?v=rmo-20260704-v1"></script>
+    <script src="./rmOfficerHarness.js?v=rmo-20260704-v1"></script>
     <script src="./jbWooriCapitalSidebar.config.js?v=jbwc-ops-20260703-v2"></script>
     <script src="./jbWooriCapitalAgents.registry.js?v=jbwc-ops-20260703-v2"></script>
     <script src="./wooricap-db.js?v=jbwc-ops-20260703-v4"></script>

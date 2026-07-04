@@ -44,7 +44,7 @@ agentRegistry / rules / hooks / seed·mock data(익명 Ref, 타 scope 검증 see
 
 ## 다음 역할 확장 후보와 적용 패턴
 
-- **RM**: 여신 상담 큐·정책금융 체크리스트·승인 라우팅을 scope `rm-officer`로. 히어로 케이스(전주 카페)를 seed로 승격.
+- **RM**: ✅ 등록됨 (scope `rm-officer`) — 여신 상담 큐·정책금융 체크리스트·승인 라우팅 + 급한 순 "근거" 우선순위 + 키보드 승인 큐 + 개별/통합 MD 산출물. 히어로 케이스(전주 카페)를 seed로 승격. 문서: `docs/05-RM-하네스.md`.
 - **기업여신 담당자**: 전결 라우팅·자금용도 점검을 derived 테이블로, 승인 매트릭스(L1~L4)를 rules로.
 - **보이스피싱/FDS 담당자**: 기존 fds-dashboard(라벨형)를 이 계약으로 승격 — 경보 큐/지급정지 절차 안내 후보/자동 종결 금지 불변식 재사용.
 - **JB우리캐피탈 운영 담당자**: 이미 manifest 등록됨. 남은 공통화: `enforceHooks: true` 전환(케이스 생성·에이전트 실행 지점에 hook 배선), commands registry 추가.

@@ -8,7 +8,7 @@
 
 - **역할 = 화면 필터가 아니라 독립 업무 하네스.** 각 역할/계열사는 자기 메뉴·데이터 스코프·
   에이전트·승인·감사 흐름을 가진 별도 운영 콘솔이다.
-- 현재 등록된 하네스: `jeonse-protection`(역할), `jb-woori-capital`(계열사).
+- 현재 등록된 하네스: `jeonse-protection`·`corporate-credit`·`fds-response`·`rm-officer`(역할), `jb-woori-capital`(계열사).
   main/default/safety 같은 이름의 alias 하네스는 존재하지 않으며, 만들면 verify가 실패한다.
 - 필요한 구성요소만 선택적으로 도입한다 — agent/skill을 무조건 늘리면 오히려 느슨해진다
   (메인 조직도의 "실동작 5 vs 확장 예정 9" 분리와 같은 원칙).

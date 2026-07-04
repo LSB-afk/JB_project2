@@ -17,7 +17,8 @@ function rmoCaptureSidebar() {
 function rmoTakeoverSidebar() {
   if (typeof jbwcRestoreSidebar === "function") jbwcRestoreSidebar();
   if (typeof jpoRestoreSidebar === "function") jpoRestoreSidebar();
-  if (typeof ccrRestoreSidebar === "function") ccrRestoreSidebar();
+  if (typeof cclRestoreSidebar === "function") cclRestoreSidebar();
+  if (typeof fdrRestoreSidebar === "function") fdrRestoreSidebar();
   rmoCaptureSidebar();
   const brand = document.querySelector(".sidebar-brand");
   if (brand && !brand.dataset.rmoMode) {

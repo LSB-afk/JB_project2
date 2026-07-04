@@ -1279,6 +1279,7 @@ function counts() {
     budget: agents.reduce((sum, agent) => sum + agent.spent, 0),
     settings: 3,
     "rm-dashboard": 8,
+    "rm-officer-harness": 8,
     "corporate-credit-harness": 8,
     "jeonse-protection-harness": 8,
     "fds-response-harness": 8,
@@ -1559,6 +1560,7 @@ function defaultDetailForView(view) {
     "budget",
     "settings",
     "rm-dashboard",
+    "rm-officer-harness",
     "corporate-credit-harness",
     "jeonse-protection-harness",
     "fds-response-harness",
@@ -1767,6 +1769,7 @@ function renderWorkbench() {
     settings: settingsPage,
     plugins: pluginsPage,
     "rm-dashboard": rmDashboardPage,
+    "rm-officer-harness": rmOfficerHarnessPage,
     "corporate-credit-harness": cclOpsPage,
     "jeonse-protection-harness": jeonseProtectionHarnessPage,
     "fds-response-harness": fdrOpsPage,
@@ -3748,6 +3751,7 @@ function renderProperties() {
     budget: budgetContextMarkup,
     settings: settingsContextMarkup,
     "rm-dashboard": rmDashboardContextMarkup,
+    "rm-officer-harness": rmOfficerHarnessContextMarkup,
     "corporate-credit-harness": cclContextMarkup,
     "jeonse-protection-harness": jeonseProtectionHarnessContextMarkup,
     "fds-response-harness": fdrContextMarkup,
@@ -3784,6 +3788,7 @@ function propertyPanelTitle() {
   if (activeDetailType === "skill" && currentSkill()) return skillLabel(currentSkill().slug);
   if (activeDetailType === "feature" && currentFeature()) return currentFeature().title;
   if (activeDetailType === "view" && activeView === "rm-dashboard") return "RM 역할 대시보드";
+  if (activeDetailType === "view" && activeView === "rm-officer-harness") return "RM 업무지원 포털";
   if (activeDetailType === "view" && activeView === "corporate-credit-harness") return "기업여신 심사지원 포털";
   if (activeDetailType === "view" && activeView === "jeonse-protection-harness") return "전세사기 보호 담당자 하네스";
   if (activeDetailType === "view" && activeView === "fds-response-harness") return "FDS·보이스피싱 대응 포털";
@@ -5539,13 +5544,18 @@ function bindActions() {
       });
       closeRailGroups();
       if (selectedRailRole === "RM") {
-        activeView = "rm-dashboard";
+        const rmoHash = typeof rmoHashForView === "function" ? rmoHashForView("board") : "#/roles/rm-officer/board";
+        activeView = "rm-officer-harness";
         activeDetailType = defaultDetailForView(activeView);
-        if (window.location.hash !== "#rm-dashboard") {
-          window.location.hash = "rm-dashboard";
+        if (typeof rmoState !== "undefined") {
+          rmoState.view = "board";
+          rmoState.detail = null;
+        }
+        if (window.location.hash !== rmoHash) {
+          window.location.hash = rmoHash;
         }
         render();
-        notify("RM 역할 대시보드로 이동했습니다.");
+        notify("RM 담당자 하네스로 이동했습니다.");
         return;
       }
       if (selectedRailRole === "기업여신 담당자") {
@@ -5744,10 +5754,20 @@ function applyHashRoute() {
     }
     return;
   }
+  const rmoRoute = typeof rmoRouteFromHash === "function" ? rmoRouteFromHash(window.location.hash) : null;
+  if (rmoRoute) {
+    activeView = "rm-officer-harness";
+    activeDetailType = defaultDetailForView(activeView);
+    if (typeof rmoState !== "undefined") {
+      rmoState.view = rmoRoute.view || "board";
+      rmoState.detail = rmoRoute.caseId ? { kind: "case", id: rmoRoute.caseId } : null;
+    }
+    return;
+  }
   const view = window.location.hash.replace("#", "");
   const known = navigation
     .flatMap((group) => group.items.map((item) => item.id))
-    .concat(["rm-dashboard", "corporate-credit-harness", "fds-response-harness", "jb-woori-capital-dashboard"]);
+    .concat(["rm-dashboard", "rm-officer-harness", "corporate-credit-harness", "fds-response-harness", "jb-woori-capital-dashboard"]);
   if (!known.includes(view)) return;
   activeView = view;
   activeDetailType = defaultDetailForView(view);
