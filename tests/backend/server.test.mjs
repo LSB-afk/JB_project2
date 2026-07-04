@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { createServer as createHttpServer } from "node:http";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { createServer as createNetServer } from "node:net";
 import os from "node:os";
@@ -18,6 +19,7 @@ async function withServer(fn, options = {}) {
     staticRoot: path.resolve("app"),
     publicDataProxyBase: "http://127.0.0.1:1",
     ollamaProxyBase: "http://127.0.0.1:1",
+    ...(options.serverOptions || {}),
   });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const address = server.address();
@@ -27,6 +29,60 @@ async function withServer(fn, options = {}) {
   } finally {
     await new Promise((resolve) => server.close(resolve));
     await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
+async function readRawBody(req) {
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  return Buffer.concat(chunks).toString("utf8");
+}
+
+async function withFakeSupabase(fn) {
+  let stateRow = null;
+  const requests = [];
+  const server = createHttpServer(async (req, res) => {
+    const rawBody = await readRawBody(req);
+    const url = new URL(req.url || "/", "http://127.0.0.1");
+    requests.push({
+      method: req.method,
+      pathname: url.pathname,
+      search: url.search,
+      headers: req.headers,
+      body: rawBody ? JSON.parse(rawBody) : null,
+    });
+    res.setHeader("content-type", "application/json");
+    if (req.headers.apikey !== "test-service-role" || req.headers.authorization !== "Bearer test-service-role") {
+      res.writeHead(401);
+      res.end(JSON.stringify({ message: "missing service role headers" }));
+      return;
+    }
+    if (url.pathname !== "/rest/v1/jb_backend_state") {
+      res.writeHead(404);
+      res.end(JSON.stringify({ message: "unknown table" }));
+      return;
+    }
+    if (req.method === "GET") {
+      res.writeHead(200);
+      res.end(JSON.stringify(stateRow ? [{ payload: stateRow.payload }] : []));
+      return;
+    }
+    if (req.method === "POST") {
+      stateRow = { id: requests.at(-1).body.id, payload: requests.at(-1).body.payload };
+      res.writeHead(201);
+      res.end(JSON.stringify([]));
+      return;
+    }
+    res.writeHead(405);
+    res.end(JSON.stringify({ message: "method not allowed" }));
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address();
+  const baseUrl = `http://127.0.0.1:${address.port}`;
+  try {
+    await fn({ baseUrl, requests });
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
   }
 }
 
@@ -129,6 +185,46 @@ test("backend CLI starts from the package script entrypoint", async () => {
     }
     await rm(tempDir, { recursive: true, force: true });
   }
+});
+
+test("backend can use Supabase REST API as the repository driver", async () => {
+  await withFakeSupabase(async ({ baseUrl, requests }) => {
+    await withServer(async ({ baseUrl: backendUrl }) => {
+      const health = await request(backendUrl, "/api/health");
+      assert.equal(health.response.status, 200);
+      assert.equal(health.body.store.driver, "supabase");
+      assert.equal(health.body.store.table, "jb_backend_state");
+
+      const created = await request(backendUrl, "/api/cases", {
+        method: "POST",
+        body: JSON.stringify({
+          roleKey: "jeonse-protection",
+          title: "Supabase 저장소 연결 검증",
+          customerAlias: "CUST-SB-001",
+          region: "전북 군산",
+          riskLevel: "medium",
+        }),
+      });
+      assert.equal(created.response.status, 201);
+      assert.equal(created.body.audit.action, "CASE_CREATED");
+
+      const list = await request(backendUrl, "/api/cases?roleKey=jeonse-protection&q=Supabase");
+      assert.equal(list.response.status, 200);
+      assert.equal(list.body.cases.length, 1);
+      assert.equal(list.body.cases[0].title, "Supabase 저장소 연결 검증");
+    }, {
+      serverOptions: {
+        dbDriver: "supabase",
+        supabaseUrl: baseUrl,
+        supabaseKey: "test-service-role",
+        supabaseTable: "jb_backend_state",
+        supabaseStateId: "test-state",
+      },
+    });
+
+    assert.ok(requests.some((item) => item.method === "GET" && item.search.includes("select=payload")));
+    assert.ok(requests.some((item) => item.method === "POST" && item.headers.prefer?.includes("resolution=merge-duplicates")));
+  });
 });
 
 test("backend persists case creation, file upload, agent run, deliverable, and audit log", async () => {

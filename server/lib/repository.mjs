@@ -57,6 +57,13 @@ export class JsonRepository {
     await this.write(db);
     return db;
   }
+
+  describe() {
+    return {
+      driver: "json",
+      dbPath: this.dbPath,
+    };
+  }
 }
 
 export function nextId(db, counterKey, prefix) {

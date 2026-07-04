@@ -4,12 +4,14 @@ import { stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { JsonRepository, caseCounts, nextId, publicCase, publicRole } from "./lib/repository.mjs";
+import { SupabaseRepository } from "./lib/supabaseRepository.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, "..");
 const DEFAULT_DB_PATH = path.join(__dirname, "data", "localguard-db.json");
 const DEFAULT_STATIC_ROOT = path.join(ROOT, "app");
+const DEFAULT_SUPABASE_URL = "https://wtahqybymvtiwypmzsbw.supabase.co";
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -227,6 +229,23 @@ function jeonseSnapshot(dataset) {
   };
 }
 
+function createRepository(options = {}) {
+  if (options.repository) return options.repository;
+  const driver = options.dbDriver || process.env.JB_DB_DRIVER || "json";
+  if (driver === "supabase") {
+    return new SupabaseRepository({
+      url: options.supabaseUrl || process.env.SUPABASE_URL || process.env.JB_SUPABASE_URL || DEFAULT_SUPABASE_URL,
+      key: options.supabaseKey || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.JB_SUPABASE_SERVICE_ROLE_KEY,
+      table: options.supabaseTable || process.env.JB_SUPABASE_TABLE || "jb_backend_state",
+      stateId: options.supabaseStateId || process.env.JB_SUPABASE_STATE_ID || "localguard",
+    });
+  }
+  if (driver !== "json") {
+    throw new Error(`unsupported JB_DB_DRIVER: ${driver}`);
+  }
+  return new JsonRepository(options.dbPath || process.env.JB_BACKEND_DB || DEFAULT_DB_PATH);
+}
+
 async function serveStatic(req, res, staticRoot) {
   const url = new URL(req.url || "/", "http://127.0.0.1");
   const rawPath = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
@@ -255,7 +274,7 @@ async function serveStatic(req, res, staticRoot) {
 }
 
 export function createBackendServer(options = {}) {
-  const repository = options.repository || new JsonRepository(options.dbPath || process.env.JB_BACKEND_DB || DEFAULT_DB_PATH);
+  const repository = createRepository(options);
   const staticRoot = path.resolve(options.staticRoot || process.env.JB_STATIC_ROOT || DEFAULT_STATIC_ROOT);
   const publicDataProxyBase = options.publicDataProxyBase || process.env.JB_PUBLIC_DATA_PROXY || "http://127.0.0.1:8020";
   const ollamaProxyBase = options.ollamaProxyBase || process.env.JB_OLLAMA_PROXY || "http://127.0.0.1:8030";
@@ -280,6 +299,7 @@ export function createBackendServer(options = {}) {
         sendJson(res, 200, {
           ok: true,
           service: "jb-localguard-backend",
+          store: typeof repository.describe === "function" ? repository.describe() : { driver: "custom" },
           dbPath: repository.dbPath,
           time: new Date().toISOString(),
         });

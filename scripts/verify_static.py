@@ -103,6 +103,8 @@ required = [
     ROOT / "server/index.mjs",
     ROOT / "server/lib/seed.mjs",
     ROOT / "server/lib/repository.mjs",
+    ROOT / "server/lib/supabaseRepository.mjs",
+    ROOT / "server/sql/supabase-api-state.sql",
     ROOT / "scripts/api-proxy.mjs",
     ROOT / "scripts/ollama-agent-proxy.mjs",
     ROOT / "tests/backend/server.test.mjs",
@@ -707,6 +709,7 @@ for backend_script in [
     ROOT / "server/index.mjs",
     ROOT / "server/lib/seed.mjs",
     ROOT / "server/lib/repository.mjs",
+    ROOT / "server/lib/supabaseRepository.mjs",
     ROOT / "tests/backend/server.test.mjs",
 ]:
     backend_check = subprocess.run(
@@ -729,9 +732,32 @@ for needle in [
     "/api/model-runtime/run",
     "FILE_UPLOADED",
     "AGENT_RUN_COMPLETED",
+    "JB_DB_DRIVER",
+    "SupabaseRepository",
 ]:
     if needle not in backend_src:
         raise SystemExit(f"backend server missing {needle!r}")
+
+supabase_src = (ROOT / "server/lib/supabaseRepository.mjs").read_text(encoding="utf-8")
+for needle in [
+    "/rest/v1",
+    "SUPABASE_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "authorization",
+    "resolution=merge-duplicates",
+]:
+    if needle not in supabase_src:
+        raise SystemExit(f"supabase repository missing {needle!r}")
+
+supabase_sql = (ROOT / "server/sql/supabase-api-state.sql").read_text(encoding="utf-8")
+for needle in [
+    "create table if not exists public.jb_backend_state",
+    "payload jsonb not null",
+    "enable row level security",
+    "service_role",
+]:
+    if needle not in supabase_sql:
+        raise SystemExit(f"supabase sql missing {needle!r}")
 
 doc_contracts = {
     "app/HARNESS_GUIDE.md": ["Agents", "Skills", "Commands", "Hooks", "Rules", "Continuous Learning"],

@@ -54,6 +54,15 @@ curl "http://127.0.0.1:8010/api/health"
 ```
 
 데이터는 `server/data/localguard-db.json`에 저장되며 이 경로는 git에 커밋하지 않습니다.
+Supabase API 저장소로 전환할 때는 `server/sql/supabase-api-state.sql`을 Supabase SQL Editor에서 실행한 뒤 서버 환경변수를 설정합니다.
+
+```bash
+export JB_DB_DRIVER=supabase
+export SUPABASE_URL="https://wtahqybymvtiwypmzsbw.supabase.co"
+export SUPABASE_SERVICE_ROLE_KEY="<server-only-key>"
+npm run backend
+```
+
 자세한 API 계약은 [docs/06-백엔드-서버.md](docs/06-백엔드-서버.md)를 참고하세요.
 
 ## 검증
