@@ -227,6 +227,11 @@ function recordCorporateCreditAgentRun(input) {
     riskLevel: input.riskLevel || "medium",
     requiresHumanReview: evaluation.requiresHumanReview || input.requiresHumanReview === true,
     violations: (guard.violations || []).concat(evaluation.issues || []),
+    runtime: input.runtime || "mock",
+    model: input.model || "",
+    runtimeStatus: input.runtimeStatus || (input.runtime === "ollama" ? "ok" : "mock"),
+    validatedOutput: input.validatedOutput || "",
+    errorSummary: input.errorSummary || "",
     createdAt: now,
   }));
   ccrWriteAudit({
@@ -241,6 +246,102 @@ function recordCorporateCreditAgentRun(input) {
     createdAt: now,
   });
   return run;
+}
+
+function ccrSafeModelCaseSummary(caseRow) {
+  if (!caseRow) return {};
+  return {
+    caseNo: caseRow.caseNo,
+    borrowerRefId: caseRow.borrowerRefId,
+    companyAlias: caseRow.companyAlias,
+    industry: caseRow.industry,
+    region: caseRow.region,
+    domain: caseRow.domain,
+    productType: caseRow.productType,
+    requestedAmountBand: caseRow.requestedAmountBand,
+    status: caseRow.status,
+    riskLevel: caseRow.riskLevel,
+    docsStatus: caseRow.docsStatus,
+    collateralExists: caseRow.collateralExists,
+    guaranteeExists: caseRow.guaranteeExists,
+    financialBaseMonth: caseRow.financialBaseMonth,
+    dataMode: caseRow.dataMode,
+  };
+}
+
+function ccrModelOutputSummary(modelResult) {
+  const parsed = modelResult && modelResult.parsed ? modelResult.parsed : {};
+  const summary = parsed.summary || modelResult.output || "로컬 모델 응답이 비어 있습니다.";
+  const nextActions = Array.isArray(parsed.nextActions) ? parsed.nextActions.slice(0, 2).join(" / ") : "";
+  const riskNotes = Array.isArray(parsed.riskNotes) ? parsed.riskNotes.slice(0, 2).join(" / ") : "";
+  return [
+    `Ollama ${modelResult.model}`,
+    "내부 운영 참고용",
+    summary,
+    nextActions ? `다음 조치: ${nextActions}` : "",
+    riskNotes ? `리스크 메모: ${riskNotes}` : "",
+  ].filter(Boolean).join(" · ").slice(0, 900);
+}
+
+async function runCorporateCreditOllamaSampleRequest(key) {
+  if (typeof runAgentModelRequest !== "function") {
+    throw new Error("에이전트 모델 설정 모듈이 로드되지 않았습니다.");
+  }
+  const sample = corporateCreditSampleRequests.find((item) => item.key === key) || corporateCreditSampleRequests[0];
+  const caseRow = ccrTable("corporate_credit_cases", CCR_ROLE_KEY).find((item) => item.caseNo === sample.caseId) || ccrTable("corporate_credit_cases", CCR_ROLE_KEY)[0];
+  const triage = previewCorporateCreditTriage({
+    domain: sample.domain || (caseRow && caseRow.domain) || "workingCapital",
+    docsReceived: caseRow ? caseRow.docsStatus !== "missing" : true,
+    collateralExists: caseRow ? caseRow.collateralExists : false,
+    guaranteeExists: caseRow ? caseRow.guaranteeExists : false,
+    financialBaseMonth: caseRow ? caseRow.financialBaseMonth : "2026-05",
+    riskLevel: sample.riskLevel || (caseRow && caseRow.riskLevel) || "medium",
+  });
+  const agentId = sample.memo ? "ccr-memo" : triage.recommendedAgent;
+  const agent = corporateCreditAgents.find((item) => item.id === agentId);
+  const modelResult = await runAgentModelRequest({
+    harnessId: "corporate-credit",
+    roleKey: CCR_ROLE_KEY,
+    agentId,
+    agentKey: agent && agent.agentKey,
+    input: {
+      request: sample.text,
+      case: ccrSafeModelCaseSummary(caseRow),
+      triage,
+      guardrails: CCR_FORBIDDEN_OUTPUTS,
+      outputPolicy: "내부 운영 참고용. 실제 승인/거절, 금리/한도, 신용평가 판단 금지. 담당자 검토 필요.",
+    },
+  });
+  const outputSummary = ccrModelOutputSummary(modelResult);
+  const run = recordCorporateCreditAgentRun({
+    agentId,
+    caseId: caseRow && caseRow.id,
+    inputSummary: `[Ollama] ${sample.text}`,
+    outputSummary,
+    status: "needsReview",
+    riskLevel: triage.riskLevel,
+    requiresHumanReview: true,
+    runtime: "ollama",
+    model: modelResult.model,
+    runtimeStatus: modelResult.evaluation && modelResult.evaluation.ok ? "ok" : "needsReview",
+    validatedOutput: modelResult.parsed ? JSON.stringify(modelResult.parsed) : "",
+  });
+  if (caseRow) {
+    ccrCreateEvidence(caseRow.id, "ollama", `${modelResult.model} 로컬 모델 응답 저장`, "localModel");
+  }
+  if (sample.memo && caseRow) {
+    ccrInsert("corporate_credit_credit_memos", ccrScopedRow({
+      id: ccrNextId("CCR-MEMO", "corporate_credit_credit_memos"),
+      caseId: caseRow.id,
+      title: `${caseRow.caseNo} 로컬 모델 여신메모 초안`,
+      status: "pendingApproval",
+      summary: outputSummary,
+      createdByAgentId: agentId,
+      createdAt: new Date().toISOString().slice(0, 10),
+      reviewRequired: true,
+    }));
+  }
+  return { sample, caseRow, triage, run, agent, modelResult };
 }
 
 function runCorporateCreditSampleRequest(key) {

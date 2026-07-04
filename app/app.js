@@ -1279,6 +1279,7 @@ function counts() {
     budget: agents.reduce((sum, agent) => sum + agent.spent, 0),
     settings: 3,
     "rm-dashboard": 8,
+    "rm-officer-harness": 8,
     "corporate-credit-dashboard": 8,
     "jeonse-protection-harness": 8,
     "fds-dashboard": 8,
@@ -1559,6 +1560,7 @@ function defaultDetailForView(view) {
     "budget",
     "settings",
     "rm-dashboard",
+    "rm-officer-harness",
     "corporate-credit-dashboard",
     "corporate-credit-harness",
     "jeonse-protection-harness",
@@ -1768,6 +1770,7 @@ function renderWorkbench() {
     settings: settingsPage,
     plugins: pluginsPage,
     "rm-dashboard": rmDashboardPage,
+    "rm-officer-harness": rmOfficerHarnessPage,
     "corporate-credit-dashboard": corporateCreditDashboardPage,
     "corporate-credit-harness": corporateCreditHarnessPage,
     "jeonse-protection-harness": jeonseProtectionHarnessPage,
@@ -3709,6 +3712,7 @@ function settingsView() {
       ${workItem("조직 프로필", "전북은행 · JB우리캐피탈 데모 조직을 전환합니다.", "로컬 신뢰")}
       ${workItem("승인 정책", "L0-L4 자동화 레벨과 금지 자동 실행 항목을 관리합니다.", "필수 통제")}
       ${workItem("외부 연동", "뉴스, 공식자료, RM 상담 기록, 보안 경보 어댑터를 연결합니다.", "데모 연동")}
+      ${typeof agentModelSettingsPanelMarkup === "function" ? agentModelSettingsPanelMarkup() : ""}
       <article class="work-item settings-action-card">
         <div class="item-head">
           <strong>데모 상태 초기화</strong>
@@ -3750,6 +3754,7 @@ function renderProperties() {
     budget: budgetContextMarkup,
     settings: settingsContextMarkup,
     "rm-dashboard": rmDashboardContextMarkup,
+    "rm-officer-harness": rmOfficerHarnessContextMarkup,
     "corporate-credit-dashboard": corporateCreditDashboardContextMarkup,
     "corporate-credit-harness": corporateCreditHarnessContextMarkup,
     "jeonse-protection-harness": jeonseProtectionHarnessContextMarkup,
@@ -3787,6 +3792,7 @@ function propertyPanelTitle() {
   if (activeDetailType === "skill" && currentSkill()) return skillLabel(currentSkill().slug);
   if (activeDetailType === "feature" && currentFeature()) return currentFeature().title;
   if (activeDetailType === "view" && activeView === "rm-dashboard") return "RM 역할 대시보드";
+  if (activeDetailType === "view" && activeView === "rm-officer-harness") return "RM 업무지원 포털";
   if (activeDetailType === "view" && activeView === "corporate-credit-dashboard") return "기업여신 담당자 대시보드";
   if (activeDetailType === "view" && activeView === "jeonse-protection-harness") return "전세사기 보호 담당자 하네스";
   if (activeDetailType === "view" && activeView === "fds-dashboard") return "보이스피싱/FDS 담당자 대시보드";
@@ -4334,6 +4340,7 @@ function budgetContextMarkup() {
 }
 
 function settingsContextMarkup() {
+  const modelSettings = typeof agentModelSettingsSummary === "function" ? agentModelSettingsSummary() : null;
   return compactPanel(
     "설정",
     "운영 정책",
@@ -4341,6 +4348,8 @@ function settingsContextMarkup() {
       ${propertyRow("조직", "전북은행 · JB우리캐피탈")}
       ${propertyRow("승인", "L0-L4 담당자 승인 절차")}
       ${propertyRow("외부 연동", "데모 어댑터")}
+      ${modelSettings ? propertyRow("에이전트 모델", `${modelSettings.label} · ${modelSettings.model}`) : ""}
+      ${modelSettings ? propertyRow("모델 프록시", modelSettings.proxyBase) : ""}
     </div>`,
   );
 }
@@ -5542,13 +5551,18 @@ function bindActions() {
       });
       closeRailGroups();
       if (selectedRailRole === "RM") {
-        activeView = "rm-dashboard";
+        const rmoHash = typeof rmoHashForView === "function" ? rmoHashForView("board") : "#/roles/rm-officer/board";
+        activeView = "rm-officer-harness";
         activeDetailType = defaultDetailForView(activeView);
-        if (window.location.hash !== "#rm-dashboard") {
-          window.location.hash = "rm-dashboard";
+        if (typeof rmoState !== "undefined") {
+          rmoState.view = "board";
+          rmoState.detail = null;
+        }
+        if (window.location.hash !== rmoHash) {
+          window.location.hash = rmoHash;
         }
         render();
-        notify("RM 역할 대시보드로 이동했습니다.");
+        notify("RM 담당자 하네스로 이동했습니다.");
         return;
       }
       if (selectedRailRole === "기업여신 담당자") {
@@ -5611,6 +5625,7 @@ function bindActions() {
       activeView = "settings";
       activeDetailType = defaultDetailForView(activeView);
       selectDefaultCaseForView(activeView);
+      if (window.location.hash !== "#settings") window.location.hash = "#settings";
       render();
     });
   }
@@ -5707,11 +5722,17 @@ function render() {
   renderToast();
   bindSelectionTargets();
   if (typeof renderDeliverableViewer === "function") renderDeliverableViewer();
+  if (typeof bindAgentModelSettingsActions === "function") bindAgentModelSettingsActions();
   if (typeof bindModuleActions === "function") bindModuleActions();
 }
 
+function normalizedAppHash(hash) {
+  return String(hash || "").replace(/^#/, "").replace(/^\/+/, "");
+}
+
 function applyHashRoute() {
-  const jbwcRoute = typeof jbwcRouteFromHash === "function" ? jbwcRouteFromHash(window.location.hash) : null;
+  const routeHash = `#${normalizedAppHash(window.location.hash)}`;
+  const jbwcRoute = typeof jbwcRouteFromHash === "function" ? jbwcRouteFromHash(routeHash) : null;
   if (jbwcRoute) {
     activeView = "jb-woori-capital-dashboard";
     activeDetailType = defaultDetailForView(activeView);
@@ -5722,7 +5743,7 @@ function applyHashRoute() {
     }
     return;
   }
-  const jpoRoute = typeof jpoRouteFromHash === "function" ? jpoRouteFromHash(window.location.hash) : null;
+  const jpoRoute = typeof jpoRouteFromHash === "function" ? jpoRouteFromHash(routeHash) : null;
   if (jpoRoute) {
     activeView = "jeonse-protection-harness";
     activeDetailType = defaultDetailForView(activeView);
@@ -5732,7 +5753,7 @@ function applyHashRoute() {
     }
     return;
   }
-  const ccrRoute = typeof ccrRouteFromHash === "function" ? ccrRouteFromHash(window.location.hash) : null;
+  const ccrRoute = typeof ccrRouteFromHash === "function" ? ccrRouteFromHash(routeHash) : null;
   if (ccrRoute) {
     activeView = "corporate-credit-harness";
     activeDetailType = defaultDetailForView(activeView);
@@ -5742,7 +5763,17 @@ function applyHashRoute() {
     }
     return;
   }
-  const view = window.location.hash.replace("#", "");
+  const rmoRoute = typeof rmoRouteFromHash === "function" ? rmoRouteFromHash(routeHash) : null;
+  if (rmoRoute) {
+    activeView = "rm-officer-harness";
+    activeDetailType = defaultDetailForView(activeView);
+    if (typeof rmoState !== "undefined") {
+      rmoState.view = rmoRoute.view || "board";
+      rmoState.detail = rmoRoute.caseId ? { kind: "case", id: rmoRoute.caseId } : null;
+    }
+    return;
+  }
+  const view = normalizedAppHash(window.location.hash);
   const known = navigation
     .flatMap((group) => group.items.map((item) => item.id))
     .concat(["rm-dashboard", "corporate-credit-dashboard", "fds-dashboard", "jb-woori-capital-dashboard"]);

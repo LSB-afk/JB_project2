@@ -44,6 +44,45 @@ registerHarness({
 });
 
 registerHarness({
+  id: "rm-officer",
+  kind: "role",
+  scopeKey: "roleKey",
+  scopeValue: RMO_ROLE_KEY,
+  displayName: RMO_DISPLAY_NAME,
+  routeBase: RMO_ROUTE_BASE,
+  sidebarConfig: rmoNavigation,
+  countService: getRmOfficerSidebarCounts,
+  searchService: searchRmOfficerRecords,
+  caseCreationFlow: { view: "cases-new", wizardFormId: "rmo-new-case-form", create: createRmOfficerCase },
+  agents: rmOfficerAgents,
+  skills: rmOfficerSkills,
+  commands: rmOfficerCommands,
+  hooks: rmOfficerHooks,
+  rules: rmOfficerRules,
+  guardrails: rmOfficerHarness.policy,
+  verification: {
+    enforceHooks: true,
+    requiredHooks: ["beforeCaseCreate", "beforeAgentRun", "beforeCustomerMessage"],
+    requiredAgents: 11,
+    requiredCommands: 3,
+    scopeProbe() {
+      try { rmoTable("rm_officer_cases"); return "scope 미지정 조회가 허용됨"; }
+      catch (error) { return String(error.message).includes("role scope is required") ? null : `예외 계약 불일치: ${error.message}`; }
+    },
+    piiScan() {
+      const raw = window.localStorage.getItem(RMO_DB_KEY) || "";
+      return harnessGuardCheckPII(raw);
+    },
+    forbiddenResurface() {
+      const issues = [];
+      if (typeof rmOfficerDashboardConfig !== "undefined") issues.push("label-only rm-dashboard 재유입");
+      if (document.querySelector('[data-affiliate="광주은행"]')) issues.push("광주은행 레일 재유입");
+      return issues.length ? issues.join(" / ") : null;
+    },
+  },
+});
+
+registerHarness({
   id: "jeonse-protection",
   kind: "role",
   scopeKey: "roleKey",

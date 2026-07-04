@@ -6,6 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => window.localStorage.removeItem("jb-finance-support-state-v4"));
   await page.addInitScript(() => window.localStorage.removeItem("jpo-ops-db-v2"));
   await page.addInitScript(() => window.localStorage.removeItem("ccr-ops-db-v1"));
+  await page.addInitScript(() => window.localStorage.removeItem("jb-agent-model-settings-v1"));
 });
 
 test("기업여신 하네스: 진입, 검색, 신규 접수, agent run, 새로고침 route 유지", async ({ page }) => {
@@ -56,11 +57,29 @@ test("기업여신 하네스: 진입, 검색, 신규 접수, agent run, 새로�
   expect(created.riskLevel).toBe("critical");
   expect(created.audit && created.run && created.handoff).toBe(true);
 
+  await page.locator("#rail-settings").click();
+  await expect(page.locator("#agent-model-settings-form")).toBeVisible();
+  await page.locator('select[name="runtime"]').selectOption("ollama");
+  await page.locator('input[name="proxyBase"]').fill("http://127.0.0.1:65534");
+  await page.locator('input[name="model"]').fill("llama3.1:8b");
+  await page.locator('input[name="timeoutMs"]').fill("3000");
+  await page.locator('#agent-model-settings-form button[type="submit"]').click();
+  const modelSettings = await page.evaluate(() => JSON.parse(window.localStorage.getItem("jb-agent-model-settings-v1")));
+  expect(modelSettings.runtime).toBe("ollama");
+  expect(modelSettings.model).toBe("llama3.1:8b");
+
   await page.goto("/index.html#/roles/corporate-credit/agent-harness");
-  await page.getByRole("button", { name: "RM 검토용 여신메모 초안을 만들고 준법 검증을 거쳐줘" }).click();
+  await page.locator('[data-ccr-sample="memo-draft"]').click();
   await expect(page.locator("#page-content")).toContainText("approval pending");
+  await page.locator('[data-ccr-ollama-sample="memo-draft"]').click();
+  await expect(page.locator("#page-content")).toContainText("로컬 모델 연결 실패");
   const runCount = await page.evaluate((key) => JSON.parse(window.localStorage.getItem(key)).corporate_credit_agent_runs.length, CCR_DB_KEY);
-  expect(runCount).toBeGreaterThan(8);
+  expect(runCount).toBeGreaterThan(9);
+  const failedRuntime = await page.evaluate((key) => {
+    const db = JSON.parse(window.localStorage.getItem(key));
+    return db.corporate_credit_agent_runs.some((x) => x.runtime === "ollama" && x.runtimeStatus === "error" && x.status === "needsReview");
+  }, CCR_DB_KEY);
+  expect(failedRuntime).toBe(true);
 
   await page.reload();
   await expect(page).toHaveURL(/\/roles\/corporate-credit\/agent-harness/);

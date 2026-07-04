@@ -46,6 +46,7 @@ app_js_files = [
     "jeonseProtection.commands.js",
     "jeonsePublicData.adapters.js",
     "jeonsePriceRisk.service.js",
+    "agentModelSettings.js",
     "corporateCredit.config.js",
     "corporateCreditAgents.registry.js",
     "corporateCreditRules.js",
@@ -62,6 +63,23 @@ app_js_files = [
     "corporateCredit.commands.js",
     "corporateCredit.sidebar.js",
     "corporateCreditHarness.js",
+    "rmOfficer.config.js",
+    "rmOfficerAgents.registry.js",
+    "rmOfficerWorkMap.js",
+    "rmOfficerCapabilities.js",
+    "rmOfficerRules.js",
+    "rmOfficerPriority.service.js",
+    "rmOfficerDeliverable.service.js",
+    "rmOfficer-db.js",
+    "rmOfficerServices.js",
+    "rmOfficer.helpers.js",
+    "rmOfficer.view.board.js",
+    "rmOfficer.view.cases.js",
+    "rmOfficer.view.wizard.js",
+    "rmOfficer.view.harness.js",
+    "rmOfficer.commands.js",
+    "rmOfficer.sidebar.js",
+    "rmOfficerHarness.js",
 ]
 
 required = [
@@ -75,13 +93,17 @@ required = [
     ROOT / "docs/02-은행-DB-연동-설계.md",
     ROOT / "docs/03-JB우리캐피탈-하네스.md",
     ROOT / "docs/04-전세보호-역할-하네스.md",
+    ROOT / "docs/05-RM-하네스.md",
     ROOT / "app/HARNESS_GUIDE.md",
     ROOT / "app/ROLE_HARNESS_CONTRACT.md",
     ROOT / "app/SECURITY_GUARDRAILS.md",
     ROOT / "scripts/api-proxy.mjs",
+    ROOT / "scripts/ollama-agent-proxy.mjs",
     ROOT / "tests/e2e/localguard.spec.js",
     ROOT / "tests/e2e/wooricap.spec.js",
     ROOT / "tests/e2e/corporate-credit-smoke.spec.js",
+    ROOT / "tests/e2e/rm-officer.spec.js",
+    ROOT / "tests/e2e/rm-officer-smoke.spec.js",
 ] + [ROOT / "app" / name for name in app_js_files]
 
 missing = [path for path in required if not path.exists()]
@@ -137,6 +159,7 @@ html_needles = [
     "./jeonseProtection.commands.js",
     "./jeonsePublicData.adapters.js",
     "./jeonsePriceRisk.service.js",
+    "./agentModelSettings.js",
     "./corporateCredit.config.js",
     "./corporateCreditAgents.registry.js",
     "./corporateCreditRules.js",
@@ -153,6 +176,23 @@ html_needles = [
     "./corporateCredit.commands.js",
     "./corporateCredit.sidebar.js",
     "./corporateCreditHarness.js",
+    "./rmOfficer.config.js",
+    "./rmOfficerAgents.registry.js",
+    "./rmOfficerWorkMap.js",
+    "./rmOfficerCapabilities.js",
+    "./rmOfficerRules.js",
+    "./rmOfficerPriority.service.js",
+    "./rmOfficerDeliverable.service.js",
+    "./rmOfficer-db.js",
+    "./rmOfficerServices.js",
+    "./rmOfficer.helpers.js",
+    "./rmOfficer.view.board.js",
+    "./rmOfficer.view.cases.js",
+    "./rmOfficer.view.wizard.js",
+    "./rmOfficer.view.harness.js",
+    "./rmOfficer.commands.js",
+    "./rmOfficer.sidebar.js",
+    "./rmOfficerHarness.js",
     "./app.js",
 ]
 for needle in html_needles:
@@ -340,6 +380,10 @@ ccr_needles = [
     "ccrRepository",
     "corporateCreditHooks",
     "Compliance Guardrail Evaluator Agent",
+    "runCorporateCreditOllamaSampleRequest",
+    "runAgentModelRequest",
+    "runtimeStatus",
+    "로컬 모델 실행",
 ]
 for needle in ccr_needles:
     if needle not in joined_ccr:
@@ -364,6 +408,128 @@ ccr_harness_registry = (ROOT / "app/harnessRegistry.js").read_text(encoding="utf
 for needle in ['id: "corporate-credit"', "corporateCreditOfficerHarness", "scopeProbe"]:
     if needle not in ccr_harness_registry:
         raise SystemExit(f"harnessRegistry missing 기업여신 계약 {needle!r}")
+
+# RM(관계관리 담당자) role harness 계약 — 전세/기업여신/계열사 하네스 복제 금지, role scope 강제.
+# 페르소나 이름은 needle에 넣지 않는다([조건부] 정합차) — 제목·버튼·에이전트명 등 안정 라벨만 검증.
+rmo_files = [
+    "rmOfficer.config.js",
+    "rmOfficerAgents.registry.js",
+    "rmOfficerWorkMap.js",
+    "rmOfficerCapabilities.js",
+    "rmOfficerRules.js",
+    "rmOfficerPriority.service.js",
+    "rmOfficerDeliverable.service.js",
+    "rmOfficer-db.js",
+    "rmOfficerServices.js",
+    "rmOfficer.helpers.js",
+    "rmOfficer.view.board.js",
+    "rmOfficer.view.cases.js",
+    "rmOfficer.view.wizard.js",
+    "rmOfficer.view.harness.js",
+    "rmOfficer.commands.js",
+    "rmOfficer.sidebar.js",
+    "rmOfficerHarness.js",
+]
+joined_rmo = "\n".join((ROOT / "app" / name).read_text(encoding="utf-8") for name in rmo_files)
+rmo_needles = [
+    "RMO_ROLE_KEY",
+    "rm-officer",
+    "role scope is required",
+    "getRmOfficerSidebarCounts",
+    "searchRmOfficerRecordsAsync",
+    "createRmOfficerCase",
+    "recordRmOfficerAgentRun",
+    "approveRmOfficerAssignment",
+    "rmOfficerHarness",
+    "previewRmOfficerPriority",
+    "computeRmOfficerPriority",
+    "/roles/rm-officer",
+    "RM 업무지원 포털",
+    "신규 여신 상담 건 접수",
+    "업무보드",
+    "여신 상담 큐",
+    "정책금융 체크리스트",
+    "승인 라우팅",
+    "통합 리포트",
+    "우선순위 근거",
+    "내부 업무 참고용",
+    "담당자 검토 필요",
+    "rm_officer_cases",
+    "rm_officer_agent_runs",
+    "rm_officer_agent_handoffs",
+    "rm_officer_audit_logs",
+    "rmoRepository",
+    "rmOfficerHooks",
+    "rmOfficerCommands",
+    "RMO_STAGE_BY_STATUS",
+    "Marine Risk Agent",
+    "Action Agent",
+    "Compliance Guardrail Evaluator Agent",
+    "양식장 재해위험 대응",
+    "전주 중앙로 카페 여신 상담",
+    "조금만 기다려주세요",
+    "Enter를 눌러 승인해주세요",
+    "runRmOfficerOllamaSampleRequest",
+    "runAgentModelRequest",
+    "runtimeStatus",
+    "로컬 모델 실행",
+    "/rm-run-smoke-test",
+    "rmoBuildWorkMapTree",
+    "RMO_NODE_STATUS_LABELS",
+    "RMO_NODE_STATUS_COLOR",
+    "rmoNodeStatusColorClass",
+    "needsApproval",
+    "에이전트 업무 계층도",
+    "직원 최종 승인",
+    "rmoApproveCaseReport",
+    "rmoRerunWorkMapNode",
+    "bizCreditReferral",
+    "fraudResponse",
+    "agriPostMonitoring",
+    "선행 분석 노드를 먼저 완료해야 합니다",
+    "업무 기능 저장소",
+    "RMO_CAPABILITY_CATEGORIES",
+    "rmoCapabilityRepositoryView",
+    "관리 및 운영 기능",
+    "주의 신호 분류",
+    "정책자금 초안 검토",
+    "상환 일정 분석",
+    "리마인드 자동화",
+    "외부 데이터 연결",
+    "보고서 생성",
+    "담당자 승인 절차",
+    "감사 기록",
+    "통합 리포트 생성",
+    "담당 역할",
+    "산출물 유형",
+    "핵심 요약",
+    "직원 액션",
+    "rmoDeliverableDocType",
+]
+for needle in rmo_needles:
+    if needle not in joined_rmo:
+        raise SystemExit(f"RM role harness missing {needle!r}")
+
+for forbidden in [
+    "jpoTable(",
+    "JPO_ROLE_KEY",
+    "jeonseProtectionAgents",
+    "jeonseFraudProtectionHarness",
+    "jbwcTable(",
+    "jbWooriCapitalOpsHarness",
+    "ccrTable(",
+    "CCR_ROLE_KEY",
+    "corporateCreditOfficerHarness",
+    "roleDashboardPage(",
+    "전세사기",
+]:
+    if forbidden in joined_rmo:
+        raise SystemExit(f"RM role harness should not contain {forbidden!r}")
+
+rmo_harness_registry = (ROOT / "app/harnessRegistry.js").read_text(encoding="utf-8")
+for needle in ['id: "rm-officer"', "rmOfficerHarness", "getRmOfficerSidebarCounts"]:
+    if needle not in rmo_harness_registry:
+        raise SystemExit(f"harnessRegistry missing RM 계약 {needle!r}")
 
 # ---- ECC 하네스 표준 계층 계약 ----
 harness_core = (ROOT / "app/harnessCore.js").read_text(encoding="utf-8")
@@ -408,6 +574,32 @@ for needle in [
 if re.search(r"serviceKey\s*[:=]\s*[\"'][A-Za-z0-9+/=%]{20,}", proxy_src):
     raise SystemExit("api-proxy에 하드코딩된 키가 있는 것으로 보임")
 
+ollama_proxy_src = (ROOT / "scripts/ollama-agent-proxy.mjs").read_text(encoding="utf-8")
+agent_model_src = (ROOT / "app/agentModelSettings.js").read_text(encoding="utf-8")
+for needle in [
+    "OLLAMA_BASE",
+    "OLLAMA_MODEL",
+    "/agent/health",
+    "/agent/run",
+    "http://127.0.0.1:11434",
+    "실제 대출 승인/거절",
+    "requiresHumanReview",
+]:
+    if needle not in ollama_proxy_src:
+        raise SystemExit(f"ollama-agent-proxy missing {needle!r}")
+for needle in [
+    "AGENT_MODEL_SETTINGS_KEY",
+    "agentModelSettingsPanelMarkup",
+    "checkAgentModelHealth",
+    "runAgentModelRequest",
+    "http://127.0.0.1:8030",
+    "Ollama 로컬 모델",
+]:
+    if needle not in agent_model_src:
+        raise SystemExit(f"agentModelSettings missing {needle!r}")
+if re.search(r"(api[_-]?key|token|secret)\s*[:=]\s*[\"'][A-Za-z0-9+/=%]{20,}", ollama_proxy_src, re.I):
+    raise SystemExit("ollama-agent-proxy에 credential 하드코딩 의심 문자열이 있음")
+
 # ---- 금지 alias/단정 리터럴 + 실PII 패턴 정적 스캔 ----
 all_app_js = "\n".join((ROOT / "app" / name).read_text(encoding="utf-8") for name in app_js_files)
 scan_target = all_app_js + html
@@ -435,6 +627,11 @@ if "border-radius: 8px" not in css:
 if "Pretendard" not in css:
     raise SystemExit("CSS should use Pretendard as the primary font")
 
+# RM 업무 계층도 노드 상태 6색이 CSS에 실제로 정의되어 있는지 확인(회색/파랑/노랑/초록/빨강/보라)
+for node_color_class in [".rmo-node-gray", ".rmo-node-blue", ".rmo-node-yellow", ".rmo-node-green", ".rmo-node-red", ".rmo-node-purple"]:
+    if node_color_class not in css:
+        raise SystemExit(f"RM work map 노드 상태색 CSS 누락: {node_color_class!r}")
+
 for script in app_js_files:
     node_check = subprocess.run(
         ["node", "--check", str(ROOT / "app" / script)],
@@ -444,6 +641,15 @@ for script in app_js_files:
     )
     if node_check.returncode != 0:
         raise SystemExit(node_check.stderr or node_check.stdout)
+
+proxy_check = subprocess.run(
+    ["node", "--check", str(ROOT / "scripts/ollama-agent-proxy.mjs")],
+    text=True,
+    capture_output=True,
+    check=False,
+)
+if proxy_check.returncode != 0:
+    raise SystemExit(proxy_check.stderr or proxy_check.stdout)
 
 doc_contracts = {
     "app/HARNESS_GUIDE.md": ["Agents", "Skills", "Commands", "Hooks", "Rules", "Continuous Learning"],

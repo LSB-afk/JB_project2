@@ -11,6 +11,7 @@ const jpoViewRenderers = Object.assign(
     board: jpoDashboardView,
     "cases-new": jpoCaseCreationView,
     "agent-harness": jpoHarnessView,
+    "capability-repository": jpoCapabilityRepositoryView,
   },
   jpoCaseViewRenderers,
 );

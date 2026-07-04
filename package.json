@@ -9,6 +9,7 @@
     "test": "python3 scripts/verify_static.py",
     "test:e2e": "playwright test",
     "demo:proxy": "node scripts/api-proxy.mjs",
+    "demo:ollama": "node scripts/ollama-agent-proxy.mjs",
     "test:smoke": "playwright test tests/e2e/jeonse-smoke.spec.js"
   },
   "devDependencies": {

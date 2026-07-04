@@ -10,6 +10,7 @@ let ccrState = {
   countsAt: null,
   lists: {},
   search: { q: "", loading: false, error: false, blocked: null, results: null },
+  modelRun: { status: "idle", message: "" },
   roleEntered: false,
 };
 

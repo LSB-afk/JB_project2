@@ -36,10 +36,10 @@ test("역할 진입: 전용 사이드바/메뉴이며 generic·무관 샘플이 
   await expect(page.locator("#sidebar-search")).toHaveAttribute("placeholder", /사건번호, 익명 고객 ID, 주소 일부/);
   expect(page.url()).toContain("/roles/jeonse-protection");
 
-  for (const label of ["위험 접수 보드", "전세 위험 케이스", "시세 데이터 보강", "권리관계 확인", "보증·HUG 확인", "피해지원 신청 검토", "긴급 경·공매 대응", "전세가율/시세 점검", "유사 전월세 거래", "피해자 결정 신청 안내", "법률지원 연계", "데이터 연결 상태"]) {
+  for (const label of ["위험 접수 보드", "전세 위험 케이스", "시세 데이터 보강", "권리관계 확인", "보증·HUG 확인", "피해지원 신청 검토", "긴급 경·공매 대응", "전세가율/시세 점검", "유사 전월세 거래", "피해자 결정 신청 안내", "법률지원 연계", "업무 기능 저장소", "데이터 연결 상태"]) {
     await expect(page.locator("#nav-list")).toContainText(label);
   }
-  for (const forbidden of ["전체 관리 건 조회", "업무 기능", "전세 안심 점검", "전체 전세보호 건 조회"]) {
+  for (const forbidden of ["전체 관리 건 조회", "전세 안심 점검", "전체 전세보호 건 조회"]) {
     await expect(page.locator("#nav-list")).not.toContainText(forbidden);
   }
   for (const forbidden of ["도소매", "제조업", "카페", "기업여신"]) {
@@ -62,6 +62,10 @@ test("위험 접수 보드가 lifecycle 컬럼과 카드 필수 정보를 표시
   await expect(card).toContainText("인천 미추홀구 주안동 ***");
   await expect(card).toContainText("보증금 1.2억");
   await expect(card).toContainText("경·공매 일정 임박");
+  await expect(card).toContainText("상황");
+  await expect(card).toContainText("우선순위 근거");
+  await expect(card).toContainText("필요 에이전트");
+  await expect(card).toContainText("다음 액션");
   await expect(card.locator('[data-source-mode="fallback"]')).toBeVisible();
   await expect(page.locator('[data-board-column="received"]')).toContainText("JEONSE-0006");
   await expect(page.locator('[data-board-column="externalLinked"]')).toContainText("JEONSE-0005");
@@ -75,6 +79,7 @@ test("route가 새로고침 후에도 유지된다 (v2 메뉴)", async ({ page }
     ["/roles/jeonse-protection/guarantee-check", "보증·HUG 확인"],
     ["/roles/jeonse-protection/urgent-auction", "긴급 경·공매 대응"],
     ["/roles/jeonse-protection/victim-application", "피해지원 신청 검토"],
+    ["/roles/jeonse-protection/capability-repository", "업무 기능 저장소"],
     ["/roles/jeonse-protection/data-connectors", "데이터 연결 상태"],
   ];
   for (const [route, marker] of routes) {
@@ -274,6 +279,7 @@ test("데스크톱/태블릿/모바일 스모크 (overflow 금지)", async ({ pa
     ["board", "/roles/jeonse-protection/board"],
     ["cases", "/roles/jeonse-protection/cases"],
     ["wizard", "/roles/jeonse-protection/cases/new"],
+    ["capabilities", "/roles/jeonse-protection/capability-repository"],
     ["connectors", "/roles/jeonse-protection/data-connectors"],
   ];
   for (const [vpName, viewport] of viewports) {

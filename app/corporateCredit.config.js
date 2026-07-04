@@ -231,6 +231,11 @@ const CCR_FIELD_LABELS = {
   dataMode: "데이터 연결 상태",
   requiresHumanReview: "담당자 검토 필요",
   escalationRequired: "에스컬레이션 필요",
+  runtime: "실행 방식",
+  model: "모델",
+  runtimeStatus: "런타임 상태",
+  validatedOutput: "검증 출력",
+  errorSummary: "오류 요약",
   createdAt: "생성일",
   updatedAt: "수정일",
 };

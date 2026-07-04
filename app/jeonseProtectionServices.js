@@ -42,6 +42,7 @@ function getJeonseProtectionSidebarCounts() {
     aiAnalysis: t("ai_analysis_requests").filter((x) => ["queued", "running"].includes(x.status)).length,
     aiConsultSummary: t("ai_recommendations").filter((x) => x.kind === "consultSummary" && ["proposed", "pendingApproval", "active"].includes(x.status)).length,
     agentHarness: runsNeedingReview + agentsNeedingReview,
+    capabilityRepository: (jeonseFraudProtectionHarness.skills || []).length,
     dataConnectors: t("external_connectors").filter((x) => ["degraded", "down", "manualRequired"].includes(x.health) || ["error", "manualRequired"].includes(x.status)).length,
     roles: t("role_assignments").filter((x) => ["active", "needsReview"].includes(x.status) || x.reviewRequired === true).length,
     auditLogs: t("jeonse_audit_logs").filter((x) => x.reviewRequired === true).length,

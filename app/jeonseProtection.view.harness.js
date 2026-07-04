@@ -1,6 +1,68 @@
 /* 전세사기 보호 담당자 역할 하네스 — 운영 에이전트 하네스 view/샘플 실행 바인딩.
    샘플 실행은 모의(mock)이며 외부 호출 없이 agent_runs/agent_handoffs/audit_logs(및 필요 시 approvals)에만 기록한다. */
 
+const JPO_CAPABILITY_CATALOG = [
+  { name: "접수 분류·라우팅", category: "관리 및 운영 기능", summary: "접수 유형을 lifecycle 상태와 전용 에이전트 실행 순서로 분리합니다.", domain: "신규 접수", agents: ["jpo-intake"], data: "접수 유형, 보증금, 주택 유형, 기한", output: "case-routing.md, handoff 기록", status: "available" },
+  { name: "전세가율/시세 위험 점검", category: "주의 신호 분류", summary: "실거래 스냅샷과 유사 거래 표본으로 보증금 과다 신호를 산출합니다.", domain: "시세 데이터 보강", agents: ["jpo-price"], data: "법정동, 면적, 매매/전월세 중앙값", output: "price-risk.md, riskSignals", status: "mock" },
+  { name: "권리관계 체크리스트", category: "권리·등기 확인", summary: "선순위 권리, 압류, 신탁, 위반건축물 확인 항목을 담당자 검토용으로 묶습니다.", domain: "권리관계 확인", agents: ["jpo-registry"], data: "등기부 확인 상태, 건축물 확인 상태", output: "registry-checklist.md", status: "available" },
+  { name: "보증·HUG 확인 항목", category: "보증 확인", summary: "보증 가능성을 확정하지 않고 공식 기준 확인 후보와 누락 항목을 정리합니다.", domain: "보증·HUG 확인", agents: ["jpo-guarantee"], data: "보증 상태, 주택 유형, 위험 신호", output: "guarantee-check.md", status: "review" },
+  { name: "경·공매 기한 감시", category: "긴급 대응", summary: "경·공매 통지와 기한 임박 신호를 supervisor 승인 흐름으로 연결합니다.", domain: "긴급 경·공매 대응", agents: ["jpo-auction", "jpo-supervisor"], data: "통지 여부, 기한, 고위험 신호", output: "auction-action.md", status: "available" },
+  { name: "피해지원 신청 서류 점검", category: "피해자 지원", summary: "피해자 결정 신청을 대행하지 않고 요건·제출서류 누락만 분리합니다.", domain: "피해지원 신청 검토", agents: ["jpo-victim"], data: "docChecklist, 상담 유형, 지원 연계 기록", output: "victim-docs.md", status: "available" },
+  { name: "법률·주거·심리 연계 후보", category: "지원 연계", summary: "기관 안내 후보를 정리하되 법률 판단이나 실제 신청 실행은 하지 않습니다.", domain: "지원 연계", agents: ["jpo-legal"], data: "상담 유형, 지원 필요 항목, 공식 안내", output: "referral-options.md", status: "available" },
+  { name: "상담 요약·안내 초안", category: "산출물 템플릿", summary: "고객 공유 전 반드시 승인 대기 상태로 묶이는 상담 요약과 안내 초안을 만듭니다.", domain: "AI 상담 요약", agents: ["jpo-comms"], data: "상담 맥락, 케이스 상태, 승인 기록", output: "consult-summary.md, approvalRequest", status: "review" },
+  { name: "데이터 품질·증적 리포트", category: "외부 데이터 연결", summary: "live_api, snapshot, fallback, manualRequired 상태를 화면과 감사 기록에 명시합니다.", domain: "데이터 연결 상태", agents: ["jpo-dataquality"], data: "sourceMode, 표본 수, 커넥터 상태", output: "source-quality.md", status: "mock" },
+  { name: "승인·감사 게이트", category: "담당자 승인 절차", summary: "고위험, 고객 안내, 피해지원 관련 산출물을 사람 승인 흐름에 묶습니다.", domain: "감사 기록", agents: ["jpo-supervisor"], data: "approvals, audit_logs, agent_runs", output: "review-gate.md, evidence-log.md", status: "available" },
+];
+
+function jpoCapabilityStatusPill(status) {
+  const map = {
+    available: ["사용 가능", "jpo-cap-status-available"],
+    review: ["검토 중", "jpo-cap-status-review"],
+    mock: ["mock", "jpo-cap-status-mock"],
+    live: ["live", "jpo-cap-status-live"],
+  };
+  const [label, cls] = map[status] || [status || "-", "jpo-cap-status-mock"];
+  return `<span class="status-pill jpo-cap-status ${cls}">${escapeHtml(label)}</span>`;
+}
+
+function jpoCapabilityCard(capability) {
+  return `<article class="jpo-cap-card">
+    <header class="jpo-cap-card-head">
+      <div><p class="jpo-cap-category">${escapeHtml(capability.category)}</p><h4>${escapeHtml(capability.name)}</h4></div>
+      ${jpoCapabilityStatusPill(capability.status)}
+    </header>
+    <p class="jpo-cap-summary">${escapeHtml(capability.summary)}</p>
+    <div class="jpo-cap-field"><span>사용 도메인</span><p>${escapeHtml(capability.domain)}</p></div>
+    <div class="jpo-cap-field"><span>연결 에이전트</span><div class="jpo-agent-chips">${capability.agents.map(jpoAgentChip).join("")}</div></div>
+    <div class="jpo-cap-field"><span>사용 데이터</span><p>${escapeHtml(capability.data)}</p></div>
+    <div class="jpo-cap-field"><span>생성 산출물</span><p>${escapeHtml(capability.output)}</p></div>
+  </article>`;
+}
+
+function jpoCapabilityRepositoryView() {
+  const categories = [...new Set(JPO_CAPABILITY_CATALOG.map((capability) => capability.category))];
+  const filters = categories.map((category) => `<span class="jpo-filter-chip">${escapeHtml(category)}</span>`).join("");
+  const rows = JPO_CAPABILITY_CATALOG.map((capability) => `<li class="jbwc-row jpo-cap-row">
+    <span><strong>${escapeHtml(capability.name)}</strong><br><em>${escapeHtml(capability.category)}</em></span>
+    <span>${capability.agents.map((id) => escapeHtml(jpoAgentDisplayName(id))).join(", ")}</span>
+    <span>${escapeHtml(capability.data)}</span>
+    <span>${escapeHtml(capability.output)}<br>${jpoCapabilityStatusPill(capability.status)}</span>
+  </li>`).join("");
+  return `<section class="jbwc-hero jpo-hero-slim jpo-cap-hero">
+      <p class="eyebrow">전세보호 역할 전용 하네스 · 기능 저장소</p>
+      <h2>업무 기능 저장소</h2>
+      <p>AI 업무지원에서 직접 활용되는 시세, 권리, 보증, 피해지원, 감사 업무 기능을 확인합니다.</p>
+      <p class="jpo-keyboard-hint">케이스 처리에 쓰이는 기능·에이전트·데이터·산출물을 업무 단위로 분리했습니다.</p>
+    </section>
+    ${jpoPanel("기능 카테고리 필터", `<div class="jpo-filter-row">${filters}</div>`)}
+    ${jpoPanel(`기능 카드 (${JPO_CAPABILITY_CATALOG.length})`, `<div class="jpo-cap-grid">${JPO_CAPABILITY_CATALOG.map(jpoCapabilityCard).join("")}</div>`)}
+    ${jpoPanel("기능 목록", `<ul class="jbwc-list jpo-cap-table">
+      <li class="jbwc-row jbwc-row-head"><span>기능</span><span>에이전트</span><span>사용 데이터</span><span>산출물/상태</span></li>
+      ${rows}
+    </ul>`)}
+    ${jpoMockNote()}`;
+}
+
 function jpoHarnessView() {
   const agents = jpoTable("harness_agents", JPO_ROLE_KEY);
   const runs = jpoTable("agent_runs", JPO_ROLE_KEY).slice(0, 10);
