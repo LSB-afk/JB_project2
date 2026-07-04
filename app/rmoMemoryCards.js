@@ -147,7 +147,8 @@ if (typeof runAgentModelRequest === "function") {
 /* ---- 읽기 전용 패널(카드 편집 UI는 의도적으로 없음) ---- */
 function rmoMemoryCardsPanel() {
   const rows = rmoMemoryCards().sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
-  const stat = `<p class="jbwc-meta" id="rmo-mem-status">3계층 자동 증류 · PII 거부 <strong>${rmoMemoryStats.piiRefused}</strong>건 · 마지막 LLM 주입 <strong>메모리 적중 ${rmoMemoryStats.lastInjected}건</strong> · 누적 주입 ${rmoMemoryStats.injectTotal}건</p>`;
+  const enginePath = typeof rmoEngineState !== "undefined" ? rmoEngineState.lastPath : "미배선"; // rmoEngineSwitch.js 폴백 사다리 상태
+  const stat = `<p class="jbwc-meta" id="rmo-mem-status">3계층 자동 증류 · PII 거부 <strong>${rmoMemoryStats.piiRefused}</strong>건 · 마지막 LLM 주입 <strong>메모리 적중 ${rmoMemoryStats.lastInjected}건</strong> · 누적 주입 ${rmoMemoryStats.injectTotal}건 · 엔진 경로 <strong id="rmo-engine-path">${escapeHtml(enginePath)}</strong></p>`;
   if (!rows.length) {
     return rmoPanel("3계층 메모리 카드 (0)",
       `${stat}<p class="jbwc-meta" id="rmo-mem-empty">아직 증류된 기억이 없습니다. 샘플/승인 실행을 하면 사람·에이전트 결정만 카드로 남습니다 — 기본값은 "기억하지 않는다".</p>`);

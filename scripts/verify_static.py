@@ -82,6 +82,7 @@ app_js_files = [
     "rmOfficerHarness.js",
     "rmoMemoryCards.js",
     "rmoCaseOntology.js",
+    "rmoEngineSwitch.js",
 ]
 
 required = [
