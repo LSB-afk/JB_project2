@@ -16,7 +16,7 @@ function rmoBoardCard(item, index) {
   const customerLine = [item.customerAlias, item.customerAge ? `${item.customerAge}세` : ""].filter(Boolean).join(" ");
   const domainLine = [rmoCaseTypeLabel(item.caseType), item.affiliate].filter(Boolean).join(" · ");
   const nextAction = rmoNextActionText(item);
-  return `<article class="rmo-case-card ${selected ? "is-selected" : ""}" data-rmo-open-case="${escapeHtml(item.id)}" role="button" tabindex="0" aria-pressed="${selected ? "true" : "false"}">
+  return `<article class="rmo-case-card ${selected ? "is-selected" : ""}" data-rmo-open-case="${escapeHtml(item.id)}" data-rmo-board-index="${escapeHtml(String(index))}" role="button" tabindex="0" aria-pressed="${selected ? "true" : "false"}">
     <header class="rmo-case-card-head">
       <span class="rmo-case-key" aria-hidden="true">${escapeHtml(String(index + 1))}</span>
       ${rmoStagePill(rmoStageOf(item))}
@@ -87,7 +87,7 @@ function rmoBoardView() {
   return `${banner}
     ${rmoCountHeader(allCases)}
     ${rmoBoardFilters()}
-    <section class="workspace-panel jbwc-panel"><p class="eyebrow">업무보드 (${sorted.length}건 · 급한 순)</p><div class="rmo-case-rail">${cards}</div></section>
+    <section class="workspace-panel jbwc-panel"><p class="eyebrow">업무보드 (${sorted.length}건 · 급한 순)</p><div class="rmo-case-rail" data-rmo-case-rail>${cards}</div></section>
     <div class="rmo-board-sub-divider" aria-hidden="true"></div>
     ${sub}
     ${rmoMockNote()}`;
@@ -135,6 +135,7 @@ function rmoCaseSubSection(caseId) {
     <div class="rmo-sub-main">
       ${header}
       ${rmoWorkMapSection(caseRow)}
+      ${rmoReportTransitionDivider(caseRow)}
       ${rmoDeliverableViewerSection(caseRow)}
       ${rmoApprovalGateSection(caseRow)}
     </div>
@@ -154,7 +155,6 @@ function rmoWorkMapNodeCard(node, options) {
   const output = node.outputMdPath || node.expectedOutput || agent.deliverableFile || "-";
   const minutes = node.estimatedMinutes || agent.estimatedMinutes || 3;
   const dataChips = (node.dataChips && node.dataChips.length ? node.dataChips : node.inputData || []).slice(0, 5);
-  const progress = Number.isFinite(Number(node.progress)) && Number(node.progress) > 0 ? Number(node.progress) : 40;
   const detail = isExpanded ? `<div class="rmo-node-detail">
       <div><span>사용 데이터</span><div class="rmo-data-chips">${(node.inputData || []).map((d) => `<span class="rmo-data-chip">${escapeHtml(d)}</span>`).join("") || "-"}</div></div>
       <div><span>도구/스킬</span><div class="rmo-data-chips">${(node.tools || []).map((t) => `<span class="rmo-agent-chip">${escapeHtml(t)}</span>`).join("") || "-"}</div></div>
@@ -174,7 +174,7 @@ function rmoWorkMapNodeCard(node, options) {
       <p><strong>예상 기대값</strong> ${escapeHtml(node.expectedValue || agent.description || "-")}</p>
       <div class="rmo-data-chips">${dataChips.map((label) => `<span class="rmo-data-chip">${escapeHtml(label)}</span>`).join("") || '<span class="jbwc-row-note">연결 데이터 없음</span>'}</div>
     </div>
-    ${rmoNodeStatus(node.status) === "running" ? `<div class="rmo-run-overlay" role="status"><span>조금만 기다려주세요 ${escapeHtml(String(progress))}%</span><span class="rmo-run-spin" aria-hidden="true">⟳</span></div>` : ""}
+    ${rmoNodeStatus(node.status) === "running" ? `<div class="rmo-run-overlay" role="status"><span>조금만 기다려주세요</span><span class="rmo-run-spin" aria-hidden="true">⟳</span></div>` : ""}
     ${rmoNodeStatus(node.status) === "completed" ? `<p class="rmo-aq-done">✔ 산출물 생성 완료</p>` : ""}
     ${detail}
     <footer class="rmo-aq-foot">
@@ -200,6 +200,31 @@ function rmoWorkMapSection(caseRow) {
     <div class="rmo-workmap">
       ${queueCards}
     </div>`);
+}
+
+function rmoReportTransitionDivider(caseRow) {
+  const assignments = rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).filter((a) => a.caseId === caseRow.id);
+  const branches = assignments.filter((a) => a.kind !== "report");
+  const reportNode = assignments.find((a) => a.kind === "report");
+  const doneBranches = branches.filter((a) => rmoNodeStatus(a.status) === "completed").length;
+  const integrated = rmoTable("rm_officer_deliverables", RMO_ROLE_KEY).find((d) => d.caseId === caseRow.id && d.kind === "integrated");
+  const reportStatus = reportNode ? rmoNodeStatusLabel(reportNode.status) : "대기";
+  const title = integrated ? "다음 단계 · 통합 리포트 검토" : "다음 단계 · MD 산출물 생성 대기";
+  const desc = integrated
+    ? "에이전트 실행 결과가 통합본으로 합쳐졌습니다. Enter로 통합 리포트 뷰어 위치를 확인하고, 최종 승인은 A로 분리합니다."
+    : "위 에이전트 승인 큐에서 개별 분석을 완료하면 아래 통합 리포트 뷰어가 열립니다. 보고서 실행 노드는 선행 분석 완료 후 활성화됩니다.";
+  return `<section class="rmo-report-step-divider" data-rmo-report-step>
+    <div>
+      <span class="rmo-step-kicker">AGENT OUTPUT → MD REPORT</span>
+      <h4>${escapeHtml(title)}</h4>
+      <p>${escapeHtml(desc)}</p>
+    </div>
+    <dl>
+      <div><dt>분석 완료</dt><dd>${escapeHtml(String(doneBranches))}/${escapeHtml(String(branches.length))}</dd></div>
+      <div><dt>보고서 노드</dt><dd>${escapeHtml(reportStatus)}</dd></div>
+      <div><dt>통합본</dt><dd>${integrated ? "준비됨" : "대기"}</dd></div>
+    </dl>
+  </section>`;
 }
 
 /* 케이스 SUB [하단 · 직원 최종 승인] — report 노드가 완료/승인대기 상태일 때만 A(승인) 버튼 활성화 */
@@ -240,11 +265,11 @@ function rmoDeliverableViewerSection(caseRow) {
     extra = `<details class="rmo-md-fold"><summary>사용 에이전트/스킬 표 (${(integrated.contributionRows || []).length})</summary><ul class="jbwc-list"><li class="jbwc-row jbwc-row-head"><span>에이전트</span><span>산출물.md</span><span>사용 데이터</span><span>날짜</span><span>관여율</span></li>${rows}</ul></details>
     <details class="rmo-md-fold"><summary>사용 출처 (${(integrated.sources || []).length})</summary><ul class="jbwc-list">${sources}</ul></details>`;
   }
-  return rmoPanel("통합 리포트 뷰어",
+  return `<div class="rmo-md-viewer-section" data-rmo-md-viewer>${rmoPanel("통합 리포트 뷰어",
     `<div class="jbwc-tabs rmo-md-tabs" role="tablist">${tabBar}</div>
     <div class="rmo-md-body jbwc-tabbody">${rmoRenderMarkdownSections(active.body)}</div>
     <div class="settings-button-row"><button class="secondary-button" type="button" data-rmo-open-md="${escapeHtml(active.fileName)}">문서 모달로 크게 보기</button></div>
-    ${extra}`);
+    ${extra}`)}</div>`;
 }
 
 /* 문서 모달(화면 C) — 보드 딤 + md 플로팅 모달(메타 → 제목 → Summary → 근거 표) */

@@ -72,10 +72,67 @@ function rmoSetPendingScroll(target) {
   rmoState.pendingScrollTarget = target || null;
 }
 
+function rmoCaptureBoardRailScroll() {
+  const rail = document.querySelector("[data-rmo-case-rail]");
+  if (rail) rmoState.boardRailScrollLeft = rail.scrollLeft;
+}
+
+function rmoScrollBoardRailToCase(caseId) {
+  const rail = document.querySelector("[data-rmo-case-rail]");
+  const card = rmoElementByDataAttr("data-rmo-open-case", caseId);
+  if (!rail || !card) return false;
+  const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
+  if (Number.isFinite(Number(rmoState.boardRailScrollLeft))) {
+    rail.scrollLeft = Math.max(0, Math.min(Number(rmoState.boardRailScrollLeft), maxScroll));
+  }
+  const targetLeft = Math.max(0, Math.min(
+    card.offsetLeft - rail.clientWidth / 2 + card.offsetWidth / 2,
+    maxScroll,
+  ));
+  rail.scrollTo({ left: targetLeft, behavior: "smooth" });
+  rmoState.boardRailScrollLeft = targetLeft;
+  return true;
+}
+
+function rmoFocusedWorkMapNode() {
+  const id = rmoFocusedNodeId();
+  if (!id) return null;
+  return rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).find((a) => a.id === id) || null;
+}
+
+function rmoMoveToIntegratedReport(caseId, message) {
+  const integrated = rmoTable("rm_officer_deliverables", RMO_ROLE_KEY).find((d) => d.caseId === caseId && d.kind === "integrated");
+  if (integrated) {
+    rmoState.mdTab = "통합본";
+    rmoSetPendingScroll({ md: true, sub: true });
+    rmoShowKeyOverlay("Enter", "통합 리포트 확인");
+    if (message && typeof notify === "function") notify(message);
+    render();
+    return true;
+  }
+  rmoSetPendingScroll({ approval: true, sub: true });
+  rmoShowKeyOverlay("Enter", "직원 승인 위치");
+  if (message && typeof notify === "function") notify(message);
+  render();
+  return true;
+}
+
+function rmoHandleFocusedNodeEnter() {
+  const node = rmoFocusedWorkMapNode();
+  if (!node) return false;
+  const status = rmoNodeStatus(node.status);
+  if (node.kind === "report" && ["needsApproval", "completed"].includes(status)) {
+    return rmoMoveToIntegratedReport(node.caseId, "통합 리포트를 먼저 확인한 뒤 A로 직원 최종 승인하세요.");
+  }
+  rmoDoApprove(node.id);
+  return true;
+}
+
 function rmoSelectBoardCase(caseId) {
   if (!caseId) return false;
   const exists = rmoState.boardOrder.includes(caseId) || rmoTable("rm_officer_cases", RMO_ROLE_KEY).some((c) => c.id === caseId);
   if (!exists) return false;
+  rmoCaptureBoardRailScroll();
   rmoState.view = "board";
   rmoState.detail = { kind: "case", id: caseId };
   rmoState.workMapFocusIndex = -1;
@@ -146,9 +203,15 @@ function rmoFinishApprove(assignmentId) {
   rmoInvalidateCounts();
   rmoState.workMapExpandedNodeId = null;
   rmoMoveFocusAfterNodeAction(result.case.id, assignmentId);
-  rmoSetPendingScroll({ nodeFocus: true, sub: true });
-  if (result.integrated) { rmoState.mdTab = "통합본"; if (typeof notify === "function") notify(`${result.deliverable.fileName} 생성 · 통합 리포트 완성 — 직원 최종 승인(A) 대기`); }
-  else if (typeof notify === "function") notify(`${result.deliverable.fileName} 생성 완료 — 다음 에이전트 승인(Enter)`);
+  if (result.integrated) {
+    rmoState.mdTab = "통합본";
+    rmoSetPendingScroll({ md: true, sub: true });
+    rmoShowKeyOverlay("Enter", "통합 리포트 확인");
+    if (typeof notify === "function") notify(`${result.deliverable.fileName} 생성 · 통합 리포트 완성 — 직원 최종 승인(A) 전 리포트 확인`);
+  } else {
+    rmoSetPendingScroll({ nodeFocus: true, sub: true });
+    if (typeof notify === "function") notify(`${result.deliverable.fileName} 생성 완료 — 다음 에이전트 승인(Enter)`);
+  }
   render();
 }
 
@@ -159,9 +222,29 @@ function rmoFlushPendingScroll() {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       const cardId = target.cardId || (rmoState.detail && rmoState.detail.kind === "case" ? rmoState.detail.id : null);
-      const card = rmoElementByDataAttr("data-rmo-open-case", cardId);
-      if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-      if (target.slideOnly) return;
+      if (target.slideOnly) {
+        rmoScrollBoardRailToCase(cardId);
+        return;
+      }
+      if (target.cardId && !target.sub && !target.nodeFocus && !target.nodeId && !target.md && !target.approval) {
+        const card = rmoElementByDataAttr("data-rmo-open-case", cardId);
+        if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }
+
+      if (target.md) {
+        const viewer = document.querySelector("[data-rmo-md-viewer]");
+        if (viewer) {
+          viewer.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+          return;
+        }
+      }
+      if (target.approval) {
+        const approval = document.querySelector(".rmo-approval-gate");
+        if (approval) {
+          approval.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+          return;
+        }
+      }
 
       let node = null;
       if (target.nodeId) node = rmoElementByDataAttr("data-rmo-node", target.nodeId);
@@ -266,8 +349,7 @@ function rmoHandleKeydown(event) {
     rmoShowKeyOverlay("D", rmoState.workMapExpandedNodeId ? "상세 열기" : "상세 닫기");
     render(); event.preventDefault();
   } else if (event.key === "Enter") {
-    const id = rmoFocusedNodeId();
-    if (id) { rmoDoApprove(id); event.preventDefault(); }
+    if (rmoHandleFocusedNodeEnter()) event.preventDefault();
   } else if (event.key === "r" || event.key === "R") {
     const id = rmoFocusedNodeId();
     if (id) { rmoShowKeyOverlay("R", "재실행"); rmoDoRerun(id); event.preventDefault(); }

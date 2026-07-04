@@ -3,7 +3,7 @@
    실제 고객 주민/전화/계좌 원문은 저장하지 않는다(가상 인물명·익명 Ref만).
    seed: RM 콘솔 Figma 3케이스 + 히어로(전주 카페) 승격 + 완료 데모 케이스 + 타 scope 격리 seed. */
 
-const RMO_DB_KEY = "rmo-ops-db-v1";
+const RMO_DB_KEY = "rmo-ops-db-v2";
 
 function rmoSeedData() {
   const today = new Date();
@@ -25,9 +25,9 @@ function rmoSeedData() {
      (조동준·광주 광산구·광주은행)으로 팀 확정 시 아래 rmoPersonas 한 줄만 교체하면 된다.
      verify_static needle에는 페르소나 이름을 넣지 않는다(제목·버튼·에이전트명 등 안정 라벨만). */
   const rmoPersonas = {
-    "JBG-204": { customerAlias: "문서희", region: "전남 완도군", bank: "광주은행" },
-    "JBG-206": { customerAlias: "강하준", region: "광주 북구", bank: "전북은행" },
-    "JBG-207": { customerAlias: "임세빈", region: "전북 전주시", bank: "전북은행" },
+    "JBG-204": { customerAlias: "문서희", customerAge: 45, region: "전남 완도군", bank: "광주은행" },
+    "JBG-206": { customerAlias: "강하준", customerAge: 34, region: "광주 북구", bank: "전북은행" },
+    "JBG-207": { customerAlias: "임세빈", customerAge: 22, region: "전북 전주시", bank: "전북은행" },
     "JBG-208": { customerAlias: "한도영", region: "전북 전주시", bank: "전북은행" },
     "JBG-198": { customerAlias: "오세라", region: "전북 군산시", bank: "전북은행" },
     "JBG-202": { customerAlias: "배주안", region: "전남 여수시", bank: "광주은행" },
@@ -46,16 +46,16 @@ function rmoSeedData() {
      — 페르소나는 rmoPersonas에서 병합. goal = 케이스 상세 상단 "처리 목표". */
   const caseDefs = [
     { caseNo: "JBG-204", caseType: "disasterRisk", theme: "양식장 재해위험 대응",
-      situation: "고수온 예보와 태풍 접근으로 전복 폐사 위험이 커지며 사료비·운전자금 부담이 동시에 올라온 완도 양식장 케이스.",
-      goal: "재해 노출 정도를 파악하고 상환유예·정책 재해자금 안내 필요 여부를 확정한다.",
+      situation: "고수온 경보와 태풍 접근이 완도 전복 양식장 권역과 겹쳤고, 사료·산소공급 장비 지출은 늘었지만 출하 정산 입금은 계절 평균보다 늦어져 운전자금 부담이 동시에 커진 케이스.",
+      goal: "해상 기상·고수온·풍랑 경보와 최근 입출금 흐름을 연결해 재해 노출 정도를 설명하고, 상환유예·수산 정책자금·보험 청구·담당자 콜백 후보를 사람 검토용으로 정리한다.",
       stage: "todo", status: "intake", riskLevel: "high", requestedAmountBand: "1억~3억", dueAt: plus(1), assignedRmId: "USR-RMO-01" },
     { caseNo: "JBG-206", caseType: "repaymentCare", theme: "육아휴직 복귀기 상환부담 관리",
-      situation: "육아휴직 복귀 직후 급여가 정상화되기 전 카드론과 직장인 대출 상환일이 겹친 광주 직장인 케이스.",
-      goal: "소득 정상화 시점을 확인하고 상환일 조정 후보를 준비한다.",
-      stage: "todo", status: "intake", riskLevel: "medium", requestedAmountBand: "3천만원 이하", dueAt: plus(3), assignedRmId: "USR-RMO-02" },
+      situation: "육아휴직 복귀 직후 급여 입금 주기는 유지되지만 최근 2개월 입금액이 낮아졌고, 카드론 상환과 직장인 신용대출 자동이체가 같은 주에 몰려 자동이체 실패 예고가 감지된 광주 직장인 케이스.",
+      goal: "직장 변동이 아닌 복귀 전환기 현금흐름 문제로 분리하고, 급여 정상화 예상 시점·상환일 조정·단기 분할·자동이체 안내 후보를 담당자 확인용으로 준비한다.",
+      stage: "doing", status: "analyzing", riskLevel: "medium", requestedAmountBand: "3천만원 이하", dueAt: plus(3), assignedRmId: "USR-RMO-02", running: "rmo-salary-flow" },
     { caseNo: "JBG-207", caseType: "dailyFinance", theme: "생활비 공백 대응",
-      situation: "국가장학금 입금 전 생활비 공백이 생긴 전북 대학생이 소액 대출과 아르바이트 급여 사이에서 흔들리는 케이스.",
-      goal: "생활비 공백 구간을 확인하고 고금리 대체대출 위험을 사전 안내한다.",
+      situation: "등록금·기숙사비 납부 이후 생활비 지출이 늘었고, 국가장학금과 아르바이트 급여 입금 전까지 단기 부족이 예상되어 소액대출 상환일과 생활비 공백이 맞물린 전북대 학생 케이스.",
+      goal: "학사일정·장학금 예상 구간·아르바이트 급여 주기·소액 상환일을 맞춰 보고, 고금리 대체대출로 이동하기 전 리마인드·소액 분할·청년 금융교육 문안을 준비한다.",
       stage: "todo", status: "intake", riskLevel: "medium", requestedAmountBand: "5백만원 이하", dueAt: plus(4), assignedRmId: "USR-RMO-03" },
     { caseNo: "JBG-208", caseType: "policyStartup", theme: "전주 중앙로 카페 여신 상담",
       situation: "전주 중앙로에서 카페를 운영하는 소상공인이 재료비 인상과 초기 시설투자 상환으로 정책자금·협약대출 안내를 요청한 히어로 케이스.",

@@ -9376,7 +9376,37 @@ textarea {
 }
 
 .rmo-shell { display: flex; flex-direction: column; gap: 16px; }
-.rmo-banner { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.jbwc-shell.rmo-shell .jbwc-hero.rmo-banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  background:
+    linear-gradient(90deg, rgba(8, 91, 159, 0.92) 0%, rgba(9, 67, 169, 0.82) 54%, rgba(11, 95, 255, 0.9) 100%),
+    #11285d;
+  isolation: isolate;
+}
+.jbwc-shell.rmo-shell .jbwc-hero.rmo-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(11, 39, 98, 0.22), transparent 42%, rgba(9, 75, 211, 0.18)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 280'%3E%3Crect width='280' height='280' fill='%23085da7'/%3E%3Crect width='140' height='140' fill='%230f8cc4'/%3E%3Cpolygon points='0,0 70,70 0,140' fill='%2316a8d2'/%3E%3Cpolygon points='0,0 140,0 70,70' fill='%230b76b3'/%3E%3Cpolygon points='140,0 280,0 140,140' fill='%23084f9d'/%3E%3Cpolygon points='140,0 280,140 140,140' fill='%23086fb8'/%3E%3Cpolygon points='0,140 140,140 0,280' fill='%23077ab7'/%3E%3Cpolygon points='0,280 140,140 140,280' fill='%23064499'/%3E%3Cpolygon points='140,140 280,140 280,280' fill='%23133491'/%3E%3Cpolygon points='140,140 280,280 140,280' fill='%23213f9d'/%3E%3Cpolygon points='70,70 140,0 140,140' fill='%230981bd' opacity='.56'/%3E%3Cpolygon points='210,70 280,0 280,140' fill='%230a3f91' opacity='.48'/%3E%3Cpolygon points='70,210 140,140 140,280' fill='%23033f92' opacity='.38'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 280px 280px;
+  background-position: center, left top;
+  opacity: 0.9;
+}
+.jbwc-shell.rmo-shell .jbwc-hero.rmo-banner::after {
+  content: none;
+}
+.jbwc-shell.rmo-shell .jbwc-hero.rmo-banner > * {
+  position: relative;
+  z-index: 1;
+}
 .rmo-banner h2 { margin: 4px 0; }
 .rmo-count-header { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .rmo-count-cell { display: flex; flex-direction: column; gap: 4px; padding: 18px 20px; border-radius: 20px; border: 1px solid #e3e8f2; background: #ffffff; }
@@ -9392,7 +9422,7 @@ textarea {
 .rmo-filter:focus-visible { outline: 2px solid #123d82; outline-offset: 2px; }
 
 /* ---- 케이스 카드(요구 2) — 소제목 + 얇은 구분선으로 영역을 분리, 텍스트 오버플로 금지 ---- */
-.rmo-case-rail { display: flex; align-items: stretch; gap: 16px; overflow-x: auto; padding: 6px 2px 14px; scroll-snap-type: x proximity; scroll-behavior: smooth; }
+.rmo-case-rail { display: flex; align-items: stretch; gap: 16px; overflow-x: auto; padding: 6px 2px 14px; scroll-snap-type: x proximity; scroll-padding-inline: 18px; scroll-behavior: smooth; overscroll-behavior-x: contain; }
 .rmo-case-card { scroll-snap-align: center; flex: 0 0 340px; max-width: 340px; display: flex; flex-direction: column; gap: 0; padding: 18px; border-radius: 20px; border: 1px solid #e3e8f2; background: #ffffff; cursor: pointer; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease; overflow: visible; }
 .rmo-case-card:hover { border-color: #c8d8ff; background: #fbfcff; }
 .rmo-case-card.is-selected { border: 2px solid #123d82; box-shadow: 0 10px 26px rgba(18, 61, 130, 0.16); background: #f6f9ff; transform: translateY(-2px); }
@@ -9502,6 +9532,16 @@ textarea {
 
 .rmo-approval-gate { text-align: center; background: #fbfcff; }
 .rmo-approval-gate p.jbwc-meta { font-size: 15px; }
+
+.rmo-report-step-divider { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; align-items: center; padding: 18px 20px; border: 1px solid #c8d8ff; border-left: 5px solid #123d82; border-radius: 18px; background: linear-gradient(135deg, #f8faff 0%, #ffffff 100%); box-shadow: 0 8px 22px rgba(18, 61, 130, 0.08); scroll-margin-top: 92px; }
+.rmo-report-step-divider h4 { margin: 5px 0 6px; color: #0b2a63; font-size: 22px; line-height: 30px; }
+.rmo-report-step-divider p { margin: 0; color: #384056; font-size: 15px; line-height: 1.6; overflow-wrap: break-word; }
+.rmo-step-kicker { display: inline-flex; align-items: center; width: fit-content; max-width: 100%; padding: 5px 10px; border-radius: 999px; background: #eef3ff; color: #0b4aa2; font-size: 12px; font-weight: 900; letter-spacing: 0.04em; }
+.rmo-report-step-divider dl { display: grid; grid-template-columns: repeat(3, minmax(92px, 1fr)); gap: 8px; margin: 0; min-width: 330px; }
+.rmo-report-step-divider dl div { min-width: 0; padding: 10px 12px; border: 1px solid #e3e8f2; border-radius: 12px; background: #ffffff; }
+.rmo-report-step-divider dt { margin: 0 0 4px; color: #6b7690; font-size: 12px; font-weight: 800; }
+.rmo-report-step-divider dd { margin: 0; color: #0b2a63; font-size: 15px; font-weight: 900; overflow-wrap: break-word; }
+.rmo-md-viewer-section { scroll-margin-top: 92px; }
 
 /* ---- MD 뷰어 / 모달 (기존 유지, 타입 스케일만 상향) ---- */
 .rmo-md-tabs { margin-bottom: 10px; }

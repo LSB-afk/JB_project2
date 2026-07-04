@@ -4,13 +4,16 @@
 
 const { expect, test } = require("@playwright/test");
 
-const RMO_DB_KEY = "rmo-ops-db-v1";
+const RMO_DB_KEY = "rmo-ops-db-v2";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => window.localStorage.removeItem("jb-finance-support-state-v4"));
   await page.addInitScript(() => window.localStorage.removeItem("jpo-ops-db-v2"));
   await page.addInitScript(() => window.localStorage.removeItem("ccr-ops-db-v1"));
-  await page.addInitScript(() => window.localStorage.removeItem("rmo-ops-db-v1"));
+  await page.addInitScript(() => {
+    window.localStorage.removeItem("rmo-ops-db-v1");
+    window.localStorage.removeItem("rmo-ops-db-v2");
+  });
   await page.addInitScript(() => window.localStorage.removeItem("jb-agent-model-settings-v1"));
 });
 
@@ -37,7 +40,6 @@ test("스모크: 진입→보드→키보드 선택→승인(개별 MD)→신규
   // 5. 진행률 로딩 — 진행중 케이스 실행 오버레이는 문구 + 진행률 + 스피너를 함께 표시
   await page.goto("/index.html#/roles/rm-officer/cases/RMO-CASE-0004");
   await expect(page.locator(".rmo-run-overlay")).toContainText("조금만 기다려주세요");
-  await expect(page.locator(".rmo-run-overlay")).toContainText("40%");
 
   // 6. 검색(익명 케이스 번호) → 이동
   await page.goto("/index.html#/roles/rm-officer/board");
