@@ -3,3 +3,4 @@ test-results/
 tests/results/
 .DS_Store
 .omc/
+scripts/llm-runs.jsonl

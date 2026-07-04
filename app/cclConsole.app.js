@@ -188,7 +188,7 @@ const cclViewRenderers = {
         <li class="jbwc-row"><span class="jbwc-row-id">${escapeHtml(run.createdAt)}<br>${escapeHtml(run.id)}</span>
           <span>${escapeHtml(cclAgentName(run.agentId))}</span>
           <span>${escapeHtml(run.inputSummary)}<br><span class="jbwc-row-note">${escapeHtml(run.outputSummary)}</span></span>
-          <span>${cclStatusPill(run.status)}</span></li>`)) + cclMockNote();
+          <span>${cclStatusPill(run.status)}</span></li>`)) + (typeof cclMemoryCardsPanel === "function" ? cclMemoryCardsPanel() : "") + cclMockNote();
   },
   "audit-logs"() {
     const rows = cclTable("ccl_audit_logs", CCL_ROLE_KEY);
