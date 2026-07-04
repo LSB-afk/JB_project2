@@ -8,6 +8,7 @@ const rmoViewRenderers = Object.assign(
     board: rmoBoardView,
     "cases-new": rmoCaseCreationView,
     "agent-harness": rmoHarnessView,
+    capabilities: rmoCapabilityRepositoryView,
   },
   rmoCaseViewRenderers,
 );
@@ -179,6 +180,9 @@ function bindRmOfficerActions() {
   });
   document.querySelectorAll("[data-rmo-filter]").forEach((button) => {
     button.addEventListener("click", () => { rmoState.boardFilter = button.dataset.rmoFilter; render(); });
+  });
+  document.querySelectorAll("[data-rmo-cap-filter]").forEach((button) => {
+    button.addEventListener("click", () => { rmoCapabilityFilter = button.dataset.rmoCapFilter; render(); });
   });
   document.querySelectorAll("[data-rmo-approve]").forEach((button) => {
     button.addEventListener("click", (event) => { event.stopPropagation(); rmoDoApprove(button.dataset.rmoApprove); });

@@ -42,6 +42,7 @@ function getRmOfficerSidebarCounts() {
     policyStartup: byType("policyStartup"),
     agentQueue: assignments.filter((x) => ["pendingApproval", "running"].includes(x.status)).length,
     agentHarness: runs.filter((x) => ["queued", "running", "needsReview"].includes(x.status)).length + assignments.filter((x) => x.status === "running").length,
+    capabilities: (typeof RMO_CAPABILITIES !== "undefined" ? RMO_CAPABILITIES.length : 0),
     dataConnectors: t("rm_officer_external_connectors").filter((x) => ["degraded", "down"].includes(x.health) || x.status === "manualRequired").length,
     roles: t("rm_officer_role_assignments").filter((x) => x.status === "needsReview" || x.reviewRequired).length,
     auditLogs: t("rm_officer_audit_logs").filter((x) => x.reviewRequired).length,

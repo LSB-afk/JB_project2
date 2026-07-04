@@ -119,6 +119,7 @@ const RMO_VIEWS = {
   "policy-startup": "정책·창업 금융",
   "agent-queue": "AI 실행 큐",
   "agent-harness": "에이전트 하네스",
+  capabilities: "업무 기능 저장소",
   "data-connectors": "데이터 연결 상태",
   roles: "담당자/권한",
   "audit-logs": "감사 기록",
@@ -142,6 +143,7 @@ const rmoNavigation = [
   { section: "AI·자동화 관리", items: [
     { id: "agent-queue", icon: "bot", label: "AI 실행 큐", description: "승인 대기 실행", countKey: "agentQueue" },
     { id: "agent-harness", icon: "bot", label: "에이전트 하네스", description: "라우팅·실행", countKey: "agentHarness" },
+    { id: "capabilities", icon: "check-square", label: "업무 기능 저장소", description: "기능 카탈로그", countKey: "capabilities" },
     { id: "data-connectors", icon: "database", label: "데이터 연결 상태", description: "공개/샘플", countKey: "dataConnectors" },
     { id: "roles", icon: "network", label: "담당자/권한", description: "RM/승인권자", countKey: "roles" },
     { id: "audit-logs", icon: "history", label: "감사 기록", description: "처리 이력", countKey: "auditLogs" },

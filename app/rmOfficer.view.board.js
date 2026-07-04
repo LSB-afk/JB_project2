@@ -7,20 +7,47 @@ function rmoAgentChip(agentId) {
   return `<span class="rmo-agent-chip" title="${escapeHtml(agent.description)}">${escapeHtml(agent.displayName)}</span>`;
 }
 
+/* 케이스 카드 — 요구 2: 소제목 + 얇은 구분선으로 영역을 분리한다(문장 나열 금지).
+   번호/고객요약/도메인/계열사 → 상황 → 위험 신호 → 필요 에이전트 → 근거 데이터 → 다음 액션 → 상태. */
 function rmoBoardCard(item, index) {
   const selected = rmoState.detail && rmoState.detail.kind === "case" && rmoState.detail.id === item.id;
   const agents = (item.agentPlan || []).map(rmoAgentChip).join("");
+  const riskSignalChips = (item.prioritySources || []).slice(0, 3).map((s) => `<span class="rmo-data-chip">${escapeHtml(s.label)}</span>`).join("") || `<span class="jbwc-row-note">연결된 신호 없음</span>`;
+  const customerLine = [item.customerAlias, item.customerAge ? `${item.customerAge}세` : ""].filter(Boolean).join(" ");
+  const domainLine = [rmoCaseTypeLabel(item.caseType), item.affiliate].filter(Boolean).join(" · ");
+  const nextAction = rmoNextActionText(item);
   return `<article class="rmo-case-card ${selected ? "is-selected" : ""}" data-rmo-open-case="${escapeHtml(item.id)}" role="button" tabindex="0" aria-pressed="${selected ? "true" : "false"}">
     <header class="rmo-case-card-head">
       <span class="rmo-case-key" aria-hidden="true">${escapeHtml(String(index + 1))}</span>
       ${rmoStagePill(rmoStageOf(item))}
       ${rmoPriorityPill(item.priority)}
     </header>
-    <p class="rmo-case-meta">${escapeHtml(item.customerAlias)} · ${escapeHtml(item.caseNo)} · ${escapeHtml(item.region)} · ${escapeHtml(item.bank)}</p>
-    <h4 class="rmo-case-title">${escapeHtml(item.theme)}</h4>
-    <p class="rmo-case-situation">${escapeHtml(item.situation)}</p>
-    <p class="rmo-case-reason"><span aria-hidden="true">▎</span>우선순위 근거: ${escapeHtml(item.priorityReason)}</p>
-    <div class="rmo-agent-chips">${agents}</div>
+    <div class="rmo-case-block rmo-case-block-summary">
+      <p class="rmo-case-summary-line"><strong>${escapeHtml(item.caseNo)}</strong> · ${escapeHtml(customerLine)} · ${escapeHtml(item.region)} · ${escapeHtml(item.bank)}</p>
+      <h4 class="rmo-case-title">${escapeHtml(item.theme)}</h4>
+      <p class="rmo-case-domain-line">${escapeHtml(domainLine)}</p>
+    </div>
+    <div class="rmo-case-block">
+      <p class="rmo-case-subhead">상황</p>
+      <p class="rmo-case-situation">${escapeHtml(item.situation)}</p>
+    </div>
+    <div class="rmo-case-block">
+      <p class="rmo-case-subhead">위험 신호</p>
+      <p class="rmo-case-reason"><span aria-hidden="true">▎</span>${escapeHtml(item.priorityReason)}</p>
+    </div>
+    <div class="rmo-case-block">
+      <p class="rmo-case-subhead">필요 에이전트</p>
+      <div class="rmo-agent-chips">${agents}</div>
+    </div>
+    <div class="rmo-case-block">
+      <p class="rmo-case-subhead">근거 데이터</p>
+      <div class="rmo-data-chips">${riskSignalChips}</div>
+    </div>
+    <div class="rmo-case-block">
+      <p class="rmo-case-subhead">다음 액션</p>
+      <p class="rmo-case-next-action">${escapeHtml(nextAction)}</p>
+    </div>
+    <footer class="rmo-case-card-foot">${rmoStagePill(rmoStageOf(item))}<span class="rmo-case-foot-hint">Enter로 계층도 이동</span></footer>
   </article>`;
 }
 
@@ -114,7 +141,7 @@ function rmoWorkMapNodeCard(node, options) {
       <div><strong>${escapeHtml(node.agentName || rmoAgentDisplayName(node.agentId))}</strong><span class="rmo-aq-org">${escapeHtml(node.agentId)}</span></div>
       <div class="rmo-aq-meta">${rmoRiskPill(node.riskLevel)}<span class="status-pill rmo-node-status-pill">${escapeHtml(rmoNodeStatusLabel(node.status))}</span></div>
     </header>
-    <p class="jbwc-meta"><strong>역할</strong> ${escapeHtml(node.role || "-")}</p>
+    <p class="jbwc-meta"><strong>담당 역할</strong> ${escapeHtml(node.role || "-")}</p>
     <p class="jbwc-meta"><strong>이 에이전트를 사용하는 이유</strong> ${escapeHtml(node.reason || "-")}</p>
     <p class="jbwc-meta"><strong>예상 산출물</strong> ${escapeHtml(node.outputMdPath || node.expectedOutput || "-")}</p>
     ${rmoNodeStatus(node.status) === "running" ? `<div class="rmo-run-overlay" role="status"><span class="rmo-run-spin" aria-hidden="true">⟳</span> 조금만 기다려주세요<span class="rmo-progress-indeterminate" aria-hidden="true"></span></div>` : ""}

@@ -69,10 +69,35 @@ const rmoCaseViewRenderers = {
       <li class="jbwc-row" data-rmo-open-case="${escapeHtml(x.caseId)}"><span class="jbwc-row-id">${escapeHtml(x.id)}</span><span>${escapeHtml(x.item)}<br><span class="jbwc-row-note">${escapeHtml(x.program)}</span></span><span>${escapeHtml(x.caseId)}</span><span>${rmoStatusPill(x.status)} ${x.reviewRequired ? '<span class="status-pill status-pending">확인 필요</span>' : ""}</span></li>`))
       + `<p class="jbwc-guard">정책자금 대상 여부는 확정하지 않습니다. 자격 확인 항목만 정리합니다.</p>` + rmoMockNote();
   },
+  /* 산출물/통합 리포트 목록 — 요구 4: 파일명/산출물 유형/관련 케이스/생성 에이전트/핵심 요약(2줄 클램프)/
+     직원 액션(열람·승인·반려·재실행)을 각각 별도 필드로 분리한다. 긴 설명은 열람(모달)에서만 전체 표시. */
   deliverables() {
     const rows = rmoTable("rm_officer_deliverables", RMO_ROLE_KEY);
-    return rmoPanel(`통합 리포트 · 산출물 (${rows.length})`, rmoTableView(["파일", "구분", "관련 건", "요약"], rows, (d) => `
-      <li class="jbwc-row" data-rmo-open-md="${escapeHtml(d.fileName)}" data-rmo-md-case="${escapeHtml(d.caseId)}"><span class="jbwc-row-id">${escapeHtml(d.fileName)}</span><span>${d.kind === "integrated" ? '<span class="status-pill status-new">통합본</span>' : '<span class="status-pill status-pending">개별</span>'}</span><span>${escapeHtml(d.caseId)}</span><span>${escapeHtml(d.summary)}</span></li>`))
+    const cases = rmoTable("rm_officer_cases", RMO_ROLE_KEY);
+    const assignments = rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY);
+    const rowHtml = (d) => {
+      const caseRow = cases.find((c) => c.id === d.caseId);
+      const caseLabel = caseRow ? caseRow.caseNo : (d.caseId || "-");
+      const asg = assignments.find((a) => a.caseId === d.caseId && a.agentId === d.agentId && d.kind === "agent");
+      let actionHtml = `<button class="secondary-button" type="button" data-rmo-open-md="${escapeHtml(d.fileName)}" data-rmo-md-case="${escapeHtml(d.caseId)}">열람</button>`;
+      if (d.kind === "integrated" && caseRow) {
+        const reportNode = assignments.find((a) => a.caseId === d.caseId && a.kind === "report");
+        const caseReady = caseRow.status !== "completed" && reportNode && ["needsApproval", "completed"].includes(rmoNodeStatus(reportNode.status));
+        actionHtml += caseReady ? ` <button class="primary-button" type="button" data-rmo-approve-case="${escapeHtml(d.caseId)}">승인</button>` : (caseRow.status === "completed" ? ` <span class="status-pill status-approved">승인 완료</span>` : "");
+      } else if (asg) {
+        if (asg.status === "rejected") actionHtml += ` <span class="status-pill status-escalated">반려됨</span>`;
+        if (["completed", "rejected", "needsApproval"].includes(asg.status)) actionHtml += ` <button class="secondary-button" type="button" data-rmo-rerun="${escapeHtml(asg.id)}">재실행</button>`;
+      }
+      return `<li class="jbwc-row">
+        <span class="jbwc-row-id">${escapeHtml(d.fileName)}</span>
+        <span><span class="status-pill ${rmoDeliverableDocTypeClass(d)}">${escapeHtml(rmoDeliverableDocType(d))}</span></span>
+        <span>${escapeHtml(caseLabel)}</span>
+        <span>${escapeHtml(rmoAgentDisplayName(d.agentId))}</span>
+        <span class="rmo-cap-summary rmo-deliverable-summary">${escapeHtml(d.summary)}</span>
+        <span class="rmo-deliverable-actions">${actionHtml}</span>
+      </li>`;
+    };
+    return rmoPanel(`통합 리포트 · 산출물 (${rows.length})`, rmoTableView(["파일명", "산출물 유형", "관련 케이스", "생성 에이전트", "핵심 요약", "직원 액션"], rows, rowHtml))
       + `<p class="jbwc-guard">모든 산출물은 내부 업무 참고용입니다. 통합본 안에서 개별 md로 이동할 수 있습니다.</p>` + rmoMockNote();
   },
   cases() {

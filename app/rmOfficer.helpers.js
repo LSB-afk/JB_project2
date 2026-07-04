@@ -77,6 +77,36 @@ function rmoCaseTypeLabel(type) {
   return (RMO_CASE_TYPES[type] || {}).label || type || "-";
 }
 
+/* 케이스 카드 "다음 액션" — 현재 상태에서 담당자가 다음으로 눌러야 할 것을 한 문장으로 도출한다. */
+function rmoNextActionText(caseRow) {
+  if (caseRow.status === "completed") return "완료 — 추가 조치 없음";
+  const assignments = rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).filter((a) => a.caseId === caseRow.id).sort((a, b) => (a.order || 0) - (b.order || 0));
+  const report = assignments.find((a) => a.kind === "report");
+  if (report && rmoNodeStatus(report.status) === "needsApproval") return "직원 최종 승인 대기(A)";
+  const running = assignments.find((a) => rmoNodeStatus(a.status) === "running");
+  if (running) return `${rmoAgentDisplayName(running.agentId)} 실행 중`;
+  const ready = assignments.find((a) => rmoNodeStatus(a.status) === "ready");
+  if (ready) return `${rmoAgentDisplayName(ready.agentId)} 승인 대기(Enter)`;
+  if (report && rmoNodeStatus(report.status) === "completed") return "통합 리포트 확인";
+  return "분석 대기";
+}
+
+/* 산출물 유형 분류 — 통합본·개별본·검토본(최종 보고서 노드)·실행계획(rmo-action) 4종, 구현현황 기준 */
+function rmoDeliverableDocType(d) {
+  if (d.kind === "integrated") return "통합본";
+  if (d.agentId === "rmo-action") return "실행계획";
+  if (["rmo-biz-report", "rmo-fraud-report", "rmo-agri-report"].includes(d.agentId)) return "검토본";
+  return "개별본";
+}
+
+function rmoDeliverableDocTypeClass(d) {
+  const type = rmoDeliverableDocType(d);
+  if (type === "통합본") return "status-new";
+  if (type === "검토본") return "status-pending";
+  if (type === "실행계획") return "status-approved";
+  return "status-escalated";
+}
+
 function rmoStagePill(stage) {
   const cls = stage === "done" ? "status-approved" : stage === "doing" ? "status-pending" : "status-new";
   return `<span class="status-pill ${cls}">${escapeHtml(RMO_STAGE_SHORT[stage] || stage || "-")}</span>`;

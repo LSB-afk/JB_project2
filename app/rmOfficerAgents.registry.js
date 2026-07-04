@@ -437,6 +437,26 @@ const rmOfficerSkills = [
   { key: "customer-guidance-draft", label: "고객 안내 문안 초안", agentIds: ["rmo-comms"], inputs: ["caseSummary"], outputs: ["draft", "approval"] },
   { key: "approval-routing", label: "승인 라우팅", agentIds: ["rmo-approval-router"], inputs: ["approvalItem"], outputs: ["approvalQueue"] },
   { key: "guardrail-evaluator", label: "준법 가드레일 검증", agentIds: ["rmo-compliance"], inputs: ["output", "riskLevel"], outputs: ["violations", "requiresHumanReview"] },
+  /* 오** 기업여신·기술신용 전용 스킬 */
+  { key: "biz-cashflow-gap-check", label: "매출 입금 공백 분석", agentIds: ["rmo-biz-cashflow-gap"], inputs: ["salesDeposit", "cardSales"], outputs: ["cashflowGap"] },
+  { key: "biz-material-cost-check", label: "원자재 비용 증가 분석", agentIds: ["rmo-biz-material-cost"], inputs: ["purchaseLedger", "industryIndex"], outputs: ["costSignal"] },
+  { key: "biz-lease-review-check", label: "장비 리스 계약 검토", agentIds: ["rmo-biz-lease-review"], inputs: ["leaseContract", "leaseSchedule"], outputs: ["leaseChecklist"] },
+  { key: "tech-credit-check", label: "기술신용 근거 검토", agentIds: ["rmo-tech-credit"], inputs: ["techCreditSummary", "patentStatus"], outputs: ["eligibilityChecklist"] },
+  { key: "biz-repayment-risk-check", label: "상환 가능성 위험도 종합", agentIds: ["rmo-biz-repayment-risk"], inputs: ["priorSignals"], outputs: ["repaymentRiskSignal"] },
+  { key: "biz-final-report-build", label: "여신 담당자 보고서 작성", agentIds: ["rmo-biz-report"], inputs: ["allSignals"], outputs: ["reviewReport"] },
+  /* 윤** 보이스피싱 대응 전용 스킬 */
+  { key: "fraud-txn-pattern-check", label: "거래 이상징후 탐지", agentIds: ["rmo-fraud-txn-pattern"], inputs: ["recentTransactions"], outputs: ["anomalySignal"] },
+  { key: "fraud-elderly-pattern-check", label: "고령 고객 위험 패턴 검토", agentIds: ["rmo-fraud-elderly-pattern"], inputs: ["elderlyFraudDb", "consultHistory"], outputs: ["patternSimilarity"] },
+  { key: "fraud-consult-notes-check", label: "상담·메모 확인", agentIds: ["rmo-fraud-consult-notes"], inputs: ["consultNotes"], outputs: ["suspicionFlag"] },
+  { key: "fraud-hold-need-check", label: "송금 보류 필요성 검토", agentIds: ["rmo-fraud-hold-need"], inputs: ["anomalySignal", "patternSimilarity"], outputs: ["holdNeedSignal"] },
+  { key: "fraud-questionnaire-build", label: "고객 확인 질문지 작성", agentIds: ["rmo-fraud-report"], inputs: ["allSignals"], outputs: ["questionnaire"] },
+  /* 송** 농수산 여신 사후관리 전용 스킬 */
+  { key: "agri-cashflow-gap-check", label: "입금 공백 분석", agentIds: ["rmo-agri-cashflow-gap"], inputs: ["shipmentDeposit"], outputs: ["cashflowGap"] },
+  { key: "agri-material-cost-check", label: "농자재 지출 분석", agentIds: ["rmo-agri-material-cost"], inputs: ["materialPurchase"], outputs: ["costSignal"] },
+  { key: "agri-facility-cost-check", label: "시설 보수 비용 검토", agentIds: ["rmo-agri-facility-cost"], inputs: ["facilityEstimate"], outputs: ["facilityCostChecklist"] },
+  { key: "agri-seasonal-data-check", label: "계절성·지역 데이터 확인", agentIds: ["rmo-agri-seasonal-data"], inputs: ["seasonalIndex", "regionalWeather"], outputs: ["seasonalSignal"] },
+  { key: "agri-repayment-risk-check", label: "상환 위험도 종합", agentIds: ["rmo-agri-repayment-risk"], inputs: ["priorSignals"], outputs: ["repaymentRiskSignal"] },
+  { key: "agri-final-report-build", label: "사후관리 조치 보고서 작성", agentIds: ["rmo-agri-report"], inputs: ["allSignals"], outputs: ["actionReport"] },
 ];
 
 /* 케이스 유형 → 대표 에이전트 배정 플랜(오케스트레이터가 큐를 만든다) */
