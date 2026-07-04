@@ -255,3 +255,36 @@ aliases:
 - **선택**: 문서 통합 — [[registry-plugins]]가 플러그인 목록 SSOT(누락된 `humanize-korean` 정정, 11→12종), plugin-sync는 동기화 기전만 소유, `_tools-index`는 스킬 목록 나열을 중단하고 registry-skills를 SSOT로 선언. 도구리뷰 — 유튜브 디자인툴 6종 중 **Impeccable**만 지금-추가 후보(SkillSpector 스캔+승인 대기), 나머지(SkillUI·Stitch·Awesome Design·WebGPU·21st.dev)는 보류/스킵.
 - **이유**: 플러그인/스킬 목록이 registry-skills·`_tools-index`·메모리 3곳에 중복 기재돼 스킬 추가 때마다 드리프트가 발생했다(예: humanize-korean 누락). Impeccable은 오프라인 디자인 안티패턴 탐지+LLM 크리틱으로 "제네릭 AI 룩" 방지가 JB콘솔 프리미엄 폴리시와 직결되나, 서드파티 스킬 설치는 SkillSpector 스캔 게이트를 우선 통과해야 한다.
 - **상태**: 문서 통합 완료(canon-moc-sync dry-run 죽은링크 0·도달성 ✓). Impeccable은 미적용 — 스캔+승인 대기. 상세 [[registry-plugins]] · [[도구-확장-리서치-20260701]] §유튜브 디자인툴 리뷰.
+
+## 2026-07-03 · 팀원용 스킬·플러그인 목록 완비
+- **선택**: [[registry-skills]](팀 전체 스킬 카탈로그, SSOT)·[[registry-plugins]](플러그인 목록 SSOT)·**본선 HOME "도구·스킬 목록" 링크** 신설로 팀원이 스킬/플러그인 동기화 대상을 명확히 파악할 수 있게 통합.
+- **이유**: 선행 T14 문서 통합(registry-plugins·plugin-sync·_tools-index 중복제거)에서 스킬 목록이 registry-skills·메모리·_tools-index 3곳에 분산되고, 새 스킬 추가 시 드리프트(예: local-model 누락)가 반복됐다. 팀원이 동기화할 때 보며 참조할 수 있는 통일된 문서 진입점이 필요했다.
+- **상태**: 완료. registry-skills=12종(자체 스킬 카탈로그, 동기화법 배너 포함), registry-plugins=18종(claude plugin list, humanize-korean 정정 추가), 본선 HOME에 3종 포인터. _tools-index·메모리[[리서치-딥프롬프트-사이클]]·메모리[[본선-운영-하네스]] 12종 정합 완료. canon-moc-sync dry-run 도달성 100%.
+
+### 2026-07-04 · 제출 정본 레포 확정 — LSB-afk/JB_project2
+- **선택**: `LSB-afk/JB_project2`를 제출·제품 정본 레포로 확정. 제품·데모·코드 SSOT = JB_project2(역할축 콘솔). 예선 `02_제품/app`은 레거시로 격하.
+- **이유**: 승보 프로토타입(역할축 v2, 4콘솔) 반영 및 히어로 케이스를 CCL-0001로 정렬하기 위함(사용자 확정).
+- **상태**: 확정. [[레포-지도]] 미결 해소. P0 문서 코드근거 재정렬(예선앱→JB_project2) 진행 중.
+
+### 2026-07-04 · 히어로ID CCL-0001 단일화
+- **선택**: 히어로 케이스 ID를 CCL-0001로 8개 파일에 걸쳐 단일화.
+- **이유**: 제출 정본 레포 확정(JB_project2)에 따라 구코드 JBG-104와의 이원화를 종결(Open Question 종결).
+- **상태**: 완료(커밋 f75f20f). ⚠️ `_canon.md` §1·§2는 아직 JBG-104·14에이전트 기준으로 미동기화(2026-07-04 감사에서 확인, 별도 후속 필요).
+
+### 2026-07-04 · CaseOps 확장 분기 결정 5건
+- **선택**: 메모리거버넌스 범위 · CaseOps 브랜딩 · 119 승격 · 특화모델 데모 · 저장소구조 — 5개 항목을 팀 확정분으로 승격해 정본 문서(domain-model·architecture·agent-design·pitch)에 반영.
+- **상태**: 완료(커밋 1b0a531·ab1879d). Codex 6문서(메모리거버넌스·CaseOps엔진7알고리즘·119사고대응·은행DB연결/특화모델·9파이프라인/저장소·정보체계뷰스펙) 근거 반영, [분기/미확정] 태깅.
+
+### 2026-07-04 · 전세=독립 role 콘솔 확정
+- **선택**: 전세 도메인을 여신도메인에 종속시키지 않고 독립 `kind:role` 하네스(콘솔)로 확정.
+- **이유**: 7/3 밤 팀 결정 대기 항목("전세=여신도메인 vs 승보코드=독립 role 하네스") 중 독립 role 안 채택.
+- **상태**: 확정. [[승보-프로토타입-반영]] §7 역할축 v2에 반영.
+
+### 2026-07-04 · 디자인 토큰 SSOT = JB_project2 styles.css
+- **선택**: JB_project2의 `styles.css`(118토큰·481컴포넌트)를 MAIN 디자인 토큰 SSOT로 확정.
+- **상태**: 확정. `08_본선/03_제품/03_ux/tokens/jb-console-tokens.css`·`.json`으로 통합.
+
+### 2026-07-04 · 런타임 라우팅 정정 — Ollama 아님, claude/codex CLI 라우팅
+- **선택**: 로컬 추론 런타임을 Ollama가 아니라 claude/codex CLI 라우팅(paperclip式)으로 정정.
+- **이유**: claude 2.1.198·codex 0.142.5 설치 확인 완료, `api-proxy.mjs`에 `/llm` 라우트 빌드 예정.
+- **상태**: 설계 정정 완료. `/llm` 라우트 구현은 미착수(개발 게이트로 남음).

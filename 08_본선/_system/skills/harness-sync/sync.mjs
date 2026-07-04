@@ -58,9 +58,9 @@ const STEPS = [
   {
     id: 6,
     name: '거버넌스 스캔 (PII)',
-    script: resolve(SKILLS_DIR, 'pii-governance-validator', 'validate.mjs'),
-    args: DRY_RUN ? ['--dry-run'] : [],
-    // [자동] 대외비·PII 위반 탐지 (경고만, 블로킹 없음)
+    script: resolve(SYSTEM_DIR, 'automation', 'pii-scan.mjs'),
+    args: [],
+    // [자동] 대외비·PII 위반 탐지 (경고만, 블로킹 없음) — Stop 훅과 동일 스크립트 재사용(pii-governance-validator/validate.mjs는 미구현)
   },
 ]
 

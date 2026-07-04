@@ -130,9 +130,11 @@ aliases:
 ## 5. 지식 우선순위 (LLM-Wiki-First)
 raw 원천을 매번 다시 읽기 전에 정제된 지식을 먼저 본다: [[_MOC_HOME|본선 MOC]] → 섹션 MOC → `03_제품` 정본 → 그래도 없으면 `07_원천`/웹.
 
+**리서치는 요약 먼저(Summary-First).** 딥리서치 결과(`05_제출/리서치-딥프롬프트/_결과/`)를 소비할 때는 **[[_요약-인덱스]] → `[[_요약-Dxx]]`(⚡30초·🎯바로 쓸 것·🙋전문가 Q&A·⚠️한계)를 먼저 읽고**, 근거·수치·인용이 필요할 때만 원문 `Dxx-결과.md`를 연다. 각 원문 상단 `📄 요약 먼저` 콜아웃이 요약으로 되돌린다. 요약이 없거나 낡았으면 **codex(gpt-5.4)로 재생성**(4병렬 배치) — 출처 [[_모델기록]].
+
 ---
 
 ## 6. 연결
 - [[본선 HOME|본선 홈]] · [[project-dashboard|운영 대시보드]] · [[hagent-os-구조-청사진|구조 청사진]]
-- 역할 상세: [[_system/agents/roles/orchestrator|orchestrator]] · [[_system/agents/roles/finance-domain|finance-domain]] · [[_system/agents/roles/compliance-risk|compliance-risk]] · [[_system/agents/roles/research|research]] · [[_system/agents/roles/product|product]] · [[_system/agents/roles/architect|architect]] · [[_system/agents/roles/designer|designer]] · [[_system/agents/roles/visualization|visualization]] · [[_system/agents/roles/builder|builder]] · [[_system/agents/roles/data-engineer|data-engineer]] · [[_system/agents/roles/judge-qa|judge-qa]] · [[_system/agents/roles/evidence|evidence]] · [[_system/agents/roles/submission|submission]]
+- 역할 상세: [[_system/agents/roles/orchestrator|orchestrator]] · [[_system/agents/roles/finance-domain|finance-domain]] · [[_system/agents/roles/compliance-risk|compliance-risk]] · [[_system/agents/roles/research|research]] · [[_system/agents/roles/product|product]] · [[_system/agents/roles/architect|architect]] · [[_system/agents/roles/designer|designer]] · [[_system/agents/roles/visualization|visualization]] · [[_system/agents/roles/builder|builder]] · [[_system/agents/roles/data-engineer|data-engineer]] · [[_system/agents/roles/judge-qa|judge-qa]] · [[_system/agents/roles/evidence|evidence]] · [[_system/agents/roles/submission|submission]] · [[_system/agents/roles/data-steward|data-steward]]
 - 후보: [[_system/agents/candidates/red-team-judge|red-team-judge]] · [[_system/agents/candidates/pitch-storyteller|pitch-storyteller]] · [[_system/agents/candidates/security|security]]

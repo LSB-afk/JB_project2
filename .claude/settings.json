@@ -27,7 +27,8 @@
     "codex@openai-codex": true,
     "code-review@claude-plugins-official": true,
     "example-skills@anthropic-agent-skills": true,
-    "humanize-korean@im-not-ai": true
+    "humanize-korean@im-not-ai": true,
+    "harness-engineering@harness-engineering-skills": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -64,6 +65,12 @@
       "source": {
         "source": "github",
         "repo": "epoko77-ai/im-not-ai"
+      }
+    },
+    "harness-engineering-skills": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/River-181/harness-engineering-skills.git"
       }
     }
   }
