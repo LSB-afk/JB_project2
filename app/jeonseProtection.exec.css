@@ -313,6 +313,24 @@ body.is-resizing-properties .properties-resizer {
   background: #f8fbff;
 }
 
+.jpo-cap-card.is-selected,
+.jpo-selectable-row.is-selected {
+  border-color: #2f6bff;
+  border-left-color: #2f6bff;
+  background: #f4f8ff;
+  box-shadow: 0 0 0 1px rgba(47, 107, 255, 0.18);
+}
+
+.jpo-selectable-row {
+  cursor: pointer;
+}
+
+.jpo-selectable-row:focus-visible,
+.jpo-cap-card:focus-visible {
+  outline: 2px solid #2f6bff;
+  outline-offset: 2px;
+}
+
 .jpo-domain-badge {
   display: inline-flex;
   align-items: center;

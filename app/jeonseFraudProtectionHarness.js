@@ -29,85 +29,256 @@ function jpoOpsPage() {
   return `<div class="jbwc-shell jpo-shell">${jpoHeaderBar()}${jpoDetailPanel()}${body}</div>`;
 }
 
+function jpoContextRows(rows) {
+  return rows.map(([label, value]) => `<div class="property-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value || "-")}</strong></div>`).join("");
+}
+
+function jpoContextList(title, rows) {
+  const items = (rows || []).map(([head, sub]) => `<li><strong>${escapeHtml(head || "-")}</strong><span>${escapeHtml(sub || "-")}</span></li>`).join("");
+  return `<section class="jpo-context-section"><h4>${escapeHtml(title)}</h4><ul>${items || "<li><span>표시할 항목 없음</span></li>"}</ul></section>`;
+}
+
+function jpoContextShell(title, rows, chips = [], sections = [], guard = "") {
+  const chipMarkup = chips.map((chip) => `<span class="jpo-data-chip">${escapeHtml(chip || "-")}</span>`).join("");
+  return `<div class="case-properties jpo-context-panel">
+    <div class="jpo-context-title-card"><span>현재 선택 요약</span><strong>${escapeHtml(title || "전세보호 업무 요약")}</strong></div>
+    ${jpoContextRows(rows || [])}
+    ${chipMarkup ? `<div class="jpo-context-chiprow">${chipMarkup}</div>` : ""}
+    ${(sections || []).join("")}
+    <p class="jbwc-guard">${escapeHtml(guard || "내부 운영 참고용입니다. 전세사기 여부·법률·보증·피해자 결정은 담당자 검토 없이 확정하지 않습니다.")}</p>
+  </div>`;
+}
+
+function jpoFindCase(caseId) {
+  return jpoTable("jeonse_cases", JPO_ROLE_KEY).find((item) => item.id === caseId || item.caseNo === caseId) || null;
+}
+
+function jpoAgentInfo(agentId) {
+  return jeonseProtectionAgents.find((agent) => agent.id === agentId) || null;
+}
+
 function jpoContextCaseMarkup(row) {
   const runs = jpoTable("jeonse_agent_runs", JPO_ROLE_KEY).filter((run) => run.caseId === row.id).slice(0, 3);
   const deliverables = typeof jpoCaseDeliverables === "function" ? jpoCaseDeliverables(row.id).slice(0, 3) : [];
   const audits = jpoTable("jeonse_audit_logs", JPO_ROLE_KEY).filter((audit) => audit.caseId === row.id).slice(0, 3);
-  return `<div class="case-properties jpo-context-panel" data-jpo-context-kind="case">
-    <div class="property-row"><span>선택 케이스</span><strong>${escapeHtml(row.caseNo)} · ${escapeHtml(row.addressMasked)}</strong></div>
-    <div class="property-row"><span>상태/위험</span><strong>${escapeHtml(jpoStatusLabel(row.status))} · ${escapeHtml(JPO_RISK_LABELS[row.riskLevel] || row.riskLevel)} · ${row.auctionNoticed ? "경·공매 긴급" : "일반 처리"}</strong></div>
-    <div class="property-row"><span>고객/담당</span><strong>${escapeHtml(row.customerRefId)} · ${escapeHtml(jpoUserName(row.assignedToId))}</strong></div>
-    <div class="property-row"><span>상황</span><strong>${escapeHtml(jpoCaseSituationLine(row))}</strong></div>
-    <div class="property-row"><span>다음 액션</span><strong>${escapeHtml(jpoCaseNextAction(row))}</strong></div>
-    <div class="property-row"><span>실행 큐</span><strong>${escapeHtml(jpoCaseAgentIds(row, false).map(jpoAgentDisplayName).join(" → "))}</strong></div>
-    <div class="property-row"><span>생성 산출물</span><strong>${deliverables.length ? deliverables.map((item) => escapeHtml(item.fileName)).join(" · ") : "아직 없음"}</strong></div>
-    <div class="property-row"><span>최근 실행</span><strong>${runs.length ? runs.map((run) => `${escapeHtml(jpoAgentDisplayName(run.agentId))} ${escapeHtml(jpoStatusLabel(run.status))}`).join(" · ") : "아직 없음"}</strong></div>
-    <div class="property-row"><span>감사 기록</span><strong>${audits.length ? audits.map((audit) => escapeHtml(audit.action)).join(" · ") : "없음"}</strong></div>
-    <p class="jbwc-guard">선택 항목 요약입니다. 전세사기 여부·법률·보증·피해자 결정은 확정하지 않습니다.</p>
-  </div>`;
+  const signals = jpoCaseSignals(row.id, 3);
+  return jpoContextShell(`${row.caseNo} · ${row.addressMasked}`, [
+    ["임차인/물건", `${row.customerRefId} · ${jpoHousingTypeLabel(row.housingType)} · ${row.buildingName || row.addressMasked}`],
+    ["계약/보증금", `${jpoWon(row.depositAmount)} · ${row.contractEndDate || "계약일 미정"} · ${jpoIntakeTypeLabel(row.intakeType)}`],
+    ["현재 상태", `${jpoStatusLabel(row.status)} · ${JPO_RISK_LABELS[row.riskLevel] || row.riskLevel} 위험 · ${row.auctionNoticed ? "경·공매 긴급" : "일반 처리"}`],
+    ["시세/데이터", `${JPO_SOURCE_MODES[row.sourceMode] || row.sourceMode} · ${jpoCaseDataChips(row).join(" · ")}`],
+    ["권리/보증 확인", `등기 ${jpoStatusLabel(row.registryStatus)} · 보증 ${jpoStatusLabel(row.guaranteeStatus)} · 건축물 ${jpoStatusLabel(row.buildingCheckStatus)}`],
+    ["상황", jpoCaseSituationLine(row)],
+    ["위험 신호", signals.map((signal) => signal.title).join(" · ") || "등록된 위험 신호 없음"],
+    ["처리 목표", "위험 신호와 확인 후보를 분리하고 고객 공유 전 담당자 승인 게이트로 묶습니다."],
+    ["다음 액션", jpoCaseNextAction(row)],
+  ], [JPO_RISK_LABELS[row.riskLevel] || row.riskLevel, jpoStatusLabel(row.status), JPO_SOURCE_MODES[row.sourceMode] || row.sourceMode], [
+    jpoContextList("에이전트 실행 큐", jpoCaseAgentIds(row, false).map((agentId) => [jpoAgentDisplayName(agentId), `${row.requiresHumanReview || ["jpo-auction", "jpo-victim", "jpo-comms", "jpo-supervisor"].includes(agentId) ? "담당자 검토 필요" : "검토 후보"} · ${agentId}`])),
+    jpoContextList("생성 산출물", deliverables.map((item) => [item.fileName, `${jpoStatusLabel(item.status)} · ${item.title || "내부 운영 참고"}`])),
+    jpoContextList("근거/감사", signals.map((signal) => [signal.title, signal.evidence]).concat(audits.map((audit) => [jpoAuditActionLabel(audit.action), audit.createdAt]))),
+    jpoContextList("업로드 파일", jpoTable("jeonse_evidence_files", JPO_ROLE_KEY).filter((file) => file.caseId === row.id).slice(0, 3).map((file) => [file.fileName, file.analysisSummary || "메타데이터만 저장"])),
+  ]);
 }
 
 function jpoContextCapabilityMarkup(capability) {
   if (!capability) return "";
-  return `<div class="case-properties jpo-context-panel" data-jpo-context-kind="capability">
-    <div class="property-row"><span>기능명</span><strong>${escapeHtml(capability.name)}</strong></div>
-    <div class="property-row"><span>사용 도메인</span><strong>${escapeHtml(capability.domain)}</strong></div>
-    <div class="property-row"><span>상태/위험도</span><strong>${escapeHtml(capability.stateLabel || capability.status || "-")} · ${escapeHtml(capability.risk || "중간")}</strong></div>
-    <div class="property-row"><span>입력값</span><strong>${escapeHtml(capability.data || capability.inputs || "-")}</strong></div>
-    <div class="property-row"><span>출력값</span><strong>${escapeHtml(capability.output || capability.outputs || "-")}</strong></div>
-    <div class="property-row"><span>연결 에이전트</span><strong>${escapeHtml((capability.agents || []).map(jpoAgentDisplayName).join(", "))}</strong></div>
-    <div class="property-row"><span>사람 검토</span><strong>${capability.humanReview === false ? "선택 검토" : "필요"}</strong></div>
-    <p class="jbwc-guard">기능 카드는 전세보호 업무 단위의 입력/출력과 검토 게이트를 설명합니다.</p>
-  </div>`;
+  const risk = capability.risk || jpoCapabilityRisk(capability);
+  const humanLabel = capability.humanLabel || jpoCapabilityHumanLabel(capability);
+  const connectedCases = jpoTable("jeonse_cases", JPO_ROLE_KEY)
+    .filter((row) => jpoCaseAgentIds(row, false).some((agentId) => (capability.agents || []).includes(agentId)))
+    .slice(0, 5);
+  return jpoContextShell(`${capability.name} 기술 상세`, [
+    ["기능명", capability.name],
+    ["기능 목적", capability.summary],
+    ["입력값", capability.data || capability.inputs || "-"],
+    ["출력값", capability.output || capability.outputs || "-"],
+    ["연결 에이전트", (capability.agents || []).map(jpoAgentDisplayName).join(" · ") || "-"],
+    ["사용 도메인", capability.domain],
+    ["위험도", risk],
+    ["담당자 확인", humanLabel],
+    ["사용 시나리오", `${capability.domain} 화면에서 케이스 입력값을 읽고 ${capability.output || "검토 산출물"}을 생성합니다.`],
+    ["감사 기록 연결", /감사|승인|피해|법률|보증|경·공매/.test(`${capability.name} ${capability.domain}`) ? "직접 연결" : "에이전트 실행/산출물 이벤트로 간접 연결"],
+  ], [capability.category, jpoStatusLabel(capability.status), `위험도 ${risk}`, humanLabel], [
+    jpoContextList("적용 케이스", connectedCases.map((row) => [row.caseNo, `${jpoCaseSituationLine(row)} · ${jpoCaseNextAction(row)}`])),
+    jpoContextList("생성 산출물 예시", [[capability.output || "-", capability.summary], ["검토 게이트", humanLabel]]),
+  ]);
 }
 
 function jpoContextAgentRunMarkup(run) {
   if (!run) return "";
-  return `<div class="case-properties jpo-context-panel" data-jpo-context-kind="agentRun">
-    <div class="property-row"><span>실행 ID</span><strong>${escapeHtml(run.id)}</strong></div>
-    <div class="property-row"><span>에이전트</span><strong>${escapeHtml(jpoAgentDisplayName(run.agentId))}</strong></div>
-    <div class="property-row"><span>관련 케이스</span><strong>${escapeHtml(run.caseId || "-")}</strong></div>
-    <div class="property-row"><span>입력</span><strong>${escapeHtml(run.inputSummary || "-")}</strong></div>
-    <div class="property-row"><span>결과</span><strong>${escapeHtml(run.outputSummary || "-")}</strong></div>
-    <div class="property-row"><span>상태</span><strong>${escapeHtml(jpoStatusLabel(run.status))} · ${run.requiresHumanReview ? "담당자 검토 필요" : "검토 후보"}</strong></div>
-    <p class="jbwc-guard">실행 결과는 내부 운영 참고용이며 자동 완료/발송하지 않습니다.</p>
-  </div>`;
+  const row = jpoFindCase(run.caseId);
+  const agent = jpoAgentInfo(run.agentId);
+  const audits = row ? jpoTable("jeonse_audit_logs", JPO_ROLE_KEY).filter((audit) => audit.caseId === row.id).slice(0, 4) : [];
+  return jpoContextShell(`${jpoAgentDisplayName(run.agentId)} 실행 요약`, [
+    ["실행 ID", run.id],
+    ["연결 케이스", row ? `${row.caseNo} · ${row.addressMasked}` : run.caseId],
+    ["고객/상담/도메인", row ? `${row.customerRefId} · ${jpoIntakeTypeLabel(row.intakeType)} · 전세보호` : "-"],
+    ["에이전트 역할", agent ? agent.description : jpoAgentDisplayName(run.agentId)],
+    ["사용 데이터", agent ? (agent.dbReads || []).join(" · ") : run.inputSummary],
+    ["예상 산출물", agent ? (agent.dbWrites || []).join(" · ") : "agent_run · audit"],
+    ["현재 상태", `${jpoStatusLabel(run.status)} · ${JPO_RISK_LABELS[run.riskLevel] || run.riskLevel || "-"}`],
+    ["다음 액션", run.requiresHumanReview || run.requiresHumanEscalation ? "담당자 검토 후 승인/반려" : "상태 확인"],
+    ["담당자 승인", run.requiresHumanReview || run.requiresHumanEscalation ? "필요" : "검토 후보"],
+  ], [jpoStatusLabel(run.status), jpoAgentDisplayName(run.agentId), run.requiresHumanReview ? "담당자 검토 필요" : "검토 후보"], [
+    row ? jpoContextList("케이스 내용", [[jpoCaseSituationLine(row), jpoCasePriorityReason(row, jpoCaseSignals(row.id, 3))], ["처리 목표", jpoCaseNextAction(row)]]) : "",
+    jpoContextList("관련 감사 로그", audits.map((audit) => [jpoAuditActionLabel(audit.action), audit.createdAt])),
+  ]);
+}
+
+function jpoContextConnectorMarkup(connector) {
+  if (!connector) return "";
+  const cases = jpoTable("jeonse_cases", JPO_ROLE_KEY);
+  const affectedCases = cases.filter((row) => (
+    row.sourceMode === connector.sourceMode
+    || (connector.category === "hug" && ["unknown", "none"].includes(row.guaranteeStatus))
+    || (connector.category === "registry" && row.registryStatus === "unknown")
+    || (connector.health !== "healthy" && ["fallback", "snapshot"].includes(row.sourceMode))
+  )).slice(0, 5);
+  const agents = jeonseProtectionAgents
+    .filter((agent) => (agent.dbReads || []).includes("external_connectors") || String(agent.domain || "").toLowerCase().includes(String(connector.category || "").toLowerCase()))
+    .slice(0, 5);
+  const capabilities = typeof JPO_CAPABILITY_CATALOG !== "undefined"
+    ? JPO_CAPABILITY_CATALOG.filter((capability) => {
+      const text = `${capability.name} ${capability.domain} ${capability.data} ${capability.summary}`;
+      return text.includes(connector.category) || /데이터|시세|권리|보증|증적/.test(text);
+    }).slice(0, 5)
+    : [];
+  const impact = connector.health === "healthy"
+    ? "정상 연결 상태 유지"
+    : connector.sourceMode === "manualRequired"
+      ? "수동 확인 전까지 자동 확정 표현 금지"
+      : "데이터 부족 표시와 담당자 확인 필요";
+  return jpoContextShell("데이터 연결 요약", [
+    ["커넥터 ID", connector.id],
+    ["데이터 출처", `${connector.name} · ${connector.externalRef || "-"}`],
+    ["공개/샘플/수동", JPO_SOURCE_MODES[connector.sourceMode] || connector.sourceMode],
+    ["분류", connector.category],
+    ["상태", `${jpoStatusLabel(connector.health)} · ${jpoStatusLabel(connector.status)}`],
+    ["최근 동기화", connector.lastSyncAt || "담당자 확인 필요"],
+    ["실패 이유", connector.health === "healthy" ? "없음" : `${jpoStatusLabel(connector.health)} 상태 — ${impact}`],
+    ["업무 영향", impact],
+    ["다음 조치", connector.health === "healthy" ? "정상 연결 상태 유지" : "수동 확인 후 스냅샷/샘플 데이터 갱신"],
+    ["담당자 확인", connector.health === "healthy" ? "일반 모니터링" : "필요"],
+  ], [connector.category, jpoStatusLabel(connector.health), JPO_SOURCE_MODES[connector.sourceMode] || connector.sourceMode], [
+    jpoContextList("연결 에이전트", agents.map((agent) => [agent.displayName, `${agent.domain} · 이 데이터 상태를 입력으로 사용`])),
+    jpoContextList("영향 케이스", affectedCases.map((row) => [row.caseNo, `${jpoCaseSituationLine(row)} · ${jpoCaseNextAction(row)}`])),
+    jpoContextList("사용되는 업무 기능", capabilities.map((capability) => [capability.name, capability.output])),
+  ]);
+}
+
+function jpoContextAuditMarkup(audit) {
+  if (!audit) return "";
+  const row = jpoFindCase(audit.caseId);
+  return jpoContextShell("감사 기록 요약", [
+    ["기록 ID", audit.id],
+    ["행위", jpoAuditActionLabel(audit.action)],
+    ["대상", `${audit.targetType || "-"} ${audit.targetId || ""}`],
+    ["관련 케이스", row ? `${row.caseNo} · ${row.addressMasked}` : audit.caseId],
+    ["위험도", JPO_RISK_LABELS[audit.riskLevel] || audit.riskLevel],
+    ["검토 필요", audit.reviewRequired ? "필요" : "기록 완료"],
+    ["생성 시각", audit.createdAt || "-"],
+  ], [jpoAuditActionLabel(audit.action), JPO_RISK_LABELS[audit.riskLevel] || audit.riskLevel, audit.reviewRequired ? "검토 필요" : "기록됨"], [
+    audit ? `<section class="jpo-context-section jpo-context-document"><h4>감사 문서</h4><div class="jpo-md-body">${jpoRenderMarkdownSections(jpoAuditDocumentBody(audit, row))}</div></section>` : "",
+  ]);
+}
+
+function jpoPickConnector() {
+  const rows = jpoTable("external_connectors", JPO_ROLE_KEY);
+  const selectedId = jpoState.detail?.kind === "connector" ? jpoState.detail.id
+    : jpoState.contextSubject?.kind === "connector" ? jpoState.contextSubject.id : null;
+  return rows.find((row) => row.id === selectedId)
+    || rows.find((row) => row.health !== "healthy" || row.status === "manualRequired")
+    || rows[0] || null;
+}
+
+function jpoPickAudit() {
+  const rows = jpoTable("jeonse_audit_logs", JPO_ROLE_KEY);
+  const selectedId = jpoState.detail?.kind === "audit" ? jpoState.detail.id
+    : jpoState.contextSubject?.kind === "audit" ? jpoState.contextSubject.id : null;
+  return rows.find((row) => row.id === selectedId)
+    || rows.find((row) => row.reviewRequired)
+    || rows[0] || null;
 }
 
 function jpoContextMarkup() {
   const counts = jpoState.counts || getJeonseProtectionSidebarCounts();
   if (jpoState.detail?.kind === "case") {
-    const row = jpoTable("jeonse_cases", JPO_ROLE_KEY).find((item) => item.id === jpoState.detail.id || item.caseNo === jpoState.detail.id);
+    const row = jpoFindCase(jpoState.detail.id);
     if (row) return jpoContextCaseMarkup(row);
   }
   if (jpoState.detail?.kind === "agentRun") {
     const run = jpoTable("jeonse_agent_runs", JPO_ROLE_KEY).find((item) => item.id === jpoState.detail.id);
     if (run) return jpoContextAgentRunMarkup(run);
   }
+  if (jpoState.detail?.kind === "connector") {
+    const connector = jpoTable("external_connectors", JPO_ROLE_KEY).find((item) => item.id === jpoState.detail.id);
+    if (connector) return jpoContextConnectorMarkup(connector);
+  }
+  if (jpoState.detail?.kind === "audit") {
+    const audit = jpoTable("jeonse_audit_logs", JPO_ROLE_KEY).find((item) => item.id === jpoState.detail.id);
+    if (audit) return jpoContextAuditMarkup(audit);
+  }
+  if (jpoState.contextSubject?.kind === "case") {
+    const row = jpoFindCase(jpoState.contextSubject.id);
+    if (row) return jpoContextCaseMarkup(row);
+  }
   if (jpoState.contextSubject?.kind === "capability" && typeof JPO_CAPABILITY_CATALOG !== "undefined") {
     const capability = JPO_CAPABILITY_CATALOG.find((item) => item.name === jpoState.contextSubject.id);
     if (capability) return jpoContextCapabilityMarkup(capability);
   }
+  if (jpoState.contextSubject?.kind === "connector") return jpoContextConnectorMarkup(jpoPickConnector());
+  if (jpoState.contextSubject?.kind === "audit") return jpoContextAuditMarkup(jpoPickAudit());
   if (jpoState.view === "capability-repository" && typeof JPO_CAPABILITY_CATALOG !== "undefined") {
     return jpoContextCapabilityMarkup(JPO_CAPABILITY_CATALOG[0]);
   }
+  if (jpoState.view === "data-connectors") return jpoContextConnectorMarkup(jpoPickConnector());
+  if (jpoState.view === "audit-logs") return jpoContextAuditMarkup(jpoPickAudit());
+  if (jpoState.view === "agent-harness") {
+    const run = jpoTable("jeonse_agent_runs", JPO_ROLE_KEY).find((item) => ["queued", "running", "needsReview", "pendingApproval"].includes(item.status))
+      || jpoTable("jeonse_agent_runs", JPO_ROLE_KEY)[0];
+    if (run) return jpoContextAgentRunMarkup(run);
+  }
   const selected = jpoSelectedBoardCase();
   if (selected) return jpoContextCaseMarkup(selected);
-  return `<div class="case-properties">
-    <div class="property-row"><span>전용 하네스</span><strong>${escapeHtml(jeonseFraudProtectionHarness.id)}</strong></div>
-    <div class="property-row"><span>데이터 범위(roleKey)</span><strong>${escapeHtml(JPO_ROLE_KEY)}</strong></div>
-    <div class="property-row"><span>전세보호 건</span><strong>${escapeHtml(counts.cases)}</strong></div>
-    <div class="property-row"><span>긴급 경·공매</span><strong>${escapeHtml(counts.urgentAuction)}</strong></div>
-    <div class="property-row"><span>데이터 연계</span><strong>${(typeof isLive === "function" && isLive()) ? "실거래 API 모드" : "샘플/스냅샷 기준"}</strong></div>
-    <div class="property-row"><span>사람 검토</span><strong>피해자 결정·법률·보증·안내문 필수</strong></div>
-    <p class="jbwc-guard">전세사기 여부·피해자 결정·보증 가입·법률 자문에 대한 확정 판단, 신청 대행, 개인정보 원문 저장/출력은 금지됩니다.</p>
-  </div>`;
+  return jpoContextShell("전세보호 하네스 요약", [
+    ["전용 하네스", jeonseFraudProtectionHarness.id],
+    ["데이터 범위(roleKey)", JPO_ROLE_KEY],
+    ["전세보호 건", counts.cases],
+    ["긴급 경·공매", counts.urgentAuction],
+    ["데이터 연계", (typeof isLive === "function" && isLive()) ? "실거래 API 모드" : "샘플/스냅샷 기준"],
+    ["사람 검토", "피해자 결정·법률·보증·안내문 필수"],
+  ]);
+}
+
+function jpoPropertyPanelTitle() {
+  if (jpoState.detail?.kind === "case") {
+    const row = jpoFindCase(jpoState.detail.id);
+    if (row) return `${row.caseNo} · ${row.addressMasked}`;
+  }
+  if (jpoState.detail?.kind === "connector") {
+    const row = jpoTable("external_connectors", JPO_ROLE_KEY).find((item) => item.id === jpoState.detail.id);
+    if (row) return `${row.name} 연결 요약`;
+  }
+  if (jpoState.detail?.kind === "audit") {
+    const row = jpoTable("jeonse_audit_logs", JPO_ROLE_KEY).find((item) => item.id === jpoState.detail.id);
+    if (row) return `${jpoAuditActionLabel(row.action)} 감사 기록`;
+  }
+  if (jpoState.contextSubject?.kind === "capability" && typeof JPO_CAPABILITY_CATALOG !== "undefined") {
+    const capability = JPO_CAPABILITY_CATALOG.find((item) => item.name === jpoState.contextSubject.id);
+    if (capability) return `${capability.name} 기술 상세`;
+  }
+  if (jpoState.view === "data-connectors") return "데이터 연결 요약";
+  if (jpoState.view === "audit-logs") return "감사 기록 요약";
+  if (jpoState.view === "capability-repository") return "업무 기능 기술 요약";
+  const selected = jpoSelectedBoardCase();
+  if (selected) return `${selected.caseNo} · ${selected.addressMasked}`;
+  return JPO_VIEWS[jpoState.view] || "전세사기 보호 담당자 하네스";
 }
 
 function jpoGo(view, detail) {
   jpoState.view = view;
   jpoState.detail = detail || null;
-  if (view !== "capability-repository") jpoState.contextSubject = null;
+  if (!["capability-repository", "data-connectors", "audit-logs"].includes(view)) jpoState.contextSubject = null;
   const next = detail && detail.kind === "case" ? jpoHashForView("cases", detail.id) : jpoHashForView(view);
   if (window.location.hash !== next) window.location.hash = next;
   else if (typeof render === "function") render();
@@ -123,7 +294,7 @@ function jpoSelectBoardCase(caseId, sourceLabel = "케이스 선택") {
   jpoState.detail = null;
   jpoState.contextSubject = { kind: "case", id: found.id };
   jpoShowKeyOverlay(sourceLabel, `${found.caseNo} 선택`);
-  jpoSetPendingScroll(`[data-jpo-sub-case="${found.id}"]`);
+  jpoSetPendingScroll(`[data-jpo-board-case="${found.id}"]`);
   const next = jpoHashForView("board");
   if (window.location.hash !== next) window.location.hash = next;
   else if (typeof render === "function") render();
@@ -286,7 +457,13 @@ function bindJpoActions() {
   document.querySelectorAll("[data-jpo-capability]").forEach((card) => {
     card.addEventListener("click", () => {
       jpoState.contextSubject = { kind: "capability", id: card.dataset.jpoCapability };
+      jpoState.detail = null;
       render();
+    });
+    card.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      card.click();
     });
   });
   jpoBindHarnessSamples();
@@ -335,7 +512,14 @@ function bindJpoActions() {
       const [kind, id] = String(row.dataset.jpoOpenDetail || "").split(":");
       if (!kind || !id) return;
       jpoState.detail = { kind, id };
+      jpoState.contextSubject = { kind, id };
+      if (kind === "case") jpoState.selectedCaseId = id;
       render();
+    });
+    row.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      row.click();
     });
   });
   document.querySelectorAll("[data-jpo-open-approval]").forEach((row) => {

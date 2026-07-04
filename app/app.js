@@ -4152,6 +4152,7 @@ function propertyPanelTitle() {
   if (activeDetailType === "view" && activeView === "rm-officer-harness" && typeof rmoPropertyPanelTitle === "function") return rmoPropertyPanelTitle();
   if (activeDetailType === "view" && activeView === "rm-officer-harness") return "RM 업무지원 포털";
   if (activeDetailType === "view" && activeView === "corporate-credit-dashboard") return "기업여신 담당자 대시보드";
+  if (activeDetailType === "view" && activeView === "jeonse-protection-harness" && typeof jpoPropertyPanelTitle === "function") return jpoPropertyPanelTitle();
   if (activeDetailType === "view" && activeView === "jeonse-protection-harness") return "전세사기 보호 담당자 하네스";
   if (activeDetailType === "view" && activeView === "fds-dashboard") return "보이스피싱/FDS 담당자 대시보드";
   if (activeDetailType === "view") return "선택 화면 요약";
@@ -6059,7 +6060,10 @@ function normalizedAppHash(hash) {
 }
 
 function applyHashRoute() {
-  const routeHash = `#${normalizedAppHash(window.location.hash)}`;
+  const normalizedHash = normalizedAppHash(window.location.hash);
+  const routeHash = String(window.location.hash || "").startsWith("#/")
+    ? String(window.location.hash)
+    : `#/${normalizedHash}`;
   const jbwcRoute = typeof jbwcRouteFromHash === "function" ? jbwcRouteFromHash(routeHash) : null;
   if (jbwcRoute) {
     activeView = "jb-woori-capital-dashboard";

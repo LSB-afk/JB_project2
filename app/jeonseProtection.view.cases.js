@@ -297,7 +297,7 @@ const jpoCaseViewRenderers = {
     const rows = jpoTable("external_connectors", JPO_ROLE_KEY);
     const live = typeof isLive === "function" && isLive();
     return jpoPanel(`데이터 연결 상태 (${rows.length})`, jpoTableView(["커넥터", "분류", "최근 동기화", "상태"], rows, (x) => `
-      <li class="jbwc-row" data-jpo-open-detail="connector:${escapeHtml(x.id)}"><span class="jbwc-row-id">${escapeHtml(x.id)}</span>
+      <li class="jbwc-row jpo-selectable-row ${jpoState.contextSubject?.kind === "connector" && jpoState.contextSubject.id === x.id ? "is-selected" : ""}" data-jpo-open-detail="connector:${escapeHtml(x.id)}" role="button" tabindex="0"><span class="jbwc-row-id">${escapeHtml(x.id)}</span>
         <span>${escapeHtml(x.name)}<br><span class="jbwc-row-note">${escapeHtml(x.externalRef || "-")}</span></span>
         <span>${escapeHtml(x.category)} · ${escapeHtml(x.lastSyncAt || "-")}</span>
         <span>${jpoStatusPill(x.health)} ${jpoSourceModePill(x.sourceMode)}</span></li>`))
@@ -319,8 +319,8 @@ const jpoCaseViewRenderers = {
     const rows = jpoTable("jeonse_audit_logs", JPO_ROLE_KEY);
     return jpoPanel(`감사 기록 (${rows.length} · 검토 필요 ${rows.filter((x) => x.reviewRequired).length})`,
       jpoTableView(["기록", "행위", "대상", "상태"], rows, (x) => `
-        <li class="jbwc-row"><span class="jbwc-row-id">${escapeHtml(x.createdAt)}<br>${escapeHtml(x.id)}</span>
-          <span>${escapeHtml(x.action)}<br><span class="jbwc-row-note">${escapeHtml(jpoUserName(x.actorId))}</span></span>
+        <li class="jbwc-row jpo-selectable-row jpo-audit-row ${jpoState.contextSubject?.kind === "audit" && jpoState.contextSubject.id === x.id ? "is-selected" : ""}" data-jpo-open-detail="audit:${escapeHtml(x.id)}" role="button" tabindex="0"><span class="jbwc-row-id">${escapeHtml(x.createdAt)}<br>${escapeHtml(x.id)}</span>
+          <span>${escapeHtml(jpoAuditActionLabel(x.action))}<br><span class="jbwc-row-note">${escapeHtml(jpoUserName(x.actorId))}</span></span>
           <span>${escapeHtml(x.targetType)} ${escapeHtml(x.targetId)}</span>
           <span>${x.reviewRequired ? '<span class="status-pill status-escalated">검토 필요</span>' : '<span class="status-pill status-approved">기록됨</span>'} ${jpoRiskPill(x.riskLevel)}</span></li>`)) + jpoMockNote();
   },

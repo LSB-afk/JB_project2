@@ -9319,6 +9319,145 @@ textarea {
   font-size: 13px;
 }
 
+.jpo-context-panel .property-row strong {
+  white-space: normal;
+  overflow-wrap: break-word;
+  line-height: 1.5;
+}
+
+.jpo-context-title-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px solid #c8d8ff;
+  border-radius: 8px;
+  background: #eef3ff;
+}
+
+.jpo-context-title-card span {
+  color: #0b4aa2;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.jpo-context-title-card strong {
+  color: #0b2a63;
+  font-size: 18px;
+  line-height: 25px;
+  overflow-wrap: break-word;
+}
+
+.jpo-context-chiprow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 6px;
+}
+
+.jpo-context-section {
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid #e3e8f2;
+}
+
+.jpo-context-section h4 {
+  margin: 0 0 10px;
+  color: #0b2a63;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.jpo-context-section ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.jpo-context-section li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.jpo-context-section li strong {
+  color: #1c2b45;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
+.jpo-context-section li span {
+  color: #5b647a;
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
+.jpo-md-body {
+  max-height: 48vh;
+  overflow: auto;
+  padding: 18px 20px;
+  border: 1px solid #c8d8ff;
+  border-radius: 8px;
+  background: #fbfcff;
+  color: #1c2b45;
+  font-size: 15px;
+  line-height: 1.7;
+  box-shadow: inset 4px 0 0 #123d82;
+}
+
+.jpo-md-body h2,
+.jpo-md-body h3,
+.jpo-md-body h4,
+.jpo-md-body h5 {
+  margin: 14px 0 8px;
+  color: #0b2a63;
+  line-height: 1.35;
+}
+
+.jpo-md-body h2:first-child,
+.jpo-md-body h3:first-child {
+  margin-top: 0;
+}
+
+.jpo-md-body p,
+.jpo-md-body li {
+  margin: 5px 0;
+  overflow-wrap: break-word;
+}
+
+.jpo-md-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 18px;
+  margin: 6px 0 10px;
+}
+
+.jpo-md-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid #e3e8f2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #4b5468;
+  font-size: 13px;
+}
+
+.jpo-md-meta b {
+  margin-right: 4px;
+  color: #1c2b45;
+}
+
 .jpo-cap-table .jbwc-row,
 .jpo-cap-row {
   grid-template-columns: 1.1fr 1fr 1.15fr 1.1fr;

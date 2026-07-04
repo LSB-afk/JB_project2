@@ -54,6 +54,13 @@ const JPO_SOURCE_MODES = {
   manualRequired: "수동 확인 필요",
 };
 
+const JPO_SOURCE_MODE_HINTS = {
+  live_api: "공공데이터 프록시를 통해 최신 실거래 표본을 조회한 상태입니다.",
+  snapshot: "데모 저장소에 포함된 샘플/스냅샷 표본으로 계산한 상태입니다.",
+  fallback: "외부 API가 연결되지 않아 대체 기준으로 표시하며 담당자 확인이 필요합니다.",
+  manualRequired: "HUG·등기·건축물 등 공식 원천을 담당자가 직접 확인해야 합니다.",
+};
+
 /* 케이스 lifecycle — 보드 컬럼과 1:1 */
 const JPO_BOARD_COLUMNS = [
   ["received", "신규 접수"],

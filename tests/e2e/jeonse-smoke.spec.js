@@ -17,6 +17,8 @@ test("스모크: 진입→보드→검색→접수(고위험)→기록→승인 
   await page.locator('[data-rail-toggle="role"]').click();
   await page.locator('[data-role-filter="전세보호 담당자"]').click();
   // 3. 전용 sidebar title
+  await expect(page.locator(".role-activation-page")).toContainText("전세사기 보호 업무지원 포털 활성화 중");
+  await expect(page).toHaveURL(/\/roles\/jeonse-protection\/board/);
   await expect(page.locator(".sidebar-brand")).toContainText("전세사기 보호 업무지원 포털");
   // 4. 보드 count — scope query 기준
   await page.waitForFunction(() => {
@@ -83,6 +85,7 @@ test("스모크: 진입→보드→검색→접수(고위험)→기록→승인 
 
 test("자체 검증 루프 + 보안 훅 차단(PII 접수/자동 종결/사람 승인)", async ({ page }) => {
   await page.goto("/index.html#/roles/jeonse-protection/agent-harness");
+  await expect(page.locator("#page-content")).toContainText("전세사기 보호 업무지원 하네스");
   await page.getByRole("button", { name: "/jeonse-run-smoke-test · 하네스 자체 검증 실행" }).click();
   await expect(page.locator("#page-content")).toContainText("하네스 자체 검증");
   const selfTest = await page.evaluate(() => runHarnessSelfTest());

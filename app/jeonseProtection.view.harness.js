@@ -45,7 +45,8 @@ function jpoRiskBadgeLabel(label) {
 function jpoCapabilityCard(capability) {
   const risk = capability.risk || jpoCapabilityRisk(capability);
   const humanLabel = capability.humanLabel || jpoCapabilityHumanLabel(capability);
-  return `<article class="jpo-cap-card" data-jpo-capability="${escapeHtml(capability.name)}" role="button" tabindex="0">
+  const selected = jpoState.contextSubject?.kind === "capability" && jpoState.contextSubject.id === capability.name;
+  return `<article class="jpo-cap-card ${selected ? "is-selected" : ""}" data-jpo-capability="${escapeHtml(capability.name)}" role="button" tabindex="0" aria-pressed="${selected ? "true" : "false"}">
     <header class="jpo-cap-card-head">
       <div><p class="jpo-cap-category">${escapeHtml(capability.category)}</p><h4>${escapeHtml(capability.name)}</h4></div>
       <div class="jpo-card-badges">${jpoCapabilityStatusPill(capability.status)}${jpoRiskBadgeLabel(risk)}</div>
@@ -69,13 +70,13 @@ function jpoCapabilityRepositoryView() {
   </li>`).join("");
   return `<section class="jbwc-hero jpo-hero-slim jpo-cap-hero">
       <p class="eyebrow">전세보호 역할 전용 하네스 · 기능 저장소</p>
-      <h2>업무 기능 저장소</h2>
-      <p>AI 업무지원에서 직접 활용되는 시세, 권리, 보증, 피해지원, 감사 업무 기능을 확인합니다.</p>
+      <h2>업무 기능 저장소 · 기술 카탈로그</h2>
+      <p>AI 업무지원에서 직접 활용되는 시세, 권리, 보증, 피해지원, 감사 업무 기능 기술을 확인합니다.</p>
       <p class="jpo-keyboard-hint">케이스 처리에 쓰이는 기능·에이전트·데이터·산출물을 업무 단위로 분리했습니다.</p>
     </section>
     ${jpoPanel("기능 카테고리 필터", `<div class="jpo-filter-row">${filters}</div>`)}
-    ${jpoPanel(`기능 카드 (${JPO_CAPABILITY_CATALOG.length})`, `<div class="jpo-cap-grid">${JPO_CAPABILITY_CATALOG.map(jpoCapabilityCard).join("")}</div>`)}
-    ${jpoPanel("기능 목록", `<ul class="jbwc-list jpo-cap-table">
+    ${jpoPanel(`업무 기능 기술 (${JPO_CAPABILITY_CATALOG.length})`, `<div class="jpo-cap-grid">${JPO_CAPABILITY_CATALOG.map(jpoCapabilityCard).join("")}</div>`)}
+    ${jpoPanel("업무 기능 기술 목록", `<ul class="jbwc-list jpo-cap-table">
       <li class="jbwc-row jbwc-row-head"><span>기능</span><span>에이전트</span><span>사용 데이터</span><span>산출물/상태</span></li>
       ${rows}
     </ul>`)}
