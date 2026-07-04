@@ -12,6 +12,14 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     window.localStorage.removeItem("rmo-ops-db-v1");
     window.localStorage.removeItem("rmo-ops-db-v2");
+    window.localStorage.setItem("jb-agent-model-settings-v1", JSON.stringify({
+      runtime: "mock",
+      proxyBase: "http://127.0.0.1:8030",
+      model: "llama3.1:8b",
+      temperature: 0.2,
+      timeoutMs: 15000,
+      updatedAt: "e2e",
+    }));
   });
 });
 
@@ -203,6 +211,40 @@ test("←→ 케이스 이동 · ↑↓/Space/D/Enter 노드 플로우 · 패널
   }));
   expect(slideMotion.railLeft).toBeGreaterThan(railBefore);
   expect(Math.abs(slideMotion.pageY - pageYBeforeSlide)).toBeLessThan(120);
+
+  const railAfterSlide = await page.evaluate(() => {
+    window.__rmoRailAfterSlide = document.querySelector(".rmo-case-rail");
+    return window.__rmoRailAfterSlide.scrollLeft;
+  });
+  await page.waitForTimeout(1050);
+  const railAfterOverlayTimeout = await page.evaluate(() => {
+    const rail = document.querySelector(".rmo-case-rail");
+    return {
+      sameRail: rail === window.__rmoRailAfterSlide,
+      left: rail ? rail.scrollLeft : -1,
+    };
+  });
+  expect(railAfterOverlayTimeout.sameRail).toBe(true);
+  expect(railAfterOverlayTimeout.left).toBeGreaterThan(railAfterSlide - 40);
+
+  await page.waitForTimeout(460);
+  const railBeforeBack = await page.locator(".rmo-case-rail").evaluate((el) => el.scrollLeft);
+  expect(railBeforeBack).toBeGreaterThan(120);
+  const backSamplesPromise = page.evaluate(() => new Promise((resolve) => {
+    const rail = document.querySelector(".rmo-case-rail");
+    const samples = [];
+    let count = 0;
+    const tick = () => {
+      samples.push(rail ? rail.scrollLeft : -1);
+      count += 1;
+      if (count >= 24) resolve(samples);
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }));
+  await page.keyboard.press("ArrowLeft");
+  const backSamples = await backSamplesPromise;
+  expect(Math.min(...backSamples)).toBeGreaterThan(80);
 
   await page.keyboard.press("1");
   await page.waitForTimeout(150);

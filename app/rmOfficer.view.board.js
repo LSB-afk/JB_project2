@@ -73,6 +73,55 @@ function rmoBoardFilters() {
   return `<div class="rmo-filter-row" role="tablist" aria-label="진행 단계 필터">${options.map(([value, label]) => `<button type="button" class="rmo-filter ${rmoState.boardFilter === value ? "is-active" : ""}" role="tab" aria-selected="${rmoState.boardFilter === value ? "true" : "false"}" data-rmo-filter="${value}">${escapeHtml(label)}</button>`).join("")}</div>`;
 }
 
+function rmoDemoInputPanel() {
+  const flow = rmoState.demoInputFlow || { status: "idle", step: -1 };
+  const active = flow.status === "running";
+  const done = flow.status === "done";
+  const demoInput = flow.input || (typeof RMO_DEMO_AI_INPUT !== "undefined" ? RMO_DEMO_AI_INPUT : null);
+  const caseRow = flow.caseId ? rmoTable("rm_officer_cases", RMO_ROLE_KEY).find((c) => c.id === flow.caseId) : null;
+  const assignments = flow.caseId
+    ? rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).filter((a) => a.caseId === flow.caseId).sort((a, b) => (a.order || 0) - (b.order || 0))
+    : [];
+  const steps = flow.stages || [
+    { key: "input", label: "접수 인풋 수신", detail: "비정형 상담 메모와 첨부 요약이 들어왔습니다." },
+    { key: "trigger", label: "트리거 감지", detail: "고객/거래/상담 신호를 확인해 RM 업무보드로 라우팅합니다." },
+    { key: "case", label: "케이스 생성", detail: "우선순위 근거와 출처를 포함한 새 케이스를 보드에 추가합니다." },
+    { key: "split", label: "오케스트레이터 분해·배정", detail: "전문 에이전트별 서브 케이스와 최종 보고서 노드를 만듭니다." },
+    { key: "ready", label: "Enter 실행 준비", detail: "첫 서브 케이스가 선택되어 Enter로 바로 실행할 수 있습니다." },
+  ];
+  const stepItems = steps.map((step, index) => {
+    const stateClass = index < flow.step || done ? "is-done" : index === flow.step ? "is-current" : "";
+    return `<li class="${stateClass}" data-rmo-demo-step="${escapeHtml(step.key)}"><strong>${escapeHtml(step.label)}</strong><span>${escapeHtml(step.detail)}</span></li>`;
+  }).join("");
+  const agentChips = assignments.map((a) => `<span>${escapeHtml(rmoAgentDisplayName(a.agentId))}</span>`).join("");
+  const statusText = active ? "AI 인풋 처리 중" : done ? "서브 케이스 배정 완료" : "데모 인풋 대기";
+  const detail = caseRow
+    ? `<div class="rmo-demo-result">
+        <strong>${escapeHtml(caseRow.caseNo)} · ${escapeHtml(caseRow.theme)}</strong>
+        <p>${escapeHtml(caseRow.priorityReason)}</p>
+        <div class="rmo-demo-agent-strip">${agentChips}</div>
+      </div>`
+    : `<div class="rmo-demo-input-card">
+        <span>AI 인풋</span>
+        <p>${escapeHtml(demoInput ? demoInput.raw : "상담 메모와 거래 이상징후 샘플을 기반으로 새 케이스를 만듭니다.")}</p>
+      </div>`;
+  return `<section class="workspace-panel jbwc-panel rmo-demo-input-panel ${active ? "is-running" : ""} ${done ? "is-done" : ""}" aria-live="polite">
+    <div class="rmo-demo-input-head">
+      <div>
+        <p class="eyebrow">Demo Intake Flow</p>
+        <h3>AI 인풋으로 케이스 생성</h3>
+        <p class="jbwc-meta">업무보드 안에서 접수, 트리거 감지, 케이스 생성, 에이전트 배정을 3~5초 흐름으로 보여줍니다.</p>
+      </div>
+      <button class="primary-button rmo-demo-input-button" type="button" data-rmo-demo-input ${active ? "disabled" : ""}>AI 인풋으로 케이스 생성</button>
+    </div>
+    <div class="rmo-demo-input-grid">
+      ${detail}
+      <ol class="rmo-demo-flow">${stepItems}</ol>
+      <div class="rmo-demo-status"><span>${escapeHtml(statusText)}</span>${active ? '<i aria-hidden="true"></i>' : ""}</div>
+    </div>
+  </section>`;
+}
+
 function rmoBoardView() {
   const allCases = rmoTable("rm_officer_cases", RMO_ROLE_KEY);
   const filter = rmoState.boardFilter;
@@ -94,6 +143,7 @@ function rmoBoardView() {
   return `${banner}
     ${rmoCountHeader(allCases)}
     ${rmoBoardFilters()}
+    ${rmoDemoInputPanel()}
     <section class="workspace-panel jbwc-panel"><p class="eyebrow">업무보드 (${sorted.length}건 · 급한 순)</p><div class="rmo-case-rail" data-rmo-case-rail>${cards}</div></section>
     <div class="rmo-board-sub-divider" aria-hidden="true"></div>
     ${sub}
@@ -147,6 +197,13 @@ function rmoCaseSubSection(caseId) {
 
 /* 노드 상세 카드 — 11필드(agentId/agentName/role/reason/inputData/tools/expectedOutput/status/
    riskLevel/requiresApproval/outputMdPath)를 모두 노출하고, D로 펼치는 추가 상세를 포함한다. */
+function rmoDeliverableForQueueNode(node) {
+  if (!node || node.kind === "orchestrator") return null;
+  const docs = rmoTable("rm_officer_deliverables", RMO_ROLE_KEY).filter((d) => d.caseId === node.caseId);
+  if (node.kind === "report") return docs.find((d) => d.kind === "integrated") || null;
+  return docs.filter((d) => d.kind === "agent" && d.agentId === node.agentId).at(-1) || null;
+}
+
 function rmoWorkMapNodeCard(node, options) {
   const agent = rmOfficerAgents.find((item) => item.id === node.agentId) || {};
   const colorClass = rmoNodeStatusColorClass(node.status);
@@ -155,6 +212,8 @@ function rmoWorkMapNodeCard(node, options) {
   const canExecute = rmoNodeStatus(node.status) === "ready";
   const canRerun = ["completed", "rejected"].includes(rmoNodeStatus(node.status)) && node.kind !== "orchestrator";
   const nodeKeyAttr = node.kind === "orchestrator" ? "" : ` data-rmo-assignment="${escapeHtml(node.id)}"`;
+  const deliverable = rmoDeliverableForQueueNode(node);
+  const docButton = deliverable ? `<button class="secondary-button" type="button" data-rmo-open-node-md="${escapeHtml(node.id)}" data-rmo-md-tab-target="${escapeHtml(deliverable.kind === "integrated" ? "통합본" : deliverable.fileName)}">산출물 보기</button>` : "";
   const output = node.outputMdPath || node.expectedOutput || agent.deliverableFile || "-";
   const minutes = node.estimatedMinutes || agent.estimatedMinutes || 3;
   const dataChips = (node.dataChips && node.dataChips.length ? node.dataChips : node.inputData || []).slice(0, 5);
@@ -178,11 +237,12 @@ function rmoWorkMapNodeCard(node, options) {
       <div class="rmo-data-chips">${dataChips.map((label) => `<span class="rmo-data-chip">${escapeHtml(label)}</span>`).join("") || '<span class="jbwc-row-note">연결 데이터 없음</span>'}</div>
     </div>
     ${rmoNodeStatus(node.status) === "running" ? `<div class="rmo-run-overlay" role="status"><span>조금만 기다려주세요</span><span class="rmo-run-spin" aria-hidden="true">⟳</span></div>` : ""}
-    ${rmoNodeStatus(node.status) === "completed" ? `<p class="rmo-aq-done">✔ 산출물 생성 완료</p>` : ""}
+    ${deliverable ? `<p class="rmo-aq-done">✔ ${escapeHtml(deliverable.fileName)} 생성 완료</p>` : (rmoNodeStatus(node.status) === "completed" ? `<p class="rmo-aq-done">✔ 산출물 생성 완료</p>` : "")}
     ${detail}
     <footer class="rmo-aq-foot">
       ${isFocused && canExecute ? `<span class="rmo-enter-hint">Enter를 눌러 승인해주세요</span>` : ""}
       ${canExecute ? `<button class="${isFocused ? "primary-button" : "secondary-button"}" type="button" data-rmo-approve="${escapeHtml(node.id)}">승인·실행</button>` : ""}
+      ${docButton}
       ${canRerun ? `<button class="secondary-button" type="button" data-rmo-rerun="${escapeHtml(node.id)}">재실행(R)</button>` : ""}
     </footer>
   </article>`;
@@ -267,6 +327,9 @@ function rmoDeliverableViewerSection(caseRow) {
     <button type="button" class="rmo-md-mode ${mdMode === "raw" ? "is-active" : ""}" data-rmo-md-mode="raw">원본 MD</button>
   </div>`;
   const body = mdMode === "raw" ? active.body : rmoMdSummaryBody(active, caseRow);
+  const bodyMarkup = mdMode === "raw"
+    ? `<pre class="rmo-md-source"><code>${escapeHtml(body || "")}</code></pre>`
+    : rmoRenderMarkdownSections(body);
   let extra = "";
   if (integrated && active.kind === "integrated") {
     const rows = (integrated.contributionRows || []).map((r) => `<li class="jbwc-row"><span>${escapeHtml(r.agent)}</span><span>${escapeHtml(r.fileName)}</span><span>${escapeHtml(r.data)}</span><span>${escapeHtml(r.date)}</span><span>${escapeHtml(String(r.contribution))}%</span></li>`).join("");
@@ -279,7 +342,7 @@ function rmoDeliverableViewerSection(caseRow) {
       <div class="jbwc-tabs rmo-md-tabs" role="tablist">${tabBar}</div>
       ${modeBar}
     </div>
-    <div class="rmo-md-body jbwc-tabbody ${mdMode === "raw" ? "rmo-md-body-raw" : "rmo-md-body-summary"}">${rmoRenderMarkdownSections(body)}</div>
+    <div class="rmo-md-body jbwc-tabbody ${mdMode === "raw" ? "rmo-md-body-raw" : "rmo-md-body-summary"}">${bodyMarkup}</div>
     <div class="settings-button-row"><button class="secondary-button" type="button" data-rmo-open-md="${escapeHtml(active.fileName)}">문서 모달로 크게 보기</button></div>
     ${extra}`)}</div>`;
 }

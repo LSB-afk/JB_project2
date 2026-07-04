@@ -996,12 +996,12 @@ function startRoleActivation(roleKey) {
   render();
 
   const reduced = roleActivationReducedMotion();
-  const phaseDelay = reduced ? 80 : 600;
+  const phaseDelay = reduced ? 80 : 1000;
   const timers = ROLE_ACTIVATION_PHASES.slice(1).map((_, offset) => window.setTimeout(() => {
     roleActivationState.phaseIndex = offset + 1;
     render();
   }, phaseDelay * (offset + 1)));
-  timers.push(window.setTimeout(() => activateRoleTarget(config), reduced ? 520 : 3000));
+  timers.push(window.setTimeout(() => activateRoleTarget(config), reduced ? 520 : 5000));
   roleActivationState.timers = timers;
   return true;
 }

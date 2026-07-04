@@ -590,6 +590,11 @@ function recordJeonseProtectionAgentRun(run) {
     riskLevel: run.riskLevel || "low",
     requiresHumanReview: Boolean(run.requiresHumanReview),
     requiresHumanEscalation: Boolean(run.requiresHumanEscalation),
+    runtime: run.runtime || "mock",
+    model: run.model || "",
+    runtimeStatus: run.runtimeStatus || (run.runtime === "ollama" ? "ok" : "mock"),
+    validatedOutput: run.validatedOutput || "",
+    errorSummary: run.errorSummary || "",
     createdAt: today,
   });
   jpoInsert("jeonse_agent_runs", row);
@@ -791,6 +796,134 @@ function runJeonseProtectionSampleRequest(key) {
     }));
   }
   return { sample, triage, agent, run };
+}
+
+function jpoSafeModelCaseSummary(row) {
+  if (!row) return {};
+  return {
+    caseNo: row.caseNo,
+    customerRefId: row.customerRefId,
+    addressMasked: row.addressMasked,
+    intakeType: row.intakeType,
+    housingType: row.housingType,
+    depositAmount: row.depositAmount,
+    status: row.status,
+    riskLevel: row.riskLevel,
+    sourceMode: row.sourceMode,
+    registryStatus: row.registryStatus,
+    guaranteeStatus: row.guaranteeStatus,
+    auctionNoticed: row.auctionNoticed,
+    contractEndDate: row.contractEndDate,
+    situation: jpoCaseSituationLine(row),
+    nextAction: jpoCaseNextAction(row),
+  };
+}
+
+function jpoModelOutputText(item) {
+  if (item == null) return "";
+  if (typeof item === "string") return item;
+  if (typeof item === "number" || typeof item === "boolean") return String(item);
+  return item.action || item.title || item.label || item.note || item.summary || item.description || JSON.stringify(item);
+}
+
+function jpoNormalizeModelPolicyText(text) {
+  return String(text || "")
+    .replace(/보증·HUG\s*확인\s*필요\s*항목\s*점검\(?가입\s*가능\s*여부\s*확정\s*금지\)?/g, "보증·HUG 공식 기준 확인 항목 점검")
+    .replace(/\(?가입\s*가능\s*여부\s*확정\s*금지\)?/g, "공식 기준 담당자 확인")
+    .replace(/확정\s*금지/g, "담당자 확인")
+    .replace(/전세사기\s*여부[^\s·,/)]*(\s*(확인|판단|결정|확정))?/g, "전세사기 관련 위험 신호 확인 후보")
+    .replace(/피해자\s*결정/g, "피해지원 신청 요건 확인 후보")
+    .replace(/법률\s*판단|법률적\s*조치/g, "법률 상담 연계 후보")
+    .replace(/보증보험\s*가능성\s*확인\s*필요/g, "보증보험 공식 기준 확인 필요")
+    .replace(/보증[^\s·,/)]*\s*(가입\s*가능성|가능성|가입)[^\s·,/)]*(\s*(확인|판단|결정|확정|가능|불가))?/g, "보증 관련 공식 기준 확인 후보")
+    .replace(/경공매\s*대응\s*결정[^\s·,/)]*(\s*확정)?/g, "경공매 기한·담당자 검토 후보")
+    .replace(/경·공매\s*대응\s*결정[^\s·,/)]*(\s*확정)?/g, "경·공매 기한·담당자 검토 후보")
+    .replace(/후보\s*단정/g, "후보")
+    .replace(/단정/g, "담당자 확인");
+}
+
+function jpoModelOutputSummary(modelResult) {
+  const parsed = modelResult && modelResult.parsed ? modelResult.parsed : {};
+  const summary = jpoNormalizeModelPolicyText(parsed.summary || modelResult.output || "로컬 모델 응답이 비어 있습니다.");
+  const nextActions = Array.isArray(parsed.nextActions) ? jpoNormalizeModelPolicyText(parsed.nextActions.slice(0, 2).map(jpoModelOutputText).filter(Boolean).join(" / ")) : "";
+  const riskNotes = Array.isArray(parsed.riskNotes) ? jpoNormalizeModelPolicyText(parsed.riskNotes.slice(0, 2).map(jpoModelOutputText).filter(Boolean).join(" / ")) : "";
+  const checklist = Array.isArray(parsed.checklist) ? jpoNormalizeModelPolicyText(parsed.checklist.slice(0, 2).map(jpoModelOutputText).filter(Boolean).join(" / ")) : "";
+  return [
+    `Ollama ${modelResult.model}`,
+    "전세보호 내부 운영 참고용",
+    summary,
+    checklist ? `확인 항목: ${checklist}` : "",
+    nextActions ? `다음 조치: ${nextActions}` : "",
+    riskNotes ? `주의 신호: ${riskNotes}` : "",
+  ].filter(Boolean).join(" · ").slice(0, 900);
+}
+
+async function runJeonseProtectionOllamaSampleRequest(key) {
+  if (typeof runAgentModelRequest !== "function") {
+    throw new Error("에이전트 모델 설정 모듈이 로드되지 않았습니다.");
+  }
+  const sample = jeonseProtectionSampleRequests.find((item) => item.key === key) || jeonseProtectionSampleRequests[0];
+  const baseCase = jpoTable("jeonse_cases", JPO_ROLE_KEY).find((c) => c.id === sample.caseId) || jpoTable("jeonse_cases", JPO_ROLE_KEY)[0];
+  const form = {
+    intakeType: sample.intakeType || (baseCase && baseCase.intakeType) || "priceRisk",
+    housingType: (baseCase && baseCase.housingType) || "rowHouse",
+    lawdCode: (baseCase && baseCase.lawdCode) || "11500",
+    depositAmount: (baseCase && baseCase.depositAmount) || 200000000,
+    registryStatus: sample.registryUnknown ? "unknown" : ((baseCase && baseCase.registryStatus) || "verified"),
+    guaranteeStatus: (baseCase && baseCase.guaranteeStatus) || "unknown",
+    auctionNoticed: sample.intakeType === "auctionNotice" || Boolean(baseCase && baseCase.auctionNoticed),
+    auctionDeadline: (baseCase && baseCase.auctionDeadline) || "",
+    contractEndDate: (baseCase && baseCase.contractEndDate) || "",
+  };
+  const triage = previewJeonseProtectionTriage(form);
+  const agentId = sample.commsDraft ? "jpo-comms" : triage.recommendedAgent;
+  const agent = jeonseProtectionAgents.find((item) => item.id === agentId);
+  const riskLevel = sample.riskLevel || triage.assessment.riskLevel;
+  const modelResult = await runAgentModelRequest({
+    harnessId: "jeonse-protection",
+    roleKey: JPO_ROLE_KEY,
+    agentId,
+    agentKey: agent && agent.agentKey,
+    input: {
+      request: sample.text,
+      case: jpoSafeModelCaseSummary(baseCase),
+      triage,
+      guardrails: JPO_FORBIDDEN_ASSERTIONS,
+      outputPolicy: "내부 운영 참고용. 전세사기 여부·피해자 결정·법률 판단·보증 가능성 확정 금지. 고객 공유 전 담당자 검토 필요.",
+    },
+  }, { forceOllama: true });
+  const outputSummary = jpoModelOutputSummary(modelResult);
+  const run = recordJeonseProtectionAgentRun({
+    agentId,
+    caseId: baseCase && baseCase.id,
+    inputSummary: `[Ollama] ${sample.text}`,
+    outputSummary,
+    status: "needsReview",
+    riskLevel,
+    requiresHumanReview: true,
+    requiresHumanEscalation: ["high", "critical"].includes(riskLevel),
+    handoffs: ["high", "critical"].includes(riskLevel) ? [{ toAgentId: "jpo-supervisor", reason: "로컬 모델 고위험 응답 — 담당자 검토 게이트" }] : [],
+    runtime: "ollama",
+    model: modelResult.model,
+    runtimeStatus: modelResult.evaluation && modelResult.evaluation.ok ? "ok" : "needsReview",
+    validatedOutput: modelResult.parsed ? JSON.stringify(modelResult.parsed) : "",
+  });
+  if (baseCase) {
+    jpoInsertDeliverable({
+      id: jpoNextId("JPO-MD", "jeonse_deliverables"),
+      caseId: baseCase.id,
+      agentId,
+      kind: "agentMd",
+      title: `${agent ? agent.displayName : agentId} 로컬 모델 산출물`,
+      fileName: jpoDeliverableFileName(baseCase, agentId),
+      status: "needsReview",
+      riskLevel,
+      requiresHumanReview: true,
+      body: jpoBuildAgentDeliverableBody(baseCase, agentId, run),
+      createdAt: run.createdAt,
+    });
+  }
+  return { sample, triage, agent, run, modelResult };
 }
 
 /* ================= 루프 엔지니어링 계층 =================

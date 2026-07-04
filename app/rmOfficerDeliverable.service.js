@@ -504,6 +504,63 @@ function rmoAgentDisplayName(id) {
   return agent ? agent.displayName : (id || "-");
 }
 
+function rmoListOrFallback(items, fallback) {
+  return Array.isArray(items) && items.length ? items : fallback;
+}
+
+function rmoCaseApprovalReason(caseRow) {
+  if (["high", "critical"].includes(caseRow.riskLevel)) return "고위험 케이스로 자동 종결하지 않고 승인권자 검토가 필요합니다.";
+  if (caseRow.requiresHumanReview) return "담당자 입력 또는 가드레일 기준상 사람 검토가 필요한 케이스입니다.";
+  return "고객 접점·조건 변경·정책자금 안내 전 담당 RM 확인이 필요합니다.";
+}
+
+function rmoRiskInterpretation(caseRow, template, evidence) {
+  const leadEvidence = evidence && evidence[0] ? `${evidence[0][0]}(${evidence[0][1]})` : "현재 근거";
+  const expectedValue = template.expectedValue || "담당자 검토를 돕는 참고 결과";
+  return [
+    `${leadEvidence}를 핵심 신호로 보되, 단일 지표만으로 승인·거절·조건 변경을 판단하지 않습니다.`,
+    `${caseRow.priorityReason || "우선순위 산정 근거"}와 연결해 업무 우선순위를 정하고, ${expectedValue} 관점에서 후속 확인이 필요합니다.`,
+    `${rmoCaseApprovalReason(caseRow)} 산출물은 내부 검토 초안이며 실제 고객 안내 전 문구와 적용 대상을 재확인해야 합니다.`,
+  ];
+}
+
+function rmoRmQuestions(caseRow, evidence, nextTasks) {
+  const firstEvidence = evidence && evidence[0] ? evidence[0][0] : "핵심 근거";
+  const firstTask = nextTasks && nextTasks[0] ? nextTasks[0] : "다음 조치";
+  return [
+    `${firstEvidence}의 최신성과 업무시스템 원천값이 일치합니까?`,
+    `${firstTask}를 진행하기 전에 고객에게 추가로 확인해야 할 사실이 있습니까?`,
+    `${caseRow.riskLevel || "medium"} 위험도 판단을 높이거나 낮출 반대 근거가 있습니까?`,
+    "고객에게 안내할 때 확정 표현 없이 설명 가능한 수준의 근거가 확보되었습니까?",
+  ];
+}
+
+function rmoCustomerDraft(caseRow, topAction) {
+  return [
+    `고객님, ${caseRow.bank || "은행"} 담당자가 현재 상담 건과 관련해 확인이 필요한 항목을 검토하고 있습니다.`,
+    `${topAction || "추가 확인이 필요한 자료와 일정"}을 먼저 확인한 뒤 가능한 다음 절차를 안내드리겠습니다.`,
+    "이 안내는 사전 확인을 위한 설명이며, 승인·조건 변경·정책자금 대상 여부는 담당자 검토 후 별도로 안내됩니다.",
+  ].join(" ");
+}
+
+function rmoIntegratedPriorities(caseRow, agentDeliverables) {
+  const rows = agentDeliverables.map((d, index) => {
+    const riskHint = (d.judgment || [])[0] || d.summary || "담당자 검토 필요";
+    const action = (d.nextTasks || [])[0] || "근거 확인";
+    return {
+      rank: index + 1,
+      agent: rmoAgentDisplayName(d.agentId),
+      reason: String(riskHint).replace(/^\d+\)\s*/, ""),
+      action,
+      approval: ["high", "critical"].includes(caseRow.riskLevel) || d.reviewRequired ? "필요" : "담당자 확인",
+    };
+  });
+  return rows.sort((a, b) => {
+    if (a.approval !== b.approval) return a.approval === "필요" ? -1 : 1;
+    return a.rank - b.rank;
+  });
+}
+
 /* 개별 에이전트 MD 산출물 객체(마크다운 body 포함). db insert는 services에서.
    구조: Summary → 상황 분석 → 근거 표(4~6행) → 판단 및 권고(단계별) → 다음 조치 태스크(체크리스트) →
    예상 기대값 → 한계 및 주의(가드레일 고지). */
@@ -518,6 +575,10 @@ function rmoBuildAgentDeliverable(caseRow, agentId, overrides) {
   const sources = (overrides && overrides.sources) || template.sources;
   const fileName = agent.deliverableFile || `${agent.id}.md`;
   const createdAt = new Date().toISOString().slice(0, 10);
+  const riskInterpretation = rmoRiskInterpretation(caseRow, template, evidence);
+  const rmQuestions = rmoRmQuestions(caseRow, evidence, nextTasks);
+  const sourceLines = rmoListOrFallback(sources, [{ label: "내부 샘플 데이터", ref: "internal:sample" }])
+    .map((s) => `- ${s.label} (${s.ref})`);
   const body = [
     `---`,
     `tags: area/rm type/agent-result status/active`,
@@ -553,11 +614,26 @@ function rmoBuildAgentDeliverable(caseRow, agentId, overrides) {
     `| --- | --- | --- |`,
     ...evidence.map((row) => `| ${row[0]} | ${row[1]} | ${row[2]} |`),
     ``,
+    `### 사용 데이터와 해석 범위`,
+    ...sourceLines,
+    `- 원문 민감정보는 저장하지 않고, 산출물에는 요약·지표·출처 라벨만 남깁니다.`,
+    `- 샘플/공개/내부 근거는 담당 RM이 실제 업무시스템 값으로 재확인해야 합니다.`,
+    ``,
     `## 판단 및 권고`,
     ...judgment.map((line) => `- ${line}`),
     ``,
+    `### 리스크 해석`,
+    ...riskInterpretation.map((line) => `- ${line}`),
+    ``,
+    `### RM 확인 질문`,
+    ...rmQuestions.map((line) => `- [ ] ${line}`),
+    ``,
     `## 다음 조치 태스크`,
     ...nextTasks.map((task) => `- [ ] ${task}`),
+    ``,
+    `### 고객 안내 전 확인`,
+    `- 고객 안내 초안은 통합 리포트에서 다시 종합하며, 이 개별 산출물은 내부 판단 근거로만 사용합니다.`,
+    `- 고객에게 전달할 문구는 확정·승인·거절 표현을 제거한 뒤 담당자 승인을 거칩니다.`,
     ``,
     `## 예상 기대값`,
     template.expectedValue,
@@ -568,6 +644,12 @@ function rmoBuildAgentDeliverable(caseRow, agentId, overrides) {
     ``,
     `## 한계 및 주의`,
     `> 이 문서는 실제 승인·금리·한도·신용평가·정책자금 대상 확정이 아닙니다. 담당 RM 검토가 필요합니다.`,
+    ``,
+    `## 감사/승인 기록`,
+    `- 생성일: ${createdAt}`,
+    `- 생성 주체: ${agent.displayName} · ${agent.org}`,
+    `- 검토 상태: 담당 RM 확인 필요`,
+    `- 승인 필요 사유: ${rmoCaseApprovalReason(caseRow)}`,
   ].join("\n");
   return {
     kind: "agent",
@@ -606,6 +688,7 @@ function rmoBuildIntegratedDeliverable(caseRow, agentDeliverables) {
   }));
   const caseTypeLabel = (RMO_CASE_TYPES[caseRow.caseType] || {}).label || caseRow.caseType || "-";
   const sourceLabels = (caseRow.prioritySources || []).map((s) => s.label).join(" · ") || "담당자 입력/샘플 근거";
+  const priorityRows = rmoIntegratedPriorities(caseRow, agentDeliverables);
   const policyCandidateByType = {
     disasterRisk: "재해 피해 확인 서류, 상환유예 검토, 정책 재해자금 안내 후보",
     repaymentCare: "상환일 분산, 상환유예 검토, 고객 리마인드 후보",
@@ -616,6 +699,8 @@ function rmoBuildIntegratedDeliverable(caseRow, agentDeliverables) {
     agriPostMonitoring: "농수산 여신 사후관리, 출하대금 입금 지연 확인, 상환유예 검토",
   };
   const policyCandidate = policyCandidateByType[caseRow.caseType] || "담당 RM 검토 후보, 고객 안내 초안, 추가 근거 확인";
+  const firstPriority = priorityRows[0];
+  const customerDraft = rmoCustomerDraft(caseRow, firstPriority && firstPriority.action);
   const body = [
     `---`,
     `tags: area/rm type/integrated-report status/active`,
@@ -649,6 +734,11 @@ function rmoBuildIntegratedDeliverable(caseRow, agentDeliverables) {
     `- SLA: ${caseRow.dueAt || "-"}까지 담당자 검토 필요`,
     `- 근거 데이터: ${sourceLabels}`,
     ``,
+    `### 종합 의견`,
+    `- ${agentDeliverables.length}개 하위 산출물의 근거를 종합하면, 현재 케이스는 "${policyCandidate}"를 중심으로 검토하는 것이 적절합니다.`,
+    `- 최우선 확인 항목은 ${firstPriority ? `${firstPriority.agent}의 "${firstPriority.action}"` : "개별 산출물 근거 확인"}입니다.`,
+    `- ${rmoCaseApprovalReason(caseRow)}`,
+    ``,
     `## 3. 에이전트 실행 결과`,
     `### 실행 에이전트 목록`,
     ...agentDeliverables.map((d) => `- ${rmoAgentDisplayName(d.agentId)}: [[${d.fileName}]] · ${d.summary}`),
@@ -662,6 +752,11 @@ function rmoBuildIntegratedDeliverable(caseRow, agentDeliverables) {
     `- 개별 산출물 ${agentDeliverables.length}건이 통합본에 연결되었습니다.`,
     `- high/critical 또는 고객 접점 항목은 사람 승인 대기 상태로 남깁니다.`,
     ``,
+    `### 우선순위와 승인 필요 사유`,
+    `| 순위 | 근거 산출물 | 우선 검토 이유 | 다음 액션 | 승인 상태 |`,
+    `| --- | --- | --- | --- | --- |`,
+    ...priorityRows.map((r, index) => `| ${index + 1} | ${r.agent} | ${r.reason} | ${r.action} | ${r.approval} |`),
+    ``,
     `## 4. 정책/여신 검토 후보`,
     `### 가능한 지원 후보`,
     `- ${policyCandidate}`,
@@ -672,13 +767,20 @@ function rmoBuildIntegratedDeliverable(caseRow, agentDeliverables) {
     `### 제한사항`,
     `- 이 문서는 검토 후보와 질문을 정리합니다. 실제 금융거래 실행, 여신 승인, 조건 변경, 정책자금 대상 확정은 담당자/승인권자가 별도로 수행합니다.`,
     ``,
-    `## 5. 다음 액션`,
+    `## 5. 고객 안내 초안`,
+    customerDraft,
+    ``,
+    `### 발송 전 점검`,
+    `- 고객별 민감정보와 실제 계좌·계약 정보는 본문에 포함하지 않습니다.`,
+    `- 담당 RM이 문구, 채널, 발송 필요성을 확인한 뒤 승인 처리합니다.`,
+    ``,
+    `## 6. 다음 액션`,
     `- 개별 산출물의 근거 표를 확인하고 부족한 데이터는 고객 정보 버튼에서 다시 확인합니다.`,
     `- 필요 시 고객 안내 초안을 열람하고 표현·발송 여부를 승인합니다.`,
     `- 반려 또는 근거 부족 산출물은 R 재실행으로 보완합니다.`,
     `- 승인 필요 항목은 A 승인 또는 승인 라우팅에서 처리합니다.`,
     ``,
-    `## 6. 감사 기록`,
+    `## 7. 감사 기록`,
     `### 생성 시각`,
     `- ${createdAt}`,
     ``,

@@ -429,6 +429,268 @@ function rmoModelOutputSummary(modelResult) {
   ].filter(Boolean).join(" · ").slice(0, 900);
 }
 
+function rmoModelEvidenceRows(modelResult) {
+  const parsed = modelResult && modelResult.parsed ? modelResult.parsed : {};
+  const rows = Array.isArray(parsed.evidence) ? parsed.evidence : [];
+  return rows.slice(0, 5).map((item, index) => {
+    if (Array.isArray(item)) {
+      return [item[0] || `근거 ${index + 1}`, item[1] || "-", item[2] || `Ollama ${modelResult.model}`];
+    }
+    if (item && typeof item === "object") {
+      return [
+        item.label || item.title || item.item || `근거 ${index + 1}`,
+        item.summary || item.detail || item.note || item.description || "-",
+        item.source || item.ref || `Ollama ${modelResult.model}`,
+      ];
+    }
+    return [`근거 ${index + 1}`, String(item || "-"), `Ollama ${modelResult.model}`];
+  });
+}
+
+function rmoModelListText(items, fallback) {
+  if (!Array.isArray(items) || !items.length) return fallback || [];
+  return items.slice(0, 5).map((item) => {
+    if (item == null) return "";
+    if (typeof item === "string") return item;
+    if (typeof item === "number" || typeof item === "boolean") return String(item);
+    return item.action || item.title || item.label || item.note || item.summary || item.description || JSON.stringify(item);
+  }).filter(Boolean);
+}
+
+let rmoOllamaQueue = Promise.resolve();
+
+function rmoFallbackModelResult(payload, error) {
+  const input = payload && payload.input ? payload.input : {};
+  const safeCase = input.case || {};
+  const request = input.request || "RM 업무지원 산출물 생성";
+  const agentLabel = payload && payload.agentId ? rmoAgentDisplayName(payload.agentId) : "RM 에이전트";
+  const reason = error && error.message ? error.message : "로컬 모델 응답 실패";
+  return {
+    model: "deterministic-fallback",
+    output: `${agentLabel} 로컬 모델 호출 실패로 결정적 업무 템플릿을 사용했습니다. ${request}에 대해 담당 RM 검토용 근거, 리스크 해석, 확인 질문, 다음 액션을 보수적으로 구성했습니다.`,
+    parsed: {
+      summary: `${safeCase.caseNo || "RM 케이스"} ${safeCase.theme || request}는 로컬 모델 응답 없이 결정적 템플릿으로 작성되었습니다. 기존 케이스 정보와 개별 산출물 근거를 기준으로 담당자 검토 항목을 정리했습니다.`,
+      evidence: [
+        ["케이스 입력", safeCase.priorityReason || safeCase.situation || "담당자 입력 및 기존 산출물 요약", "deterministic:fallback"],
+        ["모델 상태", reason, "local:ollama-error"],
+        ["검토 원칙", "승인·거절·금리·한도·정책자금 대상 확정 없이 확인 항목만 제시", "internal:guardrail"],
+      ],
+      riskNotes: [
+        "모델 응답이 없으므로 원천 데이터와 하위 산출물 근거를 담당자가 우선 확인해야 합니다.",
+        "고객 안내 전 실제 업무시스템 값, 필요 서류, 승인 라우팅 필요 여부를 재검토해야 합니다.",
+      ],
+      checklist: [
+        "개별 산출물의 근거 표와 원천 업무시스템 값 일치 여부 확인",
+        "고객 접점 전 확정 표현 제거 및 발송 승인 여부 확인",
+        "고위험 또는 조건 변경 후보는 승인 라우팅 필요 여부 확인",
+      ],
+      nextActions: [
+        "부족한 근거가 있으면 추가자료 요청 또는 R 재실행",
+        "통합 리포트 검토 후 승인·반려·보완 중 하나로 처리",
+      ],
+    },
+    evaluation: { ok: false, fallback: true, reason },
+  };
+}
+
+function rmoRunAgentModelRequestQueued(payload, options = {}) {
+  const run = rmoOllamaQueue.then(() => runAgentModelRequest(payload, options))
+    .catch((error) => rmoFallbackModelResult(payload, error));
+  rmoOllamaQueue = run.catch(() => null).then(() => new Promise((resolve) => setTimeout(resolve, 250)));
+  return run;
+}
+
+function rmoCompactDeliverableForModel(doc) {
+  return {
+    fileName: doc.fileName,
+    agentId: doc.agentId,
+    title: doc.title,
+    summary: String(doc.summary || "").slice(0, 700),
+    judgment: (doc.judgment || []).slice(0, 4),
+    nextTasks: (doc.nextTasks || []).slice(0, 4),
+    evidenceRows: (doc.evidenceRows || []).slice(0, 5),
+    sources: (doc.sources || []).slice(0, 4),
+  };
+}
+
+function rmoIntegratedBodyWithModel(baseDoc, caseRow, modelResult, agentDeliverables) {
+  const parsed = modelResult && modelResult.parsed ? modelResult.parsed : {};
+  const modelSummary = parsed.summary || rmoModelOutputSummary(modelResult);
+  const checklist = rmoModelListText(parsed.checklist, []);
+  const nextActions = rmoModelListText(parsed.nextActions, []);
+  const riskNotes = rmoModelListText(parsed.riskNotes, []);
+  const evidenceRows = rmoModelEvidenceRows(modelResult);
+  const evidenceTable = evidenceRows.length
+    ? ["| 항목 | 내용 | 출처 |", "| --- | --- | --- |", ...evidenceRows.map((row) => `| ${row[0]} | ${row[1]} | ${row[2]} |`)].join("\n")
+    : "- 모델 추가 근거 없음. 개별 산출물의 근거 표를 우선 확인합니다.";
+  const modelSection = [
+    `## 모델 종합 의견`,
+    `${modelSummary}`,
+    ``,
+    `### 모델이 종합한 주의 신호`,
+    ...(riskNotes.length ? riskNotes.map((item) => `- ${item}`) : ["- 개별 산출물 기준으로 담당자 확인이 필요합니다."]),
+    ``,
+    `### 모델이 제안한 담당자 확인 항목`,
+    ...(checklist.length ? checklist.map((item) => `- [ ] ${item}`) : ["- [ ] 개별 산출물 근거와 고객 영향 행동 분리 확인"]),
+    ``,
+    `### 모델이 제안한 다음 액션`,
+    ...(nextActions.length ? nextActions.map((item) => `- [ ] ${item}`) : ["- [ ] 통합본 확인 후 승인/반려 또는 추가자료 요청"]),
+    ``,
+    `### 모델 추가 근거 표`,
+    evidenceTable,
+    ``,
+    `### 통합 입력으로 사용한 개별 산출물`,
+    ...agentDeliverables.map((doc) => `- [[${doc.fileName}]] · ${rmoAgentDisplayName(doc.agentId)} · ${String(doc.summary || "").slice(0, 180)}`),
+    ``,
+    `> 위 모델 종합 의견은 개별 MD 산출물을 바탕으로 작성된 내부 검토 초안입니다. 실제 승인·거절·금리·한도·신용평가 판단은 담당자가 별도 검토합니다.`,
+    ``,
+  ].join("\n");
+  return baseDoc.body.replace("## 4. 정책/여신 검토 후보", `${modelSection}\n## 4. 정책/여신 검토 후보`);
+}
+
+async function approveRmOfficerReportWithOllama(asg, caseRow, now) {
+  const incompleteBranches = rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY)
+    .filter((a) => a.caseId === caseRow.id && a.kind !== "report" && a.status !== "completed");
+  if (incompleteBranches.length) return { error: "선행 분석 노드를 먼저 완료해야 합니다." };
+  if (!["pendingApproval", "running"].includes(asg.status)) return { error: "아직 실행할 수 없는 노드입니다." };
+  const agentDeliverables = rmoTable("rm_officer_deliverables", RMO_ROLE_KEY)
+    .filter((d) => d.caseId === caseRow.id && d.kind === "agent");
+  const agent = rmOfficerAgents.find((item) => item.id === asg.agentId);
+  const modelResult = await rmoRunAgentModelRequestQueued({
+    harnessId: "rm-officer",
+    roleKey: RMO_ROLE_KEY,
+    agentId: asg.agentId,
+    agentKey: agent && agent.agentKey,
+    maxTokens: 900,
+    input: {
+      request: `${caseRow.caseNo} 개별 산출물 기반 통합 리포트 작성`,
+      case: rmoSafeModelCaseSummary(caseRow),
+      deliverables: agentDeliverables.map(rmoCompactDeliverableForModel),
+      outputPolicy: "내부 업무 참고용 통합 리포트 초안. 실제 승인/거절, 금리/한도, 신용평가, 정책자금 대상 확정 금지. 담당자 검토 필요.",
+    },
+  }, { forceOllama: true });
+  const integrated = rmoBuildIntegratedDeliverable(caseRow, agentDeliverables);
+  integrated.id = rmoNextId("RMO-DLV", "rm_officer_deliverables");
+  integrated.summary = `${caseRow.theme} — Ollama ${modelResult.model}가 개별 산출물 ${agentDeliverables.length}건을 종합했습니다.`;
+  integrated.body = rmoIntegratedBodyWithModel(integrated, caseRow, modelResult, agentDeliverables);
+  integrated.sources = [{ label: `${modelResult.model} 로컬 모델 통합 응답`, ref: "local:ollama" }, ...(integrated.sources || [])];
+  rmoInsert("rm_officer_deliverables", rmoScopedRow(integrated));
+  const run = recordRmOfficerAgentRun({
+    agentId: asg.agentId,
+    caseId: caseRow.id,
+    inputSummary: `[Ollama] ${caseRow.caseNo} 통합 리포트 작성`,
+    outputSummary: rmoModelOutputSummary(modelResult),
+    status: "needsReview",
+    riskLevel: caseRow.riskLevel,
+    requiresHumanReview: true,
+    runtime: "ollama",
+    model: modelResult.model,
+    runtimeStatus: modelResult.evaluation && modelResult.evaluation.ok ? "ok" : "needsReview",
+    validatedOutput: modelResult.parsed ? JSON.stringify(modelResult.parsed) : "",
+  });
+  let stage = caseRow.stage;
+  let status = caseRow.status;
+  if (["high", "critical"].includes(caseRow.riskLevel)) {
+    status = "humanReview"; stage = "doing";
+    rmoUpdate("rm_officer_agent_assignments", asg.id, { status: "needsApproval", progress: 100 });
+    rmoInsert("rm_officer_approvals", rmoScopedRow({ id: rmoNextId("RMO-APR", "rm_officer_approvals"), caseId: caseRow.id, approvalType: "고위험 통합 리포트 검토 승인", status: "pending", requestedById: caseRow.assignedRmId, approverId: "USR-RMO-APR-01", requestedAt: now }));
+    rmoInsert("rm_officer_agent_handoffs", rmoScopedRow({ id: rmoNextId("RMO-HND", "rm_officer_agent_handoffs"), fromAgentId: asg.agentId, toAgentId: "rmo-approval-router", caseId: caseRow.id, reason: "Ollama 통합 리포트 — 승인 라우팅", status: "escalated", createdAt: now }));
+  } else {
+    status = "completed"; stage = "done";
+    rmoUpdate("rm_officer_agent_assignments", asg.id, { status: "completed", progress: 100 });
+  }
+  rmoUpdate("rm_officer_cases", caseRow.id, { stage, status, updatedAt: now });
+  rmoWriteAudit({ id: rmoNextId("RMO-AUD", "rm_officer_audit_logs"), caseId: caseRow.id, actorId: asg.agentId, action: "INTEGRATED_REPORT_CREATED", targetType: "rm_officer_deliverable", targetId: integrated.id, riskLevel: caseRow.riskLevel, reviewRequired: status === "humanReview", note: "Ollama 로컬 모델 통합 리포트", createdAt: now });
+  return {
+    assignment: rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).find((a) => a.id === asg.id),
+    deliverable: integrated,
+    run,
+    integrated,
+    case: rmoTable("rm_officer_cases", RMO_ROLE_KEY).find((c) => c.id === caseRow.id),
+  };
+}
+
+async function approveRmOfficerAssignmentWithOllama(assignmentId) {
+  if (typeof runAgentModelRequest !== "function") {
+    return approveRmOfficerAssignment(assignmentId);
+  }
+  const now = rmoNow();
+  const asg = rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).find((a) => a.id === assignmentId);
+  if (!asg) return { error: "배정을 찾을 수 없습니다." };
+  if (!["pendingApproval", "running"].includes(asg.status)) return { error: "아직 실행할 수 없는 노드입니다." };
+  const caseRow = rmoTable("rm_officer_cases", RMO_ROLE_KEY).find((c) => c.id === asg.caseId);
+  if (!caseRow) return { error: "케이스를 찾을 수 없습니다." };
+  if (asg.kind === "report") return approveRmOfficerReportWithOllama(asg, caseRow, now);
+  const agent = rmOfficerAgents.find((item) => item.id === asg.agentId);
+  const modelResult = await rmoRunAgentModelRequestQueued({
+    harnessId: "rm-officer",
+    roleKey: RMO_ROLE_KEY,
+    agentId: asg.agentId,
+    agentKey: agent && agent.agentKey,
+    maxTokens: 560,
+    input: {
+      request: `${caseRow.caseNo} ${rmoAgentDisplayName(asg.agentId)} 실행`,
+      case: rmoSafeModelCaseSummary(caseRow),
+      assignment: {
+        id: asg.id,
+        kind: asg.kind,
+        role: asg.role,
+        inputData: asg.inputData,
+        tools: asg.tools,
+        expectedOutput: asg.expectedOutput,
+        reason: asg.reason,
+      },
+      guardrails: RMO_FORBIDDEN_OUTPUTS,
+      outputPolicy: "내부 업무 참고용. 실제 승인/거절, 금리/한도, 신용평가, 정책자금 대상 확정 금지. 담당자 검토 필요.",
+    },
+  }, { forceOllama: true });
+  const parsed = modelResult && modelResult.parsed ? modelResult.parsed : {};
+  const outputSummary = rmoModelOutputSummary(modelResult);
+  const built = rmoBuildAgentDeliverable(caseRow, asg.agentId, {
+    summary: outputSummary,
+    situationAnalysis: parsed.summary || `${caseRow.caseNo} 입력과 ${rmoAgentDisplayName(asg.agentId)} 역할 정보를 로컬 모델로 분석했습니다.`,
+    evidence: rmoModelEvidenceRows(modelResult).length ? rmoModelEvidenceRows(modelResult) : undefined,
+    judgment: rmoModelListText(parsed.riskNotes, []).length ? rmoModelListText(parsed.riskNotes, []).map((item) => `로컬 모델 주의 신호: ${item}`) : undefined,
+    nextTasks: rmoModelListText(parsed.nextActions, rmoModelListText(parsed.checklist, [])).length ? rmoModelListText(parsed.nextActions, rmoModelListText(parsed.checklist, [])) : undefined,
+    sources: [{ label: `${modelResult.model} 로컬 모델 응답`, ref: "local:ollama" }],
+  });
+  built.id = rmoNextId("RMO-DLV", "rm_officer_deliverables");
+  rmoInsert("rm_officer_deliverables", rmoScopedRow(built));
+  const run = recordRmOfficerAgentRun({
+    agentId: asg.agentId,
+    caseId: caseRow.id,
+    inputSummary: `[Ollama] ${caseRow.caseNo} ${rmoAgentDisplayName(asg.agentId)} 실행`,
+    outputSummary,
+    status: "needsReview",
+    riskLevel: caseRow.riskLevel,
+    requiresHumanReview: true,
+    runtime: "ollama",
+    model: modelResult.model,
+    runtimeStatus: modelResult.evaluation && modelResult.evaluation.ok ? "ok" : "needsReview",
+    validatedOutput: modelResult.parsed ? JSON.stringify(modelResult.parsed) : "",
+  });
+  rmoWriteAudit({ id: rmoNextId("RMO-AUD", "rm_officer_audit_logs"), caseId: caseRow.id, actorId: asg.agentId, action: "DELIVERABLE_CREATED", targetType: "rm_officer_deliverable", targetId: built.id, riskLevel: caseRow.riskLevel, reviewRequired: true, note: "Ollama 로컬 모델 실행 산출물", createdAt: now });
+
+  let stage = caseRow.stage;
+  let status = caseRow.status;
+  if (rmoStageOf(caseRow) === "todo") { stage = "doing"; status = "analyzing"; }
+  rmoUpdate("rm_officer_agent_assignments", asg.id, { status: "completed", progress: 100 });
+  const branchSiblings = rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).filter((a) => a.caseId === caseRow.id && a.kind !== "report");
+  const allBranchesDone = branchSiblings.every((a) => a.id === asg.id || a.status === "completed");
+  if (allBranchesDone) {
+    const reportNode = rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).find((a) => a.caseId === caseRow.id && a.kind === "report");
+    if (reportNode && reportNode.status === "notStarted") rmoUpdate("rm_officer_agent_assignments", reportNode.id, { status: "pendingApproval" });
+  }
+  rmoUpdate("rm_officer_cases", caseRow.id, { stage, status, updatedAt: now });
+  return {
+    assignment: rmoTable("rm_officer_agent_assignments", RMO_ROLE_KEY).find((a) => a.id === asg.id),
+    deliverable: built,
+    run,
+    integrated: null,
+    case: rmoTable("rm_officer_cases", RMO_ROLE_KEY).find((c) => c.id === caseRow.id),
+  };
+}
+
 async function runRmOfficerOllamaSampleRequest(key) {
   if (typeof runAgentModelRequest !== "function") {
     throw new Error("에이전트 모델 설정 모듈이 로드되지 않았습니다.");

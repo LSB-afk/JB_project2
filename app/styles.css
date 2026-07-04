@@ -9559,6 +9559,34 @@ textarea {
 .rmo-filter:hover { border-color: #c8d8ff; }
 .rmo-filter.is-active { border: 2px solid #123d82; color: #123d82; background: #eef3ff; }
 .rmo-filter:focus-visible { outline: 2px solid #123d82; outline-offset: 2px; }
+.rmo-demo-input-panel { border-color: #c8d8ff; background: linear-gradient(135deg, #ffffff 0%, #f7faff 100%); }
+.rmo-demo-input-panel.is-running { box-shadow: 0 10px 26px rgba(18, 61, 130, 0.12); }
+.rmo-demo-input-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
+.rmo-demo-input-head h3 { margin: 0 0 6px; color: #0b2a63; font-size: 22px; line-height: 30px; }
+.rmo-demo-input-button { min-width: 210px; }
+.rmo-demo-input-grid { display: grid; grid-template-columns: minmax(260px, 0.78fr) minmax(320px, 1.22fr) auto; gap: 14px; align-items: stretch; }
+.rmo-demo-input-card,
+.rmo-demo-result,
+.rmo-demo-status { min-width: 0; border: 1px solid #d8e2fb; border-radius: 14px; background: #ffffff; padding: 14px 16px; }
+.rmo-demo-input-card span,
+.rmo-demo-status span { display: block; color: #0b4aa2; font-size: 12px; font-weight: 900; }
+.rmo-demo-input-card p,
+.rmo-demo-result p { margin: 6px 0 0; color: #29344a; font-size: 14px; line-height: 1.55; overflow-wrap: break-word; }
+.rmo-demo-result strong { display: block; color: #0b2a63; font-size: 15px; line-height: 21px; overflow-wrap: break-word; }
+.rmo-demo-agent-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.rmo-demo-agent-strip span { max-width: 100%; padding: 5px 10px; border-radius: 999px; background: #eef3ff; color: #0b2a63; font-size: 12px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rmo-demo-flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.rmo-demo-flow li { position: relative; min-width: 0; padding: 12px 12px 12px 14px; border: 1px solid #d7deec; border-radius: 12px; background: #ffffff; color: #566080; overflow: hidden; }
+.rmo-demo-flow li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #d7deec; }
+.rmo-demo-flow li strong { display: block; color: #1c2b45; font-size: 13px; line-height: 18px; overflow-wrap: break-word; }
+.rmo-demo-flow li span { display: block; margin-top: 5px; font-size: 12px; line-height: 17px; overflow-wrap: break-word; }
+.rmo-demo-flow li.is-current { border-color: #7fa6f5; background: #f3f7ff; color: #0b2a63; }
+.rmo-demo-flow li.is-current::before { background: #1c56ff; }
+.rmo-demo-flow li.is-done { border-color: #bfe6cf; background: #f0faf4; color: #145c35; }
+.rmo-demo-flow li.is-done::before { background: #0f8f72; }
+.rmo-demo-status { display: flex; align-items: center; justify-content: center; gap: 10px; min-width: 150px; text-align: center; }
+.rmo-demo-status i { display: inline-block; width: 11px; height: 11px; border-radius: 999px; background: #1c56ff; animation: rmoDemoPulse 1s ease-in-out infinite; }
+@keyframes rmoDemoPulse { 0%, 100% { opacity: 0.35; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.08); } }
 
 /* ---- 케이스 카드(요구 2) — 소제목 + 얇은 구분선으로 영역을 분리, 텍스트 오버플로 금지 ---- */
 .rmo-case-rail { display: flex; align-items: stretch; gap: 16px; overflow-x: auto; padding: 6px 2px 14px; scroll-snap-type: x proximity; scroll-padding-inline: 18px; scroll-behavior: smooth; overscroll-behavior-x: contain; }
@@ -9697,6 +9725,8 @@ textarea {
 .rmo-md-body { background: #ffffff; border: 1px solid #e3e8f2; border-radius: 14px; padding: 20px 22px; font-size: 15px; line-height: 1.7; color: #1c2b45; }
 .rmo-md-body-raw { max-height: 62vh; overflow: auto; border-color: #c8d8ff; box-shadow: inset 4px 0 0 #123d82; }
 .rmo-md-body-summary { background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%); }
+.rmo-md-source { margin: 0; padding: 18px; white-space: pre-wrap; word-break: break-word; font: 13px/1.65 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; color: #102044; background: #f7faff; border: 1px solid #d7e3ff; border-radius: 8px; }
+.rmo-md-source code { font: inherit; color: inherit; }
 .rmo-md-body h2 { font-size: 21px; margin: 4px 0 10px; color: #0b2a63; }
 .rmo-md-body h3 { font-size: 17px; margin: 16px 0 6px; color: #123d82; }
 .rmo-md-body h4 { font-size: 15px; margin: 10px 0 4px; }
@@ -10182,6 +10212,10 @@ textarea {
 
 @media (max-width: 900px) {
   .rmo-count-header { grid-template-columns: 1fr; }
+  .rmo-demo-input-grid { grid-template-columns: 1fr; }
+  .rmo-demo-flow { grid-template-columns: 1fr; }
+  .rmo-demo-input-button,
+  .rmo-demo-status { width: 100%; }
   .rmo-case-card { flex-basis: 280px; max-width: 280px; }
   .rmo-sub-workspace { grid-template-columns: 1fr; }
   .rmo-sub-left-rail { flex-direction: row; justify-content: flex-start; }

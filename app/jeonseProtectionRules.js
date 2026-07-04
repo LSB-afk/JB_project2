@@ -4,10 +4,10 @@
 
 /* 확정 단정 표현 패턴 — 소스에 금지 리터럴 자체를 남기지 않도록 \s* 분리형으로 작성 */
 const JPO_FORBIDDEN_ASSERTIONS = [
-  { label: "전세사기 여부 단정", re: /전세사기(입니다|로\s*확정|가\s*확실)/ },
-  { label: "피해자 결정 단정", re: /피해자\s*결정[^\n]{0,8}(확정|됩니다|보장)/ },
-  { label: "보증 가입 단정", re: /보증[^\n]{0,10}(가입|지원)\s*(가능|불가)\s*(확정|합니다)/ },
-  { label: "법률 자문 단정", re: /법률적으로\s*(확실|보장|문제없)/ },
+  { label: "전세사기 여부 단정", re: /전세사기(입니다|로\s*확정|가\s*확실)|전세사기\s*여부[^\n]{0,16}(판단|결정|확정|확인)/ },
+  { label: "피해자 결정 단정", re: /피해자\s*결정/ },
+  { label: "보증 가입 단정", re: /보증[^\n]{0,12}(가입\s*가능성|가입|지원|가능성)[^\n]{0,16}(가능|불가|확정|판단|결정|확인|합니다)/ },
+  { label: "법률 자문 단정", re: /법률적으로\s*(확실|보장|문제없)|법률\s*판단|법률적\s*조치/ },
   { label: "신청 대행 표현", re: /(대신\s*신청|신청을?\s*대행)/ },
 ];
 
@@ -64,6 +64,7 @@ const jeonseProtectionHooks = {
   afterAgentRun: [
     (payload) => harnessGuardCheckScope(payload.run, "roleKey", JPO_ROLE_KEY),
     (payload) => harnessGuardCheckPII(`${payload.run && payload.run.inputSummary} ${payload.run && payload.run.outputSummary}`),
+    (payload) => harnessGuardCheckAssertions(payload.run && payload.run.outputSummary, JPO_FORBIDDEN_ASSERTIONS),
   ],
   beforeCustomerMessage: [
     (payload) => harnessGuardCheckPII(payload.draftText),

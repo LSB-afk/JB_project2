@@ -1,5 +1,4 @@
-/* 전세사기 보호 담당자 역할 하네스 — 운영 에이전트 하네스 view/샘플 실행 바인딩.
-   샘플 실행은 모의(mock)이며 외부 호출 없이 agent_runs/agent_handoffs/audit_logs(및 필요 시 approvals)에만 기록한다. */
+/* 전세사기 보호 담당자 역할 하네스 — 운영 에이전트 하네스 view/샘플 실행 바인딩. */
 
 const JPO_CAPABILITY_CATALOG = [
   { name: "접수 분류·라우팅", category: "관리 및 운영 기능", summary: "접수 유형을 lifecycle 상태와 전용 에이전트 실행 순서로 분리합니다.", domain: "신규 접수", agents: ["jpo-intake"], data: "접수 유형, 보증금, 주택 유형, 기한", output: "case-routing.md, handoff 기록", status: "available" },
@@ -89,16 +88,30 @@ function jpoHarnessView() {
   const handoffs = jpoTable("agent_handoffs", JPO_ROLE_KEY).slice(0, 8);
   const registry = Object.fromEntries(jeonseFraudProtectionHarness.agents.map((agent) => [agent.id, agent]));
   const skills = jeonseFraudProtectionHarness.skills || [];
+  const modelSettings = typeof agentModelSettingsSummary === "function" ? agentModelSettingsSummary() : null;
+  const modelStatus = modelSettings ? `${modelSettings.label} · ${modelSettings.model}` : "모의 실행";
+  const detectedModels = modelSettings && modelSettings.health && modelSettings.health.models ? modelSettings.health.models : [];
+  const running = jpoState.modelRun && jpoState.modelRun.status === "running";
+  const sampleCards = jeonseProtectionSampleRequests.map((sample) => `<article class="jbwc-card">
+    <header><strong>${escapeHtml(sample.text)}</strong><span class="source-badge">${escapeHtml(sample.key)}</span></header>
+    <div class="settings-button-row">
+      <button class="secondary-button" type="button" data-jpo-sample="${escapeHtml(sample.key)}" ${running ? "disabled" : ""}>모의 실행</button>
+      <button class="primary-button" type="button" data-jpo-ollama-sample="${escapeHtml(sample.key)}" ${running ? "disabled" : ""}>로컬 모델 실행</button>
+    </div>
+  </article>`).join("");
   return jpoPanel(`${jeonseFraudProtectionHarness.name} — 전용 라우팅`,
     `<p class="jbwc-routing">요청 → <strong>전세보호 분류 오케스트레이터</strong> → 위험 신호별 전용 에이전트.
       피해자 결정·법률·경공매·보증 가능성 관련 결과는 자동 완료하지 않습니다.</p>
-     <p class="jbwc-guard">정책: ${jeonseFraudProtectionHarness.policy.map((item) => escapeHtml(item)).join(" · ")}</p>`)
-    + jpoPanel("샘플 요청 실행 (모의 — 외부 호출 없음, agent_runs/agent_handoffs 기록)",
-      `<div class="jbwc-samples">${jeonseProtectionSampleRequests.map((sample) => `<button class="secondary-button" type="button" data-jpo-sample="${escapeHtml(sample.key)}">${escapeHtml(sample.text)}</button>`).join("")}</div>
+     <p class="jbwc-guard">정책: ${jeonseFraudProtectionHarness.policy.map((item) => escapeHtml(item)).join(" · ")}</p>
+     <p class="jbwc-meta">현재 모델 설정: ${escapeHtml(modelStatus)} · 설정 화면에서 변경</p>
+     ${detectedModels.length ? `<p class="jbwc-meta">Ollama 감지 모델: ${detectedModels.map((model) => escapeHtml(model.name)).join(" · ")}</p>` : ""}`)
+    + jpoPanel("샘플 요청 실행",
+      `<div class="jbwc-grid">${sampleCards}</div>
+      ${jpoState.modelRun && jpoState.modelRun.message ? `<div class="jbwc-lastrun"><p><strong>로컬 모델 상태</strong> ${escapeHtml(jpoState.modelRun.status)}</p><p>${escapeHtml(jpoState.modelRun.message)}</p></div>` : ""}
       ${jpoState.lastRun ? `<div class="jbwc-lastrun">
         <p><strong>오케스트레이터 분류</strong> → ${escapeHtml(jpoState.lastRun.agent)} ${jpoRiskPill(jpoState.lastRun.risk)} <span class="status-pill status-new">SLA ${escapeHtml(jpoState.lastRun.sla)}</span></p>
         <p>${escapeHtml(jpoState.lastRun.result)}</p>
-        <p class="jbwc-mock-note">※ 내부 운영 참고용 모의 응답 — 실제 판단·발송 아님${jpoState.lastRun.human ? " · 사람 검토 대기" : ""}${jpoState.lastRun.approvalPending ? " · 발송 승인 대기" : ""}</p>
+        <p class="jbwc-mock-note">※ 내부 운영 참고용 응답 — 실제 판단·발송 아님${jpoState.lastRun.human ? " · 사람 검토 대기" : ""}${jpoState.lastRun.approvalPending ? " · 발송 승인 대기" : ""}</p>
       </div>` : ""}`)
     + jpoPanel("운영 명령 (Commands)", `
       <div class="jbwc-samples">${jeonseProtectionCommands.map((cmd) => `<button class="secondary-button" type="button" data-jpo-command="${escapeHtml(cmd.key)}" title="${escapeHtml(cmd.description)}">${escapeHtml(cmd.key)} · ${escapeHtml(cmd.label)}</button>`).join("")}</div>
@@ -156,6 +169,53 @@ function jpoBindHarnessSamples() {
       jpoInvalidateCounts();
       if (typeof notify === "function") notify(`오케스트레이터 → ${jpoState.lastRun.agent} 라우팅 완료 (모의)`);
       render();
+    });
+  });
+  document.querySelectorAll("[data-jpo-ollama-sample]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      jpoState.modelRun = { status: "running", message: "Ollama 로컬 모델 실행 중입니다." };
+      render();
+      try {
+        const result = await runJeonseProtectionOllamaSampleRequest(button.dataset.jpoOllamaSample);
+        jpoState.modelRun = { status: "ok", message: `${result.modelResult.model} 응답을 jeonse_agent_runs/deliverables/audit에 저장했습니다.` };
+        jpoState.lastRun = {
+          agent: result.agent ? result.agent.displayName : result.triage.recommendedAgent,
+          risk: result.run.riskLevel,
+          sla: result.triage.slaDueAt,
+          result: result.run.outputSummary,
+          human: true,
+          approvalPending: result.run.status === "pendingApproval",
+        };
+        jpoState.detail = { kind: "agentRun", id: result.run.id };
+        jpoInvalidateCounts();
+        if (typeof notify === "function") notify("Ollama 로컬 모델 실행 결과를 저장했습니다.");
+      } catch (error) {
+        const run = recordJeonseProtectionAgentRun({
+          agentId: "jpo-supervisor",
+          inputSummary: "Ollama 로컬 모델 실행 실패",
+          outputSummary: `로컬 모델 연결 실패 · ${String(error.message || error)} · 프록시/모델 설정 확인 필요`,
+          status: "needsReview",
+          riskLevel: "medium",
+          requiresHumanReview: true,
+          runtime: "ollama",
+          runtimeStatus: "error",
+          errorSummary: String(error.message || error),
+        });
+        jpoState.modelRun = { status: "error", message: String(error.message || error) };
+        jpoState.lastRun = {
+          agent: jpoAgentDisplayName(run.agentId),
+          risk: run.riskLevel,
+          sla: "-",
+          result: run.outputSummary,
+          human: true,
+          approvalPending: false,
+        };
+        jpoState.detail = { kind: "agentRun", id: run.id };
+        jpoInvalidateCounts();
+        if (typeof notify === "function") notify("Ollama 실행 실패 기록을 남겼습니다.");
+      } finally {
+        render();
+      }
     });
   });
 }
