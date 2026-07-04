@@ -138,7 +138,8 @@ function rmoViewContextModel() {
     }
     return fallback || rows[0] || null;
   };
-  const currentCase = rmoState.infoCaseId || (rmoState.detail && rmoState.detail.kind === "case" ? rmoState.detail.id : null);
+  const caseContextViews = new Set(["board", "cases"]);
+  const currentCase = caseContextViews.has(rmoState.view) ? (rmoState.infoCaseId || (rmoState.detail && rmoState.detail.kind === "case" ? rmoState.detail.id : null)) : null;
   if (currentCase) return { kind: "case", row: findCase(currentCase) };
   if (rmoState.view === "cases") {
     const c = pickContextRow("case", rmoSortByUrgency(caseRows), rmoSortByUrgency(caseRows)[0]);

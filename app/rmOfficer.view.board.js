@@ -306,6 +306,9 @@ view: 요약본 MD
 ## 사용 데이터
 - ${data || "케이스 요약 · 위험 신호 · SLA"}
 
+## 사용 에이전트/스킬
+- ${agentName} · ${doc.agentId || "integrated"} · ${doc.fileName}
+
 ## 담당자 확인 사항
 ${audits.map((a) => `- ${a.action} · ${a.createdAt}`).join("\n") || "- 감사 기록 없음"}
 `;

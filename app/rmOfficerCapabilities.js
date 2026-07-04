@@ -115,8 +115,8 @@ function rmoCapabilityRepositoryView() {
   const filtered = rmoCapabilityFilter === "all" ? RMO_CAPABILITIES : RMO_CAPABILITIES.filter((c) => c.category === rmoCapabilityFilter);
   const hero = `<section class="jbwc-hero rmo-banner rmo-cap-hero">
     <div>
-      <p class="eyebrow">역할 전용 하네스 · 업무 기능 기술 저장소</p>
-      <h2>업무 기능 기술 저장소</h2>
+      <p class="eyebrow">역할 전용 하네스 · 업무 기능 저장소</p>
+      <h2>업무 기능 저장소</h2>
       <p>AI 업무지원에서 직접 활용되는 금융, 리스크, 계약, 준법 업무 기능을 확인합니다.</p>
     </div>
   </section>`;
