@@ -56,9 +56,9 @@ aliases:
 | S-10 | **_canon (예선 SSOT)** | `_canon.md` ([[_canon]]) | **B** | 14 에이전트 표시명·객체명·수치의 최종 정본. 충돌 시 승자. |
 | S-11 | **키스톤 확정** | `00_결정-준비/키스톤-확정.md` ([[키스톤-확정]]) | **B** | 1차 축 = **[계열사(은행/비은행) × 담당 직군]**, 도메인=직군이 처리하는 케이스. 도메인 조합 하이브리드 권고. |
 | S-12 | 키스톤 역할축 검증 | `00_결정-준비/키스톤-역할축-검증.md` ([[키스톤-역할축-검증]]) | **B** | 실측 직군(RM·여신심사·사후관리·준법·AML) vs 구현 승인자(RM·준법) 정합 검증. |
-| S-13 | **business-model (DDBM)** | `00_vision/business-model.md` ([[business-model]]) | **B** | DDBM 11블록 정본. `01_business-model` 상위 근거. |
+| S-13 | **business-model (DDBM)** | `00_vision/business-model.md` ([[01_business-model]]) | **B** | DDBM 11블록 정본. `01_business-model` 상위 근거. |
 | S-14 | **차별성 — 경험레이어 서사** | `00_vision/차별성-경험레이어-서사.md` ([[차별성-경험레이어-서사]]) | **B** | 발표 척추: 업무→경험 재해석, 4관점(직원·조직·그룹·고객), TX⊃UX·EX·CX·PX / AX. `15_pitch-outline` 근거. |
-| S-15 | core-bet (CPS 재료) | `00_vision/core-bet.md` ([[core-bet]]) | **C** | `02_cps` 재료(stub, 정식화 필요). |
+| S-15 | core-bet (CPS 재료) | `00_vision/core-bet.md` ([[02_core-bet]]) | **C** | `02_cps` 재료(stub, 정식화 필요). |
 | S-16 | principles / definitions 초안 | `00_vision/principles.md`·`definitions.md` | **C** | `03_principles`·`04_definitions` 정식화 대상. |
 | S-17 | 승보 프로토타입 반영(히어로 정합) | `00_결정-준비/설계/승보-프로토타입-반영.md` | **B** | **히어로 케이스 CCL-0001(전주 카페 운전자금)의 유일한 코드정합 출처.** ⚠️ 예선 문서 다수가 JBG-104 기준 → 재정렬 대상. |
 | S-18 | rules/ (6종) | `03_제품/rules/{agent,compliance,data,import-export,naming,ui}-rules.md` | **B** | Phase4 규칙 정본. 승인 L0~L4(준법 L3~L4)·PII 외부 LLM 비반출. |
@@ -173,6 +173,6 @@ aliases:
 ## 연결
 - [[_문서생성-마스터플랜]] · [[_문서생성-스킬-DDBM-Harness-SDD]] — 배치·규격 SSOT
 - [[심사기준]] · [[본선-안내]] — 최상위 출처
-- [[_canon]] · [[키스톤-확정]] · [[business-model]] · [[차별성-경험레이어-서사]] — 백본 SSOT
+- [[_canon]] · [[키스톤-확정]] · [[01_business-model]] · [[차별성-경험레이어-서사]] — 백본 SSOT
 - [[_요약-인덱스]] — 리서치 근거층 1차 관문
 - [[INDEX|제품 인덱스]]

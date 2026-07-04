@@ -99,4 +99,4 @@ aliases: [컴플라이언스 규칙, compliance-rules]
 ---
 
 ## 연결
-[[08_본선/03_제품/00_vision/principles|Principles]] · [[08_본선/03_제품/00_vision/definitions|Definitions]] · [[08_본선/03_제품/01_결정-준비/근거팩/적법성-근거팩|적법성-근거팩]] · [[08_본선/03_제품/01_결정-준비/근거팩/국내-AI규제-HITL-딥리서치|국내-AI규제-HITL-딥리서치]] · [[08_본선/03_제품/06_build-roadmap/P3-보안-거버넌스|P3-보안-거버넌스]] · [[08_본선/03_제품/rules/agent-rules|Agent Rules]] · [[08_본선/03_제품/rules/data-rules|Data Rules]]
+[[08_본선/03_제품/docs/03_principles|Principles]] · [[08_본선/03_제품/docs/04_definitions|Definitions]] · [[08_본선/03_제품/01_결정-준비/근거팩/적법성-근거팩|적법성-근거팩]] · [[08_본선/03_제품/01_결정-준비/근거팩/국내-AI규제-HITL-딥리서치|국내-AI규제-HITL-딥리서치]] · [[08_본선/03_제품/06_build-roadmap/P3-보안-거버넌스|P3-보안-거버넌스]] · [[08_본선/03_제품/rules/agent-rules|Agent Rules]] · [[08_본선/03_제품/rules/data-rules|Data Rules]]

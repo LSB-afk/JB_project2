@@ -12,7 +12,7 @@ aliases: [오케스트레이터, AgentRun 파이프라인]
 
 > **갱신 노트(2026-07-04)**: 이전 버전(07-03)은 예선 `app.js`의 단일 5컬럼 FSM + 승인 매트릭스(L0~L4)를 정본으로 삼았다. 본선 실 프로토타입(JB_project2)은 **콘솔별 독립 FSM + 오케스트레이터(콘솔 내부 `*-intake` 에이전트) + hashchange 기반 라우팅**으로 구현돼 있다. 이 문서는 **CCL(기업여신, 히어로 콘솔)을 정본 예시로** 재작성하고, 나머지 3콘솔·상위 라우팅 계층을 그 위에 정합한다.
 >
-> 근거: `_vendor/JB_project2/app/cclConsole.core.js`·`cclConsole.app.js`(hash 라우팅)·`harnessCore.js`(훅 실행기)·`harnessRegistry.js`(manifest), [[08_본선/03_제품/05_domain-model|05_domain-model]] §3·§5, [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성-설정근거상향-흐름]](담당자 설정→근거상향 시퀀스).
+> 근거: `_vendor/JB_project2/app/cclConsole.core.js`·`cclConsole.app.js`(hash 라우팅)·`harnessCore.js`(훅 실행기)·`harnessRegistry.js`(manifest), [[08_본선/03_제품/docs/05_domain-model|05_domain-model]] §3·§5, [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성-설정근거상향-흐름]](담당자 설정→근거상향 시퀀스).
 
 ---
 
@@ -28,7 +28,7 @@ aliases: [오케스트레이터, AgentRun 파이프라인]
 
 ## 2. Case FSM — CCL(히어로 콘솔) 6단
 
-`cclConsole.core.js`의 `CCL_BOARD_COLUMNS`를 그대로 FSM 정의로 채택한다([[08_본선/03_제품/05_domain-model|05_domain-model]] §3.1과 동일).
+`cclConsole.core.js`의 `CCL_BOARD_COLUMNS`를 그대로 FSM 정의로 채택한다([[08_본선/03_제품/docs/05_domain-model|05_domain-model]] §3.1과 동일).
 
 ```mermaid
 stateDiagram-v2
@@ -105,13 +105,13 @@ sequenceDiagram
 ### 3.2 히어로 케이스(CCL-0001) 트레이스 예시
 
 1. `ccl-intake`가 신규 여신 검토 접수 감지 → `CASE_CREATED`(전주 카페 운전자금, CCL-0001, `BIZ-REF-0001`)
-2. `ccl-financial`/`ccl-repayment`가 재무 요약·상환부담 구간 산출 → riskScore 88(예선 스냅샷 기준, 재현식은 [[08_본선/03_제품/08_feature-spec|08_feature-spec]] F-1.1.1) → `requiresHumanReview=true`
+2. `ccl-financial`/`ccl-repayment`가 재무 요약·상환부담 구간 산출 → riskScore 88(예선 스냅샷 기준, 재현식은 [[08_본선/03_제품/docs/08_feature-spec|08_feature-spec]] F-1.1.1) → `requiresHumanReview=true`
 3. `ccl-policy`가 정책자금 후보 정리(행동초안 단계)
 4. `beforeCustomerMessage` 훅이 PII·단정표현 검토(검증 단계) → 통과
 5. `humanReview` 상태에서 감독(`USR-*`) 결재 → `CCL_APPROVAL_DECIDED`
 6. `ccl-reply` 초안 발송(승인 후) → `memoDraft`/`doneHold` → 감사 기록
 
-> 라이브 LLM 연결(초안 문장 생성)은 [목표/7-4] — 7/3 기준 미연결, 미연결 시 결정형 골든패스로 폴백한다([[08_본선/03_제품/08_feature-spec|08_feature-spec]] F-2.1.1).
+> 라이브 LLM 연결(초안 문장 생성)은 [목표/7-4] — 7/3 기준 미연결, 미연결 시 결정형 골든패스로 폴백한다([[08_본선/03_제품/docs/08_feature-spec|08_feature-spec]] F-2.1.1).
 
 ---
 
@@ -119,13 +119,13 @@ sequenceDiagram
 
 | 실패 유형 | 정책 | 근거 |
 |---|---|---|
-| AgentRun 실행 오류 | 자동종결 대신 `needsReview`로 안전 강등 + 감사 기록 | `harnessGuardCheckAutoClose`, [[08_본선/03_제품/08_feature-spec|08_feature-spec]] F-2.2.2 |
+| AgentRun 실행 오류 | 자동종결 대신 `needsReview`로 안전 강등 + 감사 기록 | `harnessGuardCheckAutoClose`, [[08_본선/03_제품/docs/08_feature-spec|08_feature-spec]] F-2.2.2 |
 | 고위험(critical) 오탐 가능성 | high/critical Case는 **자동종결 금지** — 안전 강등만 허용, 위반 시도는 훅 위반 로그(`harnessStore.hookLog`)에 기록 | `harnessCore.js` 공통 가드 |
 | PII 반출 스캔 실패 | 즉시 중단·회수, 원본 재사용 금지 | 신용정보법 §40조의2 ⑥⑦ |
 | 스코프 위반(계열사/역할 경계 침범) | hard fail — `role scope is required` 예외, 승인 불가 즉시 차단 | `cclTable()`/`jpoTable()`/`jbwcTable()` 공통 가드 |
 | 검증 반려(전세보호 `jpo-evaluator` 특유) | 검증 실패는 담당자 검토 큐(Human Inbox)로 회부, 생성 에이전트가 자체 수정하지 않는다 | `jpo-evaluator` guardrails |
 
-**원칙**: "차단 가능 지점(생성·발송·반출)은 차단 + 감사기록, 이미 발생한 지점은 안전 강등 + reviewRequired 감사기록" — 실패를 숨기는 대신 항상 append-only 로그로 귀결시킨다. 04_tech 원안의 GENESIS 해시체인과 JB_project2의 append-only + `reviewRequired` 플래그 사이의 통합 여부는 [Open Question]([[08_본선/03_제품/05_domain-model|05_domain-model]] §7).
+**원칙**: "차단 가능 지점(생성·발송·반출)은 차단 + 감사기록, 이미 발생한 지점은 안전 강등 + reviewRequired 감사기록" — 실패를 숨기는 대신 항상 append-only 로그로 귀결시킨다. 04_tech 원안의 GENESIS 해시체인과 JB_project2의 append-only + `reviewRequired` 플래그 사이의 통합 여부는 [Open Question]([[08_본선/03_제품/docs/05_domain-model|05_domain-model]] §7).
 
 ---
 
@@ -133,7 +133,7 @@ sequenceDiagram
 
 - [[08_본선/03_제품/02_agent-design/agent-roster|에이전트 로스터]]
 - [[08_본선/03_제품/02_agent-design/skill-spec|스킬 명세]]
-- [[08_본선/03_제품/05_domain-model|도메인 모델]]
-- [[08_본선/03_제품/07_architecture|아키텍처]](Data flow §3, Human approval §10)
+- [[08_본선/03_제품/docs/05_domain-model|도메인 모델]]
+- [[08_본선/03_제품/docs/07_architecture|아키텍처]](Data flow §3, Human approval §10)
 - [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성-설정근거상향-흐름]]
 - [[08_본선/03_제품/01_결정-준비/설계/paperclip-통합-블루프린트|paperclip-통합-블루프린트]]

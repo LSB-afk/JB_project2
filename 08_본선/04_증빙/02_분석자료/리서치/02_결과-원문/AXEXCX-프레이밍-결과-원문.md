@@ -1,3 +1,4 @@
+논
 ---
 tags:
   - area/strategy

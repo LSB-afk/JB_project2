@@ -11,7 +11,7 @@ aliases: [Demo Script, 데모 대본]
 # 14 Demo Script — CCL-0001 골든패스 시연 대본
 
 > **스키마 출처**: `_문서생성-스킬-DDBM-Harness-SDD.md` §Phase 5 `docs/14_demo-script.md`(Demo objective / persona / data / step-by-step / screen narration / what to emphasize / what not to click / fallback / time budget + 분단위 표).
-> **정합 SSOT**: [[08_본선/03_제품/09_flow|09_flow]](골든패스 9스텝·시퀀스) · [[08_본선/03_제품/05_domain-model|05_domain-model]](Actors·States·Hooks) · [[08_본선/03_제품/evals/golden-cases|evals/golden-cases]](히어로 케이스·`?live=1`) · [[08_본선/03_제품/evals/failure-modes|evals/failure-modes]](FM-DEMO1 폴백).
+> **정합 SSOT**: [[08_본선/03_제품/docs/09_flow|09_flow]](골든패스 9스텝·시퀀스) · [[08_본선/03_제품/docs/05_domain-model|05_domain-model]](Actors·States·Hooks) · [[08_본선/03_제품/evals/golden-cases|evals/golden-cases]](히어로 케이스·`?live=1`) · [[08_본선/03_제품/evals/failure-modes|evals/failure-modes]](FM-DEMO1 폴백).
 > **코드 근거**: `_vendor/JB_project2/app/cclConsole.*.js`. 히어로 = **CCL-0001**(구 `JBG-104`, 전주 카페 운영자 운전자금, `BIZ-REF-0001`). 히어로 ID는 CCL-0001로 단일 확정(2026-07-04) — 예선 표시코드는 구 코드 잔재.
 > **근거등급**: E4=코드/데모 직접확인, E3=백본 SSOT 문서, E2=리서치 근거층, E1=설계의도(미검증), [목표/조건부]=오늘 밤 개발 목표, [TBD]/[Open Question]=미정.
 
@@ -169,7 +169,7 @@ aliases: [Demo Script, 데모 대본]
 
 ## 연결
 
-- [[08_본선/03_제품/09_flow|09_flow — 골든패스 9스텝·시퀀스]]
+- [[08_본선/03_제품/docs/09_flow|09_flow — 골든패스 9스텝·시퀀스]]
 - [[08_본선/03_제품/07_발표-제출/judge-qna|judge-qna — 예상 질의 §16]]
 - [[08_본선/03_제품/evals/failure-modes|evals/failure-modes — FM-DEMO1 폴백]]
 - [[08_본선/03_제품/reports/구현현황-JB_project2|구현현황-JB_project2]] §9 (운영관측 코드 SSOT)

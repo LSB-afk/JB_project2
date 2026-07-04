@@ -43,7 +43,7 @@ cd _vendor/JB_project2 && npm run dev          # → http://127.0.0.1:8000/index
 ## 기술 스택
 
 - **프론트엔드**: vanilla JS(무번들, `<script>` 로드) · string-template 렌더 · 역할축 콘솔(계열사×역할)
-- **상태/데이터**: `localStorage`(데모) · 설계상 read-only 내부 DB·공공 API(CDC/MCI 비접촉, [[data-strategy]])
+- **상태/데이터**: `localStorage`(데모) · 설계상 read-only 내부 DB·공공 API(CDC/MCI 비접촉, [[18_data-strategy]])
 - **AI/에이전트**: 모델 선택 게이트웨이 — 어드민이 **claude code CLI / codex CLI / 로컬모델**(EXAONE 3.5 7.8B 등) 중 선택. PII 하이브리드: 로컬모델이 PII 포함 처리(온프레, 원문 비반출) / 프런티어(claude·codex)는 비민감·최소필드만. 로컬 불가 시 codex 폴백. 운영계약 `Case→AgentRun→Agent→Skill→Evidence→Approval→Audit`. 가드레일 `harnessCore.js`(PII·단정금지·스코프·승인)
 - **거버넌스**: 승인 L0~L4(준법 L3~L4) · 원본 PII 외부 비반출 · 감사 해시체인
 
@@ -53,7 +53,7 @@ cd _vendor/JB_project2 && npm run dev          # → http://127.0.0.1:8000/index
 
 - [[08_본선/03_제품/INDEX|제품 문서 인덱스]] — 전체 목록
 - 차별성: [[차별성-경험레이어-서사]](왜) · [[차별성-설정근거상향-흐름]](어떻게)
-- 제품: [[definitions]] · [[05_domain-model]] · [[01_prd/prd|PRD]] · [[08_feature-spec]] · [[09_flow]] · [[07_architecture]]
+- 제품: [[04_definitions]] · [[05_domain-model]] · [[01_prd/prd|PRD]] · [[08_feature-spec]] · [[09_flow]] · [[07_architecture]]
 - 거버넌스/검증: [[rules/agent-rules|rules]] · [[evals/rubric|evals]] · [[jb-finai-scorecard]] · [[validation-report]]
 - 핸드오프(부팅): [[본선 HOME|HANDOFF]] · 디자이너 [[_디자이너-핸드오프]]
 

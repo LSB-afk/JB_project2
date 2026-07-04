@@ -62,9 +62,9 @@ aliases: [risk-impact-register, 리스크-임팩트-레지스터]
 - [ ] 7/4 팀 확정(데모 범위·계열사 결합·KPI 정합) 반영 후 Open 항목 재평가.
 
 ## 연결
-- [[08_본선/03_제품/00_vision/business-model|Business Model (DDBM)]]
-- [[08_본선/03_제품/00_vision/core-bet|Core Bet]]
-- [[08_본선/03_제품/00_vision/principles|Principles]]
+- [[08_본선/03_제품/docs/01_business-model|Business Model (DDBM)]]
+- [[08_본선/03_제품/docs/02_core-bet|Core Bet]]
+- [[08_본선/03_제품/docs/03_principles|Principles]]
 - [[08_본선/03_제품/01_결정-준비/근거팩/적법성-근거팩|적법성-근거팩]]
 - [[08_본선/03_제품/01_결정-준비/근거팩/서사-학술규제-근거팩|서사-학술규제-근거팩]]
 - [[08_본선/04_증빙/02_분석자료/리서치/03_요약-정리/_적대검증-리포트|적대검증 리포트]]

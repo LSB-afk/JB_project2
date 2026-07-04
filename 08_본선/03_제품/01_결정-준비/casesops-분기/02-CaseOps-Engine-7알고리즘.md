@@ -841,4 +841,4 @@ sequenceDiagram
 
 ## 연결
 
-[[_INDEX|CaseOps 분기]] · [[01-메모리-거버넌스]] · [[03-119-사고대응-에이전트]] · [[04-은행DB연결-특화모델]] · [[05-9파이프라인-아키텍처-저장소]] · [[08_본선/03_제품/07_architecture|아키텍처]] · [[08_본선/03_제품/05_domain-model|도메인 모델]] · [[08_본선/03_제품/08_feature-spec|Feature Spec]] · [[08_본선/03_제품/00_vision/data-strategy|Data Strategy]] · [[08_본선/03_제품/02_agent-design/orchestrator|오케스트레이터]] · [[08_본선/03_제품/02_agent-design/skill-spec|스킬 명세]]
+[[_INDEX|CaseOps 분기]] · [[01-메모리-거버넌스]] · [[03-119-사고대응-에이전트]] · [[04-은행DB연결-특화모델]] · [[05-9파이프라인-아키텍처-저장소]] · [[08_본선/03_제품/docs/07_architecture|아키텍처]] · [[08_본선/03_제품/docs/05_domain-model|도메인 모델]] · [[08_본선/03_제품/docs/08_feature-spec|Feature Spec]] · [[08_본선/03_제품/docs/18_data-strategy|Data Strategy]] · [[08_본선/03_제품/02_agent-design/orchestrator|오케스트레이터]] · [[08_본선/03_제품/02_agent-design/skill-spec|스킬 명세]]

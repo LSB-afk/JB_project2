@@ -82,6 +82,24 @@ up: "[[INDEX|제품 인덱스]]"
 
 > **왜 amountBand·repaymentBand가 "구간"인가**: 은행별 전결 금액표·유효담보가·상환지표 산식은 비공개 내부규정이라, 절대값 하드코딩이 아니라 규칙엔진·설정값·구간 구조로 가야 한다 [E2, D2·D4]. 동시에 원본 PII를 외부 LLM에 반출하지 않는 비식별 설계와도 맞물린다 [E3, 백본].
 
+### 2.2 Relationships (엔티티 관계)
+
+> 정합 대상: [[08_본선/03_제품/docs/04_definitions|definitions §2 Concept Hierarchy]](관계 트리 원본, "재료" 관점). 이 절은 그 트리를 §2 위 엔티티 표의 카디널리티·테이블 근거로 재정식화한 것이며 원본을 덮어쓰지 않는다.
+
+| 관계 | 카디널리티 | 코드 근거 | E? |
+|---|---|---|---|
+| Case → AgentRun | 1:N(한 케이스에 다건, 시간순) | `ccl_cases` ↔ `ccl_agent_runs` | E4 |
+| AgentRun → Evidence | 1:N(ReviewNote·DocCheck·ConsultLog·Recommendation 등 근거 다건 인용) | `ccl_review_notes`·`ccl_doc_checks`·`ccl_consult_logs`·`ai_recommendations` | E4 |
+| AgentRun → RecommendationDraft | 1:1(판정 시점 스냅샷 하나가 초안 하나로 귀결) | `ai_recommendations`(코드명 `Approval.actionDraft`) | E4 |
+| RecommendationDraft → Approval | 1:1(Approval Gate 통과 필요) | `approvals` | E4 |
+| Case → Approval | 1:N(케이스 생애주기 동안 다건 승인 가능 — 품의·수정후승인 등) | `approvals` | E4 |
+| Approval/Case/AgentRun → Audit | 1:N(모든 상태 변화마다 감사 이벤트 append) | `ccl_audit_logs` | E4 |
+| Agent ↔ Skill | N:N(`skillRack` 장착) | `harness_agents`(← `cclConsoleAgents`) ↔ `cclConsoleSkills` | E4 |
+| Agent → AgentRun | 1:N(한 에이전트가 다건 실행) | `harness_agents` ↔ `ccl_agent_runs` | E4 |
+| AgentRun ↔ Handoff | N:N(에이전트 간 위임·에스컬레이션) | `agent_handoffs` | E4 |
+
+> 재료(무엇으로 만들어지는가) 관점의 전체 트리는 [[08_본선/03_제품/docs/04_definitions|definitions §2]] 참조 — `Case └ AgentRun ├ Signal[](decisionSnapshot) ├ EvidencePack └ RecommendationDraft └ Approval └ AuditEvent[]`.
+
 ---
 
 ## 3. States (상태 정의)
@@ -310,7 +328,7 @@ D11 메모리 수명주기 `write → retrieve → update → consolidation → 
 
 - [[08_본선/03_제품/04_tech/data-model|04_tech/data-model — 엔티티 필드 SSOT]]
 - [[08_본선/03_제품/05_diagrams/04_erd|05_diagrams/04_erd — ERD]]
-- [[08_본선/03_제품/00_vision/definitions|04_definitions — 용어 정의]]
+- [[08_본선/03_제품/docs/04_definitions|04_definitions — 용어 정의]]
 - [[08_본선/03_제품/01_결정-준비/키스톤-역할축-검증|키스톤 역할축 검증]]
-- [[08_본선/03_제품/00_vision/business-model|비즈니스 모델]]
+- [[08_본선/03_제품/docs/01_business-model|비즈니스 모델]]
 - [[08_본선/03_제품/00_vision/차별성-경험레이어-서사|차별성 경험레이어 서사]]

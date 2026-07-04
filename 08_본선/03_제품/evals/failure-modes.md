@@ -128,4 +128,4 @@ aliases:
 
 - [[08_본선/03_제품/evals/rubric|평가 루브릭]] · [[08_본선/03_제품/evals/golden-cases|골든 케이스]] · [[08_본선/03_제품/evals/eval-plan|평가 계획]] · [[08_본선/03_제품/evals/validation-report|검증 보고서]]
 - [[08_본선/03_제품/rules/agent-rules|agent-rules]](AGT-03·AGT-22) · [[08_본선/03_제품/rules/compliance-rules|compliance-rules]] · [[08_본선/03_제품/rules/data-rules|data-rules]]
-- [[08_본선/03_제품/00_vision/principles|principles]](fail-closed·P-004) · [[08_본선/03_제품/01_결정-준비/키스톤-확정|키스톤-확정]] · [[적대검증-리포트]]
+- [[08_본선/03_제품/docs/03_principles|principles]](fail-closed·P-004) · [[08_본선/03_제품/01_결정-준비/키스톤-확정|키스톤-확정]] · [[적대검증-리포트]]

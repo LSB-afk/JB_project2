@@ -42,7 +42,7 @@ aliases: [UI 규칙, ui-rules]
 |---|---|---|
 | UIR-10 | 모든 AI 출력 화면에는 "내부 운영 참고용 · 담당자 검토 필요"를 표시한다 | [[08_본선/03_제품/rules/agent-rules|agent-rules]] AGT-17 |
 | UIR-11 | 제도·정책 안내 문구에는 "최신 기준 담당자 확인 필요"를 추가로 표시한다 | 동 출처 |
-| UIR-12 | 근거(Evidence)가 연결되지 않은 추천 카드는 화면에 노출하지 않는다(숨기지 말고 아예 생성 자체를 차단 — AGT-08) | [[08_본선/03_제품/00_vision/principles|principles]] P-003, Rejection Rules |
+| UIR-12 | 근거(Evidence)가 연결되지 않은 추천 카드는 화면에 노출하지 않는다(숨기지 말고 아예 생성 자체를 차단 — AGT-08) | [[08_본선/03_제품/docs/03_principles|principles]] P-003, Rejection Rules |
 | UIR-13 | confidence/신뢰도(sourceTag)를 생략한 화면 표시는 금지 — `public`/`estimate`/`simulation` 중 하나를 항상 노출 | [[08_본선/03_제품/rules/agent-rules|agent-rules]] AGT-15 |
 
 ---
@@ -51,7 +51,7 @@ aliases: [UI 규칙, ui-rules]
 
 | ID | 규칙 | 근거 |
 |---|---|---|
-| UIR-14 | 고객 대상(customerFacing) 행동은 승인 화면에서 편집 가능한 초안(actionDraft)으로만 표시하고, 승인 전 발송 버튼을 노출하지 않는다 | [[08_본선/03_제품/00_vision/principles|principles]] P-002, `harnessGuardCheckApprovalRequired()` |
+| UIR-14 | 고객 대상(customerFacing) 행동은 승인 화면에서 편집 가능한 초안(actionDraft)으로만 표시하고, 승인 전 발송 버튼을 노출하지 않는다 | [[08_본선/03_제품/docs/03_principles|principles]] P-002, `harnessGuardCheckApprovalRequired()` |
 | UIR-15 | 승인 화면은 레벨(L0~L4)과 승인 주체(system/RM/준법)를 항상 함께 표시한다 — 레벨 없이 승인/반려 버튼만 노출 금지 | [[08_본선/03_제품/04_tech/data-model|data-model]] §6, [[08_본선/03_제품/02_agent-design/agent-roster|agent-roster]] §4 레벨표 |
 | UIR-16 | gateChecks(`{name, status}[]`)가 `blocked`인 항목이 있으면 승인 버튼을 비활성화한다 | data-model §6 `gateChecks` 필드 |
 | UIR-17 | AI 권고를 재정의(override)하는 경우, 사유코드 선택 없이 승인을 완료 처리하지 않는다(폼 제출 차단) | [[08_본선/03_제품/rules/agent-rules|agent-rules]] AGT-13 |
@@ -75,7 +75,7 @@ aliases: [UI 규칙, ui-rules]
 
 | 우선순위 | 화면 | 근거 |
 |---|---|---|
-| 1 | 히어로 케이스(`JBG-104` 전주 중앙로 카페) 대시보드+판정+승인 | `?demo=sme`, [[08_본선/03_제품/00_vision/definitions|definitions]] §4 |
+| 1 | 히어로 케이스(`JBG-104` 전주 중앙로 카페) 대시보드+판정+승인 | `?demo=sme`, [[08_본선/03_제품/docs/04_definitions|definitions]] §4 |
 | 2 | 전세보호 사전 점검(`?demo=jeonse`) | CLAUDE.md 데모 시나리오 |
 | 3 | 피싱/이상거래 대응(`?demo=phishing`) | CLAUDE.md 데모 시나리오 |
 | 4 | 감사 원장(Audit Ledger) 무결성 검증 + JSON 내보내기 | `verifyAuditChain()`/`exportAuditJson()` — 심사 "검증가능성" 축 직결 |
@@ -87,4 +87,4 @@ aliases: [UI 규칙, ui-rules]
 ---
 
 ## 연결
-[[08_본선/03_제품/00_vision/principles|Principles]] · [[08_본선/03_제품/00_vision/definitions|Definitions]] · [[08_본선/03_제품/04_tech/data-model|데이터 모델]] · [[08_본선/03_제품/rules/agent-rules|Agent Rules]] · [[08_본선/03_제품/rules/data-rules|Data Rules]] · [[08_본선/03_제품/01_결정-준비/설계/승보-프로토타입-반영|승보 프로토타입 반영]]
+[[08_본선/03_제품/docs/03_principles|Principles]] · [[08_본선/03_제품/docs/04_definitions|Definitions]] · [[08_본선/03_제품/04_tech/data-model|데이터 모델]] · [[08_본선/03_제품/rules/agent-rules|Agent Rules]] · [[08_본선/03_제품/rules/data-rules|Data Rules]] · [[08_본선/03_제품/01_결정-준비/설계/승보-프로토타입-반영|승보 프로토타입 반영]]

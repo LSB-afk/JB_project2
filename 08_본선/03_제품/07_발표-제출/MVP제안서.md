@@ -11,7 +11,7 @@ aliases: [MVP제안서, MVP Proposal]
 # MVP 제안서 — JB LocalGuard OS
 
 > **제출용 정본(Submission SSOT)**. 대회 제출 필수 형태(제안서) 문서로, 분산된 제품 문서를 **취합**한 것이며 창작·신규 사실을 더하지 않는다. 사실·수치·이름이 어긋나면 취합 원천 문서와 `_canon.md`가 이긴다.
-> **취합 원천**: [[08_본선/03_제품/00_vision/core-bet|Core Bet]] · [[08_본선/03_제품/00_vision/business-model|Business Model(DDBM)]] · [[08_본선/03_제품/00_vision/data-strategy|Data Strategy]] · [[08_본선/03_제품/01_prd/prd|PRD]] · [[08_본선/03_제품/09_flow|09 Flow]] · [[08_본선/03_제품/00_vision/business-metrics|Business Metrics]] · [[08_본선/03_제품/01_결정-준비/근거팩/ROI-근거팩|ROI 근거팩]].
+> **취합 원천**: [[08_본선/03_제품/docs/02_core-bet|Core Bet]] · [[08_본선/03_제품/docs/01_business-model|Business Model(DDBM)]] · [[08_본선/03_제품/docs/18_data-strategy|Data Strategy]] · [[08_본선/03_제품/docs/06_prd|PRD]] · [[08_본선/03_제품/docs/09_flow|09 Flow]] · [[08_본선/03_제품/docs/17_business-metrics|Business Metrics]] · [[08_본선/03_제품/01_결정-준비/근거팩/ROI-근거팩|ROI 근거팩]].
 > **근거등급(E0~E5)**: E5 법령·감독규정 원문 · E4 데모/코드 실동작 · E3 다수 외부출처·벤더 실증 · E2 단일 외부출처·산식+앵커 · E1 내부 판단·설계원칙 · E0 가정/추정. 목표선: 핵심 주장 E2+, 데모 주장 E4.
 > **미확정 표기**: 7/4 팀 결정 대기 항목은 `[미결/7-4]`, 미검증·가정은 `[미검증]`/`[가정]`, 개발 목표(미완)는 `[목표/조건부]`로 명시한다.
 
@@ -71,7 +71,7 @@ aliases: [MVP제안서, MVP Proposal]
 
 ## 4. Key Features (핵심 기능)
 
-> 세부는 [[08_본선/03_제품/08_feature-spec|기능 명세]] · [[08_본선/03_제품/01_prd/prd|PRD]] 기능군 1~5(25항목). 데모등급: ✅ 실동작 / 🟡 부분(mock·조건부) / ⛔ 비데모(코드·설계 근거만).
+> 세부는 [[08_본선/03_제품/docs/08_feature-spec|기능 명세]] · [[08_본선/03_제품/docs/06_prd|PRD]] 기능군 1~5(25항목). 데모등급: ✅ 실동작 / 🟡 부분(mock·조건부) / ⛔ 비데모(코드·설계 근거만).
 
 | 기능군 | 대표 기능 | 데모 | E | 근거·코드 |
 |---|---|---|---|---|
@@ -109,7 +109,7 @@ aliases: [MVP제안서, MVP Proposal]
 
 **로컬모델 손익분기점(TCO)**: 저가 API 대비 로컬 손익분기점은 월 수십억~약 97억 토큰으로 매우 늦다. JB형 기준 사용량(월 0.863억 토큰)에서는 API가 로컬보다 저렴하다 — **로컬모델 채택 근거는 비용 절감이 아니라 원본 PII 비반출·규제 준수**다(business-model §5, `[확정/E2]`).
 
-**아키텍처 5레이어**: ① 콘솔 UI(3열 셸) · ② API Gateway(인증·아웃바운드 단일 관문 DLP) · ③ 에이전트 오케스트레이션 · ④ RAG + 규칙엔진 · ⑤ 데이터·감사(7단 계약 영속 + Audit append-only). 상세는 [[08_본선/03_제품/07_architecture|Architecture]] · [[08_본선/03_제품/08_feature-spec|Feature Spec]].
+**아키텍처 5레이어**: ① 콘솔 UI(3열 셸) · ② API Gateway(인증·아웃바운드 단일 관문 DLP) · ③ 에이전트 오케스트레이션 · ④ RAG + 규칙엔진 · ⑤ 데이터·감사(7단 계약 영속 + Audit append-only). 상세는 [[08_본선/03_제품/docs/07_architecture|Architecture]] · [[08_본선/03_제품/docs/08_feature-spec|Feature Spec]].
 
 > **미검증 주의**: 은행 내부망 연동·DB 연동방식(정적/서버/하이브리드) `[미결/7-4]`, 카드매출·CB·여신원장 실 데이터 제공 범위 `[미검증]`(최영욱 확인 대기), MCI/EAI 전문 스키마·Nexacro WebView 임베딩 `[미검증]`(비공개 규격), 로컬모델 실서빙 `[TBD]`.
 
@@ -192,5 +192,5 @@ flowchart LR
 ## 연결
 
 - [[08_본선/03_제품/07_발표-제출/기능명세서|기능명세서(제출용 정본)]]
-- [[08_본선/03_제품/00_vision/business-model|Business Model(DDBM)]] · [[08_본선/03_제품/09_flow|09 Flow]]
+- [[08_본선/03_제품/docs/01_business-model|Business Model(DDBM)]] · [[08_본선/03_제품/docs/09_flow|09 Flow]]
 - [[08_본선/03_제품/07_발표-제출/pitch-outline|Pitch Outline]] · [[08_본선/03_제품/07_발표-제출/demo-script|Demo Script]]

@@ -22,13 +22,13 @@ up: "[[_03_제품_MOC]]"
 | 계약 경로 | 상태 | 실제 |
 |---|---|---|
 | `docs/00_source-log.md` | ✅ | 그대로 |
-| `docs/01_business-model.md` | 🟡 | `docs/business-model.md`(번호 프리픽스 없음) |
+| `docs/01_business-model.md` | 🟡 | `docs/01_business-model.md`(번호 프리픽스 없음) |
 | `docs/01_meeting-log.md` | ⛔ | 회의록은 `01_결정-준비/회의록-정리본/`에 산재 — docs/ 전용 통합본 없음 |
-| `docs/02_cps.md` | 🟡 | `docs/core-bet.md`(Core Bet = CPS 프레임) |
-| `docs/03_principles.md` | 🟡 | `docs/principles.md` |
-| `docs/04_definitions.md` | 🟡 | `docs/definitions.md` |
+| `docs/02_cps.md` | 🟡 | `docs/02_core-bet.md`(Core Bet = CPS 프레임) |
+| `docs/03_principles.md` | 🟡 | `docs/03_principles.md` |
+| `docs/04_definitions.md` | 🟡 | `docs/04_definitions.md` |
 | `docs/05_domain-model.md` | ✅ | 그대로 |
-| `docs/06_prd.md` | 🟡 | `docs/prd.md` |
+| `docs/06_prd.md` | 🟡 | `docs/06_prd.md` |
 | `docs/07_architecture.md` | ✅ | 그대로 |
 | `docs/08_feature-spec.md` | ✅ | 그대로 |
 | `docs/09_flow.md` | ✅ | 그대로 |
@@ -44,9 +44,9 @@ up: "[[_03_제품_MOC]]"
 | `docs/14_demo-script.md` | ✅ | `07_발표-제출/demo-script.md`(alias로 번호 보존) |
 | `docs/15_pitch-outline.md` | ✅ | `07_발표-제출/pitch-outline.md` |
 | `docs/16_judge-qna.md` | ✅ | `07_발표-제출/judge-qna.md` |
-| `docs/17_business-metrics.md` | 🟡 | `docs/business-metrics.md` |
-| `docs/18_data-strategy.md` | 🟡 | `docs/data-strategy.md` |
-| `docs/19_risk-impact-register.md` | 🟡 | `docs/risk-impact-register.md` |
+| `docs/17_business-metrics.md` | 🟡 | `docs/17_business-metrics.md` |
+| `docs/18_data-strategy.md` | 🟡 | `docs/18_data-strategy.md` |
+| `docs/19_risk-impact-register.md` | 🟡 | `docs/19_risk-impact-register.md` |
 | `docs/20_competition-submission-checklist.md` | ✅ | `07_발표-제출/submission-checklist.md` |
 
 **Rules 6 / Evals 4 / Project-level**: 전부 ✅ 일치 — `rules/{agent,compliance,data,import-export,naming,ui}-rules.md`(6/6), `evals/{eval-plan,rubric,golden-cases,failure-modes}.md`(4/4), `harness.yaml`·`validation-report.md`(루트, 2/2).
@@ -61,11 +61,11 @@ up: "[[_03_제품_MOC]]"
 - [[08_본선/03_제품/reports/implementation-index|implementation-index — 구현 vs 설계 색인(✅E4/🔶부분/📐설계)]]
 
 ### docs/ — 하네스 정규문서(harness normal-form, 2026-07-05 통합)
-- [[08_본선/03_제품/docs/00_source-log|Source Log]] · [[08_본선/03_제품/docs/business-model|Business Model (DDBM)]] — 데이터 기반 비즈니스 모델 11블록
-- [[08_본선/03_제품/docs/core-bet|Core Bet]] — 핵심 베팅(CPS) · [[08_본선/03_제품/docs/principles|Principles]] — 제품 원칙(6)+거부규칙(5) · [[08_본선/03_제품/docs/definitions|Definitions]] — 정식 용어(8종)+명명규칙
-- [[08_본선/03_제품/docs/05_domain-model|Domain Model]] · [[08_본선/03_제품/docs/prd|PRD]] · [[08_본선/03_제품/docs/mvp-scope|MVP Scope]]
+- [[08_본선/03_제품/docs/00_source-log|Source Log]] · [[08_본선/03_제품/docs/01_business-model|Business Model (DDBM)]] — 데이터 기반 비즈니스 모델 11블록
+- [[08_본선/03_제품/docs/02_core-bet|Core Bet]] — 핵심 베팅(CPS) · [[08_본선/03_제품/docs/03_principles|Principles]] — 제품 원칙(6)+거부규칙(5) · [[08_본선/03_제품/docs/04_definitions|Definitions]] — 정식 용어(8종)+명명규칙
+- [[08_본선/03_제품/docs/05_domain-model|Domain Model]] · [[08_본선/03_제품/docs/06_prd|PRD]] · [[08_본선/03_제품/docs/06_mvp-scope|MVP Scope]]
 - [[08_본선/03_제품/docs/07_architecture|Architecture]] · [[08_본선/03_제품/docs/08_feature-spec|Feature Spec]] · [[08_본선/03_제품/docs/09_flow|Flow]] · [[08_본선/03_제품/docs/11_change-log|Change Log]]
-- [[08_본선/03_제품/docs/business-metrics|Business Metrics]] · [[08_본선/03_제품/docs/data-strategy|Data Strategy]] · [[08_본선/03_제품/docs/risk-impact-register|Risk Register]]
+- [[08_본선/03_제품/docs/17_business-metrics|Business Metrics]] · [[08_본선/03_제품/docs/18_data-strategy|Data Strategy]] · [[08_본선/03_제품/docs/19_risk-impact-register|Risk Register]]
 - Vision 서사(그대로 `00_vision/`에 남음): [[08_본선/03_제품/00_vision/차별성-경험레이어-서사|차별성 — 경험레이어 서사]](발표 척추 SSOT) · [[08_본선/03_제품/00_vision/나선형-성장-구조|나선형 성장 구조]] · [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성 메커니즘]]
 
 ### 02 Agent Design

@@ -79,13 +79,13 @@ aliases: [스킬 명세, per-console 스킬 카탈로그]
 | `consumer-right-review` | 소비자 권리 검토 플로우 | `jbwc-protect` | reviewType | checklist, reviewFlag |
 | `ops-audit-writer` | 운영 감사 기록 | `jbwc-compliance` | action, targetId | auditId |
 
-> 캐피탈은 13 에이전트 대비 스킬이 6종뿐이다 — 나머지 에이전트(`jbwc-personal`/`jbwc-mortgage`/`jbwc-enterprise`/`jbwc-care`/`jbwc-complaint`/`jbwc-metrics`)는 전용 스킬이 아직 코드에 없고 공통 스킬을 재사용하거나 스킬 없이 상태 추적만 한다 — **정합성 결함, 보강 대상**([[08_본선/03_제품/08_feature-spec|08_feature-spec]] §3 약근거 표에 준하는 성격) [미검증/7-4].
+> 캐피탈은 13 에이전트 대비 스킬이 6종뿐이다 — 나머지 에이전트(`jbwc-personal`/`jbwc-mortgage`/`jbwc-enterprise`/`jbwc-care`/`jbwc-complaint`/`jbwc-metrics`)는 전용 스킬이 아직 코드에 없고 공통 스킬을 재사용하거나 스킬 없이 상태 추적만 한다 — **정합성 결함, 보강 대상**([[08_본선/03_제품/docs/08_feature-spec|08_feature-spec]] §3 약근거 표에 준하는 성격) [미검증/7-4].
 
 ---
 
 ## 3. PII 등급제
 
-`public` / `internal` / `confidential` / `restricted` 4등급([[08_본선/03_제품/05_domain-model|05_domain-model]] §2.1과 동일 기준). `restricted`(성명·주민번호·계좌·연락처·주소 등 원본 식별정보)는 외부 반출 금지 — 이 등급이 필요한 스킬(등기부 조회, 재무자료 원본 등)은 내부/온프레 모델로만 라우팅하고, 외부 LLM에는 토큰화·비식별 컨텍스트만 전달한다(신용정보법 §40조의2). 콘솔 코드는 스킬별 PII 등급 필드를 아직 명시적으로 갖고 있지 않다 — `dbReads`/`dbWrites` 화이트리스트와 `blockedActions`(원문 저장/출력 금지 문구)로 사실상 등급을 강제하는 형태다 [E4, 필드화는 [미검증/7-4]].
+`public` / `internal` / `confidential` / `restricted` 4등급([[08_본선/03_제품/docs/05_domain-model|05_domain-model]] §2.1과 동일 기준). `restricted`(성명·주민번호·계좌·연락처·주소 등 원본 식별정보)는 외부 반출 금지 — 이 등급이 필요한 스킬(등기부 조회, 재무자료 원본 등)은 내부/온프레 모델로만 라우팅하고, 외부 LLM에는 토큰화·비식별 컨텍스트만 전달한다(신용정보법 §40조의2). 콘솔 코드는 스킬별 PII 등급 필드를 아직 명시적으로 갖고 있지 않다 — `dbReads`/`dbWrites` 화이트리스트와 `blockedActions`(원문 저장/출력 금지 문구)로 사실상 등급을 강제하는 형태다 [E4, 필드화는 [미검증/7-4]].
 
 ---
 
@@ -122,4 +122,4 @@ aliases: [스킬 명세, per-console 스킬 카탈로그]
 - [[08_본선/03_제품/02_agent-design/orchestrator|오케스트레이터]]
 - [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성-설정근거상향-흐름]]
 - [[08_본선/03_제품/01_결정-준비/설계/paperclip-통합-블루프린트|paperclip-통합-블루프린트]]
-- [[08_본선/03_제품/05_domain-model|도메인 모델]]
+- [[08_본선/03_제품/docs/05_domain-model|도메인 모델]]

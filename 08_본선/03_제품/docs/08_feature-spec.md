@@ -10,7 +10,7 @@ aliases: [Feature Spec, 기능 명세]
 
 # Feature Spec — 기능 명세
 
-> 노멀폼: DDBM-Harness-SDD 스킬 §Phase3 `docs/08_feature-spec.md`(필수필드 Feature ID / User story / Input / Output / Logic / Edge cases / Acceptance criteria / Evidence). SSOT: `_canon.md`, [[08_본선/03_제품/01_prd/prd|PRD]](기능군 1~5·25항목), [[08_본선/03_제품/02_agent-design/agent-roster|에이전트 로스터]], [[08_본선/03_제품/01_결정-준비/키스톤-확정|키스톤]]. 코드 근거: `_vendor/JB_project2`(역할축 콘솔)·`02_제품/app/app.js`(4 함수계약). 전체 코드 실측 인벤토리(뷰·함수·데이터·감사체인 적용범위)는 [[08_본선/03_제품/구현현황-JB_project2|구현현황-JB_project2]] 참조(2026-07-04) — 이하 **[실측]** 표기는 이 문서 기준.
+> 노멀폼: DDBM-Harness-SDD 스킬 §Phase3 `docs/08_feature-spec.md`(필수필드 Feature ID / User story / Input / Output / Logic / Edge cases / Acceptance criteria / Evidence). SSOT: `_canon.md`, [[08_본선/03_제품/docs/06_prd|PRD]](기능군 1~5·25항목), [[08_본선/03_제품/02_agent-design/agent-roster|에이전트 로스터]], [[08_본선/03_제품/01_결정-준비/키스톤-확정|키스톤]]. 코드 근거: `_vendor/JB_project2`(역할축 콘솔)·`02_제품/app/app.js`(4 함수계약). 전체 코드 실측 인벤토리(뷰·함수·데이터·감사체인 적용범위)는 [[08_본선/03_제품/구현현황-JB_project2|구현현황-JB_project2]] 참조(2026-07-04) — 이하 **[실측]** 표기는 이 문서 기준.
 >
 > **이 문서의 위치**: PRD는 "무엇을 왜"(기능군·수용기준 요약)를, 이 문서는 "각 기능이 어떤 입력→출력→로직→예외로 **테스트 가능**한가"를 정의한다. Feature ID는 PRD 기능군 번호(x.y.z)를 그대로 승계해 추적성을 유지한다.
 >
@@ -24,6 +24,7 @@ aliases: [Feature Spec, 기능 명세]
 - 본선 히어로 ID는 **`CCL-0001`(구 `JBG-104`)** 으로 단일 확정한다. 예선 코드 JBG-104(전주 중앙로 카페, riskScore 88)와 본선 CCL-0001은 **동일 히어로(전주 카페 소상공인 여신)** 를 가리키며, 본선 전 산출물은 CCL-0001로 통일한다.
 - 선행 Wave1 문서(PRD·agent-roster·키스톤)의 JBG-104 표기는 구 코드 잔재로, 모두 CCL-0001로 정정 대상이다.
 - 남은 사항(케이스 코드 네이밍): 두 계열사·다도메인 확장 시 네이밍 규약(`{계열사}{도메인}-{seq}`?)을 `rules/naming-rules.md`에서 잠글 것 **[미결/7-4]**. 히어로 ID 이원화 자체는 종결됨.
+- **코드 정본 현행(2026-07-05)**: JB_project2 = 역할 콘솔 4종(CCL/FDR/JPO/JBWC) + RM 대시보드(단일 페이지) + 가드레일 5종 E4. PR#1(ccl-financial)·PR#2(메모리 카드+LLM 게이트웨이) **OPEN 머지 대기**. 실태 색인: [[implementation-index]] · [[구현현황-JB_project2]].
 
 ---
 
@@ -98,13 +99,32 @@ aliases: [Feature Spec, 기능 명세]
 
 | Feature ID | 기능 | 상태 | 데모 | E | 추적(PRD·코드) |
 |---|---|---|---|---|---|
-| 7.1.1 | LLM 게이트웨이 `POST /llm` — claude/codex CLI 라우팅 + 폴백 사다리 + 시도별 JSONL 원장 | MVP | ✅(프록시 기동 시) | E4 | Q14 · `api-proxy.mjs handleLlm()` |
+| 7.1.1 | LLM 게이트웨이 `POST /llm` — claude·codex·ollama 3엔진 라우팅 + 폴백 사다리 + 시도별 JSONL 원장 | MVP | ✅(프록시 기동 시) | E4 | judge-qna §16 · `api-proxy.mjs handleLlm()` · JB_project2 이식본 `scripts/llm-gateway.mjs`(:8022, PR#2) |
 | 7.1.2 | 토큰 실측 패널 — 케이스 단가·티어별·RM 1인 월 환산(`GET /llm/usage`) | MVP | ✅(`?live=1` 한정) | E4 | Q13 · `modules.js liveLlmBlock()` |
 | 7.1.3 | 감사 레코드 소비자 용도 태그(당국 증적/분쟁 재생/운영 점검/원가 정산) | MVP | ✅(base app) | E4 | Q15 · `app.js auditPurpose()` |
 | 7.1.4 | 엔진룸 — 최근 LLM 호출 타임라인(5초 폴링, 폴백·격상 표시) | MVP | ✅(`?live=1` 한정) | E4 | Q14 · `modules.js engineRoomRows()` |
 | 7.1.5 | 운영계약 온톨로지 그래프 — 케이스 실데이터 관계 렌더(cytoscape 로컬 벤더링, 17노드/16엣지 실측) | MVP | ✅(base app) | E4 | 케이스 상세 · `modules.js initCaseOntology()` |
 
-**데모가능 요약**: ✅실동작 17 / 🟡부분 8 / ⛔비데모 6 (총 31 항목 — 기능군6 신규 FR-08·FR-09 ⛔ 2건, 기능군7 운영 관측 ✅ 5건 포함). E4(작동 검증) 목표 달성 = ✅ 12항목 중 결정형 로직. 라이브 LLM 스트리밍(2.3.1)·PII 반출스캔 E4 격상은 **[목표/7-4]** — 현재 미완(키스톤 §정직한 전제). FR-08·FR-09는 **[설계/미구현]** — 발표 시 로드맵 항목으로만 제시.
+### 기능군 8 — 메모리 3계층 (PR#2 제출·머지 대기) [2026-07-04 구현·검증]
+
+> 고객/에이전트/직원 메모리 카드 — "기본값은 기억하지 않는다" 증류. 스펙 SSOT: [[11-메모리-3계층-자동진화-설계도]]. fork 브랜치에서 수용기준 4/4 브라우저 실검증, **머지 전이라 정본 데모는 조건부**.
+
+| Feature ID | 기능 | 상태 | 데모 | E | 추적(PRD·코드) |
+|---|---|---|---|---|---|
+| 8.1.1 | MemoryCard 저장·규칙 증류(승인/반려→3계층 카드, 3회→confirmed, PII 거부, crossBan) | MVP | 🟡(PR#2 브랜치 한정) | E4/fork | `memoryCards.js` · `afterApprovalDecision` 훅 push |
+| 8.1.2 | 메모리 카드 읽기 전용 뷰(에이전트 하네스 하단, provenance 표시) | MVP | 🟡(PR#2 브랜치 한정) | E4/fork | `cclMemoryCardsPanel()` |
+
+### 기능군 9 — 운영 순찰 에이전트 3종 [설계]
+
+> 관측 원장을 순찰하는 상시 운영 레이어 — 실행 권한 없음(제안→사람 승인). 설계 SSOT: casesops-분기 08~10.
+
+| Feature ID | 기능 | 상태 | 데모 | E | 추적(PRD·코드) |
+|---|---|---|---|---|---|
+| 9.1.1 | Cost Sentinel — 원가 순찰·티어 효율 제안·break-even 감시 | 향후 | ⛔ | E1 | [[08-Cost-Sentinel-에이전트-설계도]] |
+| 9.1.2 | 119 라우팅 관측 확장 — 임계 초과 사고 승격·사람 큐 티켓 | 향후 | ⛔ | E1 | [[09-119-라우팅관측-확장-설계도]] |
+| 9.1.3 | Ledger Curator — 소비자 없는 로그 검사·메모리 승격 심사 | 향후 | ⛔ | E1 | [[10-Ledger-Curator-에이전트-설계도]] |
+
+**데모가능 요약**: ✅실동작 17 / 🟡부분 10 / ⛔비데모 9 (총 36 항목 — 기능군6 ⛔2·기능군7 ✅5·기능군8 🟡2(PR#2)·기능군9 ⛔3 포함). E4(작동 검증) 목표 달성 = ✅ 12항목 중 결정형 로직. 라이브 LLM 스트리밍(2.3.1)·PII 반출스캔 E4 격상은 **[목표/7-4]** — 현재 미완(키스톤 §정직한 전제). FR-08·FR-09는 **[설계/미구현]** — 발표 시 로드맵 항목으로만 제시.
 
 ---
 
@@ -229,7 +249,7 @@ aliases: [Feature Spec, 기능 명세]
 
 ## 연결
 
-- [[08_본선/03_제품/01_prd/prd|PRD]] (기능군 1~5 수용기준 SSOT)
+- [[08_본선/03_제품/docs/06_prd|PRD]] (기능군 1~5 수용기준 SSOT)
 - [[08_본선/03_제품/02_agent-design/agent-roster|에이전트 로스터]] (실행시퀀스·승인 매트릭스)
 - [[08_본선/03_제품/01_결정-준비/키스톤-확정|키스톤]] (역할축·데모 3케이스·정직한 전제)
 - [[08_본선/03_제품/04_tech/data-model|데이터 모델]]

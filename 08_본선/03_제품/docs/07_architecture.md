@@ -71,7 +71,7 @@ graph LR
 | ④ RAG + 규칙엔진 | 판단에 근거 부착 — RAG는 근거 검색→Evidence, 규칙엔진은 신호 계산→승인 레벨 라우팅 | ③→벡터스토어+규칙테이블→③ | ①데이터 등급제(수집 시 태깅) | E2(설계)/E4(computeRiskDecision) |
 | ⑤ 데이터·감사 | 7단 계약 영속 + Audit append-only 원장 | 전 레이어 write 수신, ①에 조회 전용 | ④반출 결과·태그 이력 기록 | E4/E3 |
 
-**에이전트 로스터**: JB_project2 CCL은 **8종**(표면 5 + 감독·내부 3)으로 구현됨 [E4, `cclConsole.core.js:111-159`]. 04_tech §1은 canon 기준 "14 에이전트(오케스트레이터+12전문+2사람승인자)"로 기술 — **두 수치는 서로 다른 계열**(CCL 도메인 8 vs 전체 콘솔 14 목표)이며 통합 명명은 [Open Question]. 도메인 모델과 정합: [[08_본선/03_제품/05_domain-model|05_domain-model §1]].
+**에이전트 로스터**: JB_project2 CCL은 **8종**(표면 5 + 감독·내부 3)으로 구현됨 [E4, `cclConsole.core.js:111-159`]. 04_tech §1은 canon 기준 "14 에이전트(오케스트레이터+12전문+2사람승인자)"로 기술 — **두 수치는 서로 다른 계열**(CCL 도메인 8 vs 전체 콘솔 14 목표)이며 통합 명명은 [Open Question]. 도메인 모델과 정합: [[08_본선/03_제품/docs/05_domain-model|05_domain-model §1]].
 
 > **왜 LLM을 판단 엔진으로 안 쓰나** [E2, D20]: 금융 AX의 주 모델은 LLM이 아니라 특화모델·규칙엔진·레거시 어댑터를 묶는 하네스다. LLM은 **의도 분류 → 근거 범주 결정 → 도구 호출 → 결과 요약**만 맡고, 신용평가·여신심사 점수는 XGBoost/LightGBM류, FDS는 규칙엔진+GNN에 라우팅한다. 같은 모델도 scaffolding에 따라 성능이 크게 갈리므로 **하네스(컨텍스트 배치·승인 게이트·툴 계약·재시도·로깅)가 차별점** [E2, D20]. → JB_project2의 규칙 게이트(`CCL_FORBIDDEN_ASSERTIONS`·`harnessGuardCheckAutoClose`)가 이 원칙의 코드 구현 [E4].
 
@@ -178,7 +178,7 @@ graph TB
 | 3 | 오픈웨이트(Llama 3.1/Qwen3/DeepSeek distill) | 셀프호스팅 대안 | 내부망 | E2, D22 |
 | 4 | 외부 premium API(Claude/OpenAI) | 비식별 요약·고난도 추론 | **비식별·비신용만** 승격 | E3(정책)/E1(사업자 TBD) |
 
-**5단계 데이터 등급** [E2, D5a]: `원본 개인신용정보 → 가명정보 → 익명정보 → AI 입력 불가 → AI 입력 가능`. JB_project2 코드는 `public/internal/confidential/restricted` 4등급으로 태깅([[08_본선/03_제품/05_domain-model|domain §2.1]], `jb-db` 커넥터 `govTier:"restricted"`) [E4] — 5단계 법적 등급 ↔ 4등급 코드 태그 정합 매핑은 [Open Question].
+**5단계 데이터 등급** [E2, D5a]: `원본 개인신용정보 → 가명정보 → 익명정보 → AI 입력 불가 → AI 입력 가능`. JB_project2 코드는 `public/internal/confidential/restricted` 4등급으로 태깅([[08_본선/03_제품/docs/05_domain-model|domain §2.1]], `jb-db` 커넥터 `govTier:"restricted"`) [E4] — 5단계 법적 등급 ↔ 4등급 코드 태그 정합 매핑은 [Open Question].
 
 > **LLM 역할 고정** [E2, D20]: LLM은 점수화·예측·탐지를 직접 맡지 않는다. 신용/여신은 특화모델(XGBoost·LightGBM·RF), FDS는 규칙엔진+GNN, 문서 IE는 LayoutLMv3·Donut. **비용 메시지** [E2, D22, 일부 추정]: 4xH100 70B가 GPT-4.1 mini보다 싸지려면 월 ~97억 토큰, GPT-5.5 대비 break-even은 70/30 기준 ~5.9억 토큰. TCO 변수는 전기료(4xH100 월 ~26.6만원)가 아니라 GPU 감가상각·활용률. GPU 정가·EXAONE 실서비스 적합성은 [미검증].
 
@@ -197,7 +197,7 @@ graph TB
 | 벡터스토어 | (미구현) | 로컬 임베딩 우선(sqlite-vec/Chroma vs pgvector) — 외부 임베딩 API 미사용 | E1 [TBD] |
 | 토큰↔원본 키 | (미구현) | HSM 또는 별도 암호화 저장소, 취급자 분리 | E2, D5a [TBD] |
 
-> **정합 노트 [미검증]**: 04_tech/data-model은 감사를 **GENESIS 해시체인**(FNV-1a→SHA-256)으로 기술(02_제품/app 기반), JB_project2 CCL은 **append-only + reviewRequired 플래그**로 구현(해시체인 미구현) [E4]. 발표에서는 해시체인=무결성 목표, CCL 로그=현 데모 구현으로 구분 권장 [E1] — [[08_본선/03_제품/05_domain-model|domain §7]]과 동일 입장.
+> **정합 노트 [미검증]**: 04_tech/data-model은 감사를 **GENESIS 해시체인**(FNV-1a→SHA-256)으로 기술(02_제품/app 기반), JB_project2 CCL은 **append-only + reviewRequired 플래그**로 구현(해시체인 미구현) [E4]. 발표에서는 해시체인=무결성 목표, CCL 로그=현 데모 구현으로 구분 권장 [E1] — [[08_본선/03_제품/docs/05_domain-model|domain §7]]과 동일 입장.
 
 ---
 
@@ -255,7 +255,7 @@ graph TB
 | 금지 단정 | 승인/금리/신용등급 단정 문구 | 정규식 차단(`CCL_FORBIDDEN_ASSERTIONS`) | [E4] | E4 |
 | 외부 반출 승인 | 민감정보 섞인 외부 호출 | 정책엔진 차단 또는 승인 대기, 고위험은 이중승인 | D22/D10(설계) | E2 [미구현] |
 
-> **예외**: FDS(사기) 실시간 선차단만 사람 승인 전 허용 — 본 CCL 여신 도메인 밖(피싱 콘솔 소관) [E2, domain §1]. **승인 레벨** [미검증]: 04_tech는 L0~L4(L3~L4=준법), JB_project2는 `riskLevel + requiresHumanReview + supervisor 결재`. 잠정 매핑 low→L0/L1·medium→L2·high→L3·critical→L4, L4 실 승인 주체 [Open Question] — [[08_본선/03_제품/05_domain-model|domain §3]].
+> **예외**: FDS(사기) 실시간 선차단만 사람 승인 전 허용 — 본 CCL 여신 도메인 밖(피싱 콘솔 소관) [E2, domain §1]. **승인 레벨** [미검증]: 04_tech는 L0~L4(L3~L4=준법), JB_project2는 `riskLevel + requiresHumanReview + supervisor 결재`. 잠정 매핑 low→L0/L1·medium→L2·high→L3·critical→L4, L4 실 승인 주체 [Open Question] — [[08_본선/03_제품/docs/05_domain-model|domain §3]].
 
 ---
 
@@ -320,6 +320,6 @@ graph LR
 ## 연결
 
 - [[08_본선/03_제품/04_tech/architecture|04_tech/architecture — 레이어·스택 원안(정합 대상)]]
-- [[08_본선/03_제품/05_domain-model|05_domain-model — 도메인 모델(정합)]]
+- [[08_본선/03_제품/docs/05_domain-model|05_domain-model — 도메인 모델(정합)]]
 - [[08_본선/03_제품/01_결정-준비/키스톤-확정|키스톤 — 콘솔 조직 축]]
 - [[08_본선/03_제품/reports/구현현황-JB_project2|구현현황-JB_project2]] (코드 SSOT §9)

@@ -10,7 +10,7 @@ aliases: [business-metrics, 비즈니스지표]
 
 # Business Metrics — JB LocalGuard OS
 
-> [미결/7-4] 수치·가정의 백본은 [[business-model|Business Model(DDBM)]]과 동일하다. 도메인 조합·데모②·승인직군 확대는 7/4 팀 확정 전까지 최선 가정으로 채웠다.
+> [미결/7-4] 수치·가정의 백본은 [[01_business-model|Business Model(DDBM)]]과 동일하다. 도메인 조합·데모②·승인직군 확대는 7/4 팀 확정 전까지 최선 가정으로 채웠다.
 > **근거등급 범례** — E5 공개 1차실측 / E4 데모에서 실측·시연 가능 / E3 공개 2차·벤더 실증 / E2 산식+공개앵커 조합 / E1 내부 가정 / E0 미검증. 목표는 E2+, 데모 지표는 E4.
 
 ## 왜 이 지표 세트인가 (심사위원 반문 대비)
@@ -91,8 +91,8 @@ aliases: [business-metrics, 비즈니스지표]
 - [ ] 7/4 팀 확정(seat 단가·OPEX·확장 seat·연체 인과) 반영 후 [미결/7-4] 해제.
 
 ## 연결
-- [[business-model|Business Model(DDBM)]]
-- [[core-bet|Core Bet]]
+- [[01_business-model|Business Model(DDBM)]]
+- [[02_core-bet|Core Bet]]
 - [[08_본선/03_제품/01_결정-준비/근거팩/ROI-근거팩|ROI-근거팩]]
 - [[08_본선/03_제품/01_결정-준비/키스톤-확정|키스톤-확정]]
 - [[차별성-경험레이어-서사|차별성 경험레이어 서사]]

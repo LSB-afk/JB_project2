@@ -9,7 +9,7 @@ up: "[[INDEX|제품 인덱스]]"
 
 # 에이전트 흐름 다이어그램 — 기업여신 콘솔(CCL) 히어로 CCL-0001
 
-> **정합 기준**: [[08_본선/03_제품/05_domain-model|05_domain-model]] §1·§5(루트 정본). 코드 SSOT: `_vendor/JB_project2/app/cclConsole.core.js`(e57b826). 히어로 = **CCL-0001**(전주 카페 운영자 운전자금, `BIZ-REF-0001`).
+> **정합 기준**: [[08_본선/03_제품/docs/05_domain-model|05_domain-model]] §1·§5(루트 정본). 코드 SSOT: `_vendor/JB_project2/app/cclConsole.core.js`(e57b826). 히어로 = **CCL-0001**(전주 카페 운영자 운전자금, `BIZ-REF-0001`).
 
 ---
 
@@ -82,7 +82,7 @@ sequenceDiagram
 
 ## 참조
 
-- [[08_본선/03_제품/05_domain-model|05_domain-model — 도메인 모델(정합 대상)]]
+- [[08_본선/03_제품/docs/05_domain-model|05_domain-model — 도메인 모델(정합 대상)]]
 - [[08_본선/03_제품/02_agent-design/agent-roster|에이전트 로스터]]
 - [[08_본선/03_제품/02_agent-design/orchestrator|오케스트레이터]]
 - [[08_본선/03_제품/05_diagrams/03_approval-gate|승인 게이트]]

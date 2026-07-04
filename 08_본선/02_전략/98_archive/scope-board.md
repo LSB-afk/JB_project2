@@ -43,5 +43,5 @@ up: "[[_02_전략_MOC|전략 MOC]]"
 ## 참조
 
 - [[_체계/본선-MVP-점검|본선 MVP 점검]]
-- [[08_본선/03_제품/01_prd/mvp-scope|MVP Scope]]
+- [[08_본선/03_제품/docs/06_mvp-scope|MVP Scope]]
 - [[08_본선/02_전략/03_decisions/bet-memo|Bet Memo]]

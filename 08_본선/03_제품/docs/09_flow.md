@@ -11,7 +11,7 @@ aliases: [Flow, CCL-0001 골든패스]
 # 09 Flow — 흐름·시퀀스 명세 (CCL-0001 골든패스)
 
 > **스키마 출처**: `_문서생성-스킬-DDBM-Harness-SDD.md` §Phase 3 `docs/09_flow.md` — User journey / System / Agent / Data / Approval / Error / Demo 시퀀스를 Mermaid로 제시.
-> **정합 SSOT**: [[08_본선/03_제품/05_domain-model|05_domain-model]](Actors·States·Events·Permissions·Hooks) · [[08_본선/03_제품/01_prd/prd|01_prd]](Surfaces·Features) · [[08_본선/03_제품/04_tech/data-model|04_tech/data-model]](필드·훅) · [[08_본선/03_제품/03_ux/design-system|03_ux/design-system]](3열 셸·화면). 필드가 어긋나면 04_tech, 코드가 어긋나면 `_vendor/JB_project2` 소스가 최종 SSOT.
+> **정합 SSOT**: [[08_본선/03_제품/docs/05_domain-model|05_domain-model]](Actors·States·Events·Permissions·Hooks) · [[08_본선/03_제품/docs/06_prd|01_prd]](Surfaces·Features) · [[08_본선/03_제품/04_tech/data-model|04_tech/data-model]](필드·훅) · [[08_본선/03_제품/03_ux/design-system|03_ux/design-system]](3열 셸·화면). 필드가 어긋나면 04_tech, 코드가 어긋나면 `_vendor/JB_project2` 소스가 최종 SSOT.
 > **코드 근거**: `_vendor/JB_project2/app/cclConsole.core.js`·`cclConsole.data.js`. 히어로 = **CCL-0001**(전주 카페 운영자 운전자금, `BIZ-REF-0001`).
 > **근거등급**: E4=코드/데모 직접확인, E3=백본 SSOT 문서, E2=리서치 근거층, E1=설계의도(미검증), [TBD]/[Open Question]=미정.
 
@@ -21,7 +21,7 @@ aliases: [Flow, CCL-0001 골든패스]
 
 **한 문장**: RM(담당자)이 로그인해 위험 케이스 CCL-0001을 만들면, 8종 CCL 에이전트가 판단→행동초안→검증을 수행해 품의 초안을 올리고, 여신감독이 승인 게이트에서 근거·규정검증을 보고 승인/거부/수정후승인을 결정한 **뒤에만** 고객 회신이 나가며, 전 단계가 감사 로그로 봉인된다 [E4].
 
-**골든패스 9스텝(과제 지정)** — 화면(S-xx)은 [[08_본선/03_제품/03_ux/design-system|design-system]] 3열 셸 기준, 상태는 [[08_본선/03_제품/05_domain-model|domain-model]] §3 CCL lifecycle 기준.
+**골든패스 9스텝(과제 지정)** — 화면(S-xx)은 [[08_본선/03_제품/03_ux/design-system|design-system]] 3열 셸 기준, 상태는 [[08_본선/03_제품/docs/05_domain-model|domain-model]] §3 CCL lifecycle 기준.
 
 | # | 스텝 | 화면(surface) | Case 상태 | 관측 이벤트/훅 | E? |
 |---|---|---|---|---|---|
@@ -308,8 +308,8 @@ sequenceDiagram
 
 ## 연결
 
-- [[08_본선/03_제품/05_domain-model|05_domain-model — Actors·States·Events·Hooks]]
-- [[08_본선/03_제품/01_prd/prd|01_prd — Surfaces·Features]]
+- [[08_본선/03_제품/docs/05_domain-model|05_domain-model — Actors·States·Events·Hooks]]
+- [[08_본선/03_제품/docs/06_prd|01_prd — Surfaces·Features]]
 - [[08_본선/03_제품/04_tech/data-model|04_tech/data-model — 필드·훅 SSOT]]
 - [[08_본선/03_제품/03_ux/design-system|03_ux/design-system — 3열 셸·화면·경험원칙]]
 - [[08_본선/03_제품/05_diagrams/03_approval-gate|05_diagrams/03_approval-gate]]

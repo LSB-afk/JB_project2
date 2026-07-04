@@ -19,7 +19,7 @@ aliases: [데이터 규칙, data-rules]
 | DAT-02 | law.go.kr(법령 원문) | 외부 공개 | 도달성 확인, 인증키 불요 |
 | DAT-03 | MOLIT(국토부 실거래가, 전세가율 산정) | 외부 공개 API | 도달성 확인됨, 인증키 발급 (TBD) |
 | DAT-04 | ECOS(한국은행 경제통계) | 외부 공개 API | 도달성 확인됨, 인증키 발급 (TBD) |
-| DAT-05 | 데모 시드 데이터(`app.js` 초기 `cases`/`evidence`) | 합성(synthetic) | [확정] 전량 합성 — [[08_본선/03_제품/00_vision/principles|principles]] P-006 |
+| DAT-05 | 데모 시드 데이터(`app.js` 초기 `cases`/`evidence`) | 합성(synthetic) | [확정] 전량 합성 — [[08_본선/03_제품/docs/03_principles|principles]] P-006 |
 
 ---
 
@@ -104,4 +104,4 @@ aliases: [데이터 규칙, data-rules]
 ---
 
 ## 연결
-[[08_본선/03_제품/04_tech/data-model|데이터 모델]] · [[08_본선/03_제품/rules/compliance-rules|Compliance Rules]] · [[08_본선/03_제품/rules/agent-rules|Agent Rules]] · [[08_본선/03_제품/00_vision/principles|Principles]] · [[08_본선/03_제품/00_vision/definitions|Definitions]] · [[08_본선/03_제품/06_build-roadmap/P3-보안-거버넌스|P3-보안-거버넌스]]
+[[08_본선/03_제품/04_tech/data-model|데이터 모델]] · [[08_본선/03_제품/rules/compliance-rules|Compliance Rules]] · [[08_본선/03_제품/rules/agent-rules|Agent Rules]] · [[08_본선/03_제품/docs/03_principles|Principles]] · [[08_본선/03_제품/docs/04_definitions|Definitions]] · [[08_본선/03_제품/06_build-roadmap/P3-보안-거버넌스|P3-보안-거버넌스]]

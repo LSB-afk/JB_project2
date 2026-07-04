@@ -34,12 +34,12 @@ JB LocalGuard OS의 기능을 명확하게 정의하고, 심사 기준 25항목(
 
 - `_canon.md` §0·§1·§2·§6·§7 — 제품 정의·시나리오·에이전트·제출 형식·심사기준 (필수)
 - `08_본선/02_전략/` — 전략 문서
-- `08_본선/03_제품/01_prd/` — 현행 PRD
+- `08_본선/03_제품/docs/ (prd.md·mvp-scope.md)` — 현행 PRD
 - `08_본선/01_대회정보/` — 심사기준 원문
 
 ## 쓰기 scope
 
-- `08_본선/03_제품/01_prd/` — PRD 갱신 (승인 후)
+- `08_본선/03_제품/docs/ (prd.md·mvp-scope.md)` — PRD 갱신 (승인 후)
 - `_system/telemetry/ai-session-intake.csv` — 텔레메트리 1행 append
 
 ## 의사결정 권한

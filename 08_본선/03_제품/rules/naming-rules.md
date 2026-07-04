@@ -7,7 +7,7 @@ aliases: [명명 규칙, naming-rules]
 
 # Naming Rules — 명명 규칙
 
-> 정식 객체명(Case/Signal/EvidencePack/… 8종)과 그 반의어(Anti-Synonyms) 금지 규칙은 [[08_본선/03_제품/00_vision/definitions|definitions]] §1·§5가 SSOT다 — **이 문서에서 재정의하지 않는다.** 이 문서는 definitions.md가 다루지 않는 5개 층위(파일/기능ID/데이터필드/API/이벤트/테스트)만 다룬다.
+> 정식 객체명(Case/Signal/EvidencePack/… 8종)과 그 반의어(Anti-Synonyms) 금지 규칙은 [[08_본선/03_제품/docs/04_definitions|definitions]] §1·§5가 SSOT다 — **이 문서에서 재정의하지 않는다.** 이 문서는 definitions.md가 다루지 않는 5개 층위(파일/기능ID/데이터필드/API/이벤트/테스트)만 다룬다.
 
 ---
 
@@ -24,7 +24,7 @@ aliases: [명명 규칙, naming-rules]
 
 ## 2. 기능 ID 명명 (Feature-ID Naming)
 
-[[08_본선/03_제품/00_vision/definitions|definitions]] §4 Stable ID Formats를 그대로 채택한다:
+[[08_본선/03_제품/docs/04_definitions|definitions]] §4 Stable ID Formats를 그대로 채택한다:
 
 | ID 포맷 | 용도 | 현황 |
 |---|---|---|
@@ -92,4 +92,4 @@ paperclip `activityLog` 매핑([[08_본선/03_제품/02_agent-design/agent-roste
 ---
 
 ## 연결
-[[08_본선/03_제품/00_vision/definitions|Definitions]] · [[08_본선/03_제품/04_tech/data-model|데이터 모델]] · [[08_본선/03_제품/04_tech/api-spec|API 명세]] · [[08_본선/03_제품/02_agent-design/agent-roster|에이전트 로스터]] · [[08_본선/03_제품/rules/import-export-rules|Import/Export Rules]] · [[08_본선/03_제품/00_vision/principles|Principles]]
+[[08_본선/03_제품/docs/04_definitions|Definitions]] · [[08_본선/03_제품/04_tech/data-model|데이터 모델]] · [[08_본선/03_제품/04_tech/api-spec|API 명세]] · [[08_본선/03_제품/02_agent-design/agent-roster|에이전트 로스터]] · [[08_본선/03_제품/rules/import-export-rules|Import/Export Rules]] · [[08_본선/03_제품/docs/03_principles|Principles]]

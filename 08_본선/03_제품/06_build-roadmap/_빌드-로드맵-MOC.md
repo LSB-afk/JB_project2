@@ -14,6 +14,8 @@ aliases:
 
 > 잠정(provisional) draft. 제품 정의서·11블록·미결 결정이 확정되면 페이즈 범위, 의존성, 산출물을 갱신한다.
 
+> ⚠ 현행화 2026-07-05: P0~P6 각 문서 세부 작업에 완료/부분/유효/낡음 판정과 근거를 반영(SSOT=[[08_본선/03_제품/reports/implementation-index|implementation-index]]). 로드맵 작성 시점 이후 실제 구현이 상당히 앞서 있어 — 잔여 작업은 하단 §참고.
+
 ## 결정 게이트 → 세분 태스크
 
 - [[다음-작업-분해]] — 회의록3 결정 게이트(G1~G7·A1) + 게이트별 세분 실행 태스크(READY／BLOCKED). **다음에 할 일은 여기부터.**
@@ -53,4 +55,13 @@ P2 에이전트·스킬·메모리 ─┐
 P3 보안·거버넌스        ├─> P5 통합·로컬모델·시연 ─> P6 본선 리허설
 P4 UI·조직도·콘솔       ┘
 ```
+
+## 잔여 작업 (2026-07-05 현행화, 우선순위순)
+
+1. **PR 머지 판단** — `LSB-afk/JB_project2#1`(ccl-financial 라이브 슬라이스)·`#2`(memoryCards 3계층 + llm-gateway :8022) 둘 다 OPEN, PR#2는 수용기준 4/4 검증 완료. 머지 여부/시점 결정.
+2. **jeonse 시장가·로컬모델 앱 배선** — `api-proxy.mjs`의 `/jeonse` 프록시는 이미 동작하지만 `app.js runJeonseDiagnosis`(5179)에 `fetchMarketPrice`/`callLocalModel` 연결이 아직 없음(빌드플랜-히어로 Phase 1 Task2·Phase 2).
+3. **Docker 물리분리 리허설** — `02_제품/deploy/docker-compose.yml` + 런북은 존재하나 실기기 검증 미실시.
+4. **시연영상** — 최종 시연 확정 후 제작.
+5. **폴백 대본·최종 evidence bundle** — P6 리허설 전 단계, 미착수.
+6. **데모케이스 ②(보조 시나리오) 확정** — 히어로(CCL-0001)는 단일화됐으나 보조 시나리오 전환 순서 미정.
 

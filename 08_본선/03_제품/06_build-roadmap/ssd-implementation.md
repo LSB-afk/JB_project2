@@ -11,7 +11,7 @@ aliases: [SSD Implementation, SDD 구현계획, ssd-implementation]
 # SSD Implementation — 문서를 작동 MVP로 내리는 구현계획
 
 > 노멀폼: DDBM-Harness-SDD 스킬 §Phase6 `docs/13_ssd-implementation.md`. 순서 = `Specify → Clarify → Plan → Tasks → Implement → Verify → Demo`.
-> **이 문서의 위치**: [[08_본선/03_제품/08_feature-spec|Feature Spec]](테스트 가능한 입출력)과 [[08_본선/03_제품/07_architecture|Architecture]](레이어·경계)를 **실제 작업 목록**으로 변환한다. 새 사실을 만들지 않고 두 문서 + 코드 SSOT를 작업으로 배치한다.
+> **이 문서의 위치**: [[08_본선/03_제품/docs/08_feature-spec|Feature Spec]](테스트 가능한 입출력)과 [[08_본선/03_제품/docs/07_architecture|Architecture]](레이어·경계)를 **실제 작업 목록**으로 변환한다. 새 사실을 만들지 않고 두 문서 + 코드 SSOT를 작업으로 배치한다.
 >
 > **코드 SSOT**: `_vendor/JB_project2`(역할축 콘솔, 정적 브라우저 프로토타입 v0.2.0). 히어로 실동작 슬라이스 = **ccl-financial**(라이브 에이전트, 브랜치 `feat/live-agent-ccl-financial`, PR **LSB-afk/JB_project2#1**). Demo-critical path = **CCL-0001**(전주 카페 운전자금, `BIZ-REF-0001`, 구 JBG-104).
 >
@@ -55,7 +55,7 @@ aliases: [SSD Implementation, SDD 구현계획, ssd-implementation]
 |---|---|---|
 | **Stack** | 정적 브라우저(vanilla JS, `<script>` 로드, 모듈러·번들 없음) + `python3 -m http.server`. 검증=`verify_static.py`(문자열 계약) + Playwright. LLM seam=`llmClient.js`(Ollama `exaone3.5:7.8b` 기본 / Anthropic `claude-3-5-haiku`), `?live=1` opt-in, 실패 시 `null`→모의 fallback. **새 의존성 추가 없음.** | E4 [`package.json` v0.2.0] |
 | **File structure** | `_vendor/JB_project2/app/`: `cclConsole.{core,app,data}.js`(히어로 여신), `llmClient.js`(라이브 seam), `harnessCore.js`·`harnessVerification.js`(가드), `index.html`·`styles.css`. 계열사=`wooricap.*`, 전세=`jeonseProtection.*`. **읽기전용 — 이 계획은 기존 파일에 작업을 매핑만 한다.** | E4 |
-| **Components** | 5레이어(콘솔 UI / Gateway 인증·DLP / 오케스트레이션 / RAG·규칙 / 데이터·감사) — [[08_본선/03_제품/07_architecture|Architecture §2]]. CCL 에이전트 8종(표면 5+감독·내부 3) [`cclConsole.core.js:111-159`]. | E4 |
+| **Components** | 5레이어(콘솔 UI / Gateway 인증·DLP / 오케스트레이션 / RAG·규칙 / 데이터·감사) — [[08_본선/03_제품/docs/07_architecture|Architecture §2]]. CCL 에이전트 8종(표면 5+감독·내부 3) [`cclConsole.core.js:111-159`]. | E4 |
 | **API routes** | **현 MVP는 서버 없음** — 4 함수계약(`computeRiskDecision`·`buildDashboardData`·`auditChainRecords`·`moveCaseToColumn`)이 API 계약의 대리물. 서버 승격 매핑(`POST /api/cases/:id/risk-decision` 등)은 [향후], Architecture §5. | E4 함수 / E1 서버 |
 | **Data schema** | 7단 계약 엔티티 `localStorage`(`ccl-ops-db-v1`), 전행 `roleKey`/`workspaceId` 스코프 태깅. PII 비반출: 저장은 `BIZ-REF`·구간값·파생피처만(원문 식별자 미보관) [E2, D7a]. | E4 |
 | **Model calls** | 라이브 경로만 LLM 호출 — 프롬프트에 **익명 구간지표만** 구성(호출부 책임), 초안 문장 생성·요약에 한정. 판단·점수는 규칙/함수계약이 최종 게이트(LLM은 요약·설명만) [E2, D9/D20]. temperature 0.2, timeout 20s. | E4 [`llmClient.js`] |
@@ -151,8 +151,8 @@ aliases: [SSD Implementation, SDD 구현계획, ssd-implementation]
 
 ## 연결
 
-- [[08_본선/03_제품/08_feature-spec|Feature Spec — 테스트 가능한 입출력(변환 원본)]]
-- [[08_본선/03_제품/07_architecture|Architecture — 레이어·경계·모델 라우팅]]
+- [[08_본선/03_제품/docs/08_feature-spec|Feature Spec — 테스트 가능한 입출력(변환 원본)]]
+- [[08_본선/03_제품/docs/07_architecture|Architecture — 레이어·경계·모델 라우팅]]
 - [[08_본선/03_제품/06_build-roadmap/_빌드-로드맵-MOC|빌드 로드맵 MOC(P0~P6)]]
 - [[08_본선/03_제품/06_build-roadmap/빌드플랜-히어로-실동작-데모|히어로 실동작 데모 빌드플랜]]
 - [[08_본선/03_제품/01_결정-준비/키스톤-확정|키스톤 — 데모 3케이스·정직한 전제]]

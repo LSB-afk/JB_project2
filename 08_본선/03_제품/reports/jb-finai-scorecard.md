@@ -16,11 +16,11 @@ aliases:
 ## 1. 5축 자가채점
 | 축 | 배점 | 자가 | 근거 문서 | 갭/리스크 |
 |---|--:|--:|---|---|
-| 1. 주제 적합·문제 정의 | 20 | **17** | [[core-bet]]·[[01_prd/prd\|prd]]·[[00_source-log]]·D1a/D2/D16 | 문제=강. 히어로 ID 단일화 미완 |
-| 2. 금융 업무 연계·고객가치 | 20 | **16** | [[business-model]]·[[business-metrics]]·[[data-strategy]]·D3b/D19/D23 | 단위경제 E0~E1(약근거). 캐피탈 수치 [미검증] |
+| 1. 주제 적합·문제 정의 | 20 | **17** | [[02_core-bet]]·[[01_prd/prd\|prd]]·[[00_source-log]]·D1a/D2/D16 | 문제=강. 히어로 ID 단일화 미완 |
+| 2. 금융 업무 연계·고객가치 | 20 | **16** | [[01_business-model]]·[[17_business-metrics]]·[[18_data-strategy]]·D3b/D19/D23 | 단위경제 E0~E1(약근거). 캐피탈 수치 [미검증] |
 | 3. AI Agent 설계·기술 타당성 | 20 | **16** | [[02_agent-design/agent-roster\|roster]]·[[orchestrator]]·[[07_architecture]]·[[차별성-설정근거상향-흐름]] | 실동작 1경로(E4)·나머지 목업. paperclip 이식 미착수 |
 | 4. MVP 완성도·검증가능성 | 20 | **15** | [[08_feature-spec]]·[[evals/eval-plan\|eval-plan]]·[[evals/golden-cases\|golden-cases]]·[[validation-report]] | 라이브 데모=모델 선택 게이트웨이(로컬 우선·codex 폴백) 리허설 미실측·e2e 미재실행 |
-| 5. 혁신·확장성·운영리스크 | 20 | **17** | [[차별성-경험레이어-서사]]·[[rules/agent-rules\|rules]]·[[risk-impact-register]]·[[evals/failure-modes\|failure-modes]]·D30/Dplus | 운영거버넌스 빈칸 공략=강. 확장 seat ROI 미검증 |
+| 5. 혁신·확장성·운영리스크 | 20 | **17** | [[차별성-경험레이어-서사]]·[[rules/agent-rules\|rules]]·[[19_risk-impact-register]]·[[evals/failure-modes\|failure-modes]]·D30/Dplus | 운영거버넌스 빈칸 공략=강. 확장 seat ROI 미검증 |
 | **소계** | **100** | **≈81** | | |
 | 시연영상 가점 | +5 | **+3** | [[07_발표-제출/demo-script\|demo-script]] | 영상 미제작·초단위 미확정 |
 | **총점(자가)** | **105** | **≈84** | | 목표 90+ = 아래 §4 선결 |
@@ -33,7 +33,7 @@ aliases:
 | verification(검증) | `harnessGuardCheckPII`/`Assertions` 재검 + 승인게이트 + 감사 해시체인 | E4 |
 
 ## 3. 필수 문서 형태 커버리지
-- **MVP 제안서**(Summary/Problem/Solution/Key Features/Data·Tech/User Scenario/Expected Impact): [[01_prd/prd\|prd]]+[[core-bet]]+[[data-strategy]] 커버 ✅
+- **MVP 제안서**(Summary/Problem/Solution/Key Features/Data·Tech/User Scenario/Expected Impact): [[01_prd/prd\|prd]]+[[02_core-bet]]+[[18_data-strategy]] 커버 ✅
 - **기능명세서**(Service/Architecture/Feature Spec/Flow/Future Work/Appendix): [[08_feature-spec]]+[[07_architecture]]+[[09_flow]]+[[06_build-roadmap/ssd-implementation\|ssd]] 커버 ✅
 - **⚠️ 기능 변경이력**(미기재=하드리스크): [[11_change-log]] §A 기능변경이력 ✅
 
@@ -44,7 +44,7 @@ aliases:
 | 현장 데모 미구동 | 🟡 목업은 확실·라이브는 모델 선택 게이트웨이(로컬모델 기동 필요, 실패 시 codex 폴백) → 폴백 준비됨 |
 | 기능 변경이력 미기록 | 🟢 [[11_change-log]] 기재 |
 | 타팀 코드·문서 무단복제 | 🟢 paperclip=구조·스키마셰이프만, 디자인 JBFG 재작성([[paperclip-통합-블루프린트]]) |
-| PII·보안·저작권·환각·설명가능·책임 리스크 방치 | 🟢 rules/·PII 4중방어·승인게이트·[[risk-impact-register]] |
+| PII·보안·저작권·환각·설명가능·책임 리스크 방치 | 🟢 rules/·PII 4중방어·승인게이트·[[19_risk-impact-register]] |
 
 ## 5. 90+ 도달 선결(우선순위)
 1. 히어로 ID CCL-0001 단일화(축1·4 +2점).

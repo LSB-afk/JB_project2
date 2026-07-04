@@ -9,7 +9,7 @@ up: "[[INDEX|제품 인덱스]]"
 
 # 케이스 생명주기 (FSM) — 기업여신 콘솔(CCL)
 
-> **정합 기준**: [[08_본선/03_제품/05_domain-model|05_domain-model]] §3(루트 정본). 코드 SSOT: `_vendor/JB_project2/app/cclConsole.core.js` `CCL_BOARD_COLUMNS`(e57b826). 히어로 = **CCL-0001**(전주 카페 운영자 운전자금) — 현재 상태 `aiReview`, `riskLevel: high`, `requiresHumanReview: true`.
+> **정합 기준**: [[08_본선/03_제품/docs/05_domain-model|05_domain-model]] §3(루트 정본). 코드 SSOT: `_vendor/JB_project2/app/cclConsole.core.js` `CCL_BOARD_COLUMNS`(e57b826). 히어로 = **CCL-0001**(전주 카페 운영자 운전자금) — 현재 상태 `aiReview`, `riskLevel: high`, `requiresHumanReview: true`.
 
 ---
 
@@ -90,6 +90,6 @@ stateDiagram-v2
 
 ## 참조
 
-- [[08_본선/03_제품/05_domain-model|05_domain-model — 도메인 모델(정합 대상)]]
+- [[08_본선/03_제품/docs/05_domain-model|05_domain-model — 도메인 모델(정합 대상)]]
 - [[08_본선/03_제품/04_tech/data-model|04_tech/data-model — 필드 SSOT]]
 - [[08_본선/03_제품/05_diagrams/03_approval-gate|승인 게이트]]

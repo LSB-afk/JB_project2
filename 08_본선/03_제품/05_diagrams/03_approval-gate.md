@@ -9,7 +9,7 @@ up: "[[INDEX|제품 인덱스]]"
 
 # 승인 게이트 (Human-in-the-Loop) — L0~L4
 
-> **정합 기준**: [[08_본선/03_제품/05_domain-model|05_domain-model]] §3·§4(루트 정본). 코드 SSOT: `_vendor/JB_project2/app/cclConsole.core.js`(e57b826). 히어로 = **CCL-0001**, `riskLevel: high` → 잠정 매핑 L3(준법 결재 구간, [Open Question] 아래 참조).
+> **정합 기준**: [[08_본선/03_제품/docs/05_domain-model|05_domain-model]] §3·§4(루트 정본). 코드 SSOT: `_vendor/JB_project2/app/cclConsole.core.js`(e57b826). 히어로 = **CCL-0001**, `riskLevel: high` → 잠정 매핑 L3(준법 결재 구간, [Open Question] 아래 참조).
 
 ---
 
@@ -31,7 +31,7 @@ up: "[[INDEX|제품 인덱스]]"
 | L3 | 80–89 | 준법 | `high` |
 | L4 | 90–100 | 준법/상위 검토(TBD) | `critical` |
 
-> **[Open Question]**: JB_project2 CCL은 점수 매트릭스가 아니라 `riskLevel(low/medium/high/critical) + requiresHumanReview + supervisor 결재`로 구현되어 있어, 위 매핑은 잠정치다. L4 실 승인 주체("상위 검토")도 정본 미지정 — [[08_본선/03_제품/05_domain-model|05_domain-model §3.1]] 참조.
+> **[Open Question]**: JB_project2 CCL은 점수 매트릭스가 아니라 `riskLevel(low/medium/high/critical) + requiresHumanReview + supervisor 결재`로 구현되어 있어, 위 매핑은 잠정치다. L4 실 승인 주체("상위 검토")도 정본 미지정 — [[08_본선/03_제품/docs/05_domain-model|05_domain-model §3.1]] 참조.
 
 ---
 
@@ -72,5 +72,5 @@ flowchart TD
 ## 참조
 
 - [[08_본선/03_제품/05_diagrams/02_case-lifecycle|케이스 생명주기]]
-- [[08_본선/03_제품/05_domain-model|05_domain-model — 도메인 모델(정합 대상)]]
+- [[08_본선/03_제품/docs/05_domain-model|05_domain-model — 도메인 모델(정합 대상)]]
 - [[08_본선/03_제품/04_tech/data-model|04_tech/data-model — Approval 엔티티]]

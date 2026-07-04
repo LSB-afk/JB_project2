@@ -10,7 +10,7 @@ aliases: [Eval Plan, 평가계획]
 
 # Eval Plan — 평가·검증 계획
 
-> 목적: 심사위원에게 "작동한다"가 아니라 **"작동을 사전 정의된 범위에서 검증했다"**를 증거로 제시한다. SSOT: `_canon.md` §3, [[08_본선/03_제품/01_prd/prd|PRD]] §6, [[본선_안내문|심사기준]]. 자매문서: `evals/rubric.md`·`golden-cases.md`·`failure-modes.md`·`validation-report.md`(별도 파일, 이 문서는 상위 계획).
+> 목적: 심사위원에게 "작동한다"가 아니라 **"작동을 사전 정의된 범위에서 검증했다"**를 증거로 제시한다. SSOT: `_canon.md` §3, [[08_본선/03_제품/docs/06_prd|PRD]] §6, [[본선_안내문|심사기준]]. 자매문서: `evals/rubric.md`·`golden-cases.md`·`failure-modes.md`·`validation-report.md`(별도 파일, 이 문서는 상위 계획).
 >
 > **근거등급(E0~E5)**: E0 미검증 가정 · E1 문헌 시사 · E2 문헌 다중근거 · E3 내부 설계·코드 근거 · E4 데모로 실증 가능(현장 시연) · E5 운영 실측. **목표 E2+, 데모 대상은 E4.**
 >
@@ -176,7 +176,7 @@ aliases: [Eval Plan, 평가계획]
 
 ## 연결
 
-- [[08_본선/03_제품/01_prd/prd|PRD]] §6 성공지표
+- [[08_본선/03_제품/docs/06_prd|PRD]] §6 성공지표
 - [[08_본선/03_제품/evals/rubric|Rubric]] · [[08_본선/03_제품/evals/golden-cases|Golden Cases]] · [[08_본선/03_제품/evals/failure-modes|Failure Modes]]
-- [[08_본선/03_제품/00_vision/core-bet|Core Bet]] · [[08_본선/03_제품/00_vision/차별성-경험레이어-서사|차별성 서사]]
+- [[08_본선/03_제품/docs/02_core-bet|Core Bet]] · [[08_본선/03_제품/00_vision/차별성-경험레이어-서사|차별성 서사]]
 - `_canon.md` §3 · [[본선_안내문|심사기준]]

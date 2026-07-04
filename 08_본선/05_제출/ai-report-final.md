@@ -36,7 +36,7 @@ up: "[[_05_제출_MOC|제출 MOC]]"
 
 ### 3. 제품 설명
 
-> [[08_본선/03_제품/01_prd/prd|PRD]] 내용 기반 작성 예정
+> [[08_본선/03_제품/docs/06_prd|PRD]] 내용 기반 작성 예정
 
 ### 4. 기술 구현
 
@@ -61,5 +61,5 @@ up: "[[_05_제출_MOC|제출 MOC]]"
 
 ## 참조
 
-- [[08_본선/03_제품/00_vision/core-bet|Core Bet]]
+- [[08_본선/03_제품/docs/02_core-bet|Core Bet]]
 - [[08_본선/03_제품/05_diagrams/99_comprehensive-architecture|종합 아키텍처]]

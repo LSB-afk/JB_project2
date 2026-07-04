@@ -14,7 +14,7 @@ aliases: [에이전트 로스터, per-console 에이전트 레지스트리]
 >
 > **이원성 [미결/데모전 정합]**: `_canon.md §2`의 14종 **표시명**은 발표·문서용 요약 SSOT로 계속 쓰되, 실제 실행되는 코드는 **콘솔 4개(기업여신 8 + FDS/피싱 8 + 전세보호 11 + JB우리캐피탈 13 = 40 에이전트)**로 완전히 분리돼 있다. 두 세트는 이름·도메인이 겹치지 않는 **독립 레지스트리**다. 발표에서 "14개 에이전트"라고만 말하면 콘솔별 실제 개수와 충돌하므로, **"발표 요약 14 + 콘솔별 실제 로스터 8/8/11/13"**으로 구분해 말한다. 두 레이어의 통합 여부는 [미결/7-4].
 >
-> 근거: `_vendor/JB_project2/app/cclConsole.core.js`·`fdrConsole.core.js`·`jeonseProtectionAgents.registry.js`·`jbWooriCapitalAgents.registry.js`·`harnessRegistry.js`(각 콘솔 `requiredAgents` 검증값), [[08_본선/03_제품/05_domain-model|05_domain-model]], [[08_본선/03_제품/01_결정-준비/설계/paperclip-통합-블루프린트|paperclip-통합-블루프린트]], [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성-설정근거상향-흐름]].
+> 근거: `_vendor/JB_project2/app/cclConsole.core.js`·`fdrConsole.core.js`·`jeonseProtectionAgents.registry.js`·`jbWooriCapitalAgents.registry.js`·`harnessRegistry.js`(각 콘솔 `requiredAgents` 검증값), [[08_본선/03_제품/docs/05_domain-model|05_domain-model]], [[08_본선/03_제품/01_결정-준비/설계/paperclip-통합-블루프린트|paperclip-통합-블루프린트]], [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성-설정근거상향-흐름]].
 
 ---
 
@@ -31,7 +31,7 @@ aliases: [에이전트 로스터, per-console 에이전트 레지스트리]
 
 > **[미검증] 전세보호 개수 표기 차이**: 팀 지시 스냅샷은 "전세10"으로 언급했으나, v3(`e57b826`) 코드는 `jpo-evaluator`(루프 검증 에이전트, "생성과 검증은 같은 함수가 수행하지 않는다")를 추가해 **실제 11개**다. 발표·문서에서는 코드 기준 11을 정본으로 쓰되, v2 스냅샷(10)과의 차이는 "v3 검증 전담 에이전트 신설"로 설명한다.
 >
-> `전세`는 전북은행 전용 케이스 유형이며 JB우리캐피탈에 미러링하지 않는다(캐피탈 사업영역 밖, `[[08_본선/03_제품/07_architecture|07_architecture]]` §12). CaseOps 확장(메모리거버넌스·119·CaseOps엔진)은 **팀 미확정**이며 이 4콘솔 로스터와는 별개 트랙이다 [분기/미확정].
+> `전세`는 전북은행 전용 케이스 유형이며 JB우리캐피탈에 미러링하지 않는다(캐피탈 사업영역 밖, `[[08_본선/03_제품/docs/07_architecture|07_architecture]]` §12). CaseOps 확장(메모리거버넌스·119·CaseOps엔진)은 **팀 미확정**이며 이 4콘솔 로스터와는 별개 트랙이다 [분기/미확정].
 
 ---
 
@@ -69,7 +69,7 @@ paperclip의 hiring 모델(`requireBoardApprovalForNewAgents`, `pending_approval
 | `ccl-reply` | 고객 회신 초안 에이전트 | replyDrafts | 상담 요약 | 초안 작성 | 자동 발송 금지 | CCL-0001 회신 |
 | `ccl-supervisor` | 여신 감독 검토 에이전트 | governance | 고위험/승인 큐 추적 | 검토 대기 등록 | 자체 승인 금지 | 승인 큐(케이스 비종속) |
 
-공통 금지(`CCL_COMMON_BLOCKED_ACTIONS`): 대출 승인/거절 확정·금리/한도 산정·신용등급 확정·실거래 실행·식별정보 원문 저장/출력·고객 자동 발송·high/critical 자동 종결. 상세: [[08_본선/03_제품/05_domain-model|05_domain-model §1]].
+공통 금지(`CCL_COMMON_BLOCKED_ACTIONS`): 대출 승인/거절 확정·금리/한도 산정·신용등급 확정·실거래 실행·식별정보 원문 저장/출력·고객 자동 발송·high/critical 자동 종결. 상세: [[08_본선/03_제품/docs/05_domain-model|05_domain-model §1]].
 
 ### 2.2 FDS/피싱(FDR) — 8종
 
@@ -86,7 +86,7 @@ paperclip의 hiring 모델(`requireBoardApprovalForNewAgents`, `pending_approval
 | `fdr-report` | 외부 신고 안내 에이전트 | paymentHoldGuide | 지급정지·신고 절차 안내 후보 |
 | `fdr-supervisor` | FDS 감독 검토 에이전트 | governance | 승인 큐·감사 추적 |
 
-> FDS만 **예외적으로 실시간 선차단**(사람 승인 전 임시 보류)을 허용한다 — 나머지 콘솔은 전부 승인 후 실행 원칙([[08_본선/03_제품/05_domain-model|05_domain-model §1]] "왜 사람 승인 게이트인가").
+> FDS만 **예외적으로 실시간 선차단**(사람 승인 전 임시 보류)을 허용한다 — 나머지 콘솔은 전부 승인 후 실행 원칙([[08_본선/03_제품/docs/05_domain-model|05_domain-model §1]] "왜 사람 승인 게이트인가").
 
 ### 2.3 전세보호(JPO) — 전북은행 전용, 11종(v3)
 
@@ -128,7 +128,7 @@ paperclip의 hiring 모델(`requireBoardApprovalForNewAgents`, `pending_approval
 | `jbwc-compliance` | 내부통제 에이전트 | complianceInternalControl |
 | `jbwc-metrics` | 운영 지표·QA 에이전트 | metrics |
 
-전세 도메인은 캐피탈 사업영역 밖이라 이 로스터에 없다([[08_본선/03_제품/07_architecture|07_architecture]] §12 "전북은행(여신·전세·피싱·사후관리) + JB우리캐피탈(오토/개인/기업 여신·EWS, 전세 없음)").
+전세 도메인은 캐피탈 사업영역 밖이라 이 로스터에 없다([[08_본선/03_제품/docs/07_architecture|07_architecture]] §12 "전북은행(여신·전세·피싱·사후관리) + JB우리캐피탈(오토/개인/기업 여신·EWS, 전세 없음)").
 
 ---
 
@@ -143,7 +143,7 @@ paperclip의 hiring 모델(`requireBoardApprovalForNewAgents`, `pending_approval
 | L3 | high | E1 |
 | L4 | critical | E1 |
 
-L4의 "실 승인 주체"(상위 검토)는 정본 미지정 — [Open Question], [[08_본선/03_제품/05_domain-model|05_domain-model §3.2]]과 동일 입장. 발표에서는 "L0~L4는 목표 정책 표현, 현재 코드는 riskLevel 4단계로 구현"이라고 정직하게 구분한다.
+L4의 "실 승인 주체"(상위 검토)는 정본 미지정 — [Open Question], [[08_본선/03_제품/docs/05_domain-model|05_domain-model §3.2]]과 동일 입장. 발표에서는 "L0~L4는 목표 정책 표현, 현재 코드는 riskLevel 4단계로 구현"이라고 정직하게 구분한다.
 
 | 역할 | 표시명 | 설명 |
 |-----|-------|------|
@@ -164,7 +164,7 @@ L4의 "실 승인 주체"(상위 검토)는 정본 미지정 — [Open Question]
 | `*_APPROVAL_DECIDED` | 승인/반려 확정 |
 | `*_HOOK_BLOCKED_*` | 가드 위반 차단(`beforeCaseCreate`/`beforeCustomerMessage` 실패) |
 | `EVALUATOR_CHECKED`(전세보호 전용, v3) | `jpo-evaluator`의 생성-분리 검증 통과/실패 |
-| `audit.sealed`(목표 서버 모델) | 04_tech 원안의 GENESIS 해시체인 — 현재 코드는 append-only + `reviewRequired` 플래그로 구현, 해시체인은 미구현([[08_본선/03_제품/05_domain-model|05_domain-model §7]]) |
+| `audit.sealed`(목표 서버 모델) | 04_tech 원안의 GENESIS 해시체인 — 현재 코드는 append-only + `reviewRequired` 플래그로 구현, 해시체인은 미구현([[08_본선/03_제품/docs/05_domain-model|05_domain-model §7]]) |
 
 최소 eval 요건(콘솔 공통): 승인 안전(고위험 자동종결 0건), 근거 연결(Evidence 테이블 write 100%), 스코프 격리(`role scope is required` 예외로 강제), PII 반출 금지(원문 저장/출력 0건), 규칙 준수(`*_FORBIDDEN_ASSERTIONS` 정규식 차단).
 
@@ -186,9 +186,9 @@ L4의 "실 승인 주체"(상위 검토)는 정본 미지정 — [Open Question]
 
 - [[08_본선/03_제품/02_agent-design/orchestrator|오케스트레이터]]
 - [[08_본선/03_제품/02_agent-design/skill-spec|스킬 명세]]
-- [[08_본선/03_제품/05_domain-model|도메인 모델(CCL 상세)]]
-- [[08_본선/03_제품/07_architecture|아키텍처]]
-- [[08_본선/03_제품/00_vision/definitions|정의서]](히어로 ID·용어 정합)
+- [[08_본선/03_제품/docs/05_domain-model|도메인 모델(CCL 상세)]]
+- [[08_본선/03_제품/docs/07_architecture|아키텍처]]
+- [[08_본선/03_제품/docs/04_definitions|정의서]](히어로 ID·용어 정합)
 - [[08_본선/03_제품/00_vision/차별성-설정근거상향-흐름|차별성-설정근거상향-흐름]]
 - [[08_본선/03_제품/01_결정-준비/설계/paperclip-통합-블루프린트|paperclip-통합-블루프린트]]
 - [[08_본선/03_제품/01_결정-준비/설계/agents-v2-paperclip기반-재설계|agents-v2-paperclip기반-재설계]]

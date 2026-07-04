@@ -68,4 +68,4 @@ aliases: [가져오기-내보내기 규칙, import-export-rules]
 ---
 
 ## 연결
-[[08_본선/03_제품/04_tech/data-model|데이터 모델]] · [[08_본선/03_제품/rules/data-rules|Data Rules]] · [[08_본선/03_제품/rules/naming-rules|Naming Rules]] · [[08_본선/03_제품/06_build-roadmap/P1-데이터-연동기반|P1-데이터-연동기반]] · [[08_본선/03_제품/00_vision/principles|Principles]]
+[[08_본선/03_제품/04_tech/data-model|데이터 모델]] · [[08_본선/03_제품/rules/data-rules|Data Rules]] · [[08_본선/03_제품/rules/naming-rules|Naming Rules]] · [[08_본선/03_제품/06_build-roadmap/P1-데이터-연동기반|P1-데이터-연동기반]] · [[08_본선/03_제품/docs/03_principles|Principles]]

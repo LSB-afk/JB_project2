@@ -20,7 +20,7 @@ aliases:
 - **제출물 갱신/제출 전**(submission 역할은 **사람 승인** 게이트).
 
 ## 교차 점검 대상
-- 제품: `03_제품/01_prd/prd.md` · `mvp-scope.md` · `00_vision/core-bet`
+- 제품: `03_제품/docs/06_prd.md` · `mvp-scope.md` · `00_vision/core-bet`
 - 제출: `05_제출/submission-checklist.md` · `live-final-verification.md` · `ai-report-final.md` · `00_제출/기능명세서`·`발표자료`
 - 시연: `00_제출/본선-시연-시나리오` · `_system/visualizations/demo-*`·`golden-path`·`storyboard`
 - 정본: `_canon`(예선)·`08_본선/_system/memory/context/제품-정의`(본선 SSOT)

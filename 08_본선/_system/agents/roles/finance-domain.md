@@ -45,7 +45,7 @@ up: "[[_agent-registry]]"
 ## 쓰기 scope
 
 - `08_본선/02_전략/` — 금융 도메인 관점 전략 보완
-- `08_본선/03_제품/01_prd/` — PRD 금융 정합성 보완
+- `08_본선/03_제품/docs/ (prd.md·mvp-scope.md)` — PRD 금융 정합성 보완
 - `_system/telemetry/ai-session-intake.csv` — 텔레메트리 1행 append
 
 ## 의사결정 권한

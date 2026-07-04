@@ -54,8 +54,8 @@ aliases:
 ## 탐색 방식
 
 ### 심사자로 진입
-1. [[08_본선/03_제품/00_vision/core-bet\|Core Bet]] — 왜 이 문제인가
-2. [[08_본선/03_제품/01_prd/prd\|PRD]] — 무엇을 만드는가
+1. [[08_본선/03_제품/docs/02_core-bet\|Core Bet]] — 왜 이 문제인가
+2. [[08_본선/03_제품/docs/06_prd\|PRD]] — 무엇을 만드는가
 3. [[08_본선/03_제품/05_diagrams/99_comprehensive-architecture\|종합 아키텍처]] — 어떻게 동작하는가
 4. [[08_본선/05_제출/live-final-verification\|라이브 최종 검증]] — 실제로 작동하는가
 

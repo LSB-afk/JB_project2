@@ -9,7 +9,7 @@ up: "[[INDEX|제품 인덱스]]"
 
 # ERD — 엔티티 관계 다이어그램
 
-> **정합 기준**: [[08_본선/03_제품/05_domain-model|05_domain-model]] §2(루트 정본)·[[08_본선/03_제품/04_tech/data-model|04_tech/data-model]](필드 SSOT). 코드 SSOT: `_vendor/JB_project2/app/cclConsole.data.js`(e57b826, `cclSeedData()`). 히어로 = **CCL-0001**.
+> **정합 기준**: [[08_본선/03_제품/docs/05_domain-model|05_domain-model]] §2(루트 정본)·[[08_본선/03_제품/04_tech/data-model|04_tech/data-model]](필드 SSOT). 코드 SSOT: `_vendor/JB_project2/app/cclConsole.data.js`(e57b826, `cclSeedData()`). 히어로 = **CCL-0001**.
 
 ---
 
@@ -107,12 +107,12 @@ erDiagram
 
 ## 정합 노트 [미검증]
 
-- 04_tech/data-model(예선 app.js 기반)은 감사를 **GENESIS 해시체인**(FNV-1a→SHA-256)으로 기술한다. JB_project2 CCL 코드는 스코프 태깅된 **append-only 로그 + `reviewRequired` 플래그**로 구현하며 해시체인은 미구현 — 통합 여부는 [Open Question][[08_본선/03_제품/05_domain-model|05_domain-model §7]].
+- 04_tech/data-model(예선 app.js 기반)은 감사를 **GENESIS 해시체인**(FNV-1a→SHA-256)으로 기술한다. JB_project2 CCL 코드는 스코프 태깅된 **append-only 로그 + `reviewRequired` 플래그**로 구현하며 해시체인은 미구현 — 통합 여부는 [Open Question][[08_본선/03_제품/docs/05_domain-model|05_domain-model §7]].
 - 사람 승인자(Agent, `isHuman: true`)는 `USR-*` 식별자를 쓰고, AI 에이전트는 `ccl-*` slug를 쓴다 — 동일 `AGENT` 엔티티에 통합 [E4].
 
 ---
 
 ## 참조
 
-- [[08_본선/03_제품/05_domain-model|05_domain-model — 도메인 모델(정합 대상)]]
+- [[08_본선/03_제품/docs/05_domain-model|05_domain-model — 도메인 모델(정합 대상)]]
 - [[08_본선/03_제품/04_tech/data-model|04_tech/data-model — 엔티티 필드 SSOT]]

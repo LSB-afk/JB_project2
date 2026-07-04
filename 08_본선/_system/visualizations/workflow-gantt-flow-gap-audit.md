@@ -31,8 +31,8 @@ aliases:
 | [[PROGRESS]] | 제품 재설계 미완료 항목, 발표·시연 상태, 리서치 상태 | 최신 운영 상태 |
 | [[VISUALIZATION-PLAN]] | 간트 목적, 데이터 소스, 갱신 조건 | 최신 시각화 계획 |
 | `phase-ledger.csv` | 단계별 완료율 추정 | 간트 완료율 근거 |
-| [[prd]] | 제품 개요, 핵심 사용자, 기능 요구사항 | draft/stub |
-| [[mvp-scope]] | P0 기능, 본선 시연 최소 범위 | draft/stub |
+| [[06_prd]] | 제품 개요, 핵심 사용자, 기능 요구사항 | draft/stub |
+| [[06_mvp-scope]] | P0 기능, 본선 시연 최소 범위 | draft/stub |
 | [[scope-board]] | In/Out scope | 전세사기 중심 항목 포함 |
 | [[design-system]] | JB 웹 차용, 다크 콘솔, 상태칩, 컴포넌트 씨앗 | draft/stub |
 | [[ia-screen-map]] | 조직도/3열 쉘/5컬럼 칸반/화면 목록 | draft/stub |
@@ -54,7 +54,7 @@ aliases:
 |---|---|---|
 | 문제정의/JB 리서치 | [[PROGRESS]] 리서치 1차 사이클, D1~D19, D+a/b | 정합 |
 | AI Agent 설계 | [[function-spec]] 운영 계약, [[agent-roster]], [[orchestrator]] | 정합이나 세부는 draft |
-| MVP 구현/고도화 | [[function-spec]], [[기능-변경이력]], [[mvp-scope]] | 정합 |
+| MVP 구현/고도화 | [[function-spec]], [[기능-변경이력]], [[06_mvp-scope]] | 정합 |
 | UX/UI·브랜딩·시연 화면 | [[PROGRESS]]의 IA·화면 지도, 디자인 시스템, 조직도 메인 UI, JB 웹 디자인 | 별도 트랙 필요 |
 | 문서/기능명세/변경이력 | [[function-spec]], [[기능-변경이력]], [[08_본선/03_제품/07_발표-제출/submission-checklist\|submission-checklist]] | 정합 |
 | QA/검증/시연 안정화 | [[08_본선/03_제품/07_발표-제출/submission-checklist\|submission-checklist]], [[live-final-verification]], [[risk-register]] | 정합이나 체크리스트 갱신 필요 |
@@ -67,7 +67,7 @@ aliases:
 |---|---|---|---|---|
 | G1 | `submission-checklist`는 전세사기 E2E를 핵심 시나리오로 둠 | [[08_본선/03_제품/07_발표-제출/submission-checklist\|submission-checklist]] | 현재 시연 SSOT와 충돌 | SME E2E를 기본, 피싱 보조, 전세 optional로 수정 |
 | G2 | `live-final-verification`은 전세사기 위험 탐지만 검증 | [[live-final-verification]] | 리허설 체크가 히어로 시연을 검증하지 못함 | SME(JBG-104) 검증을 메인으로 재작성 |
-| G3 | PRD/MVP/UX 문서가 `작성 예정` 상태 | [[prd]], [[mvp-scope]], [[design-system]], [[ia-screen-map]], [[user-journeys]] | 간트가 실제보다 확정적으로 보일 수 있음 | 간트의 UX/UI·제품 레인에는 `estimate/planned` 표시 유지 |
+| G3 | PRD/MVP/UX 문서가 `작성 예정` 상태 | [[06_prd]], [[06_mvp-scope]], [[design-system]], [[ia-screen-map]], [[user-journeys]] | 간트가 실제보다 확정적으로 보일 수 있음 | 간트의 UX/UI·제품 레인에는 `estimate/planned` 표시 유지 |
 | G4 | 제품 의사결정 레인이 간트에 약함 | [[PROGRESS]]의 은행 선택·배포vs로컬·DB 범위 확정 | 구현/발표 논리의 선행 결정이 묻힘 | `제품 결정/범위 확정` 마커를 간트 또는 update-control-tower에 추가 |
 | G5 | 백엔드 실연동은 문서상 미착수인데 간트에는 MVP 고도화 내부에 섞임 | [[PROGRESS]], [[기능-변경이력]] | 구현 리스크가 덜 보임 | `정적 MVP→백엔드/API 승격`을 별도 작업 바로 표시 |
 | G6 | 리서치→제품 반영이 아직 미완료 | [[PROGRESS]], [[research-to-product-funnel]] | 딥리서치 성과가 제품 기능에 연결됐다는 증거 약함 | funnel 보드와 간트에 `리서치 흡수→제품 결정` 체크포인트 추가 |
@@ -98,7 +98,7 @@ aliases:
 |---|---|---|
 | P0 | [[08_본선/03_제품/07_발표-제출/submission-checklist\|submission-checklist]] | 제품 MVP 검증 항목을 SME 히어로 기준으로 갱신 |
 | P0 | [[live-final-verification]] | 최종 검증 시나리오를 SME 중심으로 재작성 |
-| P1 | [[mvp-scope]] | P0 기능 상태를 `작성 예정`에서 실제 시연 기준으로 갱신 |
+| P1 | [[06_mvp-scope]] | P0 기능 상태를 `작성 예정`에서 실제 시연 기준으로 갱신 |
 | P1 | [[design-system]] | 김민주 UX/UI 오너 트랙과 JB 톤앤매너 작업 항목 반영 |
 | P1 | [[ia-screen-map]] | 조직도 메인 UI, 케이스 상세, 승인, 거버넌스 패널을 확정 화면으로 승격 |
 | P1 | [[risk-register]] | 로컬 서버/브라우저/폴백 영상/포트 충돌 대응 상세화 |
