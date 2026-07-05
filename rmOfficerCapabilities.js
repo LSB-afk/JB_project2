@@ -25,6 +25,7 @@ const RMO_CAPABILITY_STATUS_LABELS = {
 };
 
 const RMO_CAPABILITIES = [
+  { id: "molit-market-enrichment", name: "국토교통 실거래 시세 보강", summary: "국토교통부 실거래 API 7종의 매매·전월세 표본을 법정동/주택유형 기준으로 정규화해 전세·여신 상담의 시세 근거를 보강합니다.", category: "외부 데이터 연결", agentIds: ["rmo-molit-market-data"], data: ["법정동코드", "조회월", "주택유형", "면적", "보증금/전세금", "국토교통 실거래 API"], output: "molit-market-snapshot.md, marketSnapshot, sourceMode", status: "review", serviceRef: "scripts/api-proxy.mjs + fetchJeonseMarketData" },
   { id: "priority-scoring", name: "우선순위 근거 산정", summary: "상담 유형·위험 신호·SLA를 계산해 급한 순 정렬 근거를 만듭니다.", category: "관리 및 운영 기능", agentIds: ["rmo-triage"], data: ["상담 접수 정보", "SLA 기한", "위험도 입력"], output: "priority-brief.md", status: "available", serviceRef: "computeRmOfficerPriority" },
   { id: "sidebar-counts", name: "케이스 현황 집계", summary: "역할 scope 쿼리로 사이드바·보드의 케이스 카운트를 실시간 집계합니다.", category: "관리 및 운영 기능", agentIds: [], data: ["rm_officer_cases 전체 테이블"], output: "사이드바 카운트 배지", status: "available", serviceRef: "getRmOfficerSidebarCounts" },
   { id: "disaster-signal", name: "재해·이상거래 신호 분류", summary: "기상특보·거래내역(샘플)을 검토해 재해·이상거래 위험 신호를 분류합니다.", category: "주의 신호 분류", agentIds: ["rmo-marine-risk", "rmo-fraud-txn-pattern"], data: ["기상특보(공개·샘플)", "최근 거래내역(샘플)"], output: "위험 신호 항목", status: "mock", serviceRef: "rmoBuildAgentDeliverable" },

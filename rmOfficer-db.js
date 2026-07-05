@@ -338,6 +338,7 @@ function rmoSeedData() {
     scope({ id: "RMO-CON-0008", name: "기술신용 근거 자료", category: "bizCreditReferral", status: "active", health: "healthy", dataMode: "sample", lastSyncAt: plus(-2), description: "기술신용 근거 자료의 최신성·형식 확인", agentIds: ["rmo-tech-credit"], fields: ["특허", "인증", "평가일"], nextAction: "갱신일 오래된 자료 표시" }),
     scope({ id: "RMO-CON-0009", name: "상담 메모·콜백 기록", category: "fraudResponse", status: "active", health: "healthy", dataMode: "sample", lastSyncAt: now, description: "보이스피싱 의심 상담의 메모 패턴 확인", agentIds: ["rmo-fraud-consult-notes"], fields: ["상담채널", "콜백여부", "의심키워드"], nextAction: "고위험 문구 담당자 콜백 연결" }),
     scope({ id: "RMO-CON-0010", name: "감사 로그 스트림", category: "governance", status: "active", health: "healthy", dataMode: "sample", lastSyncAt: now, description: "승인·재실행·반려·검토 필요 이벤트 기록", agentIds: ["rmo-compliance", "rmo-approval-router"], fields: ["행위자", "행위", "대상", "시각"], nextAction: "고위험 자동완료 차단 로그 확인" }),
+    scope({ id: "RMO-CON-0011", name: "국토교통 실거래 API 7종(프록시)", category: "publicMarketData", status: "active", health: "degraded", dataMode: "live_api", lastSyncAt: "", description: "아파트·연립다세대·단독다가구·오피스텔 매매/전월세 표본을 시세 근거 보강에 사용", agentIds: ["rmo-molit-market-data"], fields: ["법정동코드", "계약월", "주택유형", "매매/전월세 중앙값", "표본 수"], failureReason: "MOLIT_SERVICE_KEY 또는 DATA_GO_KR_KEY가 없으면 스냅샷/샘플 기준으로 대체", nextAction: "demo:proxy와 환경변수 연결 후 live=1에서 표본 수 확인" }),
   ];
 
   const rm_officer_role_assignments = users.map((u, index) => scope({

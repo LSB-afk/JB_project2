@@ -2,6 +2,7 @@
 
 const JPO_CAPABILITY_CATALOG = [
   { name: "접수 분류·라우팅", category: "관리 및 운영 기능", summary: "접수 유형을 lifecycle 상태와 전용 에이전트 실행 순서로 분리합니다.", domain: "신규 접수", agents: ["jpo-intake"], data: "접수 유형, 보증금, 주택 유형, 기한", output: "case-routing.md, handoff 기록", status: "available" },
+  { name: "국토교통 실거래 시세 보강", category: "외부 데이터 연결", summary: "국토교통부 실거래 API 7종을 프록시로 조회해 매매·전월세 중앙값, 표본 수, sourceMode를 근거 스냅샷으로 남깁니다.", domain: "시세 데이터 보강", agents: ["jpo-price", "jpo-dataquality"], data: "lawdCode, dealYm, housingType, areaSize, depositAmount", output: "molit-market-snapshot.md, marketSnapshot, sourceMode", status: "live" },
   { name: "전세가율/시세 위험 점검", category: "주의 신호 분류", summary: "실거래 스냅샷과 유사 거래 표본으로 보증금 과다 신호를 산출합니다.", domain: "시세 데이터 보강", agents: ["jpo-price"], data: "법정동, 면적, 매매/전월세 중앙값", output: "price-risk.md, riskSignals", status: "mock" },
   { name: "권리관계 체크리스트", category: "권리·등기 확인", summary: "선순위 권리, 압류, 신탁, 위반건축물 확인 항목을 담당자 검토용으로 묶습니다.", domain: "권리관계 확인", agents: ["jpo-registry"], data: "등기부 확인 상태, 건축물 확인 상태", output: "registry-checklist.md", status: "available" },
   { name: "보증·HUG 확인 항목", category: "보증 확인", summary: "보증 가능성을 확정하지 않고 공식 기준 확인 후보와 누락 항목을 정리합니다.", domain: "보증·HUG 확인", agents: ["jpo-guarantee"], data: "보증 상태, 주택 유형, 위험 신호", output: "guarantee-check.md", status: "review" },

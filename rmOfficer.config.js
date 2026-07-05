@@ -9,7 +9,7 @@ const RMO_WORKSPACE_ID = "rm-officer";
 const RMO_DISPLAY_NAME = "RM";
 const RMO_PORTAL_TITLE = "RM 업무지원 포털";
 const RMO_ROUTE_BASE = "/roles/rm-officer";
-const RMO_DB_VERSION = 4;
+const RMO_DB_VERSION = 5;
 
 /* 상담/케이스 유형 taxonomy — RM이 급한 순으로 모아보는 업무 축 */
 const RMO_CASE_TYPES = {
@@ -78,6 +78,7 @@ const RMO_STATUS_LABELS = {
   healthy: "정상",
   degraded: "성능 저하",
   down: "중단",
+  live_api: "실거래 API",
   sample: "샘플 기준",
   manualRequired: "담당자 확인 필요",
   connected: "데이터 연결",

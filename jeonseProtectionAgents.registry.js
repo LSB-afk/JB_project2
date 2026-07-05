@@ -246,7 +246,7 @@ const jeonseProtectionAgents = [
 const jeonseProtectionSkills = [
   { key: "loop-evaluate", label: "루프 검증(확정 표현·근거·PII·연계 상태)", agentIds: ["jpo-evaluator"], inputs: ["caseId", "outputSummary"], outputs: ["verdict", "notes"] },
   { key: "intake-triage", label: "접수 분류·초기 상태 산정", agentIds: ["jpo-intake"], inputs: ["intakeType", "riskSignals"], outputs: ["status", "handoffs"] },
-  { key: "market-median-enrich", label: "실거래 중앙값 보강", agentIds: ["jpo-price"], inputs: ["housingType", "lawdCode", "dealYm"], outputs: ["saleMedian", "jeonseMedian", "sourceMode"] },
+  { key: "market-median-enrich", label: "국토교통 실거래 시세 보강", agentIds: ["jpo-price", "jpo-dataquality"], inputs: ["housingType", "lawdCode", "dealYm", "areaSize", "depositAmount"], outputs: ["marketSnapshot", "saleMedian", "jeonseMedian", "sampleCount", "sourceMode", "molit-market-snapshot.md"] },
   { key: "jeonse-ratio-signal", label: "전세가율/과다 신호 산출", agentIds: ["jpo-price"], inputs: ["depositAmount", "saleMedian", "jeonseMedian"], outputs: ["riskSignals"] },
   { key: "registry-checklist", label: "권리관계 체크리스트", agentIds: ["jpo-registry"], inputs: ["caseId"], outputs: ["checkItems", "manualRequired"] },
   { key: "guarantee-checklist", label: "보증·HUG 확인 체크리스트", agentIds: ["jpo-guarantee"], inputs: ["caseId"], outputs: ["checkItems", "manualRequired"] },
