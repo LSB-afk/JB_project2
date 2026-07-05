@@ -84,6 +84,7 @@ app_js_files = [
     "rmoCaseOntology.js",
     "rmoEngineSwitch.js",
     "rmoAuditChain.js",
+    "rmoNlIntake.js",
 ]
 
 required = [
